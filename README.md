@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Self-Storage Facility Rental and Management System
 
 PRN222 project base for a self-storage rental and management API.
@@ -105,3 +106,7 @@ Base architecture complete. Feature development not yet implemented.
 Authentication, JWT, business CRUD, reservations, payments, and other workflows
 are intentionally absent. See [the final review](docs/PRE_GITHUB_REVIEW.md)
 for verified build, runtime, database, and Git preparation results.
+=======
+# SelfStorageManagement_PRN222
+FinalProject
+>>>>>>> 6f2acb474cebcef22d14819b7d29f3865ee8a008
