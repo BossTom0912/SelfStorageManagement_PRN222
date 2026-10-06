@@ -1,0 +1,72 @@
+<Window x:Class="SelfStorageManagementSystem.WpfClient.Views.CreateStaffDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Create Staff Account" Height="560" Width="480"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+        Background="#F8FAFC" FontFamily="Segoe UI">
+    <Grid Margin="20">
+        <StackPanel>
+            <TextBlock Text="Create Staff / Manager Account" FontSize="18" FontWeight="Bold" Foreground="#0F172A" Margin="0,0,0,14"/>
+
+            <TextBlock Text="Email Address (*):" FontSize="11" FontWeight="SemiBold" Foreground="#475569" Margin="0,0,0,4"/>
+            <TextBox x:Name="txtEmail" Padding="6" Margin="0,0,0,8"/>
+
+            <TextBlock Text="Initial Password (*):" FontSize="11" FontWeight="SemiBold" Foreground="#475569" Margin="0,0,0,4"/>
+            <PasswordBox x:Name="txtPassword" Password="Storage@Demo2026!" Padding="6" Margin="0,0,0,8"/>
+
+            <Grid Margin="0,0,0,8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Full Name (*):" FontSize="11" FontWeight="SemiBold" Foreground="#475569" Margin="0,0,0,4"/>
+                    <TextBox x:Name="txtFullName" Padding="6"/>
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="Employee Code (*):" FontSize="11" FontWeight="SemiBold" Foreground="#475569" Margin="0,0,0,4"/>
+                    <TextBox x:Name="txtEmployeeCode" Text="EMP-HCM-002" Padding="6"/>
+                </StackPanel>
+            </Grid>
+
+            <Grid Margin="0,0,0,8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Phone Number:" FontSize="11" FontWeight="SemiBold" Foreground="#475569" Margin="0,0,0,4"/>
+                    <TextBox x:Name="txtPhone" Padding="6"/>
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="Hire Date:" FontSize="11" FontWeight="SemiBold" Foreground="#475569" Margin="0,0,0,4"/>
+                    <DatePicker x:Name="dpHireDate" Padding="4"/>
+                </StackPanel>
+            </Grid>
+
+            <TextBlock Text="Staff Role (*):" FontSize="11" FontWeight="SemiBold" Foreground="#475569" Margin="0,0,0,4"/>
+            <ComboBox x:Name="cmbRole" SelectedIndex="0" Padding="6" Margin="0,0,0,8">
+                <ComboBoxItem Content="facility_staff"/>
+                <ComboBoxItem Content="facility_manager"/>
+                <ComboBoxItem Content="business_operations_manager"/>
+            </ComboBox>
+
+            <TextBlock Text="Initial Assigned Facility (Optional):" FontSize="11" FontWeight="SemiBold" Foreground="#475569" Margin="0,0,0,4"/>
+            <ComboBox x:Name="cmbFacility" DisplayMemberPath="DisplayText" SelectedValuePath="Id" Padding="6" Margin="0,0,0,14"/>
+
+            <TextBlock x:Name="lblMessage" Text="" Foreground="#DC2626" FontSize="12" Margin="0,0,0,10"/>
+
+            <Grid Margin="0,10,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Content="Create Account" Height="36" Background="#0F766E" Foreground="#FFFFFF" FontWeight="Bold" Click="BtnCreate_Click"/>
+                <Button Grid.Column="2" Content="Cancel" Height="36" Background="#E2E8F0" Foreground="#334155" FontWeight="SemiBold" Click="BtnCancel_Click"/>
+            </Grid>
+        </StackPanel>
+    </Grid>
+</Window>

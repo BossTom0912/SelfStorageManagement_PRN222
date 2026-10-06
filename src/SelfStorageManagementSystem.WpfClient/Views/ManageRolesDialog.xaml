@@ -1,0 +1,36 @@
+<Window x:Class="SelfStorageManagementSystem.WpfClient.Views.ManageRolesDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Assign / Revoke Roles" Height="400" Width="420"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+        Background="#F8FAFC" FontFamily="Segoe UI">
+    <Grid Margin="20">
+        <StackPanel>
+            <TextBlock Text="Manage User Security Roles" FontSize="16" FontWeight="Bold" Foreground="#0F172A" Margin="0,0,0,4"/>
+            <TextBlock x:Name="lblUserInfo" Text="User: " FontSize="12" Foreground="#64748B" Margin="0,0,0,16"/>
+
+            <Border Background="#FFFFFF" CornerRadius="6" Padding="14" BorderBrush="#E2E8F0" BorderThickness="1" Margin="0,0,0,14">
+                <StackPanel>
+                    <TextBlock Text="Select Assigned Roles:" FontSize="12" FontWeight="SemiBold" Foreground="#334155" Margin="0,0,0,8"/>
+                    <CheckBox x:Name="chkCustomer" Content="storage_customer (Storage Customer)" Margin="0,4"/>
+                    <CheckBox x:Name="chkStaff" Content="facility_staff (Facility Staff)" Margin="0,4"/>
+                    <CheckBox x:Name="chkManager" Content="facility_manager (Facility Manager)" Margin="0,4"/>
+                    <CheckBox x:Name="chkBOM" Content="business_operations_manager (Operations Manager)" Margin="0,4"/>
+                    <CheckBox x:Name="chkAdmin" Content="system_administrator (System Administrator)" Margin="0,4"/>
+                </StackPanel>
+            </Border>
+
+            <TextBlock x:Name="lblMessage" Text="" Foreground="#DC2626" FontSize="12" Margin="0,0,0,10"/>
+
+            <Grid Margin="0,10,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Content="Save Roles" Height="36" Background="#2563EB" Foreground="#FFFFFF" FontWeight="Bold" Click="BtnSave_Click"/>
+                <Button Grid.Column="2" Content="Cancel" Height="36" Background="#E2E8F0" Foreground="#334155" FontWeight="SemiBold" Click="BtnCancel_Click"/>
+            </Grid>
+        </StackPanel>
+    </Grid>
+</Window>
