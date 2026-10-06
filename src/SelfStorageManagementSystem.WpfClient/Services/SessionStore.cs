@@ -12,6 +12,8 @@ public static class SessionStore
                                      TokenExpiresAt.HasValue &&
                                      TokenExpiresAt.Value > DateTimeOffset.UtcNow;
 
+    public static bool IsAuthenticated => IsLoggedIn;
+
     public static bool IsSystemAdministrator =>
         CurrentUser?.Roles.Contains("system_administrator") == true;
 

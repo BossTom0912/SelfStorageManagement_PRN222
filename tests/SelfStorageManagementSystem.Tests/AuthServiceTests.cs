@@ -143,10 +143,36 @@ public class AuthServiceTests
         var ex = await Assert.ThrowsAsync<UnauthorizedException>(() =>
             _authService.LoginAsync(new LoginRequest { Email = email, Password = "ValidPassword" }));
 
-        Assert.Contains("locked", ex.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal("Invalid email or password.", ex.Message);
 
         _loginHistoryRepoMock.Verify(h => h.AddAsync(
             It.Is<login_history>(lh => lh.result == LoginHistoryResultConstants.Locked && lh.user_id == 20),
+            It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task LoginAsync_WithDisabledAccount_ShouldThrowUnauthorizedWithSameMessageAndRecordBlockedHistory()
+    {
+        var email = "disabled@example.test";
+        var user = new user
+        {
+            id = 21,
+            email = email,
+            password_hash = "hashed_pw",
+            status = UserStatusConstants.Disabled
+        };
+
+        _userRepoMock.Setup(r => r.GetByEmailWithRolesAndProfilesAsync(email, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(user);
+
+        var ex = await Assert.ThrowsAsync<UnauthorizedException>(() =>
+            _authService.LoginAsync(new LoginRequest { Email = email, Password = "ValidPassword" }));
+
+        // Public message must be completely identical
+        Assert.Equal("Invalid email or password.", ex.Message);
+
+        _loginHistoryRepoMock.Verify(h => h.AddAsync(
+            It.Is<login_history>(lh => lh.result == LoginHistoryResultConstants.Blocked && lh.user_id == 21),
             It.IsAny<CancellationToken>()), Times.Once);
     }
 

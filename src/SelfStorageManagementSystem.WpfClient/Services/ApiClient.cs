@@ -9,6 +9,12 @@ namespace SelfStorageManagementSystem.WpfClient.Services;
 
 public class ApiClient
 {
+    public const string CertificateUntrustedErrorMessage =
+        "The SSL/TLS certificate is not trusted. If you are developing locally, please trust the development certificate by running: 'dotnet dev-certs https --trust' in your terminal.";
+
+    public const string InsecureOrInvalidUrlErrorMessage =
+        "Insecure or invalid API URL: The API URL must be an absolute URL using HTTPS. HTTP or relative URLs are not permitted.";
+
     private static readonly Lazy<ApiClient> _instance = new(() => new ApiClient());
     public static ApiClient Instance => _instance.Value;
 
@@ -22,27 +28,126 @@ public class ApiClient
 
     public event Action? SessionExpired;
 
-    private ApiClient()
+    public ApiClient() : this(new HttpClient())
     {
-        var handler = new HttpClientHandler
-        {
-            // Allow dev local self-signed certs for testing
-            ServerCertificateCustomValidationCallback = (_, _, _, _) => true
-        };
-
-        _httpClient = new HttpClient(handler);
     }
 
-    private void EnsureAuthorizationHeader()
+    public ApiClient(HttpClient httpClient)
     {
-        if (!string.IsNullOrEmpty(SessionStore.AccessToken))
+        _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+    }
+
+    public ApiClient(HttpMessageHandler handler, bool disposeHandler = true)
+        : this(new HttpClient(handler, disposeHandler))
+    {
+    }
+
+    public static bool IsCertificateTrustException(Exception ex)
+    {
+        var current = ex;
+        while (current != null)
         {
-            _httpClient.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", SessionStore.AccessToken);
+            if (current is System.Security.Authentication.AuthenticationException)
+            {
+                return true;
+            }
+
+            var message = current.Message;
+            if (message.Contains("certificate", StringComparison.OrdinalIgnoreCase) ||
+                message.Contains("SSL", StringComparison.OrdinalIgnoreCase) ||
+                message.Contains("PKIX", StringComparison.OrdinalIgnoreCase) ||
+                message.Contains("remote certificate is invalid", StringComparison.OrdinalIgnoreCase) ||
+                message.Contains("untrusted", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            current = current.InnerException;
         }
-        else
+
+        return false;
+    }
+
+    /// <summary>
+    /// Centralized URL validation ensuring only absolute HTTPS endpoints are allowed.
+    /// Blocks network traffic before any transmission if the URL is insecure or invalid.
+    /// </summary>
+    public ApiResponse<T>? ValidateBaseUrl<T>(out Uri? validUri)
+    {
+        if (string.IsNullOrWhiteSpace(BaseUrl) ||
+            !Uri.TryCreate(BaseUrl, UriKind.Absolute, out validUri) ||
+            !string.Equals(validUri.Scheme, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase))
         {
-            _httpClient.DefaultRequestHeaders.Authorization = null;
+            validUri = null;
+            return new ApiResponse<T>
+            {
+                Success = false,
+                Message = InsecureOrInvalidUrlErrorMessage
+            };
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Centralized dispatch for all HTTP operations ensuring HTTPS enforcement, per-request authorization headers,
+    /// certificate trust error handling, proper disposal, and uniform response extraction.
+    /// </summary>
+    private async Task<ApiResponse<T>> SendRequestAsync<T>(
+        HttpMethod method,
+        string relativePathAndQuery,
+        object? jsonBody = null,
+        bool requiresAuth = true)
+    {
+        var validationError = ValidateBaseUrl<T>(out var validUri);
+        if (validationError != null)
+        {
+            return validationError;
+        }
+
+        try
+        {
+            var cleanBaseUrl = validUri!.ToString().TrimEnd('/');
+            var requestUri = $"{cleanBaseUrl}/" + relativePathAndQuery.TrimStart('/');
+
+            using var request = new HttpRequestMessage(method, requestUri);
+
+            if (jsonBody != null)
+            {
+                if (jsonBody is HttpContent httpContent)
+                {
+                    request.Content = httpContent;
+                }
+                else
+                {
+                    request.Content = JsonContent.Create(jsonBody);
+                }
+            }
+
+            if (requiresAuth && !string.IsNullOrWhiteSpace(SessionStore.AccessToken))
+            {
+                request.Headers.Authorization =
+                    new AuthenticationHeaderValue("Bearer", SessionStore.AccessToken);
+            }
+
+            using var response = await _httpClient.SendAsync(request);
+            return await HandleResponseAsync<T>(response);
+        }
+        catch (HttpRequestException ex) when (IsCertificateTrustException(ex))
+        {
+            return new ApiResponse<T>
+            {
+                Success = false,
+                Message = CertificateUntrustedErrorMessage
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ApiResponse<T>
+            {
+                Success = false,
+                Message = "Connection error: " + ex.Message
+            };
         }
     }
 
@@ -54,8 +159,11 @@ public class ApiClient
             Password = password
         };
 
-        var response = await _httpClient.PostAsJsonAsync($"{BaseUrl}/api/auth/login", request);
-        var result = await HandleResponseAsync<LoginResponse>(response);
+        var result = await SendRequestAsync<LoginResponse>(
+            HttpMethod.Post,
+            "api/auth/login",
+            request,
+            requiresAuth: false);
 
         if (result.Success && result.Data != null)
         {
@@ -65,17 +173,22 @@ public class ApiClient
         return result;
     }
 
-    public async Task<ApiResponse<CustomerRegisterResponse>> RegisterCustomerAsync(CustomerRegisterModel model)
+    public Task<ApiResponse<CustomerRegisterResponse>> RegisterCustomerAsync(CustomerRegisterModel model)
     {
-        var response = await _httpClient.PostAsJsonAsync($"{BaseUrl}/api/auth/register-customer", model);
-        return await HandleResponseAsync<CustomerRegisterResponse>(response);
+        return SendRequestAsync<CustomerRegisterResponse>(
+            HttpMethod.Post,
+            "api/auth/register-customer",
+            model,
+            requiresAuth: false);
     }
 
     public async Task<ApiResponse<CurrentUserResponse>> GetMeAsync()
     {
-        EnsureAuthorizationHeader();
-        var response = await _httpClient.GetAsync($"{BaseUrl}/api/auth/me");
-        var result = await HandleResponseAsync<CurrentUserResponse>(response);
+        var result = await SendRequestAsync<CurrentUserResponse>(
+            HttpMethod.Get,
+            "api/auth/me",
+            jsonBody: null,
+            requiresAuth: true);
 
         if (result.Success && result.Data != null)
         {
@@ -85,14 +198,13 @@ public class ApiClient
         return result;
     }
 
-    public async Task<ApiResponse<PagedResult<UserAccountModel>>> GetAccountsAsync(
+    public Task<ApiResponse<PagedResult<UserAccountModel>>> GetAccountsAsync(
         string? searchTerm,
         string? status,
         string? roleCode,
         int pageNumber,
         int pageSize)
     {
-        EnsureAuthorizationHeader();
         var queryParams = new List<string>
         {
             $"pageNumber={pageNumber}",
@@ -107,13 +219,15 @@ public class ApiClient
             queryParams.Add($"roleCode={Uri.EscapeDataString(roleCode)}");
 
         var queryString = string.Join("&", queryParams);
-        var response = await _httpClient.GetAsync($"{BaseUrl}/api/admin/accounts?{queryString}");
-        return await HandleResponseAsync<PagedResult<UserAccountModel>>(response);
+        return SendRequestAsync<PagedResult<UserAccountModel>>(
+            HttpMethod.Get,
+            $"api/admin/accounts?{queryString}",
+            jsonBody: null,
+            requiresAuth: true);
     }
 
-    public async Task<ApiResponse<UserAccountModel>> CreateStaffAccountAsync(CreateStaffModel model)
+    public Task<ApiResponse<UserAccountModel>> CreateStaffAccountAsync(CreateStaffModel model)
     {
-        EnsureAuthorizationHeader();
         var payload = new
         {
             email = model.Email,
@@ -126,39 +240,40 @@ public class ApiClient
             initialFacilityId = model.InitialFacilityId
         };
 
-        var response = await _httpClient.PostAsJsonAsync($"{BaseUrl}/api/admin/accounts/staff", payload);
-        return await HandleResponseAsync<UserAccountModel>(response);
+        return SendRequestAsync<UserAccountModel>(
+            HttpMethod.Post,
+            "api/admin/accounts/staff",
+            payload,
+            requiresAuth: true);
     }
 
-    public async Task<ApiResponse<UserAccountModel>> UpdateUserStatusAsync(long userId, string status)
+    public Task<ApiResponse<UserAccountModel>> UpdateUserStatusAsync(long userId, string status)
     {
-        EnsureAuthorizationHeader();
         var payload = new { status };
-        var request = new HttpRequestMessage(HttpMethod.Patch, $"{BaseUrl}/api/admin/accounts/{userId}/status")
-        {
-            Content = JsonContent.Create(payload)
-        };
-
-        var response = await _httpClient.SendAsync(request);
-        return await HandleResponseAsync<UserAccountModel>(response);
+        return SendRequestAsync<UserAccountModel>(
+            HttpMethod.Patch,
+            $"api/admin/accounts/{userId}/status",
+            payload,
+            requiresAuth: true);
     }
 
-    public async Task<ApiResponse<UserAccountModel>> ManageUserRolesAsync(long userId, List<string> roleCodes)
+    public Task<ApiResponse<UserAccountModel>> ManageUserRolesAsync(long userId, List<string> roleCodes)
     {
-        EnsureAuthorizationHeader();
         var payload = new { roleCodes };
-        var response = await _httpClient.PostAsJsonAsync($"{BaseUrl}/api/admin/accounts/{userId}/roles", payload);
-        return await HandleResponseAsync<UserAccountModel>(response);
+        return SendRequestAsync<UserAccountModel>(
+            HttpMethod.Post,
+            $"api/admin/accounts/{userId}/roles",
+            payload,
+            requiresAuth: true);
     }
 
-    public async Task<ApiResponse<FacilityAssignmentModel>> AssignFacilityAsync(
+    public Task<ApiResponse<FacilityAssignmentModel>> AssignFacilityAsync(
         long userId,
         long facilityId,
         string assignmentRole,
         DateTimeOffset startsAt,
         DateTimeOffset? endsAt)
     {
-        EnsureAuthorizationHeader();
         var payload = new
         {
             facilityId,
@@ -167,28 +282,184 @@ public class ApiClient
             endsAt
         };
 
-        var response = await _httpClient.PostAsJsonAsync($"{BaseUrl}/api/admin/accounts/{userId}/facility-assignments", payload);
-        return await HandleResponseAsync<FacilityAssignmentModel>(response);
+        return SendRequestAsync<FacilityAssignmentModel>(
+            HttpMethod.Post,
+            $"api/admin/accounts/{userId}/facility-assignments",
+            payload,
+            requiresAuth: true);
     }
 
-    public async Task<ApiResponse<object?>> TerminateFacilityAssignmentAsync(long assignmentId)
+    public Task<ApiResponse<object?>> TerminateFacilityAssignmentAsync(long assignmentId)
     {
-        EnsureAuthorizationHeader();
-        var response = await _httpClient.PostAsync($"{BaseUrl}/api/admin/accounts/facility-assignments/{assignmentId}/terminate", null);
-        return await HandleResponseAsync<object?>(response);
+        return SendRequestAsync<object?>(
+            HttpMethod.Post,
+            $"api/admin/accounts/facility-assignments/{assignmentId}/terminate",
+            jsonBody: null,
+            requiresAuth: true);
     }
 
-    public async Task<ApiResponse<List<FacilityLookupModel>>> GetFacilitiesAsync()
+    public Task<ApiResponse<List<FacilityLookupModel>>> GetFacilitiesAsync()
     {
-        EnsureAuthorizationHeader();
-        var response = await _httpClient.GetAsync($"{BaseUrl}/api/admin/facilities");
-        return await HandleResponseAsync<List<FacilityLookupModel>>(response);
+        return SendRequestAsync<List<FacilityLookupModel>>(
+            HttpMethod.Get,
+            "api/admin/facilities",
+            jsonBody: null,
+            requiresAuth: true);
+    }
+
+    public Task<ApiResponse<PagedResult<FacilityCatalogModel>>> GetCatalogFacilitiesAsync(
+        string? city,
+        string? district,
+        string? searchTerm,
+        int pageNumber,
+        int pageSize)
+    {
+        var queryParams = new List<string>
+        {
+            $"pageNumber={pageNumber}",
+            $"pageSize={pageSize}"
+        };
+
+        if (!string.IsNullOrWhiteSpace(city))
+            queryParams.Add($"city={Uri.EscapeDataString(city)}");
+        if (!string.IsNullOrWhiteSpace(district))
+            queryParams.Add($"district={Uri.EscapeDataString(district)}");
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+            queryParams.Add($"searchTerm={Uri.EscapeDataString(searchTerm)}");
+
+        var queryString = string.Join("&", queryParams);
+        return SendRequestAsync<PagedResult<FacilityCatalogModel>>(
+            HttpMethod.Get,
+            $"api/facilities?{queryString}",
+            jsonBody: null,
+            requiresAuth: false);
+    }
+
+    public Task<ApiResponse<List<FacilityUnitTypeCatalogModel>>> GetFacilityUnitTypesAsync(
+        long facilityId,
+        DateOnly? startDate,
+        DateOnly? endDate,
+        decimal? maxPrice,
+        bool? climateControlled,
+        decimal? minAreaM2 = null,
+        decimal? maxAreaM2 = null)
+    {
+        var queryParams = new List<string>();
+        if (startDate.HasValue)
+            queryParams.Add($"rentalStartDate={startDate.Value:yyyy-MM-dd}");
+        if (endDate.HasValue)
+            queryParams.Add($"rentalEndDate={endDate.Value:yyyy-MM-dd}");
+        if (maxPrice.HasValue)
+            queryParams.Add($"maxPrice={maxPrice.Value.ToString(System.Globalization.CultureInfo.InvariantCulture)}");
+        if (minAreaM2.HasValue)
+            queryParams.Add($"minAreaM2={minAreaM2.Value.ToString(System.Globalization.CultureInfo.InvariantCulture)}");
+        if (maxAreaM2.HasValue)
+            queryParams.Add($"maxAreaM2={maxAreaM2.Value.ToString(System.Globalization.CultureInfo.InvariantCulture)}");
+        if (climateControlled.HasValue)
+            queryParams.Add($"climateControlled={climateControlled.Value}");
+
+        var queryString = queryParams.Count > 0 ? "?" + string.Join("&", queryParams) : string.Empty;
+        return SendRequestAsync<List<FacilityUnitTypeCatalogModel>>(
+            HttpMethod.Get,
+            $"api/facilities/{facilityId}/unit-types{queryString}",
+            jsonBody: null,
+            requiresAuth: false);
+    }
+
+    public Task<ApiResponse<PagedResult<AvailableStorageUnitModel>>> GetAvailableUnitsAsync(
+        long facilityId,
+        long? unitTypeId,
+        long? areaId,
+        bool? climateControlled,
+        decimal? maxPrice,
+        DateOnly? startDate,
+        DateOnly? endDate,
+        int pageNumber,
+        int pageSize)
+    {
+        return GetAvailableUnitsAsync(
+            facilityId,
+            unitTypeId,
+            areaId,
+            climateControlled,
+            maxPrice,
+            null,
+            null,
+            startDate,
+            endDate,
+            pageNumber,
+            pageSize);
+    }
+
+    public Task<ApiResponse<PagedResult<AvailableStorageUnitModel>>> GetAvailableUnitsAsync(
+        long facilityId,
+        long? unitTypeId,
+        long? areaId,
+        bool? climateControlled,
+        decimal? maxPrice,
+        decimal? minAreaM2,
+        decimal? maxAreaM2,
+        DateOnly? startDate,
+        DateOnly? endDate,
+        int pageNumber,
+        int pageSize)
+    {
+        var queryParams = new List<string>
+        {
+            $"pageNumber={pageNumber}",
+            $"pageSize={pageSize}"
+        };
+
+        if (unitTypeId.HasValue)
+            queryParams.Add($"unitTypeId={unitTypeId.Value}");
+        if (areaId.HasValue)
+            queryParams.Add($"areaId={areaId.Value}");
+        if (climateControlled.HasValue)
+            queryParams.Add($"climateControlled={climateControlled.Value}");
+        if (maxPrice.HasValue)
+            queryParams.Add($"maxPrice={maxPrice.Value.ToString(System.Globalization.CultureInfo.InvariantCulture)}");
+        if (minAreaM2.HasValue)
+            queryParams.Add($"minAreaM2={minAreaM2.Value.ToString(System.Globalization.CultureInfo.InvariantCulture)}");
+        if (maxAreaM2.HasValue)
+            queryParams.Add($"maxAreaM2={maxAreaM2.Value.ToString(System.Globalization.CultureInfo.InvariantCulture)}");
+        if (startDate.HasValue)
+            queryParams.Add($"rentalStartDate={startDate.Value:yyyy-MM-dd}");
+        if (endDate.HasValue)
+            queryParams.Add($"rentalEndDate={endDate.Value:yyyy-MM-dd}");
+
+        var queryString = string.Join("&", queryParams);
+        return SendRequestAsync<PagedResult<AvailableStorageUnitModel>>(
+            HttpMethod.Get,
+            $"api/facilities/{facilityId}/units/available?{queryString}",
+            jsonBody: null,
+            requiresAuth: false);
+    }
+
+    public Task<ApiResponse<FacilityFloorMapModel>> GetFacilityFloorMapAsync(
+        long facilityId,
+        long? areaId,
+        DateOnly? startDate,
+        DateOnly? endDate)
+    {
+        var queryParams = new List<string>();
+        if (areaId.HasValue)
+            queryParams.Add($"areaId={areaId.Value}");
+        if (startDate.HasValue)
+            queryParams.Add($"rentalStartDate={startDate.Value:yyyy-MM-dd}");
+        if (endDate.HasValue)
+            queryParams.Add($"rentalEndDate={endDate.Value:yyyy-MM-dd}");
+
+        var queryString = queryParams.Count > 0 ? "?" + string.Join("&", queryParams) : string.Empty;
+        return SendRequestAsync<FacilityFloorMapModel>(
+            HttpMethod.Get,
+            $"api/facilities/{facilityId}/floor-map{queryString}",
+            jsonBody: null,
+            requiresAuth: false);
     }
 
     public void Logout()
     {
         SessionStore.Clear();
-        EnsureAuthorizationHeader();
     }
 
     private async Task<ApiResponse<T>> HandleResponseAsync<T>(HttpResponseMessage response)

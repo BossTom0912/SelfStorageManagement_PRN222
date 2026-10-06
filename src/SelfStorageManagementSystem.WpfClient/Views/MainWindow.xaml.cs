@@ -74,6 +74,13 @@ public partial class MainWindow : Window
         _ = RefreshProfileAsync();
     }
 
+    private void BtnBrowseCatalog_Click(object sender, RoutedEventArgs e)
+    {
+        var catalogWindow = new FacilityCatalogWindow();
+        catalogWindow.Owner = this;
+        catalogWindow.ShowDialog();
+    }
+
     private async Task RefreshProfileAsync()
     {
         var meResult = await ApiClient.Instance.GetMeAsync();

@@ -71,7 +71,7 @@ public class AuthService : IAuthService
                 : LoginHistoryResultConstants.Blocked;
 
             await RecordLoginHistoryAsync(user.id, normalizedEmail, resultStatus, ipAddress, userAgent, cancellationToken);
-            throw new UnauthorizedException("Account is inactive or locked. Please contact system administrator.");
+            throw new UnauthorizedException("Invalid email or password.");
         }
 
         var isPasswordValid = _passwordHasher.VerifyPassword(user.password_hash, request.Password);

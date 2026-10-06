@@ -205,4 +205,62 @@ public class AdminAccountServiceTests
 
         Assert.Contains("overlapping", ex.Message, StringComparison.OrdinalIgnoreCase);
     }
+
+    [Theory]
+    [InlineData(0, 1, 0, false, false)]
+    [InlineData(10, 1, 1, false, false)]
+    [InlineData(11, 1, 2, false, true)]
+    [InlineData(11, 2, 2, true, false)]
+    [InlineData(21, 1, 3, false, true)]
+    [InlineData(21, 2, 3, true, true)]
+    [InlineData(21, 3, 3, true, false)]
+    public async Task GetAccountsAsync_PaginationVerification_CalculatesCorrectPagesAndNavigationFlags(
+        int totalAccounts,
+        int pageNumber,
+        int expectedTotalPages,
+        bool expectedHasPrev,
+        bool expectedHasNext)
+    {
+        using var context = CreateInMemoryContext(Guid.NewGuid().ToString());
+        var service = new AdminAccountService(
+            context,
+            _userRepoMock.Object,
+            _roleRepoMock.Object,
+            _userRoleRepoMock.Object,
+            _employeeProfileRepoMock.Object,
+            _assignmentRepoMock.Object,
+            _facilityRepoMock.Object,
+            _passwordHasherMock.Object,
+            _auditMock.Object,
+            _loggerMock.Object);
+
+        var pageSize = 10;
+        var pagedUsers = Enumerable.Range(1, Math.Min(pageSize, Math.Max(0, totalAccounts - (pageNumber - 1) * pageSize)))
+            .Select(i => new user
+            {
+                id = i,
+                email = $"user{i}@example.test",
+                status = UserStatusConstants.Active,
+                created_at = DateTimeOffset.UtcNow
+            })
+            .ToList();
+
+        _userRepoMock.Setup(r => r.GetPagedUsersAsync(null, null, null, pageNumber, pageSize, It.IsAny<CancellationToken>()))
+            .ReturnsAsync((pagedUsers, totalAccounts));
+
+        var request = new GetAccountsRequest
+        {
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
+
+        var result = await service.GetAccountsAsync(request);
+
+        Assert.Equal(totalAccounts, result.TotalCount);
+        Assert.Equal(pageNumber, result.PageNumber);
+        Assert.Equal(pageSize, result.PageSize);
+        Assert.Equal(expectedTotalPages, result.TotalPages);
+        Assert.Equal(expectedHasPrev, result.HasPreviousPage);
+        Assert.Equal(expectedHasNext, result.HasNextPage);
+    }
 }

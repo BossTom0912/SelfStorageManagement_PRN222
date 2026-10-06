@@ -5,8 +5,6 @@ namespace SelfStorageManagementSystem.WpfClient.Views;
 
 public partial class LoginWindow : Window
 {
-    private const string DemoPassword = "Storage@Demo2026!";
-
     public LoginWindow()
     {
         InitializeComponent();
@@ -56,7 +54,14 @@ public partial class LoginWindow : Window
         }
         catch (Exception ex)
         {
-            lblMessage.Text = "Connection error: " + ex.Message;
+            if (ApiClient.IsCertificateTrustException(ex))
+            {
+                lblMessage.Text = ApiClient.CertificateUntrustedErrorMessage;
+            }
+            else
+            {
+                lblMessage.Text = "Connection error: " + ex.Message;
+            }
         }
         finally
         {
@@ -75,28 +80,36 @@ public partial class LoginWindow : Window
     private void FillAdmin_Click(object sender, RoutedEventArgs e)
     {
         txtEmail.Text = "administrator@example.test";
-        txtPassword.Password = DemoPassword;
+        txtPassword.Password = string.Empty;
         lblMessage.Text = string.Empty;
     }
 
     private void FillManager_Click(object sender, RoutedEventArgs e)
     {
         txtEmail.Text = "manager.hcm@example.test";
-        txtPassword.Password = DemoPassword;
+        txtPassword.Password = string.Empty;
         lblMessage.Text = string.Empty;
     }
 
     private void FillStaff_Click(object sender, RoutedEventArgs e)
     {
         txtEmail.Text = "staff.hcm@example.test";
-        txtPassword.Password = DemoPassword;
+        txtPassword.Password = string.Empty;
         lblMessage.Text = string.Empty;
     }
 
     private void FillCustomer_Click(object sender, RoutedEventArgs e)
     {
         txtEmail.Text = "customer.one@example.test";
-        txtPassword.Password = DemoPassword;
+        txtPassword.Password = string.Empty;
         lblMessage.Text = string.Empty;
+    }
+
+    private void BtnGuestBrowse_Click(object sender, RoutedEventArgs e)
+    {
+        ApiClient.Instance.BaseUrl = txtApiUrl.Text.Trim();
+        var catalogWindow = new FacilityCatalogWindow();
+        catalogWindow.Owner = this;
+        catalogWindow.ShowDialog();
     }
 }

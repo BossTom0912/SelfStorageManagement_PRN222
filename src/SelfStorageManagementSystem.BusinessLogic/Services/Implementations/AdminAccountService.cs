@@ -71,13 +71,7 @@ public class AdminAccountService : IAdminAccountService
 
         var items = users.Select(u => MapToDto(u, assignments.Where(a => a.employee_id == u.id).ToList())).ToList();
 
-        return new PagedResult<UserAccountDto>
-        {
-            Items = items,
-            TotalCount = totalCount,
-            PageNumber = request.PageNumber,
-            PageSize = request.PageSize
-        };
+        return new PagedResult<UserAccountDto>(items, totalCount, request.PageNumber, request.PageSize);
     }
 
     public async Task<UserAccountDto> GetAccountByIdAsync(
