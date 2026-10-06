@@ -266,7 +266,6 @@ public partial class FacilityCatalogWindow : Window
         _loadedUnitTypesContextVersion = -1;
         _loadedAvailableUnitsContextVersion = -1;
         _loadedFloorMapContextVersion = -1;
-        _hasUnappliedFilterChanges = false;
         panelNoFacility.Visibility = Visibility.Collapsed;
 
         txtSelectedFacilityTitle.Text = $"{facility.Name} ({facility.Code})";
@@ -289,6 +288,13 @@ public partial class FacilityCatalogWindow : Window
     {
         if (_selectedFacility == null) return;
 
+        if (_hasUnappliedFilterChanges)
+        {
+            lblStatusMessage.Text = "Bộ lọc đang có thay đổi chưa áp dụng. Vui lòng bấm 'Áp dụng lọc' để tải dữ liệu cho cơ sở này.";
+            ResetAllSelections();
+            return;
+        }
+
         var selectedTab = tabCatalog.SelectedIndex;
         if (selectedTab == 0)
         {
@@ -306,7 +312,7 @@ public partial class FacilityCatalogWindow : Window
 
     private async Task LoadUnitTypesAsync()
     {
-        if (_selectedFacility == null) return;
+        if (_selectedFacility == null || _hasUnappliedFilterChanges) return;
 
         var contextVersion = _catalogContextVersion;
         var currentVersion = ++_unitTypesRequestVersion;
@@ -345,7 +351,7 @@ public partial class FacilityCatalogWindow : Window
 
     private async Task LoadAvailableUnitsAsync()
     {
-        if (_selectedFacility == null) return;
+        if (_selectedFacility == null || _hasUnappliedFilterChanges) return;
 
         var contextVersion = _catalogContextVersion;
         var currentVersion = ++_availableUnitsRequestVersion;
@@ -392,7 +398,7 @@ public partial class FacilityCatalogWindow : Window
 
     private async Task LoadFloorMapAsync()
     {
-        if (_selectedFacility == null) return;
+        if (_selectedFacility == null || _hasUnappliedFilterChanges) return;
 
         var contextVersion = _catalogContextVersion;
         var currentVersion = ++_floorMapRequestVersion;
