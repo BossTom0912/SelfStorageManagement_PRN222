@@ -1,0 +1,62 @@
+<Window x:Class="SelfStorageManagementSystem.WpfClient.Views.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Self-Storage Management - Sign In" Height="580" Width="460"
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
+        Background="#F1F5F9" FontFamily="Segoe UI">
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="Self-Storage System" FontSize="24" FontWeight="Bold" Foreground="#1E293B" HorizontalAlignment="Center"/>
+            <TextBlock Text="Account &amp; Role Management" FontSize="14" Foreground="#64748B" HorizontalAlignment="Center" Margin="0,4,0,0"/>
+        </StackPanel>
+
+        <!-- API Server URL Config (Collapsible/Editable for testing) -->
+        <Border Grid.Row="1" Background="#FFFFFF" CornerRadius="6" Padding="12" Margin="0,0,0,16" BorderBrush="#E2E8F0" BorderThickness="1">
+            <StackPanel>
+                <TextBlock Text="API Endpoint URL:" FontSize="11" Foreground="#64748B" FontWeight="SemiBold"/>
+                <TextBox x:Name="txtApiUrl" Text="https://localhost:7031" Margin="0,4,0,0" Padding="6" FontSize="12" BorderBrush="#CBD5E1"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Login Form -->
+        <Border Grid.Row="2" Background="#FFFFFF" CornerRadius="8" Padding="20" BorderBrush="#E2E8F0" BorderThickness="1">
+            <StackPanel>
+                <TextBlock Text="Sign In" FontSize="18" FontWeight="SemiBold" Foreground="#0F172A" Margin="0,0,0,16"/>
+
+                <TextBlock Text="Email Address:" FontSize="12" FontWeight="SemiBold" Foreground="#334155" Margin="0,0,0,4"/>
+                <TextBox x:Name="txtEmail" Padding="8" FontSize="13" Margin="0,0,0,12" Text="administrator@example.test" BorderBrush="#CBD5E1"/>
+
+                <TextBlock Text="Password:" FontSize="12" FontWeight="SemiBold" Foreground="#334155" Margin="0,0,0,4"/>
+                <PasswordBox x:Name="txtPassword" Password="Storage@Demo2026!" Padding="8" FontSize="13" Margin="0,0,0,16" BorderBrush="#CBD5E1"/>
+
+                <!-- Error / Status Message -->
+                <TextBlock x:Name="lblMessage" Text="" Foreground="#DC2626" FontSize="12" TextWrapping="Wrap" Margin="0,0,0,12" FontWeight="Medium"/>
+
+                <Button x:Name="btnLogin" Content="Sign In" Height="38" Background="#2563EB" Foreground="#FFFFFF" FontWeight="Bold" FontSize="14" Cursor="Hand" Click="BtnLogin_Click"/>
+
+                <!-- Demo Quick Fill Buttons -->
+                <TextBlock Text="Demo Accounts Fast Fill:" FontSize="11" Foreground="#64748B" Margin="0,16,0,6" FontWeight="SemiBold"/>
+                <WrapPanel Margin="0,0,0,10">
+                    <Button Content="Admin" Margin="0,0,6,6" Padding="8,4" Background="#E2E8F0" Foreground="#1E293B" FontSize="11" Click="FillAdmin_Click"/>
+                    <Button Content="Manager" Margin="0,0,6,6" Padding="8,4" Background="#E2E8F0" Foreground="#1E293B" FontSize="11" Click="FillManager_Click"/>
+                    <Button Content="Staff" Margin="0,0,6,6" Padding="8,4" Background="#E2E8F0" Foreground="#1E293B" FontSize="11" Click="FillStaff_Click"/>
+                    <Button Content="Customer" Margin="0,0,6,6" Padding="8,4" Background="#E2E8F0" Foreground="#1E293B" FontSize="11" Click="FillCustomer_Click"/>
+                </WrapPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- Footer / Register Link -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,16,0,0">
+            <TextBlock Text="New customer? " Foreground="#64748B" VerticalAlignment="Center"/>
+            <Button Content="Create an account" Background="Transparent" BorderThickness="0" Foreground="#2563EB" FontWeight="SemiBold" Cursor="Hand" Click="BtnRegister_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

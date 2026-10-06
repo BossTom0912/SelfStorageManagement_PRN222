@@ -1,0 +1,8 @@
+const connection = new signalR.HubConnectionBuilder() .withUrl("/zPaymentHub") .build(); connection.start().catch(err => console.error(err.toString())); document.getElementById("btnDeleteBySignalR").addEventListener("click", function (event) { const id = "@Model.CashDepositSlipId"; connection.invoke("HubDelete_TransactionCashDepositSlip", id).catch(err => console.error(err.toString())); });
+<input type="button" id="btnDeleteBySignalR" value="Delete by SignalR" class="btn btn-success" />
+const connection = new signalR.HubConnectionBuilder() .withUrl("/zPaymentHub") .build(); connection.start().catch(err => console.error(err.toString())); connection.on("Receiver_DeleteTransactionCashDepositSlip", function (id) { //alert($(`#${TermDepositSlipId}`).value); $('#depositSlipTBodyID').find(`tr[id='${id}']`).remove(); });
+<tbody id="depositSlipTBodyID">
+<tr id="@item.CashDepositSlipId">
+* 
+
+

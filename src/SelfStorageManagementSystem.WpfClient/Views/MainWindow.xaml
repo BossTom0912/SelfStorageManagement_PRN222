@@ -1,0 +1,114 @@
+<Window x:Class="SelfStorageManagementSystem.WpfClient.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Self-Storage System - Dashboard" Height="600" Width="800"
+        WindowStartupLocation="CenterScreen" Background="#F8FAFC" FontFamily="Segoe UI">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Top Navigation Bar -->
+        <Border Grid.Row="0" Background="#1E293B" Padding="16,12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="Self-Storage Management System" Foreground="#FFFFFF" FontSize="18" FontWeight="Bold"/>
+                    <Border Background="#3B82F6" CornerRadius="4" Margin="16,0,0,0" Padding="8,2" VerticalAlignment="Center">
+                        <TextBlock x:Name="lblRoleBadge" Text="Role" Foreground="#FFFFFF" FontSize="11" FontWeight="SemiBold"/>
+                    </Border>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <TextBlock x:Name="lblHeaderUser" Text="User" Foreground="#CBD5E1" VerticalAlignment="Center" Margin="0,0,16,0" FontSize="13"/>
+                    <Button x:Name="btnLogout" Content="Sign Out" Padding="12,6" Background="#EF4444" Foreground="#FFFFFF" FontWeight="SemiBold" BorderThickness="0" Cursor="Hand" Click="BtnLogout_Click"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Main Content Area -->
+        <ScrollViewer Grid.Row="1" Padding="24">
+            <StackPanel>
+                <!-- User Profile Card -->
+                <Border Background="#FFFFFF" CornerRadius="8" Padding="20" Margin="0,0,0,20" BorderBrush="#E2E8F0" BorderThickness="1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Account Profile" FontSize="16" FontWeight="Bold" Foreground="#0F172A" Margin="0,0,0,12"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="140"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Full Name / Display:" Foreground="#64748B" Margin="0,4"/>
+                                <TextBlock Grid.Row="0" Grid.Column="1" x:Name="txtProfileName" Text="-" FontWeight="SemiBold" Foreground="#1E293B" Margin="0,4"/>
+
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Email Address:" Foreground="#64748B" Margin="0,4"/>
+                                <TextBlock Grid.Row="1" Grid.Column="1" x:Name="txtProfileEmail" Text="-" Foreground="#1E293B" Margin="0,4"/>
+
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="System Roles:" Foreground="#64748B" Margin="0,4"/>
+                                <TextBlock Grid.Row="2" Grid.Column="1" x:Name="txtProfileRoles" Text="-" Foreground="#2563EB" FontWeight="SemiBold" Margin="0,4"/>
+
+                                <TextBlock Grid.Row="3" Grid.Column="0" Text="Account Status:" Foreground="#64748B" Margin="0,4"/>
+                                <TextBlock Grid.Row="3" Grid.Column="1" x:Name="txtProfileStatus" Text="-" Foreground="#16A34A" FontWeight="SemiBold" Margin="0,4"/>
+                            </Grid>
+                        </StackPanel>
+
+                        <!-- Admin Shortcut Button (Only visible to Admin) -->
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <Button x:Name="btnOpenAdmin" Content="Admin Management Console" Padding="16,10" Background="#0F766E" Foreground="#FFFFFF" FontWeight="Bold" FontSize="13" BorderThickness="0" Cursor="Hand" Click="BtnOpenAdmin_Click" Visibility="Collapsed"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Facility Assignments (Visible to Staff / Manager) -->
+                <Border x:Name="panelAssignments" Background="#FFFFFF" CornerRadius="8" Padding="20" Margin="0,0,0,20" BorderBrush="#E2E8F0" BorderThickness="1" Visibility="Collapsed">
+                    <StackPanel>
+                        <TextBlock Text="Your Assigned Facilities (Facility Scope)" FontSize="16" FontWeight="Bold" Foreground="#0F172A" Margin="0,0,0,8"/>
+                        <TextBlock Text="You are authorized to operate solely within the following active facilities:" FontSize="12" Foreground="#64748B" Margin="0,0,0,12"/>
+
+                        <DataGrid x:Name="gridAssignments" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column" GridLinesVisibility="Horizontal" Background="Transparent" BorderThickness="0">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Facility Code" Binding="{Binding FacilityCode}" Width="120"/>
+                                <DataGridTextColumn Header="Facility Name" Binding="{Binding FacilityName}" Width="200"/>
+                                <DataGridTextColumn Header="Assigned Role" Binding="{Binding AssignmentRole}" Width="140"/>
+                                <DataGridTextColumn Header="Active Period" Binding="{Binding DateRangeDisplay}" Width="*"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Customer Welcome Panel (Visible to Customer) -->
+                <Border x:Name="panelCustomer" Background="#EFF6FF" CornerRadius="8" Padding="20" BorderBrush="#BFDBFE" BorderThickness="1" Visibility="Collapsed">
+                    <StackPanel>
+                        <TextBlock Text="Storage Customer Dashboard" FontSize="16" FontWeight="Bold" Foreground="#1E40AF" Margin="0,0,0,6"/>
+                        <TextBlock Text="Welcome to your Self-Storage customer portal. Your account is active and verified." FontSize="13" Foreground="#1E3A8A" Margin="0,0,0,4"/>
+                        <TextBlock Text="You can browse storage facilities, create reservations, and manage rental agreements once subsequent feature modules are unlocked." FontSize="12" Foreground="#3B82F6"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Footer / Session Status -->
+        <Border Grid.Row="2" Background="#F1F5F9" Padding="16,8" BorderBrush="#E2E8F0" BorderThickness="0,1,0,0">
+            <TextBlock x:Name="lblStatusFooter" Text="Active Session" Foreground="#64748B" FontSize="11"/>
+        </Border>
+    </Grid>
+</Window>

@@ -32,6 +32,11 @@ public class ApiResponse<T>
         return new ApiResponse<T>(true, message, data);
     }
 
+    public static ApiResponse<T> Ok(T? data, string message = "Success")
+    {
+        return SuccessResponse(data, message);
+    }
+
     public static ApiResponse<T> FailureResponse(string message, object? errors = null, T? data = default)
     {
         return new ApiResponse<T>(false, message, data, errors);

@@ -1,0 +1,1 @@
+const connection = new signalR.HubConnectionBuilder() .withUrl("/zPaymentHub") .build(); connection.start().catch(err => console.error(err.toString())); connection.on("Receiver_DeleteTransactionCashDepositSlip", function (depositSlipId) { document.getElementById("depositSliptID").innerHTML = "This item was deleted"; });
