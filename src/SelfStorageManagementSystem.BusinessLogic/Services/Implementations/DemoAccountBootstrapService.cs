@@ -14,7 +14,6 @@ public class DemoAccountBootstrapService : IDemoAccountBootstrapService
     private readonly ILogger<DemoAccountBootstrapService> _logger;
 
     private const string PlaceholderHash = "external-auth-demo-only";
-    private const string DefaultDevPassword = "Storage@Demo2026!";
 
     public DemoAccountBootstrapService(
         SelfStorageDbContext context,
@@ -31,8 +30,15 @@ public class DemoAccountBootstrapService : IDemoAccountBootstrapService
     public async Task BootstrapDemoAccountsAsync(CancellationToken cancellationToken = default)
     {
         var demoPassword = _configuration["DemoAccounts:DefaultPassword"]
-                           ?? Environment.GetEnvironmentVariable("DEMO_DEFAULT_PASSWORD")
-                           ?? DefaultDevPassword;
+                           ?? Environment.GetEnvironmentVariable("DEMO_DEFAULT_PASSWORD");
+
+        if (string.IsNullOrWhiteSpace(demoPassword))
+        {
+            throw new InvalidOperationException(
+                "Demo account bootstrapping is enabled, but 'DemoAccounts:DefaultPassword' is not configured. " +
+                "Please configure a password via User Secrets ('dotnet user-secrets set \"DemoAccounts:DefaultPassword\" \"<password>\"') " +
+                "or the 'DEMO_DEFAULT_PASSWORD' environment variable.");
+        }
 
         var usersWithPlaceholderHash = await _context.users
             .Where(u => u.password_hash == PlaceholderHash)

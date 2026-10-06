@@ -50,16 +50,32 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
     };
 });
 
-// JWT Authentication configuration
-const string defaultDevKey = "SelfStorageSecretKeyForJwtSigningMustBeLongEnough2026!";
-const string defaultIssuer = "SelfStoragePRN222";
-const string defaultAudience = "SelfStoragePRN222Clients";
-
+// Centralized JWT configuration validation and registration
 var jwtKey = builder.Configuration["Jwt:Key"]
-             ?? Environment.GetEnvironmentVariable("JWT_SECRET_KEY")
-             ?? defaultDevKey;
-var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? defaultIssuer;
-var jwtAudience = builder.Configuration["Jwt:Audience"] ?? defaultAudience;
+             ?? Environment.GetEnvironmentVariable("JWT_SECRET_KEY");
+
+if (string.IsNullOrWhiteSpace(jwtKey) || Encoding.UTF8.GetByteCount(jwtKey) < JwtOptions.MinimumKeyLengthBytes)
+{
+    throw new InvalidOperationException(
+        $"JWT signing key is missing or shorter than {JwtOptions.MinimumKeyLengthBytes} bytes (256 bits). " +
+        "Please configure a valid key using User Secrets ('dotnet user-secrets set \"Jwt:Key\" \"<your-secret>\"') " +
+        "or the 'JWT_SECRET_KEY' environment variable.");
+}
+
+var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "SelfStoragePRN222";
+var jwtAudience = builder.Configuration["Jwt:Audience"] ?? "SelfStoragePRN222Clients";
+var expiryMinutesStr = builder.Configuration["Jwt:ExpiryMinutes"];
+var expiryMinutes = int.TryParse(expiryMinutesStr, out var m) && m > 0 ? m : 60;
+
+var jwtOptions = new JwtOptions
+{
+    Key = jwtKey,
+    Issuer = jwtIssuer,
+    Audience = jwtAudience,
+    ExpiryMinutes = expiryMinutes
+};
+
+builder.Services.AddSingleton(Microsoft.Extensions.Options.Options.Create(jwtOptions));
 
 builder.Services.AddAuthentication(options =>
 {
@@ -71,11 +87,11 @@ builder.Services.AddAuthentication(options =>
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
-        ValidIssuer = jwtIssuer,
+        ValidIssuer = jwtOptions.Issuer,
         ValidateAudience = true,
-        ValidAudience = jwtAudience,
+        ValidAudience = jwtOptions.Audience,
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key)),
         ValidateLifetime = true,
         ClockSkew = TimeSpan.FromSeconds(30)
     };
@@ -185,10 +201,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 
-    // Safely bootstrap demo accounts with valid password hashes if needed
-    using var scope = app.Services.CreateScope();
-    var bootstrapper = scope.ServiceProvider.GetRequiredService<IDemoAccountBootstrapService>();
-    await bootstrapper.BootstrapDemoAccountsAsync();
+    var demoAccountsEnabled = app.Configuration.GetValue<bool>("DemoAccounts:Enabled");
+    if (demoAccountsEnabled)
+    {
+        // Safely bootstrap demo accounts with valid password hashes if needed
+        using var scope = app.Services.CreateScope();
+        var bootstrapper = scope.ServiceProvider.GetRequiredService<IDemoAccountBootstrapService>();
+        await bootstrapper.BootstrapDemoAccountsAsync();
+    }
 }
 
 app.UseHttpsRedirection();

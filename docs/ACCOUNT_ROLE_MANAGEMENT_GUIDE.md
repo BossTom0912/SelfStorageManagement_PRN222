@@ -53,21 +53,27 @@ Hệ thống sử dụng trực tiếp các mã vai trò (role codes) trong bả
 SQL script mẫu khởi tạo 6 tài khoản với trường `password_hash = 'external-auth-demo-only'`, đây là giá trị tượng trưng không thể đăng nhập trực tiếp.
 
 ### Giải pháp:
-Hệ thống tích hợp `IDemoAccountBootstrapService` chạy tự động khi API khởi động trong môi trường `Development`:
-- Kiểm tra các tài khoản có hash `external-auth-demo-only`.
-- Tạo chuỗi hash chuẩn PBKDF2 SHA-256 (100,000 iterations, salt 16-byte) và cập nhật vào SQL Server.
-- Mật khẩu mặc định lấy từ biến môi trường `DEMO_DEFAULT_PASSWORD` hoặc cấu hình `DemoAccounts:DefaultPassword` (mặc định môi trường dev: `Storage@Demo2026!`).
+Hệ thống tích hợp `IDemoAccountBootstrapService` chỉ chạy khi thỏa mãn đồng thời hai điều kiện:
+- Môi trường chạy là `Development` (`ASPNETCORE_ENVIRONMENT=Development`).
+- Cấu hình bật demo: `DemoAccounts:Enabled=true`.
+
+Đồng thời, **không có mật khẩu demo mặc định** trong mã nguồn để đảm bảo an toàn. Mật khẩu demo bắt buộc phải được cấu hình riêng thông qua User Secrets hoặc biến môi trường `DEMO_DEFAULT_PASSWORD`:
+```powershell
+dotnet user-secrets set "DemoAccounts:Enabled" "true" --project src/SelfStorageManagementSystem.Presentation
+dotnet user-secrets set "DemoAccounts:DefaultPassword" "<your-demo-password>" --project src/SelfStorageManagementSystem.Presentation
+```
+Nếu bật demo mà chưa cấu hình mật khẩu, API sẽ báo lỗi cấu hình và dừng khởi động. Khi chạy, service sẽ kiểm tra các tài khoản có hash `external-auth-demo-only`, tạo chuỗi hash chuẩn PBKDF2 SHA-256 (100,000 iterations, salt 16-byte) với mật khẩu đã cấu hình và cập nhật vào database.
 
 ### Danh sách 6 tài khoản mẫu đăng nhập:
 
 | Email | Vai Trò (Roles) | Mật khẩu Demo | Ghi chú |
 | :--- | :--- | :--- | :--- |
-| `administrator@example.test` | `system_administrator` | `Storage@Demo2026!` | Admin toàn quyền hệ thống |
-| `manager.hcm@example.test` | `facility_manager` | `Storage@Demo2026!` | Quản lý cơ sở Thủ Đức & Cầu Giấy |
-| `staff.hcm@example.test` | `facility_staff` | `Storage@Demo2026!` | Nhân viên cơ sở Thủ Đức |
-| `operations@example.test` | `business_operations_manager` | `Storage@Demo2026!` | Quản lý vận hành toàn hệ thống |
-| `customer.one@example.test` | `storage_customer` | `Storage@Demo2026!` | Khách hàng Nguyễn Minh Anh |
-| `customer.two@example.test` | `storage_customer` | `Storage@Demo2026!` | Khách hàng Trần Gia Bình |
+| `administrator@example.test` | `system_administrator` | *Mật khẩu cấu hình qua User Secrets / `DEMO_DEFAULT_PASSWORD`* | Admin toàn quyền hệ thống |
+| `manager.hcm@example.test` | `facility_manager` | *Mật khẩu cấu hình qua User Secrets / `DEMO_DEFAULT_PASSWORD`* | Quản lý cơ sở Thủ Đức & Cầu Giấy |
+| `staff.hcm@example.test` | `facility_staff` | *Mật khẩu cấu hình qua User Secrets / `DEMO_DEFAULT_PASSWORD`* | Nhân viên cơ sở Thủ Đức |
+| `operations@example.test` | `business_operations_manager` | *Mật khẩu cấu hình qua User Secrets / `DEMO_DEFAULT_PASSWORD`* | Quản lý vận hành toàn hệ thống |
+| `customer.one@example.test` | `storage_customer` | *Mật khẩu cấu hình qua User Secrets / `DEMO_DEFAULT_PASSWORD`* | Khách hàng Nguyễn Minh Anh |
+| `customer.two@example.test` | `storage_customer` | *Mật khẩu cấu hình qua User Secrets / `DEMO_DEFAULT_PASSWORD`* | Khách hàng Trần Gia Bình |
 
 ---
 

@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Text.Json;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -7,7 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SelfStorageManagementSystem.BusinessLogic.Common;
 using SelfStorageManagementSystem.BusinessLogic.Common.Constants;
-using SelfStorageManagementSystem.BusinessLogic.DTOs.Responses.Admin;
+using SelfStorageManagementSystem.BusinessLogic.DTOs.Requests.Auth;
+using SelfStorageManagementSystem.BusinessLogic.DTOs.Responses.Auth;
 using SelfStorageManagementSystem.BusinessLogic.Services.Interfaces;
 using SelfStorageManagementSystem.DataAccess.Context;
 using SelfStorageManagementSystem.DataAccess.Entities;
@@ -17,10 +19,18 @@ namespace SelfStorageManagementSystem.Tests;
 
 public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 {
+    public const string TestJwtKey = "IntegrationTestSecretKeyMustBeLongEnoughToPassValidation2026!";
+    public const string TestIssuer = "SelfStoragePRN222";
+    public const string TestAudience = "SelfStoragePRN222Clients";
+
     private readonly string _dbName = "IntegrationTestDb_" + Guid.NewGuid();
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        builder.UseSetting("Jwt:Key", TestJwtKey);
+        builder.UseSetting("Jwt:Issuer", TestIssuer);
+        builder.UseSetting("Jwt:Audience", TestAudience);
+
         builder.ConfigureServices(services =>
         {
             // Remove existing DbContext registration
@@ -84,6 +94,32 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
             updated_at = DateTimeOffset.UtcNow
         });
 
+        // Locked User
+        var lockedUser = new user
+        {
+            id = 3,
+            email = "locked@example.test",
+            password_hash = hasher.HashPassword("LockedPass123!"),
+            status = UserStatusConstants.Locked,
+            created_at = DateTimeOffset.UtcNow,
+            updated_at = DateTimeOffset.UtcNow
+        };
+        db.users.Add(lockedUser);
+        db.user_roles.Add(new user_role { user_id = 3, role_id = 1, granted_at = DateTimeOffset.UtcNow });
+
+        // Disabled User
+        var disabledUser = new user
+        {
+            id = 4,
+            email = "disabled@example.test",
+            password_hash = hasher.HashPassword("DisabledPass123!"),
+            status = UserStatusConstants.Disabled,
+            created_at = DateTimeOffset.UtcNow,
+            updated_at = DateTimeOffset.UtcNow
+        };
+        db.users.Add(disabledUser);
+        db.user_roles.Add(new user_role { user_id = 4, role_id = 1, granted_at = DateTimeOffset.UtcNow });
+
         await db.SaveChangesAsync();
     }
 }
@@ -91,6 +127,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 public class AuthAndAuthorizationIntegrationTests : IClassFixture<CustomWebApplicationFactory>
 {
     private readonly CustomWebApplicationFactory _factory;
+    private static readonly JsonSerializerOptions JsonOpts = new() { PropertyNameCaseInsensitive = true };
 
     public AuthAndAuthorizationIntegrationTests(CustomWebApplicationFactory factory)
     {
@@ -104,6 +141,132 @@ public class AuthAndAuthorizationIntegrationTests : IClassFixture<CustomWebAppli
         var user = new user { id = userId, email = email };
         var (token, _) = tokenGen.GenerateToken(user, roles);
         return token;
+    }
+
+    [Fact]
+    public void MissingJwtKey_ShouldThrowConfigurationExceptionAndStopStartup()
+    {
+        var factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
+        {
+            builder.UseSetting("Jwt:Key", "");
+        });
+
+        var ex = Assert.Throws<InvalidOperationException>(() => factory.CreateClient());
+        Assert.Contains("JWT signing key is missing or shorter than", ex.Message);
+    }
+
+    [Fact]
+    public void ShortJwtKey_ShouldThrowConfigurationExceptionAndStopStartup()
+    {
+        var factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
+        {
+            builder.UseSetting("Jwt:Key", "ShortKey123");
+        });
+
+        var ex = Assert.Throws<InvalidOperationException>(() => factory.CreateClient());
+        Assert.Contains("JWT signing key is missing or shorter than", ex.Message);
+    }
+
+    [Fact]
+    public async Task Token_SignedAndVerifiedSuccessfully_ShouldAuthenticateApiRequest()
+    {
+        await _factory.SeedInitialDataAsync();
+        var client = _factory.CreateClient();
+
+        var token = GenerateTokenForUser(1, "admin@example.test", RoleConstants.SystemAdministrator);
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        var response = await client.GetAsync("/api/auth/me");
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var body = await response.Content.ReadFromJsonAsync<ApiResponse<CurrentUserResponse>>(JsonOpts);
+        Assert.NotNull(body);
+        Assert.True(body.Success);
+        Assert.Equal("admin@example.test", body.Data?.Email);
+    }
+
+    [Fact]
+    public async Task Login_NonExistentEmail_Returns401AndUniformMessage()
+    {
+        await _factory.SeedInitialDataAsync();
+        var client = _factory.CreateClient();
+
+        var request = new LoginRequest
+        {
+            Email = "doesnotexist@example.test",
+            Password = "AnyPassword123!"
+        };
+
+        var response = await client.PostAsJsonAsync("/api/auth/login", request);
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+
+        var body = await response.Content.ReadFromJsonAsync<ApiResponse<LoginResponse>>(JsonOpts);
+        Assert.NotNull(body);
+        Assert.False(body.Success);
+        Assert.Equal("Invalid email or password.", body.Message);
+    }
+
+    [Fact]
+    public async Task Login_WrongPassword_Returns401AndUniformMessage()
+    {
+        await _factory.SeedInitialDataAsync();
+        var client = _factory.CreateClient();
+
+        var request = new LoginRequest
+        {
+            Email = "admin@example.test",
+            Password = "WrongPassword123!"
+        };
+
+        var response = await client.PostAsJsonAsync("/api/auth/login", request);
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+
+        var body = await response.Content.ReadFromJsonAsync<ApiResponse<LoginResponse>>(JsonOpts);
+        Assert.NotNull(body);
+        Assert.False(body.Success);
+        Assert.Equal("Invalid email or password.", body.Message);
+    }
+
+    [Fact]
+    public async Task Login_LockedAccount_Returns401AndUniformMessage()
+    {
+        await _factory.SeedInitialDataAsync();
+        var client = _factory.CreateClient();
+
+        var request = new LoginRequest
+        {
+            Email = "locked@example.test",
+            Password = "LockedPass123!"
+        };
+
+        var response = await client.PostAsJsonAsync("/api/auth/login", request);
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+
+        var body = await response.Content.ReadFromJsonAsync<ApiResponse<LoginResponse>>(JsonOpts);
+        Assert.NotNull(body);
+        Assert.False(body.Success);
+        Assert.Equal("Invalid email or password.", body.Message);
+    }
+
+    [Fact]
+    public async Task Login_DisabledAccount_Returns401AndUniformMessage()
+    {
+        await _factory.SeedInitialDataAsync();
+        var client = _factory.CreateClient();
+
+        var request = new LoginRequest
+        {
+            Email = "disabled@example.test",
+            Password = "DisabledPass123!"
+        };
+
+        var response = await client.PostAsJsonAsync("/api/auth/login", request);
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+
+        var body = await response.Content.ReadFromJsonAsync<ApiResponse<LoginResponse>>(JsonOpts);
+        Assert.NotNull(body);
+        Assert.False(body.Success);
+        Assert.Equal("Invalid email or password.", body.Message);
     }
 
     [Fact]

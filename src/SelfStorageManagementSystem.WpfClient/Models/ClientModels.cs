@@ -76,6 +76,8 @@ public class CurrentUserResponse
     [JsonPropertyName("displayName")]
     public string DisplayName { get; set; } = string.Empty;
 
+    public string FullName => DisplayName;
+
     [JsonPropertyName("email")]
     public string Email { get; set; } = string.Empty;
 

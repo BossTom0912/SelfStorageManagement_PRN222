@@ -71,9 +71,10 @@
                             </Grid>
                         </StackPanel>
 
-                        <!-- Admin Shortcut Button (Only visible to Admin) -->
+                        <!-- Shortcut Buttons -->
                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                            <Button x:Name="btnOpenAdmin" Content="Admin Management Console" Padding="16,10" Background="#0F766E" Foreground="#FFFFFF" FontWeight="Bold" FontSize="13" BorderThickness="0" Cursor="Hand" Click="BtnOpenAdmin_Click" Visibility="Collapsed"/>
+                            <Button x:Name="btnOpenAdmin" Content="Admin Management Console" Padding="16,10" Background="#0F766E" Foreground="#FFFFFF" FontWeight="Bold" FontSize="13" BorderThickness="0" Cursor="Hand" Click="BtnOpenAdmin_Click" Visibility="Collapsed" Margin="0,0,0,8"/>
+                            <Button x:Name="btnBrowseCatalog" Content="🏢 Tra cứu Cơ sở &amp; Ô kho" Padding="16,10" Background="#2563EB" Foreground="#FFFFFF" FontWeight="Bold" FontSize="13" BorderThickness="0" Cursor="Hand" Click="BtnBrowseCatalog_Click"/>
                         </StackPanel>
                     </Grid>
                 </Border>
@@ -100,7 +101,8 @@
                     <StackPanel>
                         <TextBlock Text="Storage Customer Dashboard" FontSize="16" FontWeight="Bold" Foreground="#1E40AF" Margin="0,0,0,6"/>
                         <TextBlock Text="Welcome to your Self-Storage customer portal. Your account is active and verified." FontSize="13" Foreground="#1E3A8A" Margin="0,0,0,4"/>
-                        <TextBlock Text="You can browse storage facilities, create reservations, and manage rental agreements once subsequent feature modules are unlocked." FontSize="12" Foreground="#3B82F6"/>
+                        <TextBlock Text="Tra cứu các điểm kho, lựa chọn loại diện tích phù hợp, xem bảng giá và vị trí sơ đồ kho trực tuyến:" FontSize="12" Foreground="#3B82F6"/>
+                        <Button Content="🔍 Tìm kiếm Kho &amp; Xem Sơ đồ Mặt bằng" Padding="16,10" Margin="0,12,0,0" Background="#2563EB" Foreground="#FFFFFF" FontWeight="Bold" FontSize="13" BorderThickness="0" Cursor="Hand" HorizontalAlignment="Left" Click="BtnBrowseCatalog_Click"/>
                     </StackPanel>
                 </Border>
             </StackPanel>

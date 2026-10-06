@@ -58,13 +58,34 @@ public class FacilityScopeService : IFacilityScopeService
 
         if (requiredRole == RoleConstants.FacilityStaff)
         {
-            // Both facility_staff and facility_manager assignments satisfy staff role requirements
-            return await query.AnyAsync(a => a.assignment_role == RoleConstants.FacilityStaff ||
-                                             a.assignment_role == RoleConstants.FacilityManager,
+            var isManager = roles.Contains(RoleConstants.FacilityManager);
+            var isStaff = roles.Contains(RoleConstants.FacilityStaff);
+
+            if (!isManager && !isStaff)
+            {
+                return false;
+            }
+
+            if (isManager)
+            {
+                // Manager role allows operating at staff level with either staff or manager assignment
+                return await query.AnyAsync(a => a.assignment_role == RoleConstants.FacilityStaff ||
+                                                 a.assignment_role == RoleConstants.FacilityManager,
+                                            cancellationToken);
+            }
+
+            // Staff role cannot perform operations via manager assignments; requires staff assignment
+            return await query.AnyAsync(a => a.assignment_role == RoleConstants.FacilityStaff,
                                         cancellationToken);
         }
         else if (requiredRole == RoleConstants.FacilityManager)
         {
+            // Requires active manager role on the account (staff cannot access manager operations)
+            if (!roles.Contains(RoleConstants.FacilityManager))
+            {
+                return false;
+            }
+
             return await query.AnyAsync(a => a.assignment_role == RoleConstants.FacilityManager,
                                         cancellationToken);
         }
@@ -98,11 +119,32 @@ public class FacilityScopeService : IFacilityScopeService
             return new List<long>();
         }
 
+        var isManager = roles.Contains(RoleConstants.FacilityManager);
+        var isStaff = roles.Contains(RoleConstants.FacilityStaff);
+
+        if (!isManager && !isStaff)
+        {
+            return new List<long>();
+        }
+
         var now = DateTimeOffset.UtcNow;
-        return await _context.staff_facility_assignments
+        var query = _context.staff_facility_assignments
             .Where(a => a.employee_id == userId &&
                         a.starts_at <= now &&
-                        (a.ends_at == null || a.ends_at > now))
+                        (a.ends_at == null || a.ends_at > now));
+
+        if (isManager)
+        {
+            return await query
+                .Where(a => a.assignment_role == RoleConstants.FacilityManager ||
+                            a.assignment_role == RoleConstants.FacilityStaff)
+                .Select(a => a.facility_id)
+                .Distinct()
+                .ToListAsync(cancellationToken);
+        }
+
+        return await query
+            .Where(a => a.assignment_role == RoleConstants.FacilityStaff)
             .Select(a => a.facility_id)
             .Distinct()
             .ToListAsync(cancellationToken);
@@ -112,13 +154,45 @@ public class FacilityScopeService : IFacilityScopeService
         long userId,
         CancellationToken cancellationToken = default)
     {
+        var user = await _userRepository.GetByIdWithRolesAndProfilesAsync(userId, cancellationToken);
+        if (user == null || user.status != UserStatusConstants.Active)
+        {
+            return new List<FacilityAssignmentDto>();
+        }
+
+        if (user.employee_profile == null || user.employee_profile.employment_status != EmploymentStatusConstants.Active)
+        {
+            return new List<FacilityAssignmentDto>();
+        }
+
+        var roles = user.user_roleusers.Select(ur => ur.role.code).ToList();
+        var isManager = roles.Contains(RoleConstants.FacilityManager);
+        var isStaff = roles.Contains(RoleConstants.FacilityStaff);
+
+        if (!isManager && !isStaff)
+        {
+            return new List<FacilityAssignmentDto>();
+        }
+
         var now = DateTimeOffset.UtcNow;
 
-        return await _context.staff_facility_assignments
+        var query = _context.staff_facility_assignments
             .Include(a => a.facility)
             .Where(a => a.employee_id == userId &&
                         a.starts_at <= now &&
-                        (a.ends_at == null || a.ends_at > now))
+                        (a.ends_at == null || a.ends_at > now));
+
+        if (isManager)
+        {
+            query = query.Where(a => a.assignment_role == RoleConstants.FacilityManager ||
+                                     a.assignment_role == RoleConstants.FacilityStaff);
+        }
+        else
+        {
+            query = query.Where(a => a.assignment_role == RoleConstants.FacilityStaff);
+        }
+
+        return await query
             .Select(a => new FacilityAssignmentDto
             {
                 Id = a.id,

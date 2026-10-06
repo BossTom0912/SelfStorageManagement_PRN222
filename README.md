@@ -1,112 +1,130 @@
-<<<<<<< HEAD
 # Self-Storage Facility Rental and Management System
 
-PRN222 project base for a self-storage rental and management API.
+PRN222 project base for a self-storage facility rental and management system.
 
 ## Technology Stack
 
-.NET 8, C#, ASP.NET Core Web API, Entity Framework Core 8, SQL Server,
-Database First, and Swagger/OpenAPI.
+- **C# / .NET 8**
+- **ASP.NET Core Web API**
+- **WPF (Desktop Client)**
+- **Entity Framework Core 8 (Database First)**
+- **SQL Server**
+- **Swagger / OpenAPI**
 
 ## Architecture
 
-`Presentation -> BusinessLogic -> DataAccess -> SQL Server`
-
-Controllers will call business services; services coordinate repositories.
-Repositories stage changes, and services explicitly call `SaveChangesAsync`.
-All application code stays under `src/`. Read [CODEX_RULE.md](CODEX_RULE.md)
-before changing the project.
-
-## Project Structure
-
 ```text
-SelfStorageManagementSystem.sln
-CODEX_RULE.md
-docs/
-DB/
-src/
-  SelfStorageManagementSystem.Presentation/
-  SelfStorageManagementSystem.BusinessLogic/
-  SelfStorageManagementSystem.DataAccess/
+WPF Client / Presentation (Web API)
+       ↓
+BusinessLogic
+       ↓
+DataAccess (EF Core Database First)
+       ↓
+SQL Server
 ```
 
-`Agent/`, `SRS/`, and the root workbook contain existing project references.
+- **Presentation Layer**:
+  - `SelfStorageManagementSystem.Presentation`: ASP.NET Core Web API exposed for client applications and Swagger.
+  - `SelfStorageManagementSystem.WpfClient`: Windows desktop client communicating with Web API over HTTPS.
+- **BusinessLogic Layer** (`SelfStorageManagementSystem.BusinessLogic`): Contains domain logic, authentication, JWT token generation, role & facility-scoped access checks, admin account management, and validation.
+- **DataAccess Layer** (`SelfStorageManagementSystem.DataAccess`): Scaffolded EF Core DbContext (`SelfStorageDbContext`), entities mapped directly to SQL Server `core` schema, and repositories.
 
 ## Database
 
-The existing `SelfStoragePRN222` database uses schema `core`: 57 tables,
-2 views, 139 foreign keys, and 35 triggers, mapped to 59 EF entity classes.
-The views are keyless and read-only. The repository accepts `object[]` keys
-in EF primary-key order, including composite keys; supply the correct CLR types.
-
-Do not use Code First migrations, `EnsureCreated`, or automatic schema updates.
-Generated entities and `SelfStorageDbContext.cs` must remain scaffolded code.
+The existing `SelfStoragePRN222` database uses schema `core`: 57 tables, 2 views, 139 foreign keys, and 35 triggers, mapped to 59 EF entity classes.
+The database schema is the strict source of truth. Do NOT use Code First migrations, `EnsureCreated()`, or automatic schema updates. Generated entities and `SelfStorageDbContext.cs` remain scaffolded database-first code.
 
 ## Prerequisites
 
 - .NET 8 SDK and ASP.NET Core 8 runtime.
-- SQL Server 2019 or later, reachable by the application.
-- An existing `SelfStoragePRN222` database and database access for your account.
+- SQL Server 2019 or later reachable by the application.
+- An existing `SelfStoragePRN222` database with credentials configured.
 
-## Configuration
+## Configuration & Security
 
-Local development defaults to SQL Server on `localhost`, using Windows
-Integrated Authentication and `TrustServerCertificate=True`.
-No database password is included. The certificate setting is for local development;
-configure a validated SQL Server certificate for deployment.
+### 1. Connection String
 
-Override `ConnectionStrings:DefaultConnection` through User Secrets or the
-`ConnectionStrings__DefaultConnection` environment variable. Do not put credentials
-in tracked JSON, scripts, or documentation. To enable User Secrets locally:
+Configure your database connection via User Secrets or environment variables. Never hardcode credentials into tracked files:
 
 ```powershell
 dotnet user-secrets init --project src/SelfStorageManagementSystem.Presentation
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Server=localhost;Database=SelfStoragePRN222;Integrated Security=True;TrustServerCertificate=True;" --project src/SelfStorageManagementSystem.Presentation
 ```
 
-Supply your connection string through your local secret tooling. Configure
-`Cors:AllowedOrigins` for the actual frontend origins in each environment.
-Development allows `http://localhost:5173` and `http://localhost:3000`.
+### 2. JWT Configuration (Mandatory)
 
-## Local Setup
+The Web API validates the signing key on startup. The key **must be configured** and must be at least **256 bits (32 bytes)** long; otherwise, the API aborts startup with a configuration error.
 
-Use the existing database when available. For a new disposable local database,
-inspect `DB/SelfStoragePRN222_SQLServer_CleanInstall.sql` before running it in SSMS.
-**That script drops and recreates `SelfStoragePRN222`, deleting existing data.**
-It is not an incremental upgrade script and is never executed by the API.
+Configure the key locally via User Secrets or the `JWT_SECRET_KEY` environment variable:
 
-From the repository root:
+```powershell
+# Via User Secrets:
+dotnet user-secrets set "Jwt:Key" "<your-secure-32-byte-secret-key-goes-here>" --project src/SelfStorageManagementSystem.Presentation
+
+# Or via environment variable:
+$env:JWT_SECRET_KEY="<your-secure-32-byte-secret-key-goes-here>"
+```
+
+Optional JWT settings:
+- `Jwt:Issuer`: Default is `SelfStoragePRN222`.
+- `Jwt:Audience`: Default is `SelfStoragePRN222Clients`.
+- `Jwt:ExpiryMinutes`: Token validity in minutes (default: 60).
+
+### 3. HTTPS & Development Certificates
+
+The WPF desktop client uses standard certificate validation and strictly enforces HTTPS for all credential transmissions.
+If running locally and your development certificate is untrusted, trust the certificate using:
+
+```powershell
+dotnet dev-certs https --trust
+```
+
+### 4. Demo Accounts Bootstrap
+
+The demo account bootstrap service (`DemoAccountBootstrapService`) replaces initial placeholder hashes for seed accounts. To protect production environments:
+- It **only** runs when `ASPNETCORE_ENVIRONMENT=Development` **AND** `DemoAccounts:Enabled=true`.
+- The bootstrap password must be explicitly supplied via `DemoAccounts:DefaultPassword` (or `DEMO_DEFAULT_PASSWORD` environment variable); if missing, it halts with a descriptive configuration error.
+
+```powershell
+dotnet user-secrets set "DemoAccounts:Enabled" "true" --project src/SelfStorageManagementSystem.Presentation
+dotnet user-secrets set "DemoAccounts:DefaultPassword" "<your-local-demo-password>" --project src/SelfStorageManagementSystem.Presentation
+```
+
+## Running the Application
+
+### Build & Test
 
 ```powershell
 dotnet clean
 dotnet restore
-dotnet build
+dotnet build SelfStorageManagementSystem.sln
+dotnet test SelfStorageManagementSystem.sln
 ```
 
-The scaffold produces 11 accepted `CS8981` warnings for lowercase entity names.
-
-## Run
+### Start Web API
 
 ```powershell
 dotnet run --project src/SelfStorageManagementSystem.Presentation --launch-profile https
 ```
 
-If needed, trust the local development certificate with `dotnet dev-certs https --trust`.
-The HTTPS profile listens on `https://localhost:7031` and `http://localhost:5132`.
-Stop the API with Ctrl+C. The `http` profile is also available for local smoke tests.
+- Swagger UI available in Development at: `https://localhost:7031/swagger`
 
-## Swagger
+### Start WPF Client
 
-In Development, open `https://localhost:7031/swagger`.
-The specification is at `/swagger/v1/swagger.json`. Swagger is disabled outside
-Development. An empty operations list is expected because there are no feature controllers.
+```powershell
+dotnet run --project src/SelfStorageManagementSystem.WpfClient
+```
 
-## Current Status
+## Implementation & Roadmap Status
 
-Base architecture complete. Feature development not yet implemented.
-Authentication, JWT, business CRUD, reservations, payments, and other workflows
-are intentionally absent. See [the final review](docs/PRE_GITHUB_REVIEW.md)
-for verified build, runtime, database, and Git preparation results.
-=======
-# SelfStorageManagement_PRN222
-FinalProject
->>>>>>> 6f2acb474cebcef22d14819b7d29f3865ee8a008
+| Module | Status | Notes |
+| :--- | :--- | :--- |
+| **Feature 1: Authentication & RBAC** | **Implemented (Core)** | Core implementation complete: login, customer registration, JWT auth, facility scope authorization (`FacilityScopeService`), admin account management with database pagination, and WPF UI. |
+| **Feature 2: Facility & Storage Unit Catalog** | In Progress (Under Verification) | Catalog controller (`/api/facilities`), DTOs, service/repository, floor map endpoint, WPF client catalog views, and catalog tests are drafted in the codebase. Currently under ongoing integration verification; not yet marked fully finalized. |
+| **Feature 3: Reservation & Hold Unit** | Not Implemented | Create/cancel reservation, 15-minute hold lock mechanism. Pending future development. |
+| **Feature 4: Payment & Rental Agreement** | Not Implemented | Security deposit, initial rent calculation, payments, invoices, and rental agreements. Pending future development. |
+| **Feature 5: Check-in & Digital Handover** | Not Implemented | Identity verification, unit handover, access PIN/QR generation, and agreement activation. Pending future development. |
+
+> [!NOTE]
+> **Pending Scope Notice (Feature 1)**:
+> Earlier roadmaps mentioned `Refresh Token` mechanics and an interactive UI for viewing/exporting `Audit Log`. Because the existing database schema does not include tables or columns for refresh tokens and this project strictly adheres to Database First without inventing migrations, these features are explicitly treated as pending scope decisions and are not marked as fully complete.
