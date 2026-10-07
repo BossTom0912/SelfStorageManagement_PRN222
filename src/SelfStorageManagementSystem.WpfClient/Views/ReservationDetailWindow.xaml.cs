@@ -96,6 +96,9 @@ public partial class ReservationDetailWindow : Window
         }
 
         btnCancelReservation.IsEnabled = model.CanCancel;
+        btnProceedPayment.Visibility = model.IsHoldActive && (model.Status is "pending" or "awaiting_deposit")
+            ? Visibility.Visible
+            : Visibility.Collapsed;
 
         // Synchronize Server Time for Countdown
         _serverTimeSyncPoint = model.ServerNow;
@@ -222,6 +225,19 @@ public partial class ReservationDetailWindow : Window
         BindModel(_model);
 
         MessageBox.Show("Đã hủy đơn giữ chỗ thành công.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+    }
+
+    private async void BtnProceedPayment_Click(object sender, RoutedEventArgs e)
+    {
+        if (_model == null) return;
+
+        var checkoutWindow = new CheckoutWindow(_model.Id)
+        {
+            Owner = this
+        };
+
+        checkoutWindow.ShowDialog();
+        await LoadReservationAsync();
     }
 
     private void BtnClose_Click(object sender, RoutedEventArgs e)
