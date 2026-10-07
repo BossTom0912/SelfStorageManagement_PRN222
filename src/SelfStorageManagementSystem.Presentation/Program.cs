@@ -11,12 +11,16 @@ using SelfStorageManagementSystem.BusinessLogic.Services.Interfaces;
 using SelfStorageManagementSystem.DataAccess.Context;
 using SelfStorageManagementSystem.DataAccess.DependencyInjection;
 using SelfStorageManagementSystem.Presentation.ExceptionHandling;
+using SelfStorageManagementSystem.Presentation.Workers;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure dependency injection layers
 builder.Services.AddDataAccess(builder.Configuration);
 builder.Services.AddBusinessLogic();
+
+// Background worker for reservation hold expiration (BR-RSV-01)
+builder.Services.AddHostedService<ReservationHoldExpirationWorker>();
 
 // Centralized exception handling
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
