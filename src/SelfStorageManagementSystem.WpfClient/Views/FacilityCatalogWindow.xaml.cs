@@ -683,7 +683,7 @@ public partial class FacilityCatalogWindow : Window
         }
     }
 
-    private void BtnProceedWithType_Click(object sender, RoutedEventArgs e)
+    private async void BtnProceedWithType_Click(object sender, RoutedEventArgs e)
     {
         if (_selectedFacility == null || _selectedUnitType == null) return;
 
@@ -719,24 +719,10 @@ public partial class FacilityCatalogWindow : Window
             return;
         }
 
-        // Bug 5: Read dates from the applied snapshot
-        var start = _appliedFilter.StartDate;
-        var end = _appliedFilter.EndDate;
-
-        var message = $"[ĐIỂM NỐI CHỨC NĂNG 3 - ĐẶT CHỖ & GIỮ KHO 15 PHÚT]\n\n" +
-                      $"• Cơ sở: {_selectedFacility.Name} (ID: {_selectedFacility.Id})\n" +
-                      $"• Loại kho: {_selectedUnitType.Name} (UnitTypeId: {_selectedUnitType.UnitTypeId})\n" +
-                      $"• Giá thuê tháng: {_selectedUnitType.MonthlyRate:N0} đ\n" +
-                      $"• Tiền cọc: {_selectedUnitType.DepositAmount:N0} đ\n" +
-                      $"• Thời hạn thuê: {start:yyyy-MM-dd} ➜ {end:yyyy-MM-dd}\n\n" +
-                      $"Quy tắc BR-RSV-03:\n" +
-                      $"Khách hàng đặt chỗ theo Loại Kho & Diện tích. Đơn đặt sẽ thực hiện giữ chỗ 15 phút tại Chức năng 3. " +
-                      $"Mã ô kho cụ thể sẽ được phân công khi làm thủ tục Check-in (Chức năng 5).";
-
-        MessageBox.Show(message, "Chuyển tiếp Đặt Chỗ (Feature 3 Ready)", MessageBoxButton.OK, MessageBoxImage.Information);
+        await InitiateReservationFlowAsync(_selectedUnitType);
     }
 
-    private void BtnProceedFromMap_Click(object sender, RoutedEventArgs e)
+    private async void BtnProceedFromMap_Click(object sender, RoutedEventArgs e)
     {
         if (_selectedFacility == null || _selectedMapItem == null || _cachedFloorMap == null) return;
 
@@ -783,20 +769,137 @@ public partial class FacilityCatalogWindow : Window
             return;
         }
 
-        // Bug 5: Read dates from the applied snapshot
-        var start = _appliedFilter.StartDate;
-        var end = _appliedFilter.EndDate;
+        // Find the unit type model from loaded unit types list or fetch real rates from API
+        FacilityUnitTypeCatalogModel? unitType = null;
+        if (gridUnitTypes.ItemsSource is IEnumerable<FacilityUnitTypeCatalogModel> list)
+        {
+            unitType = list.FirstOrDefault(t => t.UnitTypeId == _selectedMapItem.UnitTypeId);
+        }
 
-        var message = $"[ĐIỂM NỐI CHỨC NĂNG 3 - ĐẶT CHỖ TỪ SƠ ĐỒ MẶT BẰNG]\n\n" +
-                      $"• Cơ sở: {_selectedFacility.Name} (ID: {_selectedFacility.Id})\n" +
-                      $"• Ô tham khảo trên sơ đồ: {_selectedMapItem.UnitCode}\n" +
-                      $"• Loại kho: {_selectedMapItem.UnitTypeName} (UnitTypeId: {_selectedMapItem.UnitTypeId})\n" +
-                      $"• Thời hạn thuê: {start:yyyy-MM-dd} ➜ {end:yyyy-MM-dd}\n\n" +
-                      $"Quy tắc BR-RSV-03:\n" +
-                      $"Khách hàng tham khảo vị trí ô nhưng đơn đặt chỗ thực tế được ghi nhận theo Loại Kho '{_selectedMapItem.UnitTypeName}', " +
-                      $"không cố định gán Unit ID tại bước này. Ô cụ thể sẽ do Staff/Manager bàn giao tại thời điểm Check-in.";
+        if (unitType == null && _selectedFacility != null && _appliedFilter != null)
+        {
+            try
+            {
+                var resp = await ApiClient.Instance.GetFacilityUnitTypesAsync(
+                    _selectedFacility.Id,
+                    _appliedFilter.StartDate,
+                    _appliedFilter.EndDate,
+                    _appliedFilter.MaxPrice,
+                    _appliedFilter.ClimateControlled,
+                    _appliedFilter.MinAreaM2,
+                    _appliedFilter.MaxAreaM2);
 
-        MessageBox.Show(message, "Chuyển tiếp Đặt Chỗ (Feature 3 Ready)", MessageBoxButton.OK, MessageBoxImage.Information);
+                if (resp.Success && resp.Data != null)
+                {
+                    gridUnitTypes.ItemsSource = resp.Data;
+                    unitType = resp.Data.FirstOrDefault(t => t.UnitTypeId == _selectedMapItem.UnitTypeId);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error fetching unit types from map: {ex.Message}");
+            }
+        }
+
+        if (unitType == null)
+        {
+            MessageBox.Show(
+                "Không thể xác định biểu phí hợp lệ cho loại kho này tại cơ sở trong khoảng thời gian đã chọn. Vui lòng kiểm tra lại bộ lọc ngày thuê.",
+                "Lỗi biểu phí",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+            return;
+        }
+
+        await InitiateReservationFlowAsync(unitType);
+    }
+
+    private async Task InitiateReservationFlowAsync(FacilityUnitTypeCatalogModel unitType)
+    {
+        if (_selectedFacility == null || _appliedFilter == null) return;
+
+        // 1. Check authentication
+        if (!SessionStore.IsLoggedIn)
+        {
+            var loginChoice = MessageBox.Show(
+                "Bạn cần đăng nhập bằng tài khoản Khách hàng để thực hiện đặt chỗ trực tuyến.\n" +
+                "Bạn có muốn mở màn hình Đăng nhập ngay bây giờ không?",
+                "Yêu cầu Đăng nhập",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+
+            if (loginChoice == MessageBoxResult.Yes)
+            {
+                var loginWin = new LoginWindow();
+                loginWin.ShowDialog();
+                UpdateUserSessionHeader();
+            }
+
+            if (!SessionStore.IsLoggedIn) return;
+        }
+
+        // 2. Check Storage Customer role
+        if (SessionStore.CurrentUser?.Roles.Contains("storage_customer") != true)
+        {
+            MessageBox.Show(
+                "Chức năng đặt chỗ trực tuyến chỉ áp dụng cho tài khoản Khách hàng (Storage Customer).\n" +
+                "Tài khoản hiện tại không có vai trò này để tạo đơn đặt chỗ.",
+                "Không có quyền",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+            return;
+        }
+
+        // 3. Open confirmation dialog
+        var confirmDialog = new ConfirmReservationDialog(
+            _selectedFacility,
+            unitType,
+            _appliedFilter.StartDate,
+            _appliedFilter.EndDate)
+        {
+            Owner = this
+        };
+
+        if (confirmDialog.ShowDialog() == true && confirmDialog.CreatedReservation != null)
+        {
+            // Open reservation detail window with 15-minute countdown
+            var detailWindow = new ReservationDetailWindow(confirmDialog.CreatedReservation)
+            {
+                Owner = this
+            };
+            detailWindow.ShowDialog();
+
+            // Refresh catalog availability to reflect new hold
+            await RefreshSelectedFacilityDataAsync();
+        }
+    }
+
+    private void BtnMyReservations_Click(object sender, RoutedEventArgs e)
+    {
+        if (!SessionStore.IsLoggedIn)
+        {
+            var loginChoice = MessageBox.Show(
+                "Bạn cần đăng nhập tài khoản Khách hàng để xem các đơn đặt chỗ của bạn.\n" +
+                "Bạn có muốn mở màn hình Đăng nhập ngay bây giờ không?",
+                "Yêu cầu Đăng nhập",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+
+            if (loginChoice == MessageBoxResult.Yes)
+            {
+                var loginWin = new LoginWindow();
+                loginWin.ShowDialog();
+                UpdateUserSessionHeader();
+            }
+
+            if (!SessionStore.IsLoggedIn) return;
+        }
+
+        var myWin = new MyReservationsWindow
+        {
+            Owner = this
+        };
+        myWin.ShowDialog();
     }
 
     private async void BtnUnitPrev_Click(object sender, RoutedEventArgs e)

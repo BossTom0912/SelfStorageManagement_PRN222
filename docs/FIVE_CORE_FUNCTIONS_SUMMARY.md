@@ -9,39 +9,39 @@ Tài liệu này tóm tắt hiện trạng theo [roadmap 5 chức năng](DEMO_RO
 ## Hiện trạng chung
 
 - Kiến trúc đang dùng: **WPF Client → ASP.NET Core Web API (.NET 8) → BusinessLogic → DataAccess (EF Core, Database First) → SQL Server**.
-- Mã nguồn đã có chức năng xác thực, phân quyền, quản lý tài khoản và phân công cơ sở. Các bảng/entity phục vụ chức năng 2–5 đã có từ schema, nhưng chưa có controller, service và màn hình WPF cho các luồng nghiệp vụ đó.
-- Kết quả kiểm tra gần nhất: solution build thành công; **22/22 bài test đạt**. Các test hiện dùng EF InMemory, chưa xác nhận luồng chạy với SQL Server thật và thao tác WPF.
-- Trong bảng dưới đây, **Done** là trạng thái hoàn thành bản triển khai chức năng 1 theo yêu cầu của nhóm. Các vấn đề phát hiện khi review được theo dõi riêng ở cuối tài liệu.
+- Mã nguồn đã có chức năng 1 (xác thực, phân quyền, quản lý tài khoản và phân công cơ sở) và chức năng 2 (API catalog, bộ lọc, danh sách ô ứng viên và sơ đồ WPF). Chức năng 3–5 hiện mới có schema/entity liên quan, chưa có luồng API và WPF tương ứng.
+- Kết quả kiểm tra gần nhất: **94/94 bài test đạt**. Các test catalog dùng EF InMemory; chưa xác nhận toàn bộ luồng với SQL Server thật hoặc thao tác trực tiếp trên WPF.
+- Trạng thái **Đã triển khai** trong bảng chỉ nói đến phạm vi chức năng đã có trong code; điểm nối sang chức năng kế tiếp và kiểm chứng trên môi trường chạy thật được ghi rõ bên dưới.
 
 ## Bảng trạng thái 5 chức năng
 
 | STT | Chức năng | Kết quả nghiệp vụ cần có | Trạng thái |
 | --- | --- | --- | --- |
-| 1 | Xác thực, quản lý tài khoản và phân quyền (Authentication & RBAC) | Khách đăng ký/đăng nhập; admin quản lý tài khoản, role và phân công cơ sở; WPF điều hướng theo quyền | **Done** |
-| 2 | Tra cứu cơ sở và ô kho khả dụng (Facility & Storage Unit Catalog) | Khách lọc cơ sở, loại kho, giá và ô kho còn trống; xem sơ đồ vị trí đơn giản trên WPF | **Chưa triển khai** |
+| 1 | Xác thực, quản lý tài khoản và phân quyền (Authentication & RBAC) | Khách đăng ký/đăng nhập; admin quản lý tài khoản, role và phân công cơ sở; WPF điều hướng theo quyền | **Đã triển khai cốt lõi** |
+| 2 | Tra cứu cơ sở và ô kho khả dụng (Facility & Storage Unit Catalog) | Khách lọc cơ sở, loại kho, giá và ô kho còn trống; xem sơ đồ vị trí đơn giản trên WPF | **Đã triển khai catalog; điểm nối đặt chỗ đang mô phỏng** |
 | 3 | Đặt chỗ và giữ kho 15 phút (Reservation & Hold Unit) | Khách tạo/hủy đặt chỗ; hệ thống chống đặt trùng và tự giải phóng lượt giữ quá hạn | **Chưa triển khai** |
 | 4 | Thanh toán cọc, tiền thuê và tạo hợp đồng (Payment & Rental Agreement) | Tính tiền, ghi nhận thanh toán, lập hóa đơn và hợp đồng trong giao dịch nhất quán | **Chưa triển khai** |
 | 5 | Check-in và bàn giao kho (Check-in & Digital Handover) | Staff xác minh khách, gán ô kho, hoàn tất bàn giao, cấp thông tin truy cập và kích hoạt hợp đồng | **Chưa triển khai** |
 
 ## Phạm vi từng chức năng
 
-### 1. Xác thực, quản lý tài khoản và phân quyền — Done
+### 1. Xác thực, quản lý tài khoản và phân quyền — Đã triển khai cốt lõi
 
 **Đã có:** API đăng nhập, đăng ký khách hàng, lấy thông tin người dùng; JWT với kiểm tra lại trạng thái/role trong database; quản lý trạng thái tài khoản, role và phân công cơ sở; ghi lịch sử đăng nhập/audit; màn hình WPF Login, Register, Main và Admin Accounts. Quyền hệ thống dựa trên 5 role: `storage_customer`, `facility_staff`, `facility_manager`, `business_operations_manager`, `system_administrator`.
 
 **Đầu ra demo:** Đăng nhập các vai trò, khách đăng ký, admin tạo tài khoản nhân viên/đổi trạng thái/gán role và cơ sở; WPF hiển thị chức năng theo quyền. Xem chi tiết cách chạy tại [ACCOUNT_ROLE_MANAGEMENT_GUIDE.md](ACCOUNT_ROLE_MANAGEMENT_GUIDE.md).
 
-### 2. Tra cứu cơ sở và ô kho khả dụng — Chưa triển khai
+### 2. Tra cứu cơ sở và ô kho khả dụng — Đã triển khai catalog
 
-**Cần làm:** API đọc danh sách cơ sở, loại kho, giá thuê, ô kho còn trống và vị trí trên sơ đồ; bộ lọc theo vị trí, kích thước, mức giá. Dùng truy vấn `AsNoTracking` và phân trang cho danh sách lớn. Chỉ trả ô kho thực sự có thể đặt theo quy tắc **BR-OPS-02**; loại ô đang sử dụng hoặc bảo trì. Trên WPF, dùng form lọc, danh sách/DataGrid và sơ đồ mặt bằng ở mức đủ để chọn ô kho.
+**Đã có:** API tra cứu cơ sở, loại kho và giá thuê, danh sách ô trống ứng viên, sơ đồ vị trí; bộ lọc theo địa điểm, diện tích, giá và điều hòa. Repository dùng `AsNoTracking` và phân trang. Danh sách loại trừ ô đang sử dụng hoặc bảo trì theo **BR-OPS-02**; sức chứa nhận đặt được tính theo loại kho sau khi trừ reservation còn hiệu lực chưa gán ô theo **BR-RSV-03**. WPF có form lọc, DataGrid và sơ đồ Canvas; các nút tiếp tục kiểm tra bộ lọc đã áp dụng và dữ liệu thuộc cơ sở/ngữ cảnh hiện tại.
 
-**Đầu ra demo:** Khách lọc một cơ sở, thấy giá và các ô kho khả dụng, chọn được ô để chuyển sang bước đặt chỗ.
+**Đầu ra demo hiện tại:** Khách lọc cơ sở, xem giá, số lượt còn nhận đặt theo loại kho và các ô trống ứng viên; chọn loại kho hoặc ô tham khảo trên sơ đồ để xem thông tin chuyển tiếp. Nút Tiếp tục hiện chỉ hiển thị `MessageBox`; chưa tạo reservation hay mở màn hình chức năng 3. Việc giữ chỗ thực tế phải được kiểm tra lại khi triển khai chức năng 3.
 
 ### 3. Đặt chỗ và giữ kho 15 phút — Chưa triển khai
 
-**Cần làm:** Tạo và hủy reservation; tạo lượt giữ `reservation_hold` có thời điểm hết hạn sau 15 phút; xử lý đồng thời để hai khách không giữ cùng một ô; background worker tự hết hạn và trả ô kho về trạng thái có thể đặt. WPF hiển thị chi tiết đơn và đồng hồ đếm ngược.
+**Cần làm:** Tạo và hủy reservation; lưu hạn giữ 15 phút bằng `reservations.hold_until` (schema không có bảng `reservation_hold`); xử lý đồng thời để không nhận quá sức chứa theo loại kho; tích hợp xử lý hết hạn và giải phóng lượt giữ. WPF hiển thị chi tiết đơn và đồng hồ đếm ngược. Theo **BR-RSV-03**, ô kho cụ thể được gán khi check-in.
 
-**Đầu ra demo:** Sau khi một khách giữ ô, khách khác không đặt trùng; khi hết hạn mà chưa thanh toán, ô trở lại danh sách khả dụng.
+**Đầu ra demo cần đạt:** Sau khi một khách giữ chỗ, khách khác không thể đặt vượt sức chứa của loại kho; khi hết hạn mà chưa thanh toán, lượt giữ được giải phóng để nhận đặt tiếp.
 
 ### 4. Thanh toán cọc, tiền thuê và tạo hợp đồng — Chưa triển khai
 
@@ -55,20 +55,14 @@ Tài liệu này tóm tắt hiện trạng theo [roadmap 5 chức năng](DEMO_RO
 
 **Đầu ra demo:** Hoàn tất check-in làm hợp đồng chuyển `Active`, ô kho chuyển sang trạng thái đang sử dụng và khách nhận được thông tin bàn giao.
 
-## Việc còn lại từ review chức năng 1
+## Phạm vi còn thiếu và giới hạn kiểm chứng
 
-Bảng tiến độ ghi **Done** cho bản triển khai đầu tiên. Trước khi dùng hệ thống ngoài môi trường demo, cần xử lý:
-
-1. Bỏ khóa ký JWT mặc định ở môi trường triển khai; bắt buộc cung cấp secret riêng.
-2. Không chấp nhận mọi chứng chỉ HTTPS trong WPF.
-3. Sửa metadata phân trang để admin xem được tài khoản từ trang 2 trở đi.
-4. Kiểm tra role hiện hành cùng assignment khi xác định quyền trên cơ sở.
-5. Giới hạn cơ chế mật khẩu tài khoản mẫu vào môi trường demo được bật rõ ràng; thống nhất thông báo đăng nhập thất bại.
-
-**Chênh lệch tài liệu cần chốt:** Roadmap cũ yêu cầu refresh token nhưng chức năng 1 hiện chưa có endpoint này. Tài liệu phân tích hệ thống còn yêu cầu admin xem/trích xuất audit log; code hiện ghi log nhưng chưa có API/WPF để xem hoặc xuất. Cập nhật lại roadmap và README sau khi chốt phạm vi.
+- Các lỗi review trước đây của chức năng 1 về khóa JWT mặc định, kiểm tra HTTPS, phân trang, quyền theo cơ sở và mật khẩu demo đã được sửa trong code hiện tại.
+- Roadmap cũ yêu cầu refresh token nhưng chức năng 1 chưa có endpoint này. Code đã ghi audit log, chưa có API/WPF để admin xem hoặc xuất log.
+- Chức năng 1–2 đã có test tự động, nhưng chưa có bằng chứng kiểm thử đầy đủ trên SQL Server thật và thao tác WPF trực tiếp.
 
 ## Thứ tự thực hiện tiếp
 
-1. Sửa các lỗi review ảnh hưởng đến bảo mật và phân trang của chức năng 1.
-2. Triển khai chức năng 2 trên kiến trúc và WPF hiện tại; dữ liệu catalog là đầu vào của đặt chỗ.
-3. Làm lần lượt chức năng 3 → 4 → 5 để hoàn thành luồng demo từ chọn kho đến bàn giao.
+1. Kiểm chứng chức năng 1–2 với SQL Server thật và thao tác WPF trực tiếp.
+2. Triển khai chức năng 3, nối dữ liệu đã chọn từ catalog vào luồng tạo reservation và giữ chỗ 15 phút.
+3. Làm lần lượt chức năng 4 → 5 để hoàn thành luồng demo từ chọn kho đến bàn giao.

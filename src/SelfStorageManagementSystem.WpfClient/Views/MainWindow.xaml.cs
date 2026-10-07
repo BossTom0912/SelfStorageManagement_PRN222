@@ -81,6 +81,13 @@ public partial class MainWindow : Window
         catalogWindow.ShowDialog();
     }
 
+    private void BtnMyReservations_Click(object sender, RoutedEventArgs e)
+    {
+        var reservationsWindow = new MyReservationsWindow();
+        reservationsWindow.Owner = this;
+        reservationsWindow.ShowDialog();
+    }
+
     private async Task RefreshProfileAsync()
     {
         var meResult = await ApiClient.Instance.GetMeAsync();

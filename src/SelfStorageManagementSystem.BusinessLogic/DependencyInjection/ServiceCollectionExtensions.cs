@@ -17,6 +17,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAdminAccountService, AdminAccountService>();
         services.AddScoped<IDemoAccountBootstrapService, DemoAccountBootstrapService>();
         services.AddScoped<IFacilityCatalogService, FacilityCatalogService>();
+        services.AddScoped<IReservationService, ReservationService>();
 
         return services;
     }

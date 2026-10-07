@@ -457,6 +457,61 @@ public class ApiClient
             requiresAuth: false);
     }
 
+    public Task<ApiResponse<ReservationDetailClientModel>> CreateReservationHoldAsync(
+        CreateReservationClientRequest request)
+    {
+        return SendRequestAsync<ReservationDetailClientModel>(
+            HttpMethod.Post,
+            "api/reservations",
+            jsonBody: request,
+            requiresAuth: true);
+    }
+
+    public Task<ApiResponse<ReservationDetailClientModel>> GetReservationByIdAsync(long id)
+    {
+        return SendRequestAsync<ReservationDetailClientModel>(
+            HttpMethod.Get,
+            $"api/reservations/{id}",
+            jsonBody: null,
+            requiresAuth: true);
+    }
+
+    public Task<ApiResponse<PagedResult<ReservationListItemClientModel>>> GetMyReservationsAsync(
+        int pageNumber = 1,
+        int pageSize = 10,
+        string? status = null)
+    {
+        var queryParams = new List<string>
+        {
+            $"pageNumber={pageNumber}",
+            $"pageSize={pageSize}"
+        };
+
+        if (!string.IsNullOrWhiteSpace(status))
+        {
+            queryParams.Add($"status={Uri.EscapeDataString(status.Trim())}");
+        }
+
+        var queryString = string.Join("&", queryParams);
+        return SendRequestAsync<PagedResult<ReservationListItemClientModel>>(
+            HttpMethod.Get,
+            $"api/reservations/mine?{queryString}",
+            jsonBody: null,
+            requiresAuth: true);
+    }
+
+    public Task<ApiResponse<ReservationDetailClientModel>> CancelReservationAsync(
+        long id,
+        string? reason = null)
+    {
+        var body = new CancelReservationClientRequest { Reason = reason };
+        return SendRequestAsync<ReservationDetailClientModel>(
+            HttpMethod.Post,
+            $"api/reservations/{id}/cancel",
+            jsonBody: body,
+            requiresAuth: true);
+    }
+
     public void Logout()
     {
         SessionStore.Clear();
