@@ -22,6 +22,7 @@ public class ReservationRepository : GenericRepository<reservation>, IReservatio
         CancellationToken cancellationToken = default)
     {
         return await _context.reservations
+            .AsNoTracking()
             .Include(r => r.customer)
                 .ThenInclude(c => c.user)
             .Include(r => r.facility)
@@ -285,7 +286,16 @@ public class ReservationRepository : GenericRepository<reservation>, IReservatio
             if (current.status == "cancelled")
             {
                 if (transaction != null) await transaction.RollbackAsync(cancellationToken);
-                return current; // Idempotent success
+                _context.Entry(current).State = EntityState.Detached;
+                var loadedCancelled = await _context.reservations
+                    .AsNoTracking()
+                    .Include(r => r.customer)
+                        .ThenInclude(c => c.user)
+                    .Include(r => r.facility)
+                    .Include(r => r.unit_type)
+                    .Include(r => r.facility_rate)
+                    .FirstOrDefaultAsync(x => x.id == reservationId, cancellationToken);
+                return loadedCancelled ?? current; // Idempotent success with complete navigation details
             }
 
             if (current.status == "confirmed")
@@ -346,8 +356,14 @@ public class ReservationRepository : GenericRepository<reservation>, IReservatio
             if (affected == 0)
             {
                 // Re-evaluate state after race condition
+                _context.Entry(current).State = EntityState.Detached;
                 var refreshed = await _context.reservations
                     .AsNoTracking()
+                    .Include(r => r.customer)
+                        .ThenInclude(c => c.user)
+                    .Include(r => r.facility)
+                    .Include(r => r.unit_type)
+                    .Include(r => r.facility_rate)
                     .FirstOrDefaultAsync(x => x.id == reservationId, cancellationToken);
 
                 if (transaction != null) await transaction.RollbackAsync(cancellationToken);
@@ -393,7 +409,11 @@ public class ReservationRepository : GenericRepository<reservation>, IReservatio
 
             if (transaction != null) await transaction.CommitAsync(cancellationToken);
 
+            // Detach tracked entity to ensure ChangeTracker does not retain stale state
+            _context.Entry(current).State = EntityState.Detached;
+
             var updated = await _context.reservations
+                .AsNoTracking()
                 .Include(r => r.customer)
                     .ThenInclude(c => c.user)
                 .Include(r => r.facility)

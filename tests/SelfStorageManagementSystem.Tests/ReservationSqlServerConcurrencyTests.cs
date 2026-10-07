@@ -21,7 +21,30 @@ public sealed class SqlIntegrationFactAttribute : FactAttribute
         var conn = Environment.GetEnvironmentVariable(EnvVarName);
         if (string.IsNullOrWhiteSpace(conn))
         {
-            Skip = $"Bỏ qua bài test vì chưa cấu hình database kiểm thử tách biệt (yêu cầu biến môi trường '{EnvVarName}'). Không chạy trên database ứng dụng để tránh rủi ro xóa hoặc làm sai lệch dữ liệu.";
+            Skip = $"Bỏ qua bài test vì chưa cấu hình database kiểm thử tách biệt (yêu cầu biến môi trường '{EnvVarName}'). Chưa xác minh SQL concurrency.";
+            return;
+        }
+
+        // Kiểm tra an toàn danh tính database để từ chối database thật/production
+        try
+        {
+            var builder = new SqlConnectionStringBuilder(conn);
+            var dbName = builder.InitialCatalog?.Trim() ?? string.Empty;
+
+            if (string.Equals(dbName, "SelfStoragePRN222", StringComparison.OrdinalIgnoreCase))
+            {
+                Skip = "Từ chối thực thi trên database ứng dụng chính 'SelfStoragePRN222'. Database kiểm thử phải là database riêng biệt (ví dụ: 'SelfStoragePRN222_Test'). Chưa xác minh SQL concurrency.";
+                return;
+            }
+
+            if (!dbName.Contains("test", StringComparison.OrdinalIgnoreCase))
+            {
+                Skip = $"Database '{dbName}' không chứa định danh kiểm thử ('test'). Để bảo đảm an toàn dữ liệu, chỉ cho phép chạy trên database kiểm thử tách biệt. Chưa xác minh SQL concurrency.";
+            }
+        }
+        catch (Exception ex)
+        {
+            Skip = $"Chuỗi kết nối trong '{EnvVarName}' không hợp lệ ({ex.Message}). Bỏ qua test để bảo đảm an toàn. Chưa xác minh SQL concurrency.";
         }
     }
 }
@@ -30,8 +53,19 @@ public class ReservationSqlServerConcurrencyTests
 {
     private static string GetTestConnectionString()
     {
-        return Environment.GetEnvironmentVariable(SqlIntegrationFactAttribute.EnvVarName)
+        var conn = Environment.GetEnvironmentVariable(SqlIntegrationFactAttribute.EnvVarName)
             ?? throw new InvalidOperationException($"Biến môi trường '{SqlIntegrationFactAttribute.EnvVarName}' chưa được thiết lập.");
+
+        var builder = new SqlConnectionStringBuilder(conn);
+        var dbName = builder.InitialCatalog?.Trim() ?? string.Empty;
+
+        if (string.Equals(dbName, "SelfStoragePRN222", StringComparison.OrdinalIgnoreCase) ||
+            !dbName.Contains("test", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidOperationException($"Từ chối kết nối tới database '{dbName}'. Yêu cầu database kiểm thử riêng biệt có tiền tố/hậu tố 'test' để đảm bảo an toàn dữ liệu.");
+        }
+
+        return conn;
     }
 
     private static SelfStorageDbContext CreateDbContext(string connectionString)
@@ -47,7 +81,7 @@ public class ReservationSqlServerConcurrencyTests
     {
         var connectionString = GetTestConnectionString();
 
-        // Kiểm tra kết nối tới database kiểm thử. Nếu cấu hình sai, báo lỗi rõ ràng thay vì giả lập pass.
+        // 1. Kiểm tra kết nối tới database kiểm thử
         try
         {
             await using var probeConn = new SqlConnection(connectionString);
@@ -64,23 +98,49 @@ public class ReservationSqlServerConcurrencyTests
         var cleanupReservationIds = new List<long>();
         var cleanupStorageUnitIds = new List<long>();
         var cleanupFacilityRateIds = new List<long>();
+        var cleanupPriceRangeIds = new List<long>();
         var cleanupUnitTypeIds = new List<long>();
         var cleanupUserIds = new List<long>();
+        var cleanupFacilityIds = new List<long>();
 
         var testRunId = Guid.NewGuid().ToString("N")[..8];
         var testStartDate = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(15));
         var testEndDate = testStartDate.AddMonths(1);
 
-        long facilityId = 1; // Sử dụng facility id = 1 có sẵn trong DB test
+        long facilityId = 0;
         long testUnitTypeId = 0;
         long custUser1Id = 0;
         long custUser2Id = 0;
 
         try
         {
-            // 1. Tự seed dữ liệu kiểm thử ĐỘC LẬP - Tuyệt đối không xóa bất kỳ reservation có sẵn nào
+            // 2. Tự seed dữ liệu kiểm thử ĐỘC LẬP - Tuyệt đối không xóa bất kỳ dữ liệu có sẵn nào
             await using (var seedDb = CreateDbContext(connectionString))
             {
+                // Kiểm tra facility khả dụng hoặc tự tạo facility test
+                var activeFacility = await seedDb.facilities.FirstOrDefaultAsync(f => f.status == "active");
+                if (activeFacility == null)
+                {
+                    var testFac = new facility
+                    {
+                        code = $"FAC_C_{testRunId}",
+                        name = $"Facility Test {testRunId}",
+                        address_line = "123 Vo Van Ngan",
+                        district = "Thu Duc",
+                        city = "Ho Chi Minh City",
+                        status = "active",
+                        timezone = "Asia/Ho_Chi_Minh"
+                    };
+                    seedDb.facilities.Add(testFac);
+                    await seedDb.SaveChangesAsync();
+                    facilityId = testFac.id;
+                    cleanupFacilityIds.Add(testFac.id);
+                }
+                else
+                {
+                    facilityId = activeFacility.id;
+                }
+
                 // Đảm bảo có role customer
                 var custRole = await seedDb.roles.FirstOrDefaultAsync(r => r.code == RoleConstants.StorageCustomer);
                 if (custRole == null)
@@ -121,7 +181,7 @@ public class ReservationSqlServerConcurrencyTests
                 seedDb.customer_profiles.Add(new customer_profile { user_id = u1.id, full_name = $"Test Customer 1 {testRunId}", created_at = DateTimeOffset.UtcNow, updated_at = DateTimeOffset.UtcNow });
                 seedDb.customer_profiles.Add(new customer_profile { user_id = u2.id, full_name = $"Test Customer 2 {testRunId}", created_at = DateTimeOffset.UtcNow, updated_at = DateTimeOffset.UtcNow });
 
-                // Tạo 1 unit_type test riêng biệt để không can thiệp vào loại kho khác
+                // Tạo 1 unit_type test riêng biệt
                 var ut = new unit_type
                 {
                     code = $"UT_C_{testRunId}",
@@ -138,6 +198,19 @@ public class ReservationSqlServerConcurrencyTests
                 testUnitTypeId = ut.id;
                 cleanupUnitTypeIds.Add(ut.id);
 
+                // Tạo price_range HỢP LỆ trước facility_rate để thỏa mãn trigger trg_facility_rates_validate_price_range
+                var pr = new price_range
+                {
+                    unit_type_id = ut.id,
+                    min_monthly_rate = 500_000m,
+                    max_monthly_rate = 2_000_000m,
+                    valid_from = testStartDate.AddMonths(-2),
+                    created_at = DateTimeOffset.UtcNow
+                };
+                seedDb.price_ranges.Add(pr);
+                await seedDb.SaveChangesAsync();
+                cleanupPriceRangeIds.Add(pr.id);
+
                 // Tạo facility_rate cho unit type test
                 var rate = new facility_rate
                 {
@@ -153,7 +226,7 @@ public class ReservationSqlServerConcurrencyTests
                 await seedDb.SaveChangesAsync();
                 cleanupFacilityRateIds.Add(rate.id);
 
-                // Tạo CHÍNH XÁC 1 storage_unit khả dụng cho loại kho test này -> Sức chứa còn lại đúng bằng 1
+                // Tạo CHÍNH XÁC 1 storage_unit khả dụng cho loại kho test này -> Sức chứa khả dụng đúng bằng 1
                 var unit = new storage_unit
                 {
                     facility_id = facilityId,
@@ -169,7 +242,7 @@ public class ReservationSqlServerConcurrencyTests
                 cleanupStorageUnitIds.Add(unit.id);
             }
 
-            // 2. Chạy 2 task đặt chỗ song song cạnh tranh đúng 1 suất khả dụng duy nhất
+            // 3. Chạy 2 task đặt chỗ song song cạnh tranh đúng 1 suất khả dụng duy nhất
             var task1 = Task.Run(async () =>
             {
                 await using var db1 = CreateDbContext(connectionString);
@@ -209,6 +282,15 @@ public class ReservationSqlServerConcurrencyTests
                 task2.ContinueWith(t => (Success: t.Status == TaskStatus.RanToCompletion, Result: t.Status == TaskStatus.RanToCompletion ? t.Result : null, Exception: t.Exception?.InnerException))
             );
 
+            // Thu thập ID reservation tạo thành công NGAY LẬP TỨC (trước khi gọi Assert) để đảm bảo luôn được dọn dẹp
+            foreach (var outcome in outcomes)
+            {
+                if (outcome.Success && outcome.Result != null)
+                {
+                    cleanupReservationIds.Add(outcome.Result.Id);
+                }
+            }
+
             var successCount = outcomes.Count(o => o.Success);
             var failureCount = outcomes.Count(o => !o.Success);
 
@@ -220,13 +302,12 @@ public class ReservationSqlServerConcurrencyTests
             var failedOutcome = outcomes.First(o => !o.Success);
 
             Assert.NotNull(successfulOutcome.Result);
-            cleanupReservationIds.Add(successfulOutcome.Result.Id);
 
             // Thất bại phải là do hết sức chứa (ConflictException / HTTP 409)
             Assert.NotNull(failedOutcome.Exception);
             Assert.IsType<ConflictException>(failedOutcome.Exception);
 
-            // 3. Xác minh trong database: Chỉ đúng 1 reservation được lưu
+            // 4. Xác minh trong database: Chỉ đúng 1 reservation được lưu
             await using (var verifyDb = CreateDbContext(connectionString))
             {
                 var finalHoldCount = await verifyDb.reservations
@@ -237,17 +318,37 @@ public class ReservationSqlServerConcurrencyTests
         }
         finally
         {
-            // Dọn dẹp chỉ đúng những bản ghi kiểm thử do chính bài test này sinh ra
+            // Dọn dẹp an toàn theo đúng thứ tự khóa ngoại ngược lại
             try
             {
                 await using var cleanupDb = CreateDbContext(connectionString);
-                if (cleanupReservationIds.Any())
+
+                // 1. Dọn dẹp reservations thuộc bài test (dựa trên testUnitTypeId và cleanupUserIds để bao phủ cả khi Assert lỗi sớm)
+                if (testUnitTypeId > 0 || cleanupUserIds.Any() || cleanupReservationIds.Any())
                 {
-                    var resToRemove = await cleanupDb.reservations.Where(r => cleanupReservationIds.Contains(r.id)).ToListAsync();
-                    cleanupDb.reservations.RemoveRange(resToRemove);
-                    await cleanupDb.SaveChangesAsync();
+                    var resToRemove = await cleanupDb.reservations
+                        .Where(r => (testUnitTypeId > 0 && r.unit_type_id == testUnitTypeId) ||
+                                    cleanupUserIds.Contains(r.customer_id) ||
+                                    cleanupReservationIds.Contains(r.id))
+                        .ToListAsync();
+
+                    if (resToRemove.Any())
+                    {
+                        var resIds = resToRemove.Select(r => r.id).ToList();
+                        var invoicesToRemove = await cleanupDb.invoices
+                            .Where(inv => inv.reservation_id.HasValue && resIds.Contains(inv.reservation_id.Value))
+                            .ToListAsync();
+                        if (invoicesToRemove.Any())
+                        {
+                            cleanupDb.invoices.RemoveRange(invoicesToRemove);
+                        }
+
+                        cleanupDb.reservations.RemoveRange(resToRemove);
+                        await cleanupDb.SaveChangesAsync();
+                    }
                 }
 
+                // 2. Storage units
                 if (cleanupStorageUnitIds.Any())
                 {
                     var unitsToRemove = await cleanupDb.storage_units.Where(u => cleanupStorageUnitIds.Contains(u.id)).ToListAsync();
@@ -255,6 +356,7 @@ public class ReservationSqlServerConcurrencyTests
                     await cleanupDb.SaveChangesAsync();
                 }
 
+                // 3. Facility rates
                 if (cleanupFacilityRateIds.Any())
                 {
                     var ratesToRemove = await cleanupDb.facility_rates.Where(r => cleanupFacilityRateIds.Contains(r.id)).ToListAsync();
@@ -262,6 +364,15 @@ public class ReservationSqlServerConcurrencyTests
                     await cleanupDb.SaveChangesAsync();
                 }
 
+                // 4. Price ranges
+                if (cleanupPriceRangeIds.Any())
+                {
+                    var prToRemove = await cleanupDb.price_ranges.Where(pr => cleanupPriceRangeIds.Contains(pr.id)).ToListAsync();
+                    cleanupDb.price_ranges.RemoveRange(prToRemove);
+                    await cleanupDb.SaveChangesAsync();
+                }
+
+                // 5. Unit types
                 if (cleanupUnitTypeIds.Any())
                 {
                     var utToRemove = await cleanupDb.unit_types.Where(ut => cleanupUnitTypeIds.Contains(ut.id)).ToListAsync();
@@ -269,6 +380,7 @@ public class ReservationSqlServerConcurrencyTests
                     await cleanupDb.SaveChangesAsync();
                 }
 
+                // 6. User profiles & roles & users
                 if (cleanupUserIds.Any())
                 {
                     var profilesToRemove = await cleanupDb.customer_profiles.Where(cp => cleanupUserIds.Contains(cp.user_id)).ToListAsync();
@@ -282,10 +394,19 @@ public class ReservationSqlServerConcurrencyTests
 
                     await cleanupDb.SaveChangesAsync();
                 }
+
+                // 7. Test facilities (nếu có tạo mới)
+                if (cleanupFacilityIds.Any())
+                {
+                    var facToRemove = await cleanupDb.facilities.Where(f => cleanupFacilityIds.Contains(f.id)).ToListAsync();
+                    cleanupDb.facilities.RemoveRange(facToRemove);
+                    await cleanupDb.SaveChangesAsync();
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                // Không để lỗi dọn dẹp che khuất kết quả kiểm thử chính
+                // Báo lỗi dọn dẹp rõ ràng, không nuốt ngoại lệ
+                throw new InvalidOperationException($"[CLEANUP_FAILURE] Không thể dọn dẹp fixture kiểm thử SQL Server: {ex.Message}", ex);
             }
         }
     }

@@ -689,4 +689,145 @@ public class ReservationServiceTests
         var reloaded = await context1.reservations.AsNoTracking().FirstAsync(x => x.id == r.id);
         Assert.Equal("confirmed", reloaded.status);
     }
+
+    [Fact]
+    public async Task GetReservationById_WhenConcurrentConfirmationOccurs_ReturnsFreshConfirmedStatus()
+    {
+        var dbName = Guid.NewGuid().ToString();
+        var (service, context) = SetupService(dbName);
+        await SeedBasicTestDataAsync(context);
+
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var r = new reservation
+        {
+            reservation_code = "RES-GET-RACE-CONFIRM",
+            customer_id = 10,
+            facility_id = 1,
+            unit_type_id = 1,
+            facility_rate_id = 1,
+            start_date = today.AddDays(2),
+            end_date = today.AddDays(2).AddMonths(1),
+            monthly_rate_snapshot = 900000m,
+            deposit_snapshot = 900000m,
+            quoted_total = 1850000m,
+            hold_until = DateTimeOffset.UtcNow.AddMinutes(-2), // overdue
+            status = "confirmed", // Confirmed concurrently in database
+            confirmed_at = DateTimeOffset.UtcNow.AddMinutes(-1),
+            created_at = DateTimeOffset.UtcNow.AddMinutes(-20),
+            updated_at = DateTimeOffset.UtcNow.AddMinutes(-1)
+        };
+        context.reservations.Add(r);
+        await context.SaveChangesAsync();
+
+        var detail = await service.GetReservationByIdAsync(
+            10,
+            new[] { RoleConstants.StorageCustomer },
+            r.id);
+
+        Assert.NotNull(detail);
+        Assert.Equal("confirmed", detail.Status);
+        Assert.False(detail.CanCancel);
+        Assert.False(detail.IsHoldActive);
+    }
+
+    [Fact]
+    public async Task CancelReservation_ReturnsFreshCancelledState_EvenWhenEntityWasTrackedAsPending()
+    {
+        var dbName = Guid.NewGuid().ToString();
+        var (service, context) = SetupService(dbName);
+        await SeedBasicTestDataAsync(context);
+
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var r = new reservation
+        {
+            reservation_code = "RES-CANCEL-TRACKED",
+            customer_id = 10,
+            facility_id = 1,
+            unit_type_id = 1,
+            facility_rate_id = 1,
+            start_date = today.AddDays(2),
+            end_date = today.AddDays(2).AddMonths(1),
+            monthly_rate_snapshot = 900000m,
+            deposit_snapshot = 900000m,
+            quoted_total = 1850000m,
+            hold_until = DateTimeOffset.UtcNow.AddMinutes(10), // active hold
+            status = "pending",
+            created_at = DateTimeOffset.UtcNow,
+            updated_at = DateTimeOffset.UtcNow
+        };
+        context.reservations.Add(r);
+        await context.SaveChangesAsync();
+
+        // Simulate local tracking in the same context
+        var tracked = await context.reservations.FirstAsync(x => x.id == r.id);
+        Assert.Equal("pending", tracked.status);
+
+        var detail = await service.CancelReservationAsync(
+            10,
+            new[] { RoleConstants.StorageCustomer },
+            r.id,
+            new CancelReservationRequest { Reason = "User changed mind" });
+
+        Assert.NotNull(detail);
+        Assert.Equal("cancelled", detail.Status);
+        Assert.False(detail.CanCancel);
+        Assert.NotNull(detail.CancelledAt);
+        Assert.Equal("User changed mind", detail.CancellationReason);
+
+        // Verify DB record
+        var reloadedFromDb = await context.reservations.AsNoTracking().FirstAsync(x => x.id == r.id);
+        Assert.Equal("cancelled", reloadedFromDb.status);
+    }
+
+    [Theory]
+    [InlineData("pending", true, true)]    // Active hold -> CanCancel = true
+    [InlineData("pending", false, false)]  // Expired hold -> CanCancel = false
+    [InlineData("confirmed", true, false)] // Confirmed -> CanCancel = false (consistent with CancelReservationAsync 409 rejection)
+    [InlineData("cancelled", true, false)] // Cancelled -> CanCancel = false
+    [InlineData("expired", false, false)]  // Expired -> CanCancel = false
+    public async Task CanCancelPolicy_DetailResponseAndListItemResponse_AreStrictlyConsistent(
+        string status,
+        bool holdInFuture,
+        bool expectedCanCancel)
+    {
+        var dbName = Guid.NewGuid().ToString();
+        var (service, context) = SetupService(dbName);
+        await SeedBasicTestDataAsync(context);
+
+        var now = DateTimeOffset.UtcNow;
+        var holdUntil = holdInFuture ? now.AddMinutes(10) : now.AddMinutes(-10);
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+
+        var r = new reservation
+        {
+            reservation_code = $"RES-CONSIST-{status}-{holdInFuture}",
+            customer_id = 10,
+            facility_id = 1,
+            unit_type_id = 1,
+            facility_rate_id = 1,
+            start_date = today.AddDays(2),
+            end_date = today.AddDays(2).AddMonths(1),
+            monthly_rate_snapshot = 900000m,
+            deposit_snapshot = 900000m,
+            quoted_total = 1850000m,
+            hold_until = holdUntil,
+            status = status,
+            created_at = now.AddMinutes(-30),
+            updated_at = now.AddMinutes(-10)
+        };
+        context.reservations.Add(r);
+        await context.SaveChangesAsync();
+
+        // 1. Get detail response
+        var detail = await service.GetReservationByIdAsync(10, new[] { RoleConstants.StorageCustomer }, r.id);
+
+        // 2. Get list item response via GetMyReservations
+        var listResult = await service.GetMyReservationsAsync(10, new GetMyReservationsRequest { PageNumber = 1, PageSize = 10 });
+        var listItem = listResult.Items.First(x => x.Id == r.id);
+
+        // Both detail and list item responses must agree with each other and with expectedCanCancel
+        Assert.Equal(expectedCanCancel, detail.CanCancel);
+        Assert.Equal(expectedCanCancel, listItem.CanCancel);
+        Assert.Equal(detail.CanCancel, listItem.CanCancel);
+    }
 }

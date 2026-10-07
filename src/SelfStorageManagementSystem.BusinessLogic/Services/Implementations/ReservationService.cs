@@ -413,7 +413,7 @@ public class ReservationService : IReservationService
         var isPendingHold = r.status == "pending" || r.status == "awaiting_deposit";
         var isHoldActive = isPendingHold && r.hold_until > nowUtc;
         var remainingSeconds = isHoldActive ? Math.Max(0, (int)(r.hold_until - nowUtc).TotalSeconds) : 0;
-        var canCancel = (isPendingHold && r.hold_until > nowUtc) || r.status == "confirmed";
+        var canCancel = isPendingHold && r.hold_until > nowUtc;
 
         return new ReservationListItemResponse
         {

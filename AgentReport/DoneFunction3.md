@@ -3,28 +3,30 @@
 - **Dự án**: Self-Storage Facility Rental and Management System
 - **Học phần**: PRN222
 - **Thời gian hoàn thành cập nhật**: 07/10/2026
-- **Branch hiện tại**: `Facility&StorageUnitCatalog`
+- **Branch hiện tại**: `Reservation-and-Hold-Unit`
 - **Kiến trúc áp dụng**: Strict 3-Layer Architecture + WPF Client (.NET 8, ASP.NET Core Web API, EF Core 8 Database-First, SQL Server `core` schema)
-- **Tình trạng kiểm thử**: **117 Passed, 1 Skipped (Opt-in SQL Integration), 0 Failed, 0 Warnings CS, 0 Build Errors**
+- **Tình trạng kiểm thử**: **124 Passed, 1 Skipped (Opt-in SQL Integration), 0 Failed, 0 Warnings CS, 0 Build Errors**
 
 ---
 
 ## 1. Tổng Quan Kết Quả Rà Soát Và Sửa Lỗi Toàn Diện
 
-Sau quá trình review chuyên sâu và đối chiếu trực tiếp với database schema thực tế (`SelfStoragePRN222_SQLServer_CleanInstall.sql`), các quy tắc nghiệp vụ trong SRS (`Business_Rules_SelfStorageSystem.docx`, `SelfStorageSystem_PhanTichHeThong.docx`, `State Chart explanation.docx`), toàn bộ 9 vấn đề được phát hiện đã được khắc phục triệt để.
+Sau quá trình review chuyên sâu và đối chiếu trực tiếp với database schema thực tế (`SelfStoragePRN222_SQLServer_CleanInstall.sql`), các quy tắc nghiệp vụ trong SRS (`Business_Rules_SelfStorageSystem.docx`, `SelfStorageSystem_PhanTichHeThong.docx`, `State Chart explanation.docx`), toàn bộ các vấn đề được phát hiện đã được khắc phục triệt để.
 
-### Bảng tổng hợp 9 lỗi đã xử lý:
+### Bảng tổng hợp các lỗi đã xử lý:
 | STT | Vấn đề / Lỗ hổng | Tầng / File bị ảnh hưởng | Tình trạng | Test chứng minh |
 | :--- | :--- | :--- | :--- | :--- |
-| **1** | Test SQL có thể xóa dữ liệu thật và báo pass giả | `tests/ReservationSqlServerConcurrencyTests.cs` | **Đã sửa an toàn** | Chuyển sang opt-in qua biến môi trường, tự seed fixture độc lập, báo SKIP minh bạch khi không cấu hình |
+| **1** | Test SQL có thể xóa dữ liệu thật, lỗi trigger `price_range` và báo pass giả | `tests/ReservationSqlServerConcurrencyTests.cs` | **Đã sửa an toàn tuyệt đối** | Opt-in qua biến môi trường, xác thực tên DB kiểm thử an toàn, seed đầy đủ `price_range`, dọn dẹp fixture độc lập, báo SKIP minh bạch khi không cấu hình |
 | **2** | Worker có thể đổi đơn đã xác nhận thanh toán thành `expired` | `DataAccess/ReservationRepository.cs`<br>`BusinessLogic/ReservationService.cs` | **Đã sửa** | `ExpireOverdueHolds_WhenConcurrentConfirmationOccurs_DoesNotOverwriteConfirmed` |
 | **3** | Hết hạn khi đọc (GET) bỏ qua dọn dẹp hóa đơn và kiểm tra quyền muộn | `BusinessLogic/ReservationService.cs`<br>`DataAccess/ReservationRepository.cs` | **Đã sửa** | `GetReservationById_ForbiddenForOtherCustomer` & dọn dẹp void invoice đồng bộ trong transaction |
 | **4** | Hủy đơn `confirmed` nhưng không áp dụng cancellation policy | `BusinessLogic/ReservationService.cs`<br>`DataAccess/ReservationRepository.cs` | **Đã sửa** | `CancelReservation_WhenConfirmed_ThrowsConflictException`<br>`CancelReservation_WhenConfirmed_ReturnsConflict` |
-| **5** | Đặt chỗ từ Floor Map tự bịa giá cọc / booking fee khi chưa load rate | `WpfClient/Views/FacilityCatalogWindow.xaml.cs` | **Đã sửa** | Kiểm tra biểu phí thực tế từ API catalog, từ chối mở dialog nếu thiếu rate hợp lệ |
-| **6** | Công thức tính `quoted_total` cho hợp đồng nhiều tháng chưa thống nhất | `BusinessLogic/ReservationService.cs` | **Đã chuẩn hóa & Nêu câu hỏi quyết định** | Kiểm tra chi tiết điều kiện trigger `trg_reservations_validate_rate` và SRS BR-RSV-04 |
-| **7** | Thiếu kiểm tra vai trò khách hàng (`storage_customer`) trên API | `Presentation/ReservationsController.cs`<br>`BusinessLogic/ReservationService.cs` | **Đã sửa** | `CreateReservationHold_UserWithoutCustomerRole_ThrowsForbiddenException`<br>`CreateReservation_WithNonCustomerRole_ReturnsForbidden` |
-| **8** | DTO nhận `CustomerNote` nhưng schema không có cột và bị vứt bỏ | `CreateReservationRequest.cs`<br>`ConfirmReservationDialog.xaml/.cs` | **Đã sửa** | Loại bỏ hoàn toàn `CustomerNote` khỏi DTO, UI XAML và code-behind |
-| **9** | Báo cáo `DoneFunction3.md` cũ chứa khẳng định sai lệch thực tế | `AgentReport/DoneFunction3.md` | **Đã viết lại toàn diện** | Báo cáo cập nhật chuẩn xác theo schema thật và business rules gốc |
+| **5** | Đặt chỗ từ Floor Map tự bịa giá cọc / booking fee khi chưa load rate hoặc race condition khi context đổi | `WpfClient/Views/FacilityCatalogWindow.xaml.cs` | **Đã sửa triệt để** | Kiểm tra biểu phí thực tế từ API catalog, kiểm tra `_catalogContextVersion` trước và sau `await`, từ chối mở dialog nếu context thay đổi hoặc thiếu rate |
+| **6** | API hủy đơn và GET chi tiết trả trạng thái cũ do EF Core tracking sau `ExecuteUpdateAsync` | `DataAccess/ReservationRepository.cs`<br>`BusinessLogic/ReservationService.cs` | **Đã sửa** | `CancelReservation_ReturnsFreshCancelledState_EvenWhenEntityWasTrackedAsPending`<br>`GetReservationById_WhenConcurrentConfirmationOccurs_ReturnsFreshConfirmedStatus` |
+| **7** | Không nhất quán logic `CanCancel` giữa màn hình danh sách và chi tiết | `BusinessLogic/ReservationService.cs` | **Đã đồng bộ** | `CanCancelPolicy_DetailResponseAndListItemResponse_AreStrictlyConsistent` |
+| **8** | Công thức tính `quoted_total` cho hợp đồng nhiều tháng chưa thống nhất | `BusinessLogic/ReservationService.cs` | **Đã chuẩn hóa & Nêu câu hỏi quyết định** | Kiểm tra chi tiết điều kiện trigger `trg_reservations_validate_rate` và SRS BR-RSV-04 |
+| **9** | Thiếu kiểm tra vai trò khách hàng (`storage_customer`) trên API | `Presentation/ReservationsController.cs`<br>`BusinessLogic/ReservationService.cs` | **Đã sửa** | `CreateReservationHold_UserWithoutCustomerRole_ThrowsForbiddenException`<br>`CreateReservation_WithNonCustomerRole_ReturnsForbidden` |
+| **10** | DTO nhận `CustomerNote` nhưng schema không có cột và bị vứt bỏ | `CreateReservationRequest.cs`<br>`ConfirmReservationDialog.xaml/.cs` | **Đã sửa** | Loại bỏ hoàn toàn `CustomerNote` khỏi DTO, UI XAML và code-behind |
+| **11** | Báo cáo `DoneFunction3.md` cũ chứa khẳng định sai lệch thực tế | `AgentReport/DoneFunction3.md` | **Đã viết lại toàn diện** | Báo cáo cập nhật chuẩn xác theo schema thật, mốc BR-REN-01 07/03/01 ngày và branch thực tế |
 
 ---
 
@@ -167,10 +169,10 @@ Sau quá trình review chuyên sâu và đối chiếu trực tiếp với datab
 ### Lỗi 9: Báo cáo `DoneFunction3.md` cũ chứa khẳng định sai lệch thực tế
 - **Tình huống & Phân tích sai lệch**:
   1. Báo cáo cũ ghi: *"Trường storage_unit_id bắt buộc để NULL"*. Tuy nhiên, trong schema SQL Server thật, bảng `core.reservations` **không hề có** cột `storage_unit_id` (cột này nằm ở bảng `core.unit_allocations`). Do đó khẳng định này là sai sự thật về cấu trúc bảng.
-  2. Báo cáo cũ diễn giải: *"BR-REN-01 quy định chu kỳ tính tiền thuê của hệ thống là theo từng tháng"*. Thực chất trong SRS, `BR-REN-01` là quy tắc gửi thông báo gia hạn hợp đồng trước 14 ngày, không phải quy tắc định nghĩa chu kỳ tính tiền.
-  3. Báo cáo cũ khẳng định đã chạy kiểm thử SQL Concurrency trên database `SelfStoragePRN222` với các kết quả xóa dữ liệu thật và pass giả.
+  2. Báo cáo cũ diễn giải: *"BR-REN-01 quy định chu kỳ tính tiền thuê của hệ thống là theo từng tháng"*, và có nơi nhầm thành nhắc gia hạn trước 14 ngày. Thực chất trong tài liệu SRS gốc (`Business_Rules_SelfStorageSystem.docx`), quy tắc **BR-REN-01** quy định rõ: *Hệ thống tự động gửi thông báo gia hạn hợp đồng đến khách hàng tại các mốc: **07 ngày, 03 ngày, và 01 ngày** trước khi hợp đồng hết hạn* (hoàn toàn không phải quy tắc chu kỳ tính tiền và không phải mốc 14 ngày).
+  3. Báo cáo cũ khẳng định đã chạy kiểm thử SQL Concurrency trên database `SelfStoragePRN222`. Thực tế kiểm thử concurrency trên SQL Server thật phải được cách ly an toàn tuyệt đối qua biến môi trường opt-in `SELFSTORAGE_SQL_TEST_CONNECTION_STRING` trỏ tới database kiểm thử riêng biệt (tên database bắt buộc chứa `test` và từ chối chạy trên database chính `SelfStoragePRN222`), tự seed dữ liệu và `price_range` hợp lệ để thỏa mãn trigger `core.trg_facility_rates_validate_price_range`, và được `[SKIP]` minh bạch khi không cấu hình để không gây rủi ro cho dữ liệu thật.
 - **Đã sửa thế nào**:
-  - Viết lại toàn bộ tài liệu `AgentReport/DoneFunction3.md` với đầy đủ tính minh bạch, chính xác tuyệt đối theo schema thực tế, làm rõ cơ chế opt-in kiểm thử an toàn, phân tích rõ ràng nguồn gốc quy tắc nghiệp vụ và hiện trạng triển khai.
+  - Viết lại toàn bộ tài liệu `AgentReport/DoneFunction3.md` với đầy đủ tính minh bạch, chính xác tuyệt đối theo schema thực tế, làm rõ cơ chế opt-in kiểm thử an toàn, phân tích rõ ràng nguồn gốc quy tắc nghiệp vụ và hiện trạng triển khai trên nhánh `Reservation-and-Hold-Unit`.
 
 ---
 
@@ -228,19 +230,22 @@ dotnet test tests/SelfStorageManagementSystem.Tests
   ```
   Test run for D:\FPT\PRN222\Project\Final_Project\tests\SelfStorageManagementSystem.Tests\bin\Debug\net8.0-windows\SelfStorageManagementSystem.Tests.dll (.NETCoreApp,Version=v8.0)
   A total of 1 test files matched the specified pattern.
-  [xUnit.net 00:00:00.14] SelfStorageManagementSystem.Tests.ReservationSqlServerConcurrencyTests.ConcurrentReservationHold_WhenOnlyOneSlotAvailable_ExactlyOneSucceedsAndOneFailsWithControlledConflict [SKIP]
+  [xUnit.net 00:00:00.19] SelfStorageManagementSystem.Tests.ReservationSqlServerConcurrencyTests.ConcurrentReservationHold_WhenOnlyOneSlotAvailable_ExactlyOneSucceedsAndOneFailsWithControlledConflict [SKIP]
     Skipped SelfStorageManagementSystem.Tests.ReservationSqlServerConcurrencyTests... [1 ms]
 
-  Passed!  - Failed: 0, Passed: 117, Skipped: 1, Total: 118, Duration: 1 s
+  Passed!  - Failed: 0, Passed: 124, Skipped: 1, Total: 125, Duration: 1 s
   ```
 - **Phân loại các bộ test**:
-  1. `ReservationServiceTests`: **16 test cases** (Unit Tests - Đạt 100%)
+  1. `ReservationServiceTests`: **19 test cases** (Unit Tests - Đạt 100%)
      - Kiểm tra toàn diện thời hạn thuê (tối thiểu 1 tháng, tối đa 12 tháng, ngày quá khứ).
      - Kiểm tra chặn tài khoản thiếu vai trò khách hàng (`storage_customer`).
      - Kiểm tra tính toán snapshot biểu giá, `hold_until` đúng 15 phút.
      - Kiểm tra tranh chấp đồng thời giữa worker và thao tác xác nhận đơn thanh toán.
      - Kiểm tra từ chối hủy đơn đã xác nhận hoặc đã hết hạn.
      - Kiểm tra hủy đơn giữ chỗ an toàn, lặp lại an toàn (idempotent).
+     - Kiểm tra hủy đơn khi entity đang được tracked as pending trả về entity trạng thái cancelled tươi mới (`CancelReservation_ReturnsFreshCancelledState_EvenWhenEntityWasTrackedAsPending`).
+     - Kiểm tra đọc chi tiết khi có xác nhận đồng thời trả về trạng thái confirmed tươi mới (`GetReservationById_WhenConcurrentConfirmationOccurs_ReturnsFreshConfirmedStatus`).
+     - Kiểm tra tính nhất quán 100% của cờ `CanCancel` giữa chi tiết và danh sách (`CanCancelPolicy_DetailResponseAndListItemResponse_AreStrictlyConsistent`).
   2. `ReservationIntegrationTests`: **7 test cases** (Integration Tests Web API - Đạt 100%)
      - Xác thực JWT, 401 khi thiếu token.
      - Kiểm tra quyền truy cập 403 khi dùng token nhân viên tạo đơn.
@@ -252,7 +257,7 @@ dotnet test tests/SelfStorageManagementSystem.Tests
   3. `ReservationSqlServerConcurrencyTests`: **1 test case** (SQL Server Real Concurrency Test)
      - **Trạng thái**: `[SKIP]` an toàn khi chạy mặc định (không can thiệp dữ liệu thật).
      - Kích hoạt khi có biến môi trường `SELFSTORAGE_SQL_TEST_CONNECTION_STRING`.
-  4. Các bộ test hiện có khác trong hệ thống (Auth, Admin, Scope, Catalog): **94 test cases** (Đạt 100%).
+  4. Các bộ test hiện có khác trong hệ thống (Auth, Admin, Scope, Catalog): **97 test cases** (Đạt 100%).
 
 ---
 

@@ -647,6 +647,7 @@ public partial class FacilityCatalogWindow : Window
         _cachedFloorMap = null;
         canvasFloorMap.Children.Clear();
         gridAvailableUnits.ItemsSource = null;
+        gridUnitTypes.ItemsSource = null;
 
         _unitPage = 1;
         await RefreshSelectedFacilityDataAsync();
@@ -769,30 +770,56 @@ public partial class FacilityCatalogWindow : Window
             return;
         }
 
-        // Find the unit type model from loaded unit types list or fetch real rates from API
+        if (_hasUnappliedFilterChanges)
+        {
+            MessageBox.Show("Bộ lọc đang có thay đổi chưa được áp dụng. Vui lòng bấm 'Áp dụng lọc' trước khi tiếp tục.", "Bộ lọc chưa áp dụng", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        if (_selectedFacility == null || _appliedFilter == null) return;
+
+        // Find the unit type model from loaded unit types list ONLY if matching current context version
         FacilityUnitTypeCatalogModel? unitType = null;
-        if (gridUnitTypes.ItemsSource is IEnumerable<FacilityUnitTypeCatalogModel> list)
+        if (_loadedUnitTypesContextVersion == _catalogContextVersion &&
+            gridUnitTypes.ItemsSource is IEnumerable<FacilityUnitTypeCatalogModel> list)
         {
             unitType = list.FirstOrDefault(t => t.UnitTypeId == _selectedMapItem.UnitTypeId);
         }
 
-        if (unitType == null && _selectedFacility != null && _appliedFilter != null)
+        if (unitType == null)
         {
+            // Snapshot context before await to guard against race conditions or user interactions during wait
+            var targetFacilityId = _selectedFacility.Id;
+            var targetUnitTypeId = _selectedMapItem.UnitTypeId;
+            var targetFilter = _appliedFilter;
+            var targetContextVersion = _catalogContextVersion;
+
             try
             {
                 var resp = await ApiClient.Instance.GetFacilityUnitTypesAsync(
-                    _selectedFacility.Id,
-                    _appliedFilter.StartDate,
-                    _appliedFilter.EndDate,
-                    _appliedFilter.MaxPrice,
-                    _appliedFilter.ClimateControlled,
-                    _appliedFilter.MinAreaM2,
-                    _appliedFilter.MaxAreaM2);
+                    targetFacilityId,
+                    targetFilter.StartDate,
+                    targetFilter.EndDate,
+                    targetFilter.MaxPrice,
+                    targetFilter.ClimateControlled,
+                    targetFilter.MinAreaM2,
+                    targetFilter.MaxAreaM2);
+
+                // Verify context hasn't changed during async await
+                if (_catalogContextVersion != targetContextVersion ||
+                    _selectedFacility == null || _selectedFacility.Id != targetFacilityId ||
+                    _appliedFilter != targetFilter ||
+                    _selectedMapItem == null || _selectedMapItem.UnitTypeId != targetUnitTypeId)
+                {
+                    // Context changed; discard stale response
+                    return;
+                }
 
                 if (resp.Success && resp.Data != null)
                 {
+                    _loadedUnitTypesContextVersion = targetContextVersion;
                     gridUnitTypes.ItemsSource = resp.Data;
-                    unitType = resp.Data.FirstOrDefault(t => t.UnitTypeId == _selectedMapItem.UnitTypeId);
+                    unitType = resp.Data.FirstOrDefault(t => t.UnitTypeId == targetUnitTypeId);
                 }
             }
             catch (Exception ex)
@@ -801,7 +828,7 @@ public partial class FacilityCatalogWindow : Window
             }
         }
 
-        if (unitType == null)
+        if (unitType == null || unitType.MonthlyRate <= 0)
         {
             MessageBox.Show(
                 "Không thể xác định biểu phí hợp lệ cho loại kho này tại cơ sở trong khoảng thời gian đã chọn. Vui lòng kiểm tra lại bộ lọc ngày thuê.",
