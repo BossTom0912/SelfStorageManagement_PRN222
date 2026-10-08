@@ -98,6 +98,50 @@ public class PaymentsController : BaseController
     }
 
     /// <summary>
+    /// Tra cứu danh sách các yêu cầu hoàn tiền.
+    /// Dành cho nhân viên cơ sở hoặc quản lý.
+    /// </summary>
+    [HttpGet("refunds")]
+    [Authorize(Roles = "facility_staff,facility_manager,business_operations_manager,system_administrator")]
+    [ProducesResponseType(typeof(ApiResponse<List<RefundDetailResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> GetRefunds(
+        [FromQuery] string? status,
+        CancellationToken cancellationToken)
+    {
+        var userId = GetCurrentUserId();
+        var roles = GetCurrentUserRoles();
+
+        var result = await _paymentService.GetRefundsAsync(userId, roles, status, cancellationToken);
+        return Ok(ApiResponse<List<RefundDetailResponse>>.Ok(result, "Danh sách yêu cầu hoàn tiền đã được tải thành công."));
+    }
+
+    /// <summary>
+    /// Phê duyệt hoặc từ chối yêu cầu hoàn tiền.
+    /// Dành cho nhân viên cơ sở hoặc quản lý.
+    /// </summary>
+    [HttpPost("refunds/{id:long}/review")]
+    [Authorize(Roles = "facility_staff,facility_manager,business_operations_manager,system_administrator")]
+    [ProducesResponseType(typeof(ApiResponse<RefundDetailResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> ReviewRefund(
+        long id,
+        [FromBody] ReviewRefundRequest request,
+        CancellationToken cancellationToken)
+    {
+        var userId = GetCurrentUserId();
+        var roles = GetCurrentUserRoles();
+
+        var result = await _paymentService.ReviewRefundAsync(userId, roles, id, request, cancellationToken);
+        return Ok(ApiResponse<RefundDetailResponse>.Ok(result, "Cập nhật kết quả duyệt hoàn tiền thành công."));
+    }
+
+    /// <summary>
     /// VNPAY IPN webhook server-to-server.
     /// Nguồn sự thật cập nhật trạng thái thanh toán từ nhà cung cấp VNPAY.
     /// </summary>
@@ -108,17 +152,10 @@ public class PaymentsController : BaseController
         var queryParams = Request.Query.ToDictionary(k => k.Key, v => v.Value.ToString());
         var result = await _paymentService.ProcessVnpayIpnAsync(queryParams, cancellationToken);
 
-        if (!result.IsValidSignature)
-        {
-            return Ok(new { RspCode = "97", Message = "Invalid Signature" });
-        }
+        var rspCode = result.IpnResponseCode ?? (result.IsValidSignature ? "00" : "97");
+        var rspMsg = result.IpnResponseMessage ?? (result.IsValidSignature ? "Confirm Success" : "Invalid Signature");
 
-        if (result.FailureReason == "Invalid payment TxnRef.")
-        {
-            return Ok(new { RspCode = "01", Message = "Order not found" });
-        }
-
-        return Ok(new { RspCode = "00", Message = "Confirm Success" });
+        return Ok(new { RspCode = rspCode, Message = rspMsg });
     }
 
     /// <summary>
@@ -215,35 +252,12 @@ public class PaymentsController : BaseController
                     <p class="info">Môi trường giả lập đồ án PRN222<br>Mã giao dịch: <strong>{{id}}</strong></p>
                     <div class="amount">{{amount:N0}} đ</div>
                     <p class="info">Hạn giữ chỗ đến: <strong>{{holdUntil ?? "-"}}</strong></p>
-                    <p class="info">Chọn kết quả giả lập bạn muốn gửi về máy chủ:</p>
-                    <button class="btn btn-success" onclick="completePayment(true)">✅ Giả lập Thanh Toán Thành Công</button>
-                    <button class="btn btn-danger" onclick="completePayment(false)">❌ Giả lập Thanh Toán Thất Bại</button>
-                    <div id="status" style="margin-top: 16px; font-size: 14px; color: #facc15;"></div>
+                    <div style="background: #0f2b48; border: 1px solid #38bdf8; border-radius: 8px; padding: 16px; margin-top: 20px; text-align: left; font-size: 13px; line-height: 1.6; color: #e0f2fe;">
+                        <strong>📌 Hướng dẫn hoàn tất thanh toán demo:</strong><br>
+                        Để bảo đảm an toàn xác thực phiên JWT của khách hàng, thao tác hoàn tất demo được thực hiện có xác thực trực tiếp trên ứng dụng máy tính <strong>SelfStorageManagementSystem (WPF Client)</strong>.<br><br>
+                        👉 <em>Vui lòng quay lại cửa sổ thanh toán WPF và bấm nút <strong>⚡ Giả lập thanh toán thành công (Demo)</strong>.</em>
+                    </div>
                 </div>
-
-                <script>
-                    async function completePayment(isSuccess) {
-                        const statusDiv = document.getElementById('status');
-                        statusDiv.innerText = 'Đang gửi kết quả về hệ thống...';
-                        try {
-                            const res = await fetch('/api/payments/demo/{{id}}/complete', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ isSuccess: isSuccess, failureReason: isSuccess ? null : 'Simulated card declined' })
-                            });
-                            if (res.ok) {
-                                statusDiv.style.color = '#34d399';
-                                statusDiv.innerText = 'Giao dịch đã được ghi nhận! Bạn có thể quay lại ứng dụng WPF.';
-                            } else {
-                                statusDiv.style.color = '#f87171';
-                                statusDiv.innerText = 'Máy chủ phản hồi lỗi hoặc yêu cầu đăng nhập nhân viên/khách.';
-                            }
-                        } catch (err) {
-                            statusDiv.style.color = '#f87171';
-                            statusDiv.innerText = 'Lỗi kết nối: ' + err.message;
-                        }
-                    }
-                </script>
             </body>
             </html>
             """;

@@ -25,6 +25,8 @@ public class PaymentGatewayCallbackResult
     public string? FailureReason { get; set; }
     public string? BankCode { get; set; }
     public DateTimeOffset? PayDate { get; set; }
+    public string? IpnResponseCode { get; set; }
+    public string? IpnResponseMessage { get; set; }
     public IDictionary<string, string> RawParameters { get; set; } = new Dictionary<string, string>();
 }
 

@@ -87,6 +87,7 @@ public partial class CheckoutWindow : Window
         txtTotalAmount.Text = $"{quote.QuotedTotal:N0} đ";
 
         lblPolicyVersionHeader.Text = $"Phiên bản điều khoản áp dụng: {quote.PolicyVersion}";
+        txtPolicyTermsContent.Text = FormatPolicyTerms(quote.PolicyContentJson);
 
         if (!string.IsNullOrWhiteSpace(quote.PromotionCode))
         {
@@ -153,6 +154,14 @@ public partial class CheckoutWindow : Window
         txtHoldCountdown.Text = $"{(int)remaining.TotalMinutes:D2}:{remaining.Seconds:D2}";
     }
 
+    private void RbGateway_CheckedChanged(object sender, RoutedEventArgs e)
+    {
+        if (panelWaitingPayment != null && btnSimulateSuccessNow != null)
+        {
+            btnSimulateSuccessNow.Visibility = (rbDemoGateway.IsChecked == true) ? Visibility.Visible : Visibility.Collapsed;
+        }
+    }
+
     private void UpdateCheckoutButtonState()
     {
         btnCheckout.IsEnabled = chkAcceptTerms.IsChecked == true && _quote != null && _quote.IsHoldActive && _checkoutResponse == null;
@@ -200,6 +209,7 @@ public partial class CheckoutWindow : Window
         {
             lblStatusBottom.Text = $"Lỗi thanh toán: {response.Message}";
             MessageBox.Show(response.Message, "Thanh toán không thành công", MessageBoxButton.OK, MessageBoxImage.Warning);
+            _idempotencyKey = Guid.NewGuid().ToString("N"); // Refresh idempotency key to guide creating a new attempt
             btnCheckout.IsEnabled = true;
             btnApplyPromo.IsEnabled = true;
             txtPromotionInput.IsEnabled = true;
@@ -210,10 +220,14 @@ public partial class CheckoutWindow : Window
         lblStatusBottom.Text = "Đã khởi tạo giao dịch thanh toán thành công.";
 
         panelWaitingPayment.Visibility = Visibility.Visible;
+        btnSimulateSuccessNow.Visibility = (rbDemoGateway.IsChecked == true) ? Visibility.Visible : Visibility.Collapsed;
         lblPaymentAttemptInfo.Text = $"Giao dịch #{_checkoutResponse.PaymentId} ({_checkoutResponse.Provider}). Tổng tiền: {_checkoutResponse.Amount:N0} đ. Đang mở cổng thanh toán...";
 
-        // Open checkout URL in default browser
-        OpenBrowser(_checkoutResponse.CheckoutUrl);
+        // Open checkout URL in default browser only if URL is present and attempt is payable
+        if (!string.IsNullOrWhiteSpace(_checkoutResponse.CheckoutUrl))
+        {
+            OpenBrowser(_checkoutResponse.CheckoutUrl);
+        }
 
         // Start polling payment status
         StartPaymentPolling(_checkoutResponse.PaymentId);
@@ -314,12 +328,25 @@ public partial class CheckoutWindow : Window
         _isCompleted = true;
         StopTimers();
 
+        if (payment.ReconciliationRequired)
+        {
+            txtReconReservationCode.Text = payment.ReservationCode ?? _quote?.ReservationCode ?? $"#{_reservationId}";
+            txtReconPaymentId.Text = $"#{payment.PaymentId}";
+            txtReconPaidAmount.Text = $"{payment.Amount:N0} đ";
+
+            gridMainForm.Visibility = Visibility.Collapsed;
+            panelSuccessOutcome.Visibility = Visibility.Collapsed;
+            panelReconciliationOutcome.Visibility = Visibility.Visible;
+            return;
+        }
+
         txtSuccessReservationCode.Text = payment.ReservationCode ?? _quote?.ReservationCode ?? $"#{_reservationId}";
         txtSuccessInvoiceNo.Text = payment.TargetInvoiceId > 0 ? $"INV-{payment.TargetInvoiceId:D6}" : "Đã thanh toán";
         txtSuccessAgreementNo.Text = payment.AgreementNo ?? (payment.AgreementId.HasValue ? $"AGR-{payment.AgreementId.Value:D6}" : "Scheduled (Chờ bàn giao)");
         txtSuccessPaidAmount.Text = $"{payment.Amount:N0} đ";
 
         gridMainForm.Visibility = Visibility.Collapsed;
+        panelReconciliationOutcome.Visibility = Visibility.Collapsed;
         panelSuccessOutcome.Visibility = Visibility.Visible;
     }
 
@@ -334,6 +361,51 @@ public partial class CheckoutWindow : Window
 
         var reason = payment.FailureReason ?? "Giao dịch thanh toán bị hủy hoặc không thành công.";
         MessageBox.Show($"Giao dịch thất bại: {reason}\nBạn có thể thử thanh toán lại trong thời gian giữ chỗ.", "Thanh toán thất bại", MessageBoxButton.OK, MessageBoxImage.Warning);
+    }
+
+    private static string FormatPolicyTerms(string? json)
+    {
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            return "1. Khách hàng cam kết sử dụng ô kho đúng mục đích lưu trữ hợp pháp.\n" +
+                   "2. Khoản tiền cọc tương đương 1 tháng tiền thuê sẽ được hoàn trả khi kết thúc hợp đồng theo quy định.\n" +
+                   "3. Hợp đồng có hiệu lực sau khi thanh toán thành công và nhận bàn giao ô kho thực tế tại quầy (Check-in).";
+        }
+
+        try
+        {
+            using var doc = System.Text.Json.JsonDocument.Parse(json);
+            var root = doc.RootElement;
+            if (root.ValueKind == System.Text.Json.JsonValueKind.Object)
+            {
+                var sb = new System.Text.StringBuilder();
+                foreach (var prop in root.EnumerateObject())
+                {
+                    if (prop.Value.ValueKind == System.Text.Json.JsonValueKind.Array)
+                    {
+                        sb.AppendLine($"• {prop.Name}:");
+                        int idx = 1;
+                        foreach (var item in prop.Value.EnumerateArray())
+                        {
+                            sb.AppendLine($"  {idx++}. {item.GetString() ?? item.ToString()}");
+                        }
+                    }
+                    else
+                    {
+                        var val = prop.Value.GetString() ?? prop.Value.ToString();
+                        sb.AppendLine($"• {prop.Name}: {val}");
+                    }
+                }
+                var formatted = sb.ToString().Trim();
+                if (!string.IsNullOrEmpty(formatted)) return formatted;
+            }
+        }
+        catch
+        {
+            // Fallback if not valid JSON
+        }
+
+        return json;
     }
 
     private void BtnSuccessDone_Click(object sender, RoutedEventArgs e)

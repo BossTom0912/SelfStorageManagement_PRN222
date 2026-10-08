@@ -41,4 +41,17 @@ public interface IPaymentService
         long currentUserId,
         IReadOnlyList<string> roles,
         CancellationToken cancellationToken = default);
+
+    Task<List<RefundDetailResponse>> GetRefundsAsync(
+        long currentUserId,
+        IReadOnlyList<string> roles,
+        string? status,
+        CancellationToken cancellationToken = default);
+
+    Task<RefundDetailResponse> ReviewRefundAsync(
+        long currentUserId,
+        IReadOnlyList<string> roles,
+        long refundId,
+        ReviewRefundRequest request,
+        CancellationToken cancellationToken = default);
 }

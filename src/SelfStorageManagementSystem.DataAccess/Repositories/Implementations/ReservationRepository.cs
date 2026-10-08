@@ -478,6 +478,26 @@ public class ReservationRepository : GenericRepository<reservation>, IReservatio
             {
                 foreach (var id in candidateIds)
                 {
+                    var lockKey = $"SS_Reservation_{id}";
+                    var resultParam = new SqlParameter
+                    {
+                        ParameterName = "@Result",
+                        SqlDbType = SqlDbType.Int,
+                        Direction = ParameterDirection.Output
+                    };
+                    var resourceParam = new SqlParameter("@Resource", lockKey);
+
+                    await _context.Database.ExecuteSqlRawAsync(
+                        "EXEC @Result = sp_getapplock @Resource = @Resource, @LockMode = 'Exclusive', @LockOwner = 'Transaction', @LockTimeout = 5000",
+                        new object[] { resultParam, resourceParam },
+                        cancellationToken);
+
+                    var lockResult = (int)(resultParam.Value ?? -999);
+                    if (lockResult < 0)
+                    {
+                        continue;
+                    }
+
                     var affected = await _context.reservations
                         .Where(r => r.id == id &&
                                     (r.status == "pending" || r.status == "awaiting_deposit") &&

@@ -163,18 +163,12 @@ public class PaymentIntegrationTests : IClassFixture<CustomWebApplicationFactory
         }
 
         // Reservation
-        var resId = 5001L;
-        var existingRes = await db.reservations.FirstOrDefaultAsync(r => r.id == resId);
-        if (existingRes != null)
-        {
-            db.reservations.Remove(existingRes);
-            await db.SaveChangesAsync();
-        }
+        var resId = (long)Random.Shared.Next(10000, 999999);
 
         var res = new reservation
         {
             id = resId,
-            reservation_code = "RES-INTEG-5001",
+            reservation_code = $"RES-INTEG-{resId}",
             customer_id = 50,
             facility_id = 501,
             unit_type_id = 501,
@@ -388,5 +382,315 @@ public class PaymentIntegrationTests : IClassFixture<CustomWebApplicationFactory
         Assert.NotNull(doc);
         var rspCode = doc.RootElement.GetProperty("rspCode").GetString();
         Assert.Equal("01", rspCode); // Order not found
+    }
+
+    [Fact]
+    public async Task VnpayIpn_AmountMismatch_ReturnsCode04()
+    {
+        var (owner, _, policy, res) = await SeedDataAsync();
+        var token = GenerateToken(owner, RoleConstants.StorageCustomer);
+
+        var checkoutBody = new CheckoutRequest
+        {
+            ReservationId = res.id,
+            AcceptedPolicyVersionId = policy.id,
+            PaymentMethod = "vnpay"
+        };
+        var req = new HttpRequestMessage(HttpMethod.Post, "/api/payments/checkout")
+        {
+            Content = JsonContent.Create(checkoutBody)
+        };
+        req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        req.Headers.Add("Idempotency-Key", $"IDEM-VNP-AMT-{Guid.NewGuid():N}");
+        var checkoutResp = await _client.SendAsync(req);
+        Assert.Equal(HttpStatusCode.OK, checkoutResp.StatusCode);
+
+        var checkoutData = (await checkoutResp.Content.ReadFromJsonAsync<ApiResponse<CheckoutResponse>>(JsonOpts))!.Data!;
+
+        var rawParams = new SortedDictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["vnp_Amount"] = "50000000", // Wrong amount!
+            ["vnp_ResponseCode"] = "00",
+            ["vnp_TmnCode"] = "DEMOTMN01",
+            ["vnp_TransactionNo"] = "888888",
+            ["vnp_TransactionStatus"] = "00",
+            ["vnp_TxnRef"] = checkoutData.PaymentId.ToString()
+        };
+
+        var hashDataBuilder = new System.Text.StringBuilder();
+        foreach (var (key, value) in rawParams)
+        {
+            if (hashDataBuilder.Length > 0) hashDataBuilder.Append('&');
+            hashDataBuilder.Append(System.Net.WebUtility.UrlEncode(key)).Append('=').Append(System.Net.WebUtility.UrlEncode(value));
+        }
+        var validHash = SelfStorageManagementSystem.BusinessLogic.Services.Implementations.VnpayGateway.ComputeHmacSha512("SECRETTESTKEY1234567890ABCDEF12", hashDataBuilder.ToString());
+
+        var queryString = string.Join("&", rawParams.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}")) + $"&vnp_SecureHash={validHash}";
+        var response = await _client.GetAsync($"/api/payments/vnpay/ipn?{queryString}");
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var doc = await response.Content.ReadFromJsonAsync<JsonDocument>(JsonOpts);
+        Assert.NotNull(doc);
+        Assert.Equal("04", doc.RootElement.GetProperty("rspCode").GetString());
+    }
+
+    [Fact]
+    public async Task VnpayIpn_WrongCurrency_ReturnsCode04()
+    {
+        var (owner, _, policy, res) = await SeedDataAsync();
+        var token = GenerateToken(owner, RoleConstants.StorageCustomer);
+
+        var checkoutBody = new CheckoutRequest
+        {
+            ReservationId = res.id,
+            AcceptedPolicyVersionId = policy.id,
+            PaymentMethod = "vnpay"
+        };
+        var req = new HttpRequestMessage(HttpMethod.Post, "/api/payments/checkout")
+        {
+            Content = JsonContent.Create(checkoutBody)
+        };
+        req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        req.Headers.Add("Idempotency-Key", $"IDEM-VNP-CURR-{Guid.NewGuid():N}");
+        var checkoutResp = await _client.SendAsync(req);
+        Assert.Equal(HttpStatusCode.OK, checkoutResp.StatusCode);
+
+        var checkoutData = (await checkoutResp.Content.ReadFromJsonAsync<ApiResponse<CheckoutResponse>>(JsonOpts))!.Data!;
+
+        var rawParams = new SortedDictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["vnp_Amount"] = ((long)(checkoutData.Amount * 100m)).ToString(),
+            ["vnp_CurrCode"] = "USD", // Wrong currency!
+            ["vnp_ResponseCode"] = "00",
+            ["vnp_TmnCode"] = "DEMOTMN01",
+            ["vnp_TransactionNo"] = "888889",
+            ["vnp_TransactionStatus"] = "00",
+            ["vnp_TxnRef"] = checkoutData.PaymentId.ToString()
+        };
+
+        var hashDataBuilder = new System.Text.StringBuilder();
+        foreach (var (key, value) in rawParams)
+        {
+            if (hashDataBuilder.Length > 0) hashDataBuilder.Append('&');
+            hashDataBuilder.Append(System.Net.WebUtility.UrlEncode(key)).Append('=').Append(System.Net.WebUtility.UrlEncode(value));
+        }
+        var validHash = SelfStorageManagementSystem.BusinessLogic.Services.Implementations.VnpayGateway.ComputeHmacSha512("SECRETTESTKEY1234567890ABCDEF12", hashDataBuilder.ToString());
+
+        var queryString = string.Join("&", rawParams.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}")) + $"&vnp_SecureHash={validHash}";
+        var response = await _client.GetAsync($"/api/payments/vnpay/ipn?{queryString}");
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var doc = await response.Content.ReadFromJsonAsync<JsonDocument>(JsonOpts);
+        Assert.NotNull(doc);
+        Assert.Equal("04", doc.RootElement.GetProperty("rspCode").GetString());
+    }
+
+    [Fact]
+    public async Task DemoPaymentComplete_RejectedForVnpayPayment()
+    {
+        var (owner, _, policy, res) = await SeedDataAsync();
+        var token = GenerateToken(owner, RoleConstants.StorageCustomer);
+
+        var checkoutBody = new CheckoutRequest
+        {
+            ReservationId = res.id,
+            AcceptedPolicyVersionId = policy.id,
+            PaymentMethod = "vnpay"
+        };
+        var req = new HttpRequestMessage(HttpMethod.Post, "/api/payments/checkout")
+        {
+            Content = JsonContent.Create(checkoutBody)
+        };
+        req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        req.Headers.Add("Idempotency-Key", $"IDEM-VNP-REJ-{Guid.NewGuid():N}");
+        var checkoutResp = await _client.SendAsync(req);
+        Assert.Equal(HttpStatusCode.OK, checkoutResp.StatusCode);
+
+        var checkoutData = (await checkoutResp.Content.ReadFromJsonAsync<ApiResponse<CheckoutResponse>>(JsonOpts))!.Data!;
+
+        // Attempting to simulate completion for a VNPAY payment must be rejected with 400 Bad Request
+        var completeReq = new HttpRequestMessage(HttpMethod.Post, $"/api/payments/demo/{checkoutData.PaymentId}/complete")
+        {
+            Content = JsonContent.Create(new DemoPaymentCompleteRequest { IsSuccess = true })
+        };
+        completeReq.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        var completeResp = await _client.SendAsync(completeReq);
+        Assert.Equal(HttpStatusCode.BadRequest, completeResp.StatusCode);
+    }
+
+    [Fact]
+    public async Task RefundEndpoints_CustomerForbidden_ManagerAllowed()
+    {
+        using var scope = _factory.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<SelfStorageDbContext>();
+        var hasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher>();
+
+        var (owner, _, _, reservation) = await SeedDataAsync();
+        var customerToken = GenerateToken(owner, RoleConstants.StorageCustomer);
+
+        var mgrRole = await db.roles.FirstOrDefaultAsync(r => r.code == RoleConstants.FacilityManager);
+        if (mgrRole == null)
+        {
+            mgrRole = new role { id = 2, code = RoleConstants.FacilityManager, display_name = "Manager" };
+            db.roles.Add(mgrRole);
+            await db.SaveChangesAsync();
+        }
+
+        var mgr = await db.users.FirstOrDefaultAsync(u => u.id == 99);
+        if (mgr == null)
+        {
+            mgr = new user
+            {
+                id = 99,
+                email = "manager99@test.com",
+                password_hash = hasher.HashPassword("TestPass123!"),
+                status = UserStatusConstants.Active,
+                created_at = DateTimeOffset.UtcNow,
+                updated_at = DateTimeOffset.UtcNow
+            };
+            db.users.Add(mgr);
+            db.user_roles.Add(new user_role { user_id = 99, role_id = mgrRole.id, granted_at = DateTimeOffset.UtcNow });
+            db.employee_profiles.Add(new employee_profile
+            {
+                user_id = 99,
+                employee_code = "EMP-MGR-99",
+                full_name = "Facility Manager 99",
+                employment_status = "active",
+                hire_date = DateOnly.FromDateTime(DateTime.Today.AddYears(-1)),
+                created_at = DateTimeOffset.UtcNow,
+                updated_at = DateTimeOffset.UtcNow
+            });
+            db.staff_facility_assignments.Add(new staff_facility_assignment
+            {
+                employee_id = 99,
+                facility_id = 501,
+                assignment_role = RoleConstants.FacilityManager,
+                starts_at = DateTimeOffset.UtcNow.AddDays(-10)
+            });
+            await db.SaveChangesAsync();
+        }
+        else
+        {
+            if (!await db.user_roles.AnyAsync(ur => ur.user_id == 99 && ur.role_id == mgrRole.id))
+            {
+                db.user_roles.Add(new user_role { user_id = 99, role_id = mgrRole.id, granted_at = DateTimeOffset.UtcNow });
+            }
+            if (!await db.employee_profiles.AnyAsync(ep => ep.user_id == 99))
+            {
+                db.employee_profiles.Add(new employee_profile
+                {
+                    user_id = 99,
+                    employee_code = "EMP-MGR-99",
+                    full_name = "Facility Manager 99",
+                    employment_status = "active",
+                    hire_date = DateOnly.FromDateTime(DateTime.Today.AddYears(-1)),
+                    created_at = DateTimeOffset.UtcNow,
+                    updated_at = DateTimeOffset.UtcNow
+                });
+            }
+            if (!await db.staff_facility_assignments.AnyAsync(sfa => sfa.employee_id == 99 && sfa.facility_id == 501))
+            {
+                db.staff_facility_assignments.Add(new staff_facility_assignment
+                {
+                    employee_id = 99,
+                    facility_id = 501,
+                    assignment_role = RoleConstants.FacilityManager,
+                    starts_at = DateTimeOffset.UtcNow.AddDays(-10)
+                });
+            }
+            await db.SaveChangesAsync();
+        }
+        var mgrToken = GenerateToken(mgr, RoleConstants.FacilityManager);
+
+        // Seed a refund
+        var paymentId = (long)Random.Shared.Next(70000, 79999);
+        var refundId = (long)Random.Shared.Next(80000, 89999);
+
+        var invoice = new invoice
+        {
+            id = (long)Random.Shared.Next(60000, 69999),
+            invoice_no = $"INV-TEST-{paymentId}",
+            customer_id = owner.id,
+            reservation_id = reservation.id,
+            issue_date = DateOnly.FromDateTime(DateTime.Today),
+            due_date = DateOnly.FromDateTime(DateTime.Today.AddDays(7)),
+            currency = "VND",
+            subtotal_amount = 1_000_000m,
+            total_amount = 1_000_000m,
+            status = "paid",
+            created_at = DateTimeOffset.UtcNow,
+            updated_at = DateTimeOffset.UtcNow
+        };
+        db.invoices.Add(invoice);
+
+        var payment = new payment
+        {
+            id = paymentId,
+            customer_id = owner.id,
+            target_invoice_id = invoice.id,
+            amount = 1_000_000m,
+            currency = "VND",
+            method = "vnpay",
+            provider = "vnpay",
+            idempotency_key = $"IDEM-REF-{paymentId}",
+            status = "succeeded",
+            metadata = "{\"reconciliation_required\":true}",
+            created_at = DateTimeOffset.UtcNow,
+            updated_at = DateTimeOffset.UtcNow
+        };
+        db.payments.Add(payment);
+
+        var refundRecord = new refund
+        {
+            id = refundId,
+            payment_id = paymentId,
+            amount = 1_000_000m,
+            currency = "VND",
+            reason = "Late payment reconciliation",
+            provider = "vnpay",
+            idempotency_key = $"REF-{refundId}",
+            status = "requested",
+            created_at = DateTimeOffset.UtcNow,
+            updated_at = DateTimeOffset.UtcNow
+        };
+        db.refunds.Add(refundRecord);
+        await db.SaveChangesAsync();
+
+        // 1. Customer cannot list refunds (403 Forbidden)
+        var custGetReq = new HttpRequestMessage(HttpMethod.Get, "/api/payments/refunds");
+        custGetReq.Headers.Authorization = new AuthenticationHeaderValue("Bearer", customerToken);
+        var custGetResp = await _client.SendAsync(custGetReq);
+        Assert.Equal(HttpStatusCode.Forbidden, custGetResp.StatusCode);
+
+        // 2. Manager can list refunds (200 OK)
+        var mgrGetReq = new HttpRequestMessage(HttpMethod.Get, "/api/payments/refunds");
+        mgrGetReq.Headers.Authorization = new AuthenticationHeaderValue("Bearer", mgrToken);
+        var mgrGetResp = await _client.SendAsync(mgrGetReq);
+        Assert.Equal(HttpStatusCode.OK, mgrGetResp.StatusCode);
+
+        // 3. Customer cannot review refund (403 Forbidden)
+        var custReviewReq = new HttpRequestMessage(HttpMethod.Post, $"/api/payments/refunds/{refundId}/review")
+        {
+            Content = JsonContent.Create(new ReviewRefundRequest { Decision = "approved", Reason = "Test" })
+        };
+        custReviewReq.Headers.Authorization = new AuthenticationHeaderValue("Bearer", customerToken);
+        var custReviewResp = await _client.SendAsync(custReviewReq);
+        Assert.Equal(HttpStatusCode.Forbidden, custReviewResp.StatusCode);
+
+        // 4. Manager can review refund (200 OK)
+        var mgrReviewReq = new HttpRequestMessage(HttpMethod.Post, $"/api/payments/refunds/{refundId}/review")
+        {
+            Content = JsonContent.Create(new ReviewRefundRequest { Decision = "approved", Reason = "Manager approved refund" })
+        };
+        mgrReviewReq.Headers.Authorization = new AuthenticationHeaderValue("Bearer", mgrToken);
+        var mgrReviewResp = await _client.SendAsync(mgrReviewReq);
+        Assert.Equal(HttpStatusCode.OK, mgrReviewResp.StatusCode);
+
+        var reviewApiResp = await mgrReviewResp.Content.ReadFromJsonAsync<ApiResponse<RefundDetailResponse>>(JsonOpts);
+        Assert.NotNull(reviewApiResp);
+        Assert.True(reviewApiResp.Success);
+        Assert.Equal("approved", reviewApiResp.Data!.Status);
+        Assert.Equal("approved", reviewApiResp.Data.Decision);
     }
 }

@@ -31,17 +31,32 @@ public class VnpayGateway : IPaymentGateway
     {
         ArgumentNullException.ThrowIfNull(order);
 
-        var tmnCode = _configuration["Vnpay:TmnCode"] ?? "DEMOTMN1";
-        var hashSecret = _configuration["Vnpay:HashSecret"] ?? "SECRETKEYVNPAYTEST20261007XYZABC";
-        var baseUrl = _configuration["Vnpay:BaseUrl"] ?? "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-        var returnUrl = _configuration["Vnpay:ReturnUrl"] ?? "https://localhost:7031/api/payments/vnpay/return";
+        var tmnCode = _configuration["Vnpay:TmnCode"] ?? _configuration["VnPay:TmnCode"];
+        if (string.IsNullOrWhiteSpace(tmnCode))
+        {
+            throw new InvalidOperationException("VNPAY TmnCode is not configured. Please set 'Vnpay:TmnCode'.");
+        }
+
+        var hashSecret = _configuration["Vnpay:HashSecret"] ?? _configuration["VnPay:HashSecret"];
+        if (string.IsNullOrWhiteSpace(hashSecret))
+        {
+            throw new InvalidOperationException("VNPAY HashSecret is not configured. Please set 'Vnpay:HashSecret'.");
+        }
+
+        var baseUrl = _configuration["Vnpay:BaseUrl"] ?? _configuration["VnPay:BaseUrl"] ?? "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
+        var returnUrl = _configuration["Vnpay:ReturnUrl"] ?? _configuration["VnPay:ReturnUrl"] ?? "https://localhost:7031/api/payments/vnpay/return";
 
         var gmt7 = ResolveGmt7TimeZone();
         var nowGmt7 = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, gmt7);
         var holdUntilGmt7 = TimeZoneInfo.ConvertTimeFromUtc(order.HoldUntil.UtcDateTime, gmt7);
 
-        // VNPAY Amount is integer VND multiplied by 100
-        var amountVnd = (long)Math.Round(order.Amount, MidpointRounding.AwayFromZero);
+        // VNPAY Amount is integer VND multiplied by 100 (Reject non-integer amounts)
+        if (order.Amount % 1m != 0m)
+        {
+            throw new ArgumentException($"Số tiền thanh toán VNPAY phải là số nguyên VND (giá trị: {order.Amount}).", nameof(order));
+        }
+
+        var amountVnd = (long)order.Amount;
         var vnpAmount = (amountVnd * 100).ToString();
 
         var paramsMap = new SortedDictionary<string, string>(StringComparer.Ordinal)
@@ -96,7 +111,11 @@ public class VnpayGateway : IPaymentGateway
     {
         ArgumentNullException.ThrowIfNull(parameters);
 
-        var hashSecret = _configuration["Vnpay:HashSecret"] ?? "SECRETKEYVNPAYTEST20261007XYZABC";
+        var hashSecret = _configuration["Vnpay:HashSecret"] ?? _configuration["VnPay:HashSecret"];
+        if (string.IsNullOrWhiteSpace(hashSecret))
+        {
+            throw new InvalidOperationException("VNPAY HashSecret is not configured. Please set 'Vnpay:HashSecret'.");
+        }
 
         var inputHash = parameters.TryGetValue("vnp_SecureHash", out var sHash) ? sHash : string.Empty;
 

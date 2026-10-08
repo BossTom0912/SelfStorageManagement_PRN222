@@ -34,6 +34,11 @@ SQL Server
 The existing `SelfStoragePRN222` database uses schema `core`: 57 tables, 2 views, 139 foreign keys, and 35 triggers, mapped to 59 EF entity classes.
 The database schema is the strict source of truth. Do NOT use Code First migrations, `EnsureCreated()`, or automatic schema updates. Generated entities and `SelfStorageDbContext.cs` remain scaffolded database-first code.
 
+Run **one** SQL file in a normal SSMS query window for the database state you have:
+
+- **Existing database with data:** [`DB/SelfStoragePRN222_SQLServer_Function4_Upgrade_OneRun.sql`](DB/SelfStoragePRN222_SQLServer_Function4_Upgrade_OneRun.sql) preserves data and updates the Function 4 refund-approval foreign key. A successful result shows `referenced_table = core.users`, `is_disabled = 0`, and `is_not_trusted = 0`.
+- **New disposable database:** [`DB/SelfStoragePRN222_SQLServer_CleanInstall.sql`](DB/SelfStoragePRN222_SQLServer_CleanInstall.sql) creates the complete schema and seed data with the Function 4 fix. It drops `SelfStoragePRN222` first, including all existing data.
+
 ## Prerequisites
 
 - .NET 8 SDK and ASP.NET Core 8 runtime.
@@ -122,7 +127,7 @@ dotnet run --project src/SelfStorageManagementSystem.WpfClient
 | **Feature 1: Authentication & RBAC** | **Implemented (Core)** | Core implementation complete: login, customer registration, JWT auth, facility scope authorization (`FacilityScopeService`), admin account management with database pagination, and WPF UI. |
 | **Feature 2: Facility & Storage Unit Catalog** | In Progress (Under Verification) | Catalog controller (`/api/facilities`), DTOs, service/repository, floor map endpoint, WPF client catalog views, and catalog tests are drafted in the codebase. Currently under ongoing integration verification; not yet marked fully finalized. |
 | **Feature 3: Reservation & Hold Unit** | **Implemented (Core); SQL Server/WPF Verification Pending** | Create/view/list/cancel reservations, 15-minute capacity hold by unit type, 30-second expiration worker, WPF countdown. 124 tests pass; the dedicated SQL Server concurrency test is skipped until a separate test database is configured. See [function status](docs/FIVE_CORE_FUNCTIONS_SUMMARY.md). |
-| **Feature 4: Payment & Rental Agreement** | **Implemented (Core); SQL Server/WPF Verification Pending** | Initial quote (1-month deposit + 1st month rent + booking fee - voucher), checkout with idempotency lock, Demo & VNPAY Sandbox gateways, paid invoices, scheduled agreements, reconciliation handling for late callback, and full WPF checkout flow. 149 tests pass. |
+| **Feature 4: Payment & Rental Agreement** | **Implemented (Core); code review fixes and SQL Server/WPF live verification pending** | Initial quote (1-month deposit + 1st month rent + booking fee - voucher), checkout with idempotency payload verification & lock, Demo & VNPAY Sandbox gateways, paid invoices, scheduled agreements, late & duplicate payment reconciliation with refunds, refund management & review endpoints, and full WPF checkout flow. Latest suite: 179 passed, 4 SQL concurrency tests skipped. |
 | **Feature 5: Check-in & Digital Handover** | Not Implemented | Identity verification, unit handover, access PIN/QR generation, and agreement activation. Pending future development. |
 
 > [!NOTE]

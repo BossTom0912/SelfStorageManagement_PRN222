@@ -1,4 +1,4 @@
-﻿/* ============================================================================
+/* ============================================================================
    SelfStoragePRN222 - SQL Server 2019+
    Consolidated & corrected SQL Server script
    Source reviewed against:
@@ -1012,7 +1012,7 @@ CREATE INDEX refunds_requested_by_idx ON [core].refunds (requested_by);
 CREATE TABLE [core].refund_approvals (
     refund_id bigint PRIMARY KEY REFERENCES [core].refunds(id) ON DELETE NO ACTION,
     decision nvarchar(255) NOT NULL CHECK (decision IN ('approved', 'rejected')),
-    decided_by bigint NOT NULL REFERENCES [core].employee_profiles(user_id) ON DELETE NO ACTION,
+    decided_by bigint NOT NULL CONSTRAINT FK_refund_approvals_decided_by_users REFERENCES [core].users(id) ON DELETE NO ACTION,
     reason nvarchar(255),
     decided_at datetimeoffset(7) NOT NULL DEFAULT SYSUTCDATETIME()
 );

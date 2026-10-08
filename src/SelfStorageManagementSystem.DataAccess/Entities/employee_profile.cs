@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace SelfStorageManagementSystem.DataAccess.Entities;
@@ -32,8 +32,6 @@ public partial class employee_profile
     public virtual ICollection<maintenance_work_order> maintenance_work_orderassigned_employees { get; set; } = new List<maintenance_work_order>();
 
     public virtual ICollection<maintenance_work_order> maintenance_work_orderverified_byNavigations { get; set; } = new List<maintenance_work_order>();
-
-    public virtual ICollection<refund_approval> refund_approvals { get; set; } = new List<refund_approval>();
 
     public virtual ICollection<shift_assignment> shift_assignments { get; set; } = new List<shift_assignment>();
 

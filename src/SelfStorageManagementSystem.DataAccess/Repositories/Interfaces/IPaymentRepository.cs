@@ -140,4 +140,21 @@ public interface IPaymentRepository
         long paymentId,
         DateTimeOffset nowUtc,
         CancellationToken cancellationToken = default);
+
+    Task<List<refund>> GetRefundsAsync(
+        List<long>? accessibleFacilityIds,
+        string? status,
+        CancellationToken cancellationToken = default);
+
+    Task<refund?> GetRefundByIdAsync(
+        long refundId,
+        CancellationToken cancellationToken = default);
+
+    Task<refund> ReviewRefundAsync(
+        long refundId,
+        long employeeUserId,
+        string decision,
+        string? reason,
+        DateTimeOffset decidedAt,
+        CancellationToken cancellationToken = default);
 }

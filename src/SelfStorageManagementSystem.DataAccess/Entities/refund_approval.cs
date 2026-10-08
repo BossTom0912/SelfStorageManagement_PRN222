@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace SelfStorageManagementSystem.DataAccess.Entities;
@@ -15,7 +15,7 @@ public partial class refund_approval
 
     public DateTimeOffset decided_at { get; set; }
 
-    public virtual employee_profile decided_byNavigation { get; set; } = null!;
+    public virtual user decided_byNavigation { get; set; } = null!;
 
     public virtual refund refund { get; set; } = null!;
 }

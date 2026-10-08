@@ -108,38 +108,25 @@ Nếu provider đã thu tiền nhưng IPN tới khi hold đã expired/cancelled 
 
 ---
 
-## 8. Báo cáo triển khai thực tế (Thực hiện ngày 07/10/2026)
+## 8. Báo cáo triển khai thực tế & Hoàn thiện kiểm thử chuyên sâu
 
 ### 8.1 Trạng thái triển khai
-- **Trạng thái:** **Đã hoàn thành toàn bộ mã nguồn Function 4** bao gồm DataAccess, BusinessLogic, Presentation (Web API), WPF Client, Unit Tests và Integration Tests.
-- **Kết quả kiểm thử tự động:** **149 passed, 2 skipped, 0 failed** (2 bài test concurrency trên SQL Server thật được cấu hình skip an toàn nếu chưa có biến môi trường `SELFSTORAGE_SQL_TEST_CONNECTION_STRING`).
+- **Trạng thái:** **Đã hoàn thành toàn bộ mã nguồn Function 4 và xử lý triệt để 12 phát hiện review chuyên sâu** bao gồm DataAccess, BusinessLogic, Presentation (Web API), WPF Client, Unit Tests và Integration Tests.
+- **Kết quả kiểm thử tự động:** **167 passed, 2 skipped, 0 failed** (2 bài test concurrency trên SQL Server thật được cấu hình skip an toàn nếu chưa có biến môi trường `SELFSTORAGE_SQL_TEST_CONNECTION_STRING`).
 
-### 8.2 Các file mã nguồn đã tạo và sửa đổi
-1. **Fix bug giải phóng voucher trong Function 3**:
-   - `ReservationRepository.cs`: Đồng bộ giải phóng `promotion_redemptions.status = 'released'` trong cùng transaction void invoice khi cancel reservation hoặc worker quét expire hold.
-2. **DataAccess Layer**:
-   - `IPaymentRepository.cs` & `PaymentRepository.cs`: Quản lý transaction với `sp_getapplock`, kiểm tra idempotency key, sinh invoice lines (deposit, rent, booking_fee, discount), so khớp trigger total, finalize thanh toán thành công hoặc ghi nhận đối soát / hoàn tiền (`reconciliation_required`) khi thanh toán đến muộn quá hạn hold.
-   - `ServiceCollectionExtensions.cs`: Đăng ký `IPaymentRepository`.
-3. **BusinessLogic Layer**:
-   - DTOs: `CheckoutRequest.cs`, `DemoPaymentCompleteRequest.cs`, `CheckoutQuoteResponse.cs`, `CheckoutResponse.cs`, `PaymentDetailResponse.cs`, `InvoiceDetailResponse.cs`, `RentalAgreementDetailResponse.cs`.
-   - Gateways: `IPaymentGateway.cs`, `DemoGateway.cs` (mô phỏng nội bộ), `VnpayGateway.cs` (HMAC-SHA512, GMT+7, VND x 100).
-   - Services: `IPaymentService.cs` & `PaymentService.cs`, `IInvoiceService.cs` & `InvoiceService.cs`, `IRentalAgreementService.cs` & `RentalAgreementService.cs`.
-   - `ServiceCollectionExtensions.cs`: Đăng ký DI cho các service và gateway.
-4. **Presentation Layer (Web API)**:
-   - `PaymentsController.cs`: `POST /api/payments/checkout`, `GET /api/payments/{id}`, `GET /api/payments/reconciliation`, `GET /api/payments/vnpay/ipn`, `GET /api/payments/vnpay/return`, `POST /api/payments/demo/{id}/complete`, `GET /api/payments/demo/{id}/simulator`.
-   - `ReservationsController.cs`: Bổ sung `GET /api/reservations/{id}/checkout-quote`.
-   - `InvoicesController.cs`: `GET /api/invoices/{id}`.
-   - `RentalAgreementsController.cs`: `GET /api/agreements/{id}`.
-5. **WPF Client**:
-   - `PaymentModels.cs`: Mô hình dữ liệu client cho quote, checkout, payment, invoice, agreement.
-   - `ApiClient.cs`: Hỗ trợ header `Idempotency-Key` và các phương thức gọi API Function 4.
-   - `ReservationDetailWindow.xaml` & `ReservationDetailWindow.xaml.cs`: Bổ sung nút "💳 Thanh toán ngay (Function 4)" và mở `CheckoutWindow`.
-   - `CheckoutWindow.xaml` & `CheckoutWindow.xaml.cs`: Màn hình thanh toán đầy đủ: bóc tách tiền cọc / tiền thuê / phí / voucher, xác nhận điều khoản, chọn Demo Gateway / VNPAY Sandbox, mở trình duyệt và đồng bộ trạng thái thời gian thực.
-6. **Kiểm thử tự động**:
-   - `PaymentServiceTests.cs`: 16 test cases kiểm thử công thức tính tiền, voucher (fixed, percentage, free_days theo từng tháng 28/29/30/31 ngày, voucher quá hạn / không đúng cơ sở / không đủ tháng), idempotency và xử lý hold expired.
-   - `VnpayGatewayTests.cs`: 3 test cases kiểm thử URL generation và xác thực chữ ký HMAC-SHA512.
-   - `PaymentIntegrationTests.cs`: 6 test cases kiểm thử end-to-end API authorization, checkout idempotency, demo completion, invoice/agreement verification, và VNPAY IPN webhook.
-   - `PaymentSqlServerConcurrencyTests.cs`: Kiểm thử concurrency trên SQL Server cách ly qua `[SqlIntegrationFact]`.
+### 8.2 Các nội dung đã hoàn thiện theo 12 phát hiện review:
+1. **Chặn tự xác nhận thanh toán giả**: Demo simulator mặc định tắt; chỉ kích hoạt khi `ASPNETCORE_ENVIRONMENT` là Development/Test VÀ `Payment:AllowDemoSimulator == true`. Endpoint từ chối mọi payment có provider khác "demo". WPF ẩn nút giả lập khi chọn VNPAY.
+2. **Kiểm tra đầy đủ IPN trước khi ghi tiền**: Đối chiếu TxnRef với payment trong transaction, kiểm tra provider=vnpay, TmnCode cấu hình (sai trả 97), tiền tệ VND (sai trả 04), `vnp_Amount / 100 == payment.amount` (sai trả 04), TxnRef không tồn tại trả 01 "Order not found" thay vì lỗi 500, callback lặp trả 02 "Order already confirmed".
+3. **Ghi nhận khoản tiền thứ hai (Duplicate payment)**: Nếu invoice đã paid hoặc reservation đã confirmed bởi attempt khác, callback thứ hai vẫn ghi nhận payment `succeeded`, đánh dấu `reconciliation_required = true`, tạo đúng 1 yêu cầu hoàn tiền `refunds`, không tạo trùng agreement.
+4. **Quyết định hold bằng thời gian hiện tại server UTC**: So sánh `DateTimeOffset.UtcNow <= hold_until`; worker quét hết hạn hold sử dụng cùng khóa `sp_getapplock` (`SS_Reservation_{id}`) để triệt tiêu race condition với finalize.
+5. **Cập nhật lại invoice lines khi retry quote**: Khi khách retry checkout với quote/voucher mới, các dòng invoice draft/open được cập nhật đồng bộ với quote mới.
+6. **Đồng nhất thứ tự khóa và thời gian chờ**: Khóa theo thứ tự chuẩn `SS_Reservation_{reservationId}` trước `SS_Promotion_{promotionId}`, timeout 5000ms.
+7. **Bắt buộc kiểm tra payload khi nhận Idempotency-Key**: Trong transaction, kiểm tra `customer_id`, `reservation_id`, `provider`, `amount`. Nếu trùng key nhưng lệch payload ném `ConflictException` (409 Conflict). Trùng key và khớp payload trả lại đúng attempt cũ.
+8. **Đảm bảo toàn bộ VND là số nguyên**: `VnpayGateway` ném `ArgumentException` nếu `order.Amount % 1m != 0m`; quote và checkout chốt số nguyên đồng VND.
+9. **Đóng dấu phiên bản điều khoản & loại bỏ nhãn "ký số"**: Ghi nhận `accepted_policy_version_id` từ quote và liên kết vào `rental_agreement.policy_version_id`; `signed_at = null`; không dùng thuật ngữ gây nhầm lẫn "ký số".
+10. **Giao diện WPF minh bạch**: Thêm view cảnh báo đối soát / hoàn tiền (`panelReconciliationOutcome`) khi thanh toán trễ/trùng; hiển thị nội dung điều khoản trích từ JSON; ẩn nút giả lập khi chọn cổng VNPAY.
+11. **Bổ sung quản lý và phê duyệt hoàn tiền**: Thêm endpoint `GET /api/payments/refunds` và `POST /api/payments/refunds/{id}/review`, DTOs `ReviewRefundRequest`, `RefundDetailResponse`, lưu lịch sử vào `refund_approvals`.
+12. **Chi tiết kiểm thử & hạ tầng**: `VnpayGateway` fail-fast khi thiếu credentials; hỗ trợ các toán tử promotion (`gte`, `lte`, `eq`, `in`); từ chối `free_days` số thập phân; test concurrency tự động skip an toàn; dùng `method = other` cho demo; đảo ngược thứ tự dọn dẹp bảng SQL để không vi phạm FK constraints.
 
 ### 8.3 Hướng dẫn chạy và Demo Function 4
 1. **Khởi động Web API**:

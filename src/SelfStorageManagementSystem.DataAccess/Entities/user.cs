@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace SelfStorageManagementSystem.DataAccess.Entities;
@@ -50,6 +50,7 @@ public partial class user
     public virtual ICollection<promotion> promotions { get; set; } = new List<promotion>();
 
     public virtual ICollection<refund> refunds { get; set; } = new List<refund>();
+    public virtual ICollection<refund_approval> refund_approvals { get; set; } = new List<refund_approval>();
 
     public virtual ICollection<rental_renewal> rental_renewalrequested_byNavigations { get; set; } = new List<rental_renewal>();
 

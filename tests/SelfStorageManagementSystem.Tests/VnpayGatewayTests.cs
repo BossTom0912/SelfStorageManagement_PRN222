@@ -36,7 +36,7 @@ public class VnpayGatewayTests
             InvoiceId = 888,
             ReservationId = 999,
             ReservationCode = "RES-001",
-            Amount = 1_500_000.45m, // VND amounts rounded to integer
+            Amount = 1_500_000m, // VND amounts must be integer VND
             Description = "Thanh toan don giu cho RES-001",
             ClientIp = "127.0.0.1",
             HoldUntil = DateTimeOffset.UtcNow.AddMinutes(15)
@@ -52,6 +52,39 @@ public class VnpayGatewayTests
         Assert.Contains("vnp_Command=pay", url);
         Assert.Contains("vnp_SecureHash=", url);
         Assert.Contains("vnp_ExpireDate=", url);
+    }
+
+    [Fact]
+    public async Task CreateCheckoutUrlAsync_FractionalAmount_ThrowsArgumentException()
+    {
+        var order = new PaymentGatewayOrder
+        {
+            PaymentId = 12345,
+            InvoiceId = 888,
+            ReservationId = 999,
+            ReservationCode = "RES-001",
+            Amount = 1_500_000.45m,
+            Description = "Thanh toan don giu cho RES-001",
+            ClientIp = "127.0.0.1",
+            HoldUntil = DateTimeOffset.UtcNow.AddMinutes(15)
+        };
+
+        await Assert.ThrowsAsync<ArgumentException>(() => _gateway.CreateCheckoutUrlAsync(order));
+    }
+
+    [Fact]
+    public async Task CreateCheckoutUrlAsync_MissingCredentials_ThrowsInvalidOperationException()
+    {
+        var emptyConfig = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>()).Build();
+        var gateway = new VnpayGateway(emptyConfig, NullLogger<VnpayGateway>.Instance);
+
+        var order = new PaymentGatewayOrder
+        {
+            PaymentId = 1,
+            Amount = 100_000m
+        };
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() => gateway.CreateCheckoutUrlAsync(order));
     }
 
     [Fact]
