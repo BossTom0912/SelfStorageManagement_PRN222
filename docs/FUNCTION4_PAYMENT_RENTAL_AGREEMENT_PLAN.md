@@ -1,5 +1,7 @@
 # Thiết kế triển khai Function 4: Thanh toán và hợp đồng thuê
 
+> **Lưu ý tiến độ 08/10/2026:** Đây là tài liệu thiết kế và các mốc kiểm thử cũ trong phần dưới được giữ để tham khảo. Trạng thái hiện tại: Function 4 đã triển khai cốt lõi nhưng chưa nghiệm thu; **179 tests passed, 4 SQL concurrency tests skipped**. Xem [tổng kết tiến độ mới nhất](FIVE_CORE_FUNCTIONS_SUMMARY.md).
+
 **Ngày khảo sát:** 07/10/2026
 **Trạng thái:** Phương án triển khai, chưa phải chức năng đã hoàn thành
 **Phạm vi:** Thanh toán lần đầu cho reservation đang được giữ 15 phút; tạo hóa đơn, ghi nhận giao dịch và hợp đồng chờ bàn giao. Gia hạn, hoàn cọc và check-in thuộc các luồng sau.
