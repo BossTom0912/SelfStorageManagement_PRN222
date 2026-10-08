@@ -18,6 +18,11 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IDemoAccountBootstrapService, DemoAccountBootstrapService>();
         services.AddScoped<IFacilityCatalogService, FacilityCatalogService>();
         services.AddScoped<IReservationService, ReservationService>();
+        services.AddScoped<DemoGateway>();
+        services.AddScoped<VnpayGateway>();
+        services.AddScoped<IPaymentService, PaymentService>();
+        services.AddScoped<IInvoiceService, InvoiceService>();
+        services.AddScoped<IRentalAgreementService, RentalAgreementService>();
 
         return services;
     }

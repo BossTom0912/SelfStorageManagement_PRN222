@@ -1,0 +1,311 @@
+<Window x:Class="SelfStorageManagementSystem.WpfClient.Views.CheckoutWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Thanh Toán &amp; Hợp Đồng Thuê Kho - Self-Storage System" Height="780" Width="900"
+        WindowStartupLocation="CenterOwner" Background="#F8FAFC" FontFamily="Segoe UI">
+    <Grid Margin="24">
+        <!-- Main Form View (Before/During Checkout) -->
+        <Grid x:Name="gridMainForm">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header Card -->
+            <Border Grid.Row="0" Background="#1E293B" CornerRadius="8" Padding="20" Margin="0,0,0,16">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="THANH TOÁN CỌC &amp; KỲ ĐẦU (FUNCTION 4)" Foreground="#38BDF8" FontSize="18" FontWeight="Bold"/>
+                        <TextBlock Text="Đồ án PRN222: Thu cọc 1 tháng + tiền thuê tháng đầu + phí đặt chỗ - ưu đãi hợp lệ." Foreground="#CBD5E1" FontSize="12" Margin="0,4,0,0"/>
+                        <TextBlock Text="📌 Lưu ý demo: tax_amount = 0. Hóa đơn/biên nhận là tài liệu nội bộ, không phải hóa đơn điện tử GTGT hợp pháp." Foreground="#94A3B8" FontSize="11" Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <Border Grid.Column="1" Background="#0F172A" CornerRadius="6" Padding="12,6" VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="⏱️ Hạn giữ chỗ: " Foreground="#94A3B8" FontSize="12" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="txtHoldCountdown" Text="15:00" Foreground="#F59E0B" FontSize="15" FontWeight="Bold" FontFamily="Consolas" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- Content Split (2 columns) -->
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Left Column: Details & Pricing Breakdown -->
+                <Border Grid.Column="0" Background="#FFFFFF" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="8" Padding="20" Margin="0,0,10,0">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+                            <TextBlock Text="🏢 Đơn Đặt Chỗ &amp; Báo Giá" FontWeight="Bold" FontSize="14" Foreground="#0F172A" Margin="0,0,0,12"/>
+
+                            <TextBlock Text="Mã đơn đặt chỗ:" Foreground="#64748B" FontSize="11"/>
+                            <TextBlock x:Name="txtReservationCode" Text="RES-..." FontWeight="Bold" Foreground="#2563EB" Margin="0,0,0,8"/>
+
+                            <TextBlock Text="Cơ sở &amp; Loại kho:" Foreground="#64748B" FontSize="11"/>
+                            <TextBlock x:Name="txtFacilityAndUnitType" Text="-" FontWeight="SemiBold" Foreground="#1E293B" Margin="0,0,0,8"/>
+
+                            <TextBlock Text="Thời hạn thuê:" Foreground="#64748B" FontSize="11"/>
+                            <TextBlock x:Name="txtRentalPeriod" Text="-" FontWeight="SemiBold" Foreground="#1E293B" Margin="0,0,0,16"/>
+
+                            <Border Background="#F1F5F9" Height="1" Margin="0,0,0,16"/>
+
+                            <!-- Pricing Lines -->
+                            <TextBlock Text="💰 Chi tiết các khoản phải trả:" FontWeight="Bold" FontSize="13" Foreground="#334155" Margin="0,0,0,10"/>
+
+                            <Grid Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Tiền thuê tháng đầu tiên:" Foreground="#475569"/>
+                                <TextBlock Grid.Column="1" x:Name="txtFirstMonthRent" Text="0 đ" FontWeight="SemiBold" Foreground="#1E293B"/>
+                            </Grid>
+
+                            <Grid Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Tiền cọc giữ kho (1 tháng - BR-FIN-01):" Foreground="#475569"/>
+                                <TextBlock Grid.Column="1" x:Name="txtDepositAmount" Text="0 đ" FontWeight="SemiBold" Foreground="#1E293B"/>
+                            </Grid>
+
+                            <Grid Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Phí đặt chỗ ban đầu:" Foreground="#475569"/>
+                                <TextBlock Grid.Column="1" x:Name="txtBookingFee" Text="0 đ" Foreground="#64748B"/>
+                            </Grid>
+
+                            <!-- Promotion Voucher Input -->
+                            <Border Background="#F8FAFC" BorderBrush="#CBD5E1" BorderThickness="1" CornerRadius="6" Padding="12" Margin="0,8,0,12">
+                                <StackPanel>
+                                    <TextBlock Text="🎟️ Mã ưu đãi / Voucher (Tối đa 1 mã):" FontSize="11" FontWeight="SemiBold" Foreground="#475569" Margin="0,0,0,6"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBox x:Name="txtPromotionInput" Text="" Padding="8,6" BorderBrush="#94A3B8" CharacterCasing="Upper"/>
+                                        <Button Grid.Column="1" x:Name="btnApplyPromo" Content="Áp dụng" Margin="8,0,0,0" Padding="12,6" Background="#3B82F6" Foreground="White" FontWeight="Bold" BorderThickness="0" Cursor="Hand" Click="BtnApplyPromo_Click"/>
+                                    </Grid>
+                                    <TextBlock x:Name="lblPromoFeedback" Text="" FontSize="11" Margin="0,4,0,0" Foreground="#059669" TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Grid Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Giảm giá ưu đãi (không trừ cọc):" Foreground="#059669" FontWeight="SemiBold"/>
+                                <TextBlock Grid.Column="1" x:Name="txtDiscountAmount" Text="0 đ" FontWeight="Bold" Foreground="#059669"/>
+                            </Grid>
+
+                            <Border Background="#CBD5E1" Height="1.5" Margin="0,8"/>
+
+                            <Grid Margin="0,8,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="TỔNG TIỀN PHẢI TRẢ:" FontWeight="Bold" FontSize="15" Foreground="#0F172A" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" x:Name="txtTotalAmount" Text="0 đ" FontWeight="Bold" FontSize="20" Foreground="#059669" VerticalAlignment="Center"/>
+                            </Grid>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Border>
+
+                <!-- Right Column: Terms, Policy Version, Gateway -->
+                <Border Grid.Column="1" Background="#FFFFFF" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="8" Padding="20" Margin="10,0,0,0">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+                            <TextBlock Text="📜 Điều Khoản Hợp Đồng &amp; Cổng Thanh Toán" FontWeight="Bold" FontSize="14" Foreground="#0F172A" Margin="0,0,0,12"/>
+
+                            <!-- Terms Box -->
+                            <Border Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="6" Padding="12" Margin="0,0,0,12">
+                                <StackPanel>
+                                    <TextBlock x:Name="lblPolicyVersionHeader" Text="Phiên bản điều khoản: rental_terms" FontWeight="Bold" Foreground="#334155" FontSize="12"/>
+                                    <ScrollViewer MaxHeight="130" VerticalScrollBarVisibility="Auto" Margin="0,6,0,0">
+                                        <TextBlock x:Name="txtPolicyTermsContent" Text="Đang tải nội dung điều khoản..."
+                                                   Foreground="#64748B" FontSize="11" TextWrapping="Wrap" LineHeight="18"/>
+                                    </ScrollViewer>
+                                </StackPanel>
+                            </Border>
+
+                            <CheckBox x:Name="chkAcceptTerms" Content="Tôi đã đọc, hiểu rõ và chấp thuận Điều khoản thuê kho trên" Margin="0,0,0,16" FontWeight="SemiBold" Foreground="#1E293B" Checked="ChkAcceptTerms_CheckedChanged" Unchecked="ChkAcceptTerms_CheckedChanged"/>
+
+                            <Border Background="#F1F5F9" Height="1" Margin="0,0,0,16"/>
+
+                            <TextBlock Text="💳 Chọn phương thức / cổng thanh toán:" FontWeight="Bold" FontSize="13" Foreground="#334155" Margin="0,0,0,10"/>
+
+                            <Border Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="6" Padding="12" Margin="0,0,0,10">
+                                <RadioButton x:Name="rbDemoGateway" GroupName="PaymentMethod" IsChecked="True" Checked="RbGateway_CheckedChanged">
+                                    <StackPanel Margin="6,0,0,0">
+                                        <TextBlock Text="Demo Payment Gateway (Giả lập đồ án)" FontWeight="Bold" Foreground="#0F172A"/>
+                                        <TextBlock Text="Cổng giả lập chạy trên localhost, hỗ trợ test nhanh thành công/thất bại mà không cần Internet." Foreground="#64748B" FontSize="11" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </RadioButton>
+                            </Border>
+
+                            <Border Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="6" Padding="12" Margin="0,0,0,16">
+                                <RadioButton x:Name="rbVnpayGateway" GroupName="PaymentMethod" Checked="RbGateway_CheckedChanged">
+                                    <StackPanel Margin="6,0,0,0">
+                                        <TextBlock Text="VNPAY Sandbox (Cổng VNPAY thử nghiệm)" FontWeight="Bold" Foreground="#0F172A"/>
+                                        <TextBlock Text="Mở trang thanh toán VNPAY chính thức qua HMAC-SHA512. Yêu cầu kết nối mạng." Foreground="#64748B" FontSize="11" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </RadioButton>
+                            </Border>
+
+                            <!-- Interactive Simulator Trigger (For Demo) -->
+                            <Border x:Name="panelWaitingPayment" Background="#FEF3C7" BorderBrush="#FCD34D" BorderThickness="1" CornerRadius="6" Padding="12" Margin="0,0,0,12" Visibility="Collapsed">
+                                <StackPanel>
+                                    <TextBlock Text="⏳ ĐANG CHỜ XÁC NHẬN THANH TOÁN TỪ CỔNG..." FontWeight="Bold" Foreground="#92400E" FontSize="12"/>
+                                    <TextBlock x:Name="lblPaymentAttemptInfo" Text="Giao dịch đang chờ xử lý. Vui lòng thanh toán trên trình duyệt." Foreground="#B45309" FontSize="11" Margin="0,4,0,8" TextWrapping="Wrap"/>
+                                    <Button x:Name="btnOpenBrowserAgain" Content="🌐 Mở lại liên kết thanh toán" Background="#D97706" Foreground="White" FontWeight="Bold" BorderThickness="0" Padding="10,6" Margin="0,0,0,6" Cursor="Hand" Click="BtnOpenBrowserAgain_Click"/>
+                                    <Button x:Name="btnSimulateSuccessNow" Content="⚡ Giả lập thanh toán thành công (Demo)" Background="#059669" Foreground="White" FontWeight="Bold" BorderThickness="0" Padding="10,6" Cursor="Hand" Click="BtnSimulateSuccessNow_Click"/>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Border>
+            </Grid>
+
+            <!-- Bottom Action Bar -->
+            <Grid Grid.Row="2" Margin="0,16,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock x:Name="lblStatusBottom" Grid.Column="0" Text="" Foreground="#64748B" VerticalAlignment="Center" FontSize="12"/>
+
+                <Button x:Name="btnCheckout" Grid.Column="1" Content="🚀 Xác nhận &amp; Tiến hành Thanh toán" Padding="20,10" Background="#10B981" Foreground="#FFFFFF" FontWeight="Bold" BorderThickness="0" Margin="0,0,10,0" Cursor="Hand" IsEnabled="False" Click="BtnCheckout_Click"/>
+                <Button x:Name="btnClose" Grid.Column="2" Content="Đóng" Padding="20,10" Background="#64748B" Foreground="#FFFFFF" FontWeight="SemiBold" BorderThickness="0" Cursor="Hand" Click="BtnClose_Click"/>
+            </Grid>
+        </Grid>
+
+        <!-- Success Outcome View -->
+        <Border x:Name="panelSuccessOutcome" Background="#FFFFFF" BorderBrush="#10B981" BorderThickness="2" CornerRadius="12" Padding="32" Margin="40" Visibility="Collapsed">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="600">
+                <TextBlock Text="🎉" FontSize="56" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                <TextBlock Text="THANH TOÁN THÀNH CÔNG!" FontSize="22" FontWeight="Bold" Foreground="#059669" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                <TextBlock Text="Đơn đặt chỗ đã được xác nhận. Hóa đơn đã được ghi nhận và Hợp đồng thuê kho đã được khởi tạo (Scheduled)." Foreground="#475569" FontSize="13" TextAlignment="Center" TextWrapping="Wrap" Margin="0,0,0,24"/>
+
+                <Border Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="8" Padding="20" Margin="0,0,0,24">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Mã đơn đặt chỗ (Confirmed):" Foreground="#64748B"/>
+                            <TextBlock Grid.Column="1" x:Name="txtSuccessReservationCode" Text="-" FontWeight="Bold" Foreground="#1E293B"/>
+                        </Grid>
+
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Hóa đơn nội bộ (Paid):" Foreground="#64748B"/>
+                            <TextBlock Grid.Column="1" x:Name="txtSuccessInvoiceNo" Text="-" FontWeight="Bold" Foreground="#059669"/>
+                        </Grid>
+
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Mã hợp đồng thuê (Scheduled):" Foreground="#64748B"/>
+                            <TextBlock Grid.Column="1" x:Name="txtSuccessAgreementNo" Text="-" FontWeight="Bold" Foreground="#2563EB"/>
+                        </Grid>
+
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Số tiền đã thanh toán:" Foreground="#64748B"/>
+                            <TextBlock Grid.Column="1" x:Name="txtSuccessPaidAmount" Text="-" FontWeight="Bold" Foreground="#1E293B"/>
+                        </Grid>
+
+                        <Border Background="#E2E8F0" Height="1" Margin="0,8"/>
+
+                        <TextBlock Text="📌 Hợp đồng hiện ở trạng thái Scheduled (chờ bàn giao). Ô kho vật lý cụ thể và quyền truy cập sẽ được cấp tại quầy check-in (Function 5)." Foreground="#64748B" FontSize="11" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Border>
+
+                <Button Content="Hoàn tất &amp; Đóng" Padding="28,12" Background="#2563EB" Foreground="White" FontWeight="Bold" BorderThickness="0" HorizontalAlignment="Center" Cursor="Hand" Click="BtnSuccessDone_Click"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Reconciliation Outcome View (Late Payment or Duplicate) -->
+        <Border x:Name="panelReconciliationOutcome" Background="#FFFFFF" BorderBrush="#F59E0B" BorderThickness="2" CornerRadius="12" Padding="32" Margin="40" Visibility="Collapsed">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="600">
+                <TextBlock Text="⚠️" FontSize="56" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                <TextBlock Text="ĐÃ THU TIỀN — CẦN ĐỐI SOÁT &amp; HOÀN TIỀN" FontSize="20" FontWeight="Bold" Foreground="#D97706" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                <TextBlock Text="Giao dịch thanh toán đã được ghi nhận từ cổng thanh toán. Tuy nhiên, thời hạn giữ chỗ 15 phút đã hết hạn hoặc đơn đặt chỗ đã được xử lý bởi giao dịch khác. Ô kho chưa được phân bổ và hợp đồng không được khởi tạo tự động. Hệ thống đã tạo yêu cầu hoàn tiền để nhân sự đối soát và xử lý cho bạn." Foreground="#475569" FontSize="13" TextAlignment="Center" TextWrapping="Wrap" Margin="0,0,0,24"/>
+
+                <Border Background="#FFFBEB" BorderBrush="#FDE68A" BorderThickness="1" CornerRadius="8" Padding="20" Margin="0,0,0,24">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Mã đơn đặt chỗ:" Foreground="#92400E"/>
+                            <TextBlock Grid.Column="1" x:Name="txtReconReservationCode" Text="-" FontWeight="Bold" Foreground="#1E293B"/>
+                        </Grid>
+
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Mã giao dịch thanh toán:" Foreground="#92400E"/>
+                            <TextBlock Grid.Column="1" x:Name="txtReconPaymentId" Text="-" FontWeight="Bold" Foreground="#1E293B"/>
+                        </Grid>
+
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Số tiền đã thu:" Foreground="#92400E"/>
+                            <TextBlock Grid.Column="1" x:Name="txtReconPaidAmount" Text="-" FontWeight="Bold" Foreground="#D97706"/>
+                        </Grid>
+
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Trạng thái xử lý:" Foreground="#92400E"/>
+                            <TextBlock Grid.Column="1" Text="Đã tạo yêu cầu hoàn tiền (Requested)" FontWeight="Bold" Foreground="#DC2626"/>
+                        </Grid>
+
+                        <Border Background="#FDE68A" Height="1" Margin="0,8"/>
+
+                        <TextBlock Text="📌 Quý khách vui lòng liên hệ quầy lễ tân hoặc bộ phận CSKH để nhận lại khoản tiền này hoặc tạo đơn giữ kho mới." Foreground="#92400E" FontSize="11" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Border>
+
+                <Button Content="Đóng" Padding="28,12" Background="#D97706" Foreground="White" FontWeight="Bold" BorderThickness="0" HorizontalAlignment="Center" Cursor="Hand" Click="BtnSuccessDone_Click"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

@@ -1263,7 +1263,7 @@ public partial class SelfStorageDbContext : DbContext
             entity.HasOne(d => d.decided_byNavigation).WithMany(p => p.refund_approvals)
                 .HasForeignKey(d => d.decided_by)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__refund_ap__decid__0CDAE408");
+                .HasConstraintName("FK_refund_approvals_decided_by_users");
 
             entity.HasOne(d => d.refund).WithOne(p => p.refund_approval)
                 .HasForeignKey<refund_approval>(d => d.refund_id)

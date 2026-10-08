@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SelfStorageManagementSystem.BusinessLogic.Common;
 using SelfStorageManagementSystem.BusinessLogic.Common.Constants;
 using SelfStorageManagementSystem.BusinessLogic.DTOs.Requests.Reservations;
+using SelfStorageManagementSystem.BusinessLogic.DTOs.Responses.Payments;
 using SelfStorageManagementSystem.BusinessLogic.DTOs.Responses.Reservations;
 using SelfStorageManagementSystem.BusinessLogic.Exceptions;
 using SelfStorageManagementSystem.BusinessLogic.Services.Interfaces;
@@ -64,6 +65,29 @@ public class ReservationsController : BaseController
 
         var result = await _reservationService.GetReservationByIdAsync(userId, roles, id, cancellationToken);
         return Ok(ApiResponse<ReservationDetailResponse>.Ok(result, "Lấy thông tin chi tiết đơn đặt chỗ thành công."));
+    }
+
+    /// <summary>
+    /// Xem chi tiết báo giá thanh toán kỳ đầu và mã ưu đãi trước khi checkout (Function 4.1).
+    /// </summary>
+    [HttpGet("{id:long}/checkout-quote")]
+    [ProducesResponseType(typeof(ApiResponse<CheckoutQuoteResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> GetCheckoutQuote(
+        long id,
+        [FromQuery] string? promotionCode,
+        [FromServices] IPaymentService paymentService,
+        CancellationToken cancellationToken)
+    {
+        var userId = GetCurrentUserId();
+        var roles = GetCurrentUserRoles();
+
+        var result = await paymentService.GetCheckoutQuoteAsync(userId, roles, id, promotionCode, cancellationToken);
+        return Ok(ApiResponse<CheckoutQuoteResponse>.Ok(result, "Tải thông tin báo giá thanh toán thành công."));
     }
 
     /// <summary>

@@ -164,13 +164,15 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
             <TextBlock x:Name="lblStatusMessage" Grid.Column="0" Text="" Foreground="#64748B" VerticalAlignment="Center" FontSize="12"/>
 
             <Button x:Name="btnRefresh" Grid.Column="1" Content="🔄 Làm mới" Padding="14,8" Background="#F1F5F9" Foreground="#334155" FontWeight="SemiBold" BorderThickness="0" Margin="0,0,10,0" Cursor="Hand" Click="BtnRefresh_Click"/>
-            <Button x:Name="btnCancelReservation" Grid.Column="2" Content="❌ Hủy giữ chỗ" Padding="16,8" Background="#EF4444" Foreground="#FFFFFF" FontWeight="Bold" BorderThickness="0" Margin="0,0,10,0" Cursor="Hand" Click="BtnCancelReservation_Click"/>
-            <Button x:Name="btnClose" Grid.Column="3" Content="Đóng" Padding="20,8" Background="#64748B" Foreground="#FFFFFF" FontWeight="SemiBold" BorderThickness="0" Cursor="Hand" Click="BtnClose_Click"/>
+            <Button x:Name="btnProceedPayment" Grid.Column="2" Content="💳 Thanh toán ngay (Function 4)" Padding="18,8" Background="#10B981" Foreground="#FFFFFF" FontWeight="Bold" BorderThickness="0" Margin="0,0,10,0" Cursor="Hand" Click="BtnProceedPayment_Click"/>
+            <Button x:Name="btnCancelReservation" Grid.Column="3" Content="❌ Hủy giữ chỗ" Padding="16,8" Background="#EF4444" Foreground="#FFFFFF" FontWeight="Bold" BorderThickness="0" Margin="0,0,10,0" Cursor="Hand" Click="BtnCancelReservation_Click"/>
+            <Button x:Name="btnClose" Grid.Column="4" Content="Đóng" Padding="20,8" Background="#64748B" Foreground="#FFFFFF" FontWeight="SemiBold" BorderThickness="0" Cursor="Hand" Click="BtnClose_Click"/>
         </Grid>
     </Grid>
 </Window>

@@ -373,7 +373,7 @@ public class ReservationRepository : GenericRepository<reservation>, IReservatio
                 throw new InvalidOperationException("CANNOT_CANCEL_EXPIRED");
             }
 
-            // Void unpaid draft/open invoices for this cancelled reservation
+            // Void unpaid draft/open invoices and release reserved vouchers for this cancelled reservation
             if (isRelational)
             {
                 await _context.invoices
@@ -384,6 +384,12 @@ public class ReservationRepository : GenericRepository<reservation>, IReservatio
                         .SetProperty(b => b.status, "voided")
                         .SetProperty(b => b.voided_at, nowUtc)
                         .SetProperty(b => b.updated_at, nowUtc),
+                        cancellationToken);
+
+                await _context.promotion_redemptions
+                    .Where(pr => pr.reservation_id == reservationId && pr.status == "reserved")
+                    .ExecuteUpdateAsync(s => s
+                        .SetProperty(b => b.status, "released"),
                         cancellationToken);
             }
             else
@@ -401,7 +407,16 @@ public class ReservationRepository : GenericRepository<reservation>, IReservatio
                     inv.updated_at = nowUtc;
                 }
 
-                if (invs.Count > 0)
+                var redemptions = await _context.promotion_redemptions
+                    .Where(pr => pr.reservation_id == reservationId && pr.status == "reserved")
+                    .ToListAsync(cancellationToken);
+
+                foreach (var pr in redemptions)
+                {
+                    pr.status = "released";
+                }
+
+                if (invs.Count > 0 || redemptions.Count > 0)
                 {
                     await _context.SaveChangesAsync(cancellationToken);
                 }
@@ -463,6 +478,26 @@ public class ReservationRepository : GenericRepository<reservation>, IReservatio
             {
                 foreach (var id in candidateIds)
                 {
+                    var lockKey = $"SS_Reservation_{id}";
+                    var resultParam = new SqlParameter
+                    {
+                        ParameterName = "@Result",
+                        SqlDbType = SqlDbType.Int,
+                        Direction = ParameterDirection.Output
+                    };
+                    var resourceParam = new SqlParameter("@Resource", lockKey);
+
+                    await _context.Database.ExecuteSqlRawAsync(
+                        "EXEC @Result = sp_getapplock @Resource = @Resource, @LockMode = 'Exclusive', @LockOwner = 'Transaction', @LockTimeout = 5000",
+                        new object[] { resultParam, resourceParam },
+                        cancellationToken);
+
+                    var lockResult = (int)(resultParam.Value ?? -999);
+                    if (lockResult < 0)
+                    {
+                        continue;
+                    }
+
                     var affected = await _context.reservations
                         .Where(r => r.id == id &&
                                     (r.status == "pending" || r.status == "awaiting_deposit") &&
@@ -489,6 +524,14 @@ public class ReservationRepository : GenericRepository<reservation>, IReservatio
                             .SetProperty(b => b.status, "voided")
                             .SetProperty(b => b.voided_at, nowUtc)
                             .SetProperty(b => b.updated_at, nowUtc),
+                            cancellationToken);
+
+                    await _context.promotion_redemptions
+                        .Where(pr => pr.reservation_id.HasValue &&
+                                      actuallyExpiredIds.Contains(pr.reservation_id.Value) &&
+                                      pr.status == "reserved")
+                        .ExecuteUpdateAsync(s => s
+                            .SetProperty(b => b.status, "released"),
                             cancellationToken);
                 }
             }
@@ -521,6 +564,17 @@ public class ReservationRepository : GenericRepository<reservation>, IReservatio
                         inv.status = "voided";
                         inv.voided_at = nowUtc;
                         inv.updated_at = nowUtc;
+                    }
+
+                    var redemptions = await _context.promotion_redemptions
+                        .Where(pr => pr.reservation_id.HasValue &&
+                                      actuallyExpiredIds.Contains(pr.reservation_id.Value) &&
+                                      pr.status == "reserved")
+                        .ToListAsync(cancellationToken);
+
+                    foreach (var pr in redemptions)
+                    {
+                        pr.status = "released";
                     }
 
                     await _context.SaveChangesAsync(cancellationToken);
@@ -582,6 +636,12 @@ public class ReservationRepository : GenericRepository<reservation>, IReservatio
                         .SetProperty(b => b.voided_at, nowUtc)
                         .SetProperty(b => b.updated_at, nowUtc),
                         cancellationToken);
+
+                await _context.promotion_redemptions
+                    .Where(pr => pr.reservation_id == reservationId && pr.status == "reserved")
+                    .ExecuteUpdateAsync(s => s
+                        .SetProperty(b => b.status, "released"),
+                        cancellationToken);
             }
             else
             {
@@ -611,7 +671,19 @@ public class ReservationRepository : GenericRepository<reservation>, IReservatio
                     inv.updated_at = nowUtc;
                 }
 
-                await _context.SaveChangesAsync(cancellationToken);
+                var redemptions = await _context.promotion_redemptions
+                    .Where(pr => pr.reservation_id == reservationId && pr.status == "reserved")
+                    .ToListAsync(cancellationToken);
+
+                foreach (var pr in redemptions)
+                {
+                    pr.status = "released";
+                }
+
+                if (invs.Count > 0 || redemptions.Count > 0)
+                {
+                    await _context.SaveChangesAsync(cancellationToken);
+                }
                 affected = 1;
             }
 

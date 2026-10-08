@@ -97,7 +97,8 @@ public class ApiClient
         HttpMethod method,
         string relativePathAndQuery,
         object? jsonBody = null,
-        bool requiresAuth = true)
+        bool requiresAuth = true,
+        IDictionary<string, string>? customHeaders = null)
     {
         var validationError = ValidateBaseUrl<T>(out var validUri);
         if (validationError != null)
@@ -121,6 +122,14 @@ public class ApiClient
                 else
                 {
                     request.Content = JsonContent.Create(jsonBody);
+                }
+            }
+
+            if (customHeaders != null)
+            {
+                foreach (var (key, value) in customHeaders)
+                {
+                    request.Headers.TryAddWithoutValidation(key, value);
                 }
             }
 
@@ -508,6 +517,84 @@ public class ApiClient
         return SendRequestAsync<ReservationDetailClientModel>(
             HttpMethod.Post,
             $"api/reservations/{id}/cancel",
+            jsonBody: body,
+            requiresAuth: true);
+    }
+
+    public Task<ApiResponse<CheckoutQuoteClientModel>> GetCheckoutQuoteAsync(
+        long reservationId,
+        string? promotionCode = null)
+    {
+        var query = !string.IsNullOrWhiteSpace(promotionCode)
+            ? $"?promotionCode={Uri.EscapeDataString(promotionCode.Trim())}"
+            : string.Empty;
+
+        return SendRequestAsync<CheckoutQuoteClientModel>(
+            HttpMethod.Get,
+            $"api/reservations/{reservationId}/checkout-quote{query}",
+            jsonBody: null,
+            requiresAuth: true);
+    }
+
+    public Task<ApiResponse<CheckoutClientResponse>> CheckoutAsync(
+        CheckoutClientRequest request,
+        string? idempotencyKey = null)
+    {
+        var headers = new Dictionary<string, string>();
+        var key = !string.IsNullOrWhiteSpace(idempotencyKey)
+            ? idempotencyKey
+            : $"IDEM-{request.ReservationId}-{Guid.NewGuid():N}";
+        headers["Idempotency-Key"] = key;
+
+        return SendRequestAsync<CheckoutClientResponse>(
+            HttpMethod.Post,
+            "api/payments/checkout",
+            jsonBody: request,
+            requiresAuth: true,
+            customHeaders: headers);
+    }
+
+    public Task<ApiResponse<PaymentDetailClientModel>> GetPaymentByIdAsync(long paymentId)
+    {
+        return SendRequestAsync<PaymentDetailClientModel>(
+            HttpMethod.Get,
+            $"api/payments/{paymentId}",
+            jsonBody: null,
+            requiresAuth: true);
+    }
+
+    public Task<ApiResponse<InvoiceDetailClientModel>> GetInvoiceByIdAsync(long invoiceId)
+    {
+        return SendRequestAsync<InvoiceDetailClientModel>(
+            HttpMethod.Get,
+            $"api/invoices/{invoiceId}",
+            jsonBody: null,
+            requiresAuth: true);
+    }
+
+    public Task<ApiResponse<RentalAgreementDetailClientModel>> GetAgreementByIdAsync(long agreementId)
+    {
+        return SendRequestAsync<RentalAgreementDetailClientModel>(
+            HttpMethod.Get,
+            $"api/agreements/{agreementId}",
+            jsonBody: null,
+            requiresAuth: true);
+    }
+
+    public Task<ApiResponse<PaymentDetailClientModel>> CompleteDemoPaymentAsync(
+        long paymentId,
+        bool isSuccess,
+        string? failureReason = null)
+    {
+        var body = new DemoPaymentCompleteClientRequest
+        {
+            IsSuccess = isSuccess,
+            FailureReason = failureReason
+        };
+
+        return SendRequestAsync<PaymentDetailClientModel>(
+            HttpMethod.Post,
+            $"api/payments/demo/{paymentId}/complete",
             jsonBody: body,
             requiresAuth: true);
     }
