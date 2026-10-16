@@ -103,19 +103,19 @@ Thực hiện số hóa quy trình quầy tiếp nhận khách hàng, xác minh 
 
 ### 3.1. Fixture Kiểm Thử Chuyên Biệt (`CheckInWebTestFixture.cs`)
 - Kế thừa `WebApplicationFactory<Program>`, cấu hình cơ sở dữ liệu `SelfStorageDbContext` độc lập bằng `UseInMemoryDatabase`.
-- Cấu hình bí mật băm HMAC (`CheckIn:PinHmacSecret = "CheckIn_Secret_Key_For_Testing_Hmac_32_Chars_Length!"`).
+- Cấu hình bí mật băm HMAC (`CheckIn:PinHmacSecret = "CheckInTestHmacSecret32BytesLong!"`).
 - Cấu hình `HtmlEncoder.Create(UnicodeRanges.All)` đảm bảo các ký tự tiếng Việt có dấu hiển thị chính xác theo chuẩn UTF-8.
 - Hàm hỗ trợ xác thực `CreateAuthenticatedClientAsync`: Đăng nhập thực tế thông qua MVC Cookie Authentication (`/Account/Login`) với Antiforgery token, đọc và bảo lưu phiên cookie `SelfStoragePRN222.Web.Auth`.
 - Phương thức `SeedFullCheckInEnvironmentAsync`: Khởi tạo môi trường hoàn chỉnh với 5 vai trò, cơ sở, loại kho, 3 ô kho vật lý, người dùng khách hàng, nhân viên có phân công hợp lệ, nhân viên chưa phân công, nhân viên đã nghỉ việc (`terminated`), quản lý cơ sở, admin, quản lý vận hành, đơn đặt chỗ confirmed, hợp đồng scheduled và hóa đơn thanh toán đủ.
 
 ### 3.2. Bộ Kiểm Thử Tự Động (`StaffCheckInPageTests.cs`)
-Bao gồm 18 ca kiểm thử bao phủ toàn bộ các kịch bản kiểm tra chất lượng:
+Bao gồm 19 phương thức `[Fact]` độc lập; phạm vi bằng chứng của từng phương thức được ghi bên dưới:
 
 | STT | Tên Phương Thức `[Fact]` Thực Tế | Mục Tiêu & Kịch Bản Kiểm Tra | Kết Quả |
 | :---: | :--- | :--- | :---: |
 | 1 | `Anonymous_Access_RedirectsToLogin` | Khách vãng lai chưa xác thực truy cập `/Staff/CheckIn` bị chuyển hướng về `/Account/Login` | **PASS** |
-| 2 | `CustomerRole_Access_ReturnsForbidden` | Khách hàng thuê kho (`StorageCustomer`) truy cập quầy bị từ chối quyền (403 Forbidden) | **PASS** |
-| 3 | `AdminOrOps_WithoutStaffCounterRole_Access_ShowsForbiddenWarning` | Nhân viên chưa phân công, nhân viên thôi việc (`terminated`), Admin và Quản lý vận hành không có quyền bypass quầy; hiển thị banner từ chối truy cập | **PASS** |
+| 2 | `CustomerRole_Access_ReturnsForbidden` | Khách hàng thuê kho bị từ chối: HTTP 403 hoặc redirect đến Forbidden | **PASS** |
+| 3 | `AdminOrOps_WithoutStaffCounterRole_Access_ShowsForbiddenWarning` | Chỉ kiểm tra Admin và Operations: HTTP Forbidden hoặc nội dung cảnh báo từ chối/bypass; không kiểm tra nhân viên chưa phân công hay terminated | **PASS** |
 | 4 | `Staff_WithActiveAssignment_Access_Succeeds` | Nhân viên có phân công cơ sở hợp lệ truy cập thành công giao diện quầy check-in (200 OK) | **PASS** |
 | 5 | `Manager_WithActiveAssignment_Access_Succeeds` | Quản lý cơ sở có phân công hợp lệ truy cập thành công giao diện quầy check-in (200 OK) | **PASS** |
 | 6 | `Search_NonExistentCode_ShowsErrorMessage` | Tra cứu mã đơn đặt chỗ không tồn tại hiển thị thông báo lỗi tìm kiếm | **PASS** |
@@ -125,26 +125,26 @@ Bao gồm 18 ca kiểm thử bao phủ toàn bộ các kịch bản kiểm tra c
 | 10 | `VerifyId_Successful_ShowsVerifiedBadge` | Xác minh giấy tờ hợp lệ ghi nhận thành công và hiển thị huy hiệu đã xác minh danh tính | **PASS** |
 | 11 | `AssignUnit_And_ReleaseUnit_LifecycleSucceeds` | Luồng vòng đời gán ô kho vật lý ứng viên và giải phóng ô kho hoạt động chính xác | **PASS** |
 | 12 | `ReleaseUnit_StaleAllocationId_ShowsStaleConflictAlert` | Giải phóng ô kho với allocation ID cũ (stale conflict) hiển thị banner xung đột dữ liệu và yêu cầu tải lại | **PASS** |
-| 13 | `Inspection_Pass_RecordsCompleted_EnablesHandover` | Kiểm định đạt 4 mục bắt buộc ghi nhận hoàn tất và mở khóa bước bàn giao kèm cấp mã PIN | **PASS** |
-| 14 | `Inspection_Fail_DamagedItem_ReleasesUnit_SetsMaintenance` | Kiểm định có mục hư hại tự động đánh rớt, giải phóng ô kho và chuyển trạng thái sang `maintenance` | **PASS** |
-| 15 | `Inspection_Fail_IsUnsafeFlag_ReleasesUnit_SetsMaintenance` | Cờ an toàn độc lập `isUnsafe` bật lập tức đánh rớt kiểm định, giải phóng ô kho và chuyển trạng thái bảo trì | **PASS** |
-| 16 | `CompleteCheckIn_Successful_IssuesPin_SetsNoStoreHeaders_AndZeroPersistence` | Hoàn tất bàn giao cấp mã PIN 6 số dùng một lần, trả về header `no-store, no-cache`, không lưu cookie, và làm mới trang xóa sạch PIN (Zero-Persistence) | **PASS** |
+| 13 | `Inspection_Pass_RecordsCompleted_EnablesHandover` | POST kiểm định đạt: HTTP 200, HTML chứa ĐẠT YÊU CẦU, Hoàn Tất Bàn Giao và Cấp Mã PIN | **PASS** |
+| 14 | `Inspection_Fail_DamagedItem_ReleasesUnit_SetsMaintenance` | POST kiểm định có mục hư hại: HTML KHÔNG ĐẠT/Bảo trì, DB physical_status = maintenance | **PASS** |
+| 15 | `Inspection_Fail_IsUnsafeFlag_ReleasesUnit_SetsMaintenance` | POST isUnsafe: HTML KHÔNG ĐẠT/unsafe/Bảo trì, DB physical_status = maintenance | **PASS** |
+| 16 | `CompleteCheckIn_Successful_IssuesPin_SetsNoStoreHeaders_AndZeroPersistence` | HTTP 200, header no-store/no-cache, HTML có PIN 6 số; PIN không có trong Set-Cookie và HTML sau reload, có nhãn che ****** | **PASS** |
 | 17 | `ReissuePin_DocumentMismatch_Fails` | Cấp lại mã PIN với số giấy tờ tùy thân không khớp hồ sơ bị từ chối và báo lỗi | **PASS** |
-| 18 | `ReissuePin_Successful_IssuesNewPin_SetsNoStoreHeaders_AndZeroPersistence` | Cấp lại mã PIN thành công sinh credential mới, trả về header `no-store`, hiển thị nhãn cấp lại và biến mất khi làm mới trang | **PASS** |
+| 18 | `ReissuePin_Successful_IssuesNewPin_SetsNoStoreHeaders_AndZeroPersistence` | HTTP 200, header no-store, HTML có nhãn cấp lại và PIN 6 số; PIN không xuất hiện trong HTML sau reload | **PASS** |
+| 19 | `TerminatedStaff_WithExistingSession_CannotSearchOrVerifyIdentity` | Tạo phiên/token khi active, đổi employment_status thành terminated rồi POST VerifyId và GET tìm đơn: cả hai redirect Login, không lộ mã đơn/giấy tờ; DB không có identity_verification và đơn vẫn confirmed | **PASS** |
 
-### 3.3. Kết Quả Kiểm Thử Toàn Diện
-1. **Bộ kiểm thử T11 (`StaffCheckInPageTests`)**:
-   - Lệnh chạy: `dotnet test "tests/SelfStorageManagementSystem.WebTests/SelfStorageManagementSystem.WebTests.csproj" --filter "FullyQualifiedName~StaffCheckInPageTests"`
-   - Kết quả: **18 Passed, 0 Failed, 0 Skipped** (100%).
-2. **Toàn bộ dự án WebTests (`SelfStorageManagementSystem.WebTests`)**:
-   - Lệnh chạy: `dotnet test "tests/SelfStorageManagementSystem.WebTests/SelfStorageManagementSystem.WebTests.csproj"`
-   - Kết quả: **236 Passed, 0 Failed, 0 Skipped** (100%).
-3. **Toàn bộ giải pháp Web (`SelfStorageManagementSystem.Web.sln`)**:
-   - Lệnh chạy: `dotnet test "SelfStorageManagementSystem.Web.sln"`
-   - Kết quả: **236 Passed, 0 Failed, 0 Skipped** (100%).
-4. **Kiểm thử hồi quy Core Domain (`SelfStorageManagementSystem.Tests`)**:
-   - Lệnh chạy: `dotnet test "tests/SelfStorageManagementSystem.Tests/SelfStorageManagementSystem.Tests.csproj"`
-   - Kết quả: **225 Passed, 0 Failed, 8 Skipped** (100% test thường, 8 test SQL Concurrency được bỏ qua có chủ đích khi chạy không có SQL Server instance).
+### 3.3. Kết quả chạy sau sửa (2026-10-16)
+
+```powershell
+dotnet test tests/SelfStorageManagementSystem.WebTests/SelfStorageManagementSystem.WebTests.csproj --filter "FullyQualifiedName~StorageUnitsRazorPagesTests|FullyQualifiedName~ReservationRazorPagesAndWorkerTests|FullyQualifiedName~StaffCheckInPageTests" --logger "trx;LogFileName=T09-T11-specialized.trx" --results-directory AgentReport/TestResults/T09-T11
+dotnet test SelfStorageManagementSystem.Web.sln --no-restore --logger "trx;LogFileName=Web-solution.trx" --results-directory AgentReport/TestResults/T09-T11
+```
+
+- Bộ chuyên biệt: **55 Passed, 0 Failed, 0 Skipped**; riêng T11 **19/19 Passed** theo class trong TRX.
+- Web solution (cũng chứa toàn bộ WebTests): **244 Passed, 0 Failed, 0 Skipped**.
+- Bằng chứng: `AgentReport/TestResults/T09-T11/T09-T11-specialized.trx`, `Web-solution.trx`.
+- Không dùng kết quả Core Domain cũ làm bằng chứng lần nghiệm thu này. Không sửa mã nghiệp vụ check-in; test mới xác nhận lớp cookie hiện có thu hồi phiên terminated trước khi đọc dữ liệu/thực hiện handler.
+- Build có cảnh báo nullable hiện có tại fixture dòng 308/332; không khẳng định build không có warning.
 
 ---
 
@@ -163,6 +163,6 @@ Bao gồm 18 ca kiểm thử bao phủ toàn bộ các kịch bản kiểm tra c
 
 ## 5. Kết Luận & Sẵn Sàng Bàn Giao
 
-Task **T11** đã hoàn thành xuất sắc toàn bộ yêu cầu kỹ thuật và nghiệp vụ, biên dịch sạch sẽ không cảnh báo lỗi, vượt qua 100% kiểm thử tích hợp giao diện quầy và bảo đảm không gây bất kỳ tác động hồi quy nào tới toàn bộ hệ sinh thái Web.
+Task **T11** giữ trạng thái **VERIFIED** sau khi sửa mô tả bằng chứng và bổ sung test HTTP terminated: 19/19 test T11 và 244/244 test Web solution đạt. Test số 3 chỉ chứng minh Admin/Operations; test số 7 chứng minh nhân viên chưa phân công; test số 19 chứng minh thu hồi phiên nhân viên terminated.
 
 Task T11 chính thức chuyển trạng thái sang **VERIFIED**. Sẵn sàng mở khóa cho Task tiếp theo của Gemini C: **T14: Quản trị tài khoản và trang của khách**.

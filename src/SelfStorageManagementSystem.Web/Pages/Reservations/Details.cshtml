@@ -97,7 +97,7 @@
                             <div class="small text-muted">
                                 <strong>Hạn chót thanh toán:</strong> 
                                 <span class="font-monospace text-dark fw-semibold">
-                                    @AppFormatters.FormatDateTimeSeconds(res.HoldUntil)
+                                    @AppFormatters.FormatDateTimeSeconds(res.HoldUntil, res.FacilityTimezone)
                                 </span>
                             </div>
                         </div>
@@ -128,13 +128,27 @@
             </div>
         }
 
-        <!-- Thông báo hết hạn (Ẩn nếu còn hạn, hiện nếu hết hạn) -->
+        <!-- Thông báo sự cố xác thực / phân quyền (HTTP 401 / 403) khi đồng bộ -->
+        <div class="alert alert-warning shadow-sm mb-4 d-none" id="reservationAuthAlert" role="alert">
+            <div class="d-flex align-items-center gap-3">
+                <span class="fs-2" id="reservationAuthAlertIcon">&#9888;</span>
+                <div>
+                    <h5 class="alert-heading fw-bold mb-1" id="reservationAuthAlertHeading">Phiên đăng nhập đã hết hạn</h5>
+                    <p class="mb-0 small" id="reservationAuthAlertBody">
+                        Phiên làm việc của bạn đã hết hạn sau 5 phút không hoạt động. Đơn đặt chỗ vẫn được bảo lưu thời hạn trên hệ thống.
+                        Vui lòng <a href="/Account/Login" class="alert-link fw-semibold" id="reservationAuthAlertLink">đăng nhập lại</a> để tiếp tục đồng bộ và thanh toán.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Thông báo hết hạn (Ẩn nếu còn hạn, chỉ hiện khi server khẳng định hết hạn) -->
         <div class="alert alert-danger shadow-sm mb-4 @(res.Status == "expired" ? "" : "d-none")" id="reservationExpiredAlert" role="alert">
             <div class="d-flex align-items-center gap-3">
                 <span class="fs-2 text-danger">&#10008;</span>
                 <div>
                     <h5 class="alert-heading fw-bold mb-1">Đơn giữ chỗ đã hết thời hạn 15 phút</h5>
-                    <p class="mb-0 small">
+                    <p class="mb-0 small" id="reservationExpiredAlertBody">
                         Theo quy định <strong>BR-RSV-01</strong>, đơn đặt chỗ đã quá hạn thanh toán và sức chứa khả dụng đã được tự động giải phóng cho các khách hàng khác. 
                         Vui lòng quay lại <a href="/Catalog" class="alert-link">Danh mục cơ sở</a> để tạo đơn mới.
                     </p>

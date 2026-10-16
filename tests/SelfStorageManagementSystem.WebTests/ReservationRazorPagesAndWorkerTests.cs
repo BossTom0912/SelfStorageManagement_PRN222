@@ -1,6 +1,10 @@
+using System.Diagnostics;
 using System.Net;
+using System.Net.WebSockets;
+using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -1124,6 +1128,1054 @@ public class ReservationRazorPagesAndWorkerTests : IClassFixture<CookieAuthWebTe
             var expectedConfirmedFormatted = AppFormatters.FormatDateTime(resConfirmed.hold_until);
             Assert.Contains(expectedConfirmedFormatted, html);
         }
+    }
+
+    #endregion
+
+    [Fact]
+    public async Task HoldDeadline_UsesEachFacilityTimezone_OnDetailsAndBothLists_WithoutChangingUtcInstant()
+    {
+        var (client, user, _) = await CreateAuthenticatedCustomerClientAsync("facility_tz");
+        var vn = await SeedFacilityWithRateAsync("TZVN");
+        var utc = await SeedFacilityWithRateAsync("TZUTC");
+        using var scope = _factory.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<SelfStorageDbContext>();
+        (await db.facilities.FindAsync(utc.FacilityId))!.timezone = "UTC";
+        var now = DateTimeOffset.UtcNow;
+        var holdUntil = now.AddMinutes(10);
+        var reservations = new List<reservation>();
+        foreach (var facility in new[] { vn, utc })
+        {
+            var item = new reservation
+            {
+                reservation_code = $"TZ-{facility.FacilityId}",
+                customer_id = user.id,
+                facility_id = facility.FacilityId,
+                unit_type_id = facility.UnitTypeId,
+                facility_rate_id = facility.RateId,
+                start_date = DateOnly.FromDateTime(now.UtcDateTime).AddDays(1),
+                end_date = DateOnly.FromDateTime(now.UtcDateTime).AddMonths(1),
+                monthly_rate_snapshot = 1000000m,
+                deposit_snapshot = 1000000m,
+                quoted_total = 2000000m,
+                hold_until = holdUntil,
+                status = "pending",
+                created_at = now,
+                updated_at = now
+            };
+            db.reservations.Add(item);
+            reservations.Add(item);
+        }
+        await db.SaveChangesAsync();
+        var expectedVn = AppFormatters.FormatDateTime(holdUntil, "Asia/Ho_Chi_Minh");
+        var expectedUtc = AppFormatters.FormatDateTime(holdUntil, "UTC");
+        Assert.NotEqual(expectedVn, expectedUtc);
+
+        foreach (var url in new[] { "/Reservations", "/Reservations/MyReservations" })
+        {
+            var response = await client.GetAsync(url);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            var html = await response.Content.ReadAsStringAsync();
+            foreach (var item in reservations)
+            {
+                var row = Regex.Match(html, $"<tr[^>]*data-reservation-row=\"{item.id}\"[^>]*>.*?</tr>", RegexOptions.Singleline).Value;
+                Assert.NotEmpty(row);
+                Assert.Contains($"data-hold-until=\"{holdUntil:o}\"", WebUtility.HtmlDecode(row));
+            }
+        }
+        foreach (var item in reservations)
+        {
+            var response = await client.GetAsync($"/Reservations/Details?id={item.id}");
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            var html = await response.Content.ReadAsStringAsync();
+            var timezone = item.facility_id == vn.FacilityId ? "Asia/Ho_Chi_Minh" : "UTC";
+            Assert.Contains(AppFormatters.FormatDateTimeSeconds(holdUntil, timezone), html);
+            Assert.Contains($"data-hold-until=\"{holdUntil:o}\"", WebUtility.HtmlDecode(html));
+        }
+        // Lists show a literal deadline after the hold is no longer active.
+        reservations.ForEach(item => item.status = "confirmed");
+        await db.SaveChangesAsync();
+        foreach (var url in new[] { "/Reservations", "/Reservations/MyReservations" })
+        {
+            var response = await client.GetAsync(url);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            var html = await response.Content.ReadAsStringAsync();
+            foreach (var item in reservations)
+            {
+                var row = Regex.Match(html, $"<tr[^>]*data-reservation-row=\"{item.id}\"[^>]*>.*?</tr>", RegexOptions.Singleline).Value;
+                Assert.NotEmpty(row);
+                Assert.Contains(item.facility_id == vn.FacilityId ? expectedVn : expectedUtc, row);
+            }
+        }
+    }
+
+    #region 11. Browser & JavaScript Countdown Verification (Codex Findings 1-4)
+
+    private static string FindRepoRoot()
+    {
+        var dir = AppContext.BaseDirectory;
+        while (!string.IsNullOrEmpty(dir) && !File.Exists(Path.Combine(dir, "SelfStorageManagementSystem.Web.sln")))
+        {
+            var parent = Directory.GetParent(dir);
+            if (parent == null) break;
+            dir = parent.FullName;
+        }
+        return dir;
+    }
+
+    private static string ResolveEdgeBrowserPath()
+    {
+        var customPath = Environment.GetEnvironmentVariable("EDGE_PATH") ?? Environment.GetEnvironmentVariable("BROWSER_PATH");
+        if (!string.IsNullOrWhiteSpace(customPath) && File.Exists(customPath))
+        {
+            return customPath;
+        }
+
+        var defaultPaths = new[]
+        {
+            @"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
+            @"C:\Program Files\Microsoft\Edge\Application\msedge.exe",
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Microsoft\Edge\Application\msedge.exe")
+        };
+
+        foreach (var path in defaultPaths)
+        {
+            if (File.Exists(path))
+            {
+                return path;
+            }
+        }
+
+        return customPath ?? defaultPaths[0];
+    }
+
+    [Fact]
+    public void ReservationCountdown_ClientScript_StaticAnalysis_DecoupledDisplayAndBoundary()
+    {
+        // Arrange
+        var root = FindRepoRoot();
+        var scriptPath = Path.Combine(root, "src", "SelfStorageManagementSystem.Web", "wwwroot", "js", "reservation-countdown.js");
+
+        Assert.True(File.Exists(scriptPath), $"Không tìm thấy tệp script tại: {scriptPath}");
+        var scriptContent = File.ReadAllText(scriptPath);
+
+        // Assert 1: Không được dùng remainingSeconds <= 0 để kích hoạt đồng bộ
+        Assert.DoesNotContain("if (remainingSeconds <= 0)", scriptContent);
+
+        // Assert 2: Phải kích hoạt đồng bộ dựa trên remainingMs <= 0
+        Assert.Contains("if (remainingMs <= 0)", scriptContent);
+
+        // Assert 3: Số giây hiển thị phải làm tròn lên (Math.ceil) khi còn > 0
+        Assert.Contains("Math.ceil(remainingMs / 1000)", scriptContent);
+
+        // Assert 4: Không được chứa điều kiện truthy buggy data.status coi pending là kết thúc
+        Assert.DoesNotContain("data.status === 'confirmed' || data.status === 'cancelled' || data.status", scriptContent);
+
+        // Assert 5: Phân nhánh cụ thể cho pending / awaiting_deposit để retry đồng bộ
+        Assert.Contains("data.status === 'pending' || data.status === 'awaiting_deposit'", scriptContent);
+        Assert.Contains("syncServerStatus()", scriptContent);
+
+        // Assert 6: Finding 1 - Xử lý rõ ràng HTTP 401 và 403, không polling vô hạn
+        Assert.Contains("response.status === 401", scriptContent);
+        Assert.Contains("response.status === 403", scriptContent);
+        Assert.Contains("applyAuthErrorOnUi", scriptContent);
+
+        // Assert 7: Finding 2 - Quản lý scheduler và nextSyncAtMs ngăn timer 1s chen ngang backoff 3000ms
+        Assert.Contains("nextSyncAtMs", scriptContent);
+        Assert.Contains("Date.now() >= nextSyncAtMs", scriptContent);
+        Assert.Contains("isSyncing = false;", scriptContent);
+    }
+
+    [Fact]
+    public void ReservationCountdown_WhenBrowserNotFound_ThrowsFailure_AndDoesNotPassSilently()
+    {
+        // Finding 3: Kiểm chứng rằng khi đường dẫn trình duyệt không tồn tại, kiểm thử PHẢI thất bại (Fail)
+        // và tuyệt đối không được kết thúc ở trạng thái Passed giả.
+        var fakePath = @"C:\NonExistentPath\fake_msedge.exe";
+
+        var ex = Assert.Throws<Xunit.Sdk.TrueException>(() =>
+        {
+            Assert.True(File.Exists(fakePath),
+                $"Trình duyệt Microsoft Edge không được tìm thấy tại '{fakePath}'. Vui lòng cấu hình EDGE_PATH.");
+        });
+
+        Assert.Contains("Trình duyệt Microsoft Edge không được tìm thấy", ex.Message);
+    }
+
+    [Fact]
+    public void ReservationCountdown_ClientScript_ExecutesHeadlessBrowserTests_AllScenariosPass()
+    {
+        // Finding 3: Kiểm tra đường dẫn trình duyệt qua biến môi trường hoặc đường dẫn mặc định
+        var edgePath = ResolveEdgeBrowserPath();
+        Assert.True(File.Exists(edgePath),
+            $"Trình duyệt Microsoft Edge không được tìm thấy tại '{edgePath}'. " +
+            $"Vui lòng cài đặt Edge hoặc cấu hình biến môi trường EDGE_PATH để thực thi kiểm thử trình duyệt.");
+
+        var root = FindRepoRoot();
+        var htmlTestPath = Path.Combine(root, "tests", "SelfStorageManagementSystem.WebTests", "BrowserTests", "reservation-countdown-tests.html");
+        Assert.True(File.Exists(htmlTestPath), $"Không tìm thấy tệp kiểm thử trình duyệt: {htmlTestPath}");
+
+        var psi = new System.Diagnostics.ProcessStartInfo
+        {
+            FileName = edgePath,
+            Arguments = $"--headless --virtual-time-budget=15000 --dump-dom \"file:///{htmlTestPath.Replace('\\', '/')}\"",
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false,
+            CreateNoWindow = true
+        };
+
+        using var proc = System.Diagnostics.Process.Start(psi);
+        Assert.NotNull(proc);
+        var output = proc.StandardOutput.ReadToEnd();
+        proc.WaitForExit(25000);
+
+        // Kiểm chứng báo cáo tổng kết của trình duyệt: ALL_PASSED
+        Assert.Contains("data-test-status=\"ALL_PASSED\"", output);
+
+        // Kiểm chứng tất cả 11 kịch bản kiểm thử:
+        Assert.Contains("data-test-id=\"SCENARIO_A\" data-result=\"PASS\"", output);
+        Assert.Contains("data-test-id=\"SCENARIO_B\" data-result=\"PASS\"", output);
+        Assert.Contains("data-test-id=\"SCENARIO_C1_CONFIRMED\" data-result=\"PASS\"", output);
+        Assert.Contains("data-test-id=\"SCENARIO_C2_CANCELLED\" data-result=\"PASS\"", output);
+        Assert.Contains("data-test-id=\"SCENARIO_D\" data-result=\"PASS\"", output);
+        Assert.Contains("data-test-id=\"SCENARIO_E\" data-result=\"PASS\"", output);
+        Assert.Contains("data-test-id=\"SCENARIO_F_RELOAD_FLOW\" data-result=\"PASS\"", output);
+        Assert.Contains("data-test-id=\"SCENARIO_G_INFLIGHT\" data-result=\"PASS\"", output);
+        Assert.Contains("data-test-id=\"FINDING_1_AUTH_401_403\" data-result=\"PASS\"", output);
+        Assert.Contains("data-test-id=\"FINDING_2_BACKOFF_TIMESTAMPS\" data-result=\"PASS\"", output);
+        Assert.Contains("data-test-id=\"REGRESSION_OLD_VS_NEW\" data-result=\"PASS\"", output);
+    }
+
+    private static readonly Regex CountdownFormatRegex = new(@"^\d{2}:\d{2}$", RegexOptions.Compiled);
+
+    private static int ParseCountdownSecondsStrict(string? countdownText, string sampleName)
+    {
+        Assert.False(string.IsNullOrWhiteSpace(countdownText), $"Mẫu thời gian '{sampleName}' không được null hoặc rỗng.");
+        var trimmed = countdownText!.Trim();
+        Assert.Matches(CountdownFormatRegex, trimmed);
+        var parts = trimmed.Split(':');
+        int mins = int.Parse(parts[0]);
+        int secs = int.Parse(parts[1]);
+        Assert.True(secs < 60, $"Phần giây trong mẫu '{sampleName}' phải < 60, thực tế: {secs}");
+        int totalSeconds = mins * 60 + secs;
+        Assert.True(totalSeconds >= 0, $"Tổng số giây trong mẫu '{sampleName}' phải >= 0, thực tế: {totalSeconds}");
+        return totalSeconds;
+    }
+
+    private class HeadlessEdgeSession : IAsyncDisposable
+    {
+        private readonly Process _process;
+        private readonly string _tempDir;
+        private readonly ClientWebSocket _ws;
+        private int _nextId = 1;
+
+        private HeadlessEdgeSession(Process process, string tempDir, ClientWebSocket ws)
+        {
+            _process = process;
+            _tempDir = tempDir;
+            _ws = ws;
+        }
+
+        public static async Task<HeadlessEdgeSession> LaunchAsync(string edgePath, bool disableJs = false)
+        {
+            var port = Random.Shared.Next(26000, 33000);
+            var tempDir = Path.Combine(Path.GetTempPath(), "edge_cdp_" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(tempDir);
+
+            var jsFlag = disableJs ? "--disable-javascript " : "";
+            var args = $"--headless --remote-debugging-port={port} --user-data-dir=\"{tempDir}\" --disable-extensions --no-first-run --no-default-browser-check {jsFlag}about:blank";
+
+            var psi = new ProcessStartInfo
+            {
+                FileName = edgePath,
+                Arguments = args,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            var process = Process.Start(psi) ?? throw new InvalidOperationException("Không thể khởi chạy Microsoft Edge.");
+
+            using var httpClient = new HttpClient();
+            string? wsUrl = null;
+            for (int i = 0; i < 35; i++)
+            {
+                try
+                {
+                    var json = await httpClient.GetStringAsync($"http://127.0.0.1:{port}/json/list");
+                    using var doc = JsonDocument.Parse(json);
+                    foreach (var target in doc.RootElement.EnumerateArray())
+                    {
+                        if (target.TryGetProperty("type", out var typeProp) && typeProp.GetString() == "page")
+                        {
+                            wsUrl = target.GetProperty("webSocketDebuggerUrl").GetString();
+                            break;
+                        }
+                    }
+                    if (!string.IsNullOrEmpty(wsUrl)) break;
+                }
+                catch
+                {
+                    await Task.Delay(150);
+                }
+            }
+
+            if (string.IsNullOrEmpty(wsUrl))
+            {
+                try { process.Kill(true); } catch { }
+                throw new InvalidOperationException($"Không lấy được WebSocket debugger URL cho page target từ Edge tại port {port}.");
+            }
+
+            var ws = new ClientWebSocket();
+            await ws.ConnectAsync(new Uri(wsUrl), CancellationToken.None);
+
+            var session = new HeadlessEdgeSession(process, tempDir, ws);
+            if (disableJs)
+            {
+                await session.SendCommandAsync("Emulation.setScriptExecutionDisabled", new { value = true });
+            }
+
+            return session;
+        }
+
+        public async Task<JsonElement> SendCommandAsync(string method, object? parameters = null)
+        {
+            var id = Interlocked.Increment(ref _nextId);
+            var payload = parameters == null
+                ? JsonSerializer.Serialize(new { id, method })
+                : JsonSerializer.Serialize(new { id, method, @params = parameters });
+
+            await _ws.SendAsync(Encoding.UTF8.GetBytes(payload), WebSocketMessageType.Text, true, CancellationToken.None);
+
+            var buffer = new byte[65536];
+            using var ms = new MemoryStream();
+            while (true)
+            {
+                var res = await _ws.ReceiveAsync(buffer, CancellationToken.None);
+                ms.Write(buffer, 0, res.Count);
+                if (res.EndOfMessage)
+                {
+                    var text = Encoding.UTF8.GetString(ms.ToArray());
+                    using var doc = JsonDocument.Parse(text);
+                    if (doc.RootElement.TryGetProperty("id", out var respId) && respId.GetInt32() == id)
+                    {
+                        if (doc.RootElement.TryGetProperty("error", out var err))
+                        {
+                            throw new InvalidOperationException($"CDP Error ({method}): {err.GetRawText()}");
+                        }
+                        return doc.RootElement.TryGetProperty("result", out var result) ? result.Clone() : default;
+                    }
+                    ms.SetLength(0);
+                }
+            }
+        }
+
+        public async Task NavigateAsync(string url)
+        {
+            await SendCommandAsync("Page.enable");
+            await SendCommandAsync("Page.navigate", new { url });
+            await Task.Delay(1200);
+        }
+
+        public async Task ReloadAsync()
+        {
+            await SendCommandAsync("Page.reload");
+            await Task.Delay(1200);
+        }
+
+        private static void ThrowIfException(JsonElement result, string expression)
+        {
+            if (result.TryGetProperty("exceptionDetails", out var exDetails))
+            {
+                var desc = exDetails.TryGetProperty("exception", out var exObj) && exObj.TryGetProperty("description", out var descProp)
+                    ? descProp.GetString()
+                    : exDetails.TryGetProperty("text", out var textProp)
+                        ? textProp.GetString()
+                        : "Unknown JavaScript Exception";
+                throw new InvalidOperationException($"Lỗi JavaScript khi thực thi biểu thức '{expression}': {desc}");
+            }
+
+            if (result.TryGetProperty("result", out var resObj) && resObj.TryGetProperty("subtype", out var st) && st.GetString() == "error")
+            {
+                var desc = resObj.TryGetProperty("description", out var descProp) ? descProp.GetString() : "JavaScript Error";
+                throw new InvalidOperationException($"Lỗi JavaScript khi thực thi biểu thức '{expression}': {desc}");
+            }
+        }
+
+        /// <summary>
+        /// Thực thi lệnh thao tác JavaScript (void hoặc không cần giá trị trả về),
+        /// ném ngoại lệ nếu script gặp lỗi uncaught exception.
+        /// </summary>
+        public async Task ExecuteScriptAsync(string expression)
+        {
+            var result = await SendCommandAsync("Runtime.evaluate", new
+            {
+                expression,
+                returnByValue = true
+            });
+
+            ThrowIfException(result, expression);
+        }
+
+        /// <summary>
+        /// Đọc một chuỗi bắt buộc từ DOM, ném ngoại lệ nếu script ném lỗi hoặc trả về null/undefined/không phải chuỗi.
+        /// </summary>
+        public async Task<string> EvaluateStringRequiredAsync(string expression)
+        {
+            var result = await SendCommandAsync("Runtime.evaluate", new
+            {
+                expression,
+                returnByValue = true
+            });
+
+            ThrowIfException(result, expression);
+
+            if (result.TryGetProperty("result", out var resObj))
+            {
+                if (resObj.TryGetProperty("value", out var val) && val.ValueKind == JsonValueKind.String)
+                {
+                    var str = val.GetString();
+                    if (!string.IsNullOrEmpty(str))
+                    {
+                        return str;
+                    }
+                }
+                else if (resObj.TryGetProperty("type", out var typeProp) && typeProp.GetString() == "undefined")
+                {
+                    throw new InvalidOperationException($"Biểu thức '{expression}' trả về undefined thay vì chuỗi hợp lệ.");
+                }
+            }
+
+            throw new InvalidOperationException($"Biểu thức '{expression}' không trả về chuỗi hợp lệ.");
+        }
+
+        /// <summary>
+        /// Đọc một chuỗi có thể null, ném ngoại lệ nếu script ném lỗi JavaScript.
+        /// </summary>
+        public async Task<string?> EvaluateStringOrNullAsync(string expression)
+        {
+            var result = await SendCommandAsync("Runtime.evaluate", new
+            {
+                expression,
+                returnByValue = true
+            });
+
+            ThrowIfException(result, expression);
+
+            if (result.TryGetProperty("result", out var resObj) && resObj.TryGetProperty("value", out var val) && val.ValueKind == JsonValueKind.String)
+            {
+                return val.GetString();
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Đánh giá biểu thức boolean, ném ngoại lệ nếu script ném lỗi hoặc không trả về boolean.
+        /// </summary>
+        public async Task<bool> EvaluateBoolAsync(string expression)
+        {
+            var result = await SendCommandAsync("Runtime.evaluate", new
+            {
+                expression,
+                returnByValue = true
+            });
+
+            ThrowIfException(result, expression);
+
+            if (result.TryGetProperty("result", out var resObj) && resObj.TryGetProperty("value", out var val) && (val.ValueKind == JsonValueKind.True || val.ValueKind == JsonValueKind.False))
+            {
+                return val.GetBoolean();
+            }
+
+            throw new InvalidOperationException($"Biểu thức '{expression}' không trả về giá trị boolean hợp lệ.");
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            try
+            {
+                if (_ws.State == WebSocketState.Open)
+                {
+                    await _ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing", CancellationToken.None);
+                }
+            }
+            catch { }
+            _ws.Dispose();
+            try { _process.Kill(true); } catch { }
+            _process.Dispose();
+            try { Directory.Delete(_tempDir, true); } catch { }
+        }
+    }
+
+    [Fact]
+    public async Task ReservationCountdown_BrowserEndToEnd_RealReloadFlowAndTwoFacilityTimezones_PreservesHoldDeadlineAndNoDuplicate()
+    {
+        // Finding 2: Kiểm chứng countdown thực sự giảm, reload giữ nguyên deadline và không sinh bản ghi duplicate,
+        // đồng thời kiểm chứng hai cơ sở (Asia/Ho_Chi_Minh và UTC) cùng instant UTC render đúng giờ địa phương.
+        var edgePath = ResolveEdgeBrowserPath();
+        Assert.True(File.Exists(edgePath), $"Trình duyệt Microsoft Edge không được tìm thấy tại '{edgePath}'.");
+
+        var (client, user, authCookie) = await CreateAuthenticatedCustomerClientAsync("browser_e2e_user");
+        var vnFacility = await SeedFacilityWithRateAsync("E2EVN");
+        var utcFacility = await SeedFacilityWithRateAsync("E2EUTC");
+
+        using var scope = _factory.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<SelfStorageDbContext>();
+        (await db.facilities.FindAsync(utcFacility.FacilityId))!.timezone = "UTC";
+
+        var nowUtc = DateTimeOffset.UtcNow;
+        var holdUntilUtc = nowUtc.AddMinutes(10); // Còn đúng 10 phút, khác 15 phút ban đầu để phát hiện reset về 15:00
+
+        var resVn = new reservation
+        {
+            reservation_code = "RES-E2E-VN",
+            customer_id = user.id,
+            facility_id = vnFacility.FacilityId,
+            unit_type_id = vnFacility.UnitTypeId,
+            facility_rate_id = vnFacility.RateId,
+            start_date = DateOnly.FromDateTime(nowUtc.UtcDateTime).AddDays(1),
+            end_date = DateOnly.FromDateTime(nowUtc.UtcDateTime).AddMonths(1),
+            monthly_rate_snapshot = 1000000m,
+            deposit_snapshot = 1000000m,
+            quoted_total = 2000000m,
+            hold_until = holdUntilUtc,
+            status = "pending",
+            created_at = nowUtc,
+            updated_at = nowUtc
+        };
+        db.reservations.Add(resVn);
+
+        var resUtc = new reservation
+        {
+            reservation_code = "RES-E2E-UTC",
+            customer_id = user.id,
+            facility_id = utcFacility.FacilityId,
+            unit_type_id = utcFacility.UnitTypeId,
+            facility_rate_id = utcFacility.RateId,
+            start_date = DateOnly.FromDateTime(nowUtc.UtcDateTime).AddDays(1),
+            end_date = DateOnly.FromDateTime(nowUtc.UtcDateTime).AddMonths(1),
+            monthly_rate_snapshot = 1200000m,
+            deposit_snapshot = 1200000m,
+            quoted_total = 2400000m,
+            hold_until = holdUntilUtc,
+            status = "pending",
+            created_at = nowUtc,
+            updated_at = nowUtc
+        };
+        db.reservations.Add(resUtc);
+        await db.SaveChangesAsync();
+
+        // Thiết lập Kestrel proxy tạm thời chuyển tiếp yêu cầu từ Edge sang WebApplicationFactory TestServer
+        var port = Random.Shared.Next(16000, 24000);
+        var prefix = $"http://127.0.0.1:{port}/";
+        using var listener = new HttpListener();
+        listener.Prefixes.Add(prefix);
+        listener.Start();
+
+        using var cts = new CancellationTokenSource();
+        var proxyClient = _factory.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
+
+        var proxyTask = Task.Run(async () =>
+        {
+            while (!cts.Token.IsCancellationRequested)
+            {
+                try
+                {
+                    var context = await listener.GetContextAsync();
+                    _ = Task.Run(async () =>
+                    {
+                        try
+                        {
+                            var req = context.Request;
+                            var targetUri = new Uri(proxyClient.BaseAddress!, req.RawUrl);
+                            using var msg = new HttpRequestMessage(new HttpMethod(req.HttpMethod), targetUri);
+                            foreach (string h in req.Headers)
+                            {
+                                if (h.Equals("Host", StringComparison.OrdinalIgnoreCase)) continue;
+                                msg.Headers.TryAddWithoutValidation(h, req.Headers[h]);
+                            }
+
+                            msg.Headers.TryAddWithoutValidation("Cookie", authCookie);
+                            if (req.HasEntityBody)
+                            {
+                                using var ms = new MemoryStream();
+                                await req.InputStream.CopyToAsync(ms);
+                                msg.Content = new ByteArrayContent(ms.ToArray());
+                                if (!string.IsNullOrEmpty(req.ContentType))
+                                {
+                                    msg.Content.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse(req.ContentType);
+                                }
+                            }
+
+                            var resp = await proxyClient.SendAsync(msg);
+                            context.Response.StatusCode = (int)resp.StatusCode;
+                            foreach (var h in resp.Headers)
+                            {
+                                context.Response.Headers[h.Key] = string.Join(", ", h.Value);
+                            }
+                            foreach (var h in resp.Content.Headers)
+                            {
+                                context.Response.Headers[h.Key] = string.Join(", ", h.Value);
+                            }
+
+                            var bytes = await resp.Content.ReadAsByteArrayAsync();
+                            context.Response.ContentLength64 = bytes.Length;
+                            await context.Response.OutputStream.WriteAsync(bytes);
+                            context.Response.OutputStream.Close();
+                        }
+                        catch
+                        {
+                            try { context.Response.Abort(); } catch { }
+                        }
+                    });
+                }
+                catch { break; }
+            }
+        });
+
+        await using var session = await HeadlessEdgeSession.LaunchAsync(edgePath);
+
+        try
+        {
+            // =========================================================================
+            // 1. KIỂM THỬ ĐƠN CƠ SỞ VIỆT NAM (Asia/Ho_Chi_Minh)
+            // =========================================================================
+            var vnUrl = $"{prefix}Reservations/Details?id={resVn.id}";
+            await session.NavigateAsync(vnUrl);
+
+
+            // A. Kiểm chứng data-hold-until từ DB
+            var holdUntilVn = await session.EvaluateStringRequiredAsync("document.getElementById('reservationCountdownPanel').getAttribute('data-hold-until')");
+            Assert.Equal(holdUntilUtc.ToString("o"), holdUntilVn);
+
+            // B. Đọc countdown hiển thị ban đầu
+            var cd1 = await session.EvaluateStringRequiredAsync("document.querySelector('[data-countdown-display]').textContent.trim()");
+            var sec1 = ParseCountdownSecondsStrict(cd1, "cd1_vn_initial");
+            Assert.True(sec1 > 0 && sec1 <= 600, $"Countdown ban đầu phải <= 600s (10 phút), thực tế: {sec1}s ({cd1})");
+
+            // C. Chờ thời gian trôi qua có kiểm soát (2.2 giây)
+            await Task.Delay(2200);
+            var cd2 = await session.EvaluateStringRequiredAsync("document.querySelector('[data-countdown-display]').textContent.trim()");
+            var sec2 = ParseCountdownSecondsStrict(cd2, "cd2_vn_after_delay");
+            Assert.True(sec2 < sec1, $"Countdown PHẢI THỰC SỰ GIẢM sau 2.2 giây (chứng minh JS countdown đang chạy)! Ban đầu: {sec1}s, sau chờ: {sec2}s");
+
+            // D. RELOAD cùng page/context
+            await session.ReloadAsync();
+
+            // E. Xác nhận data-hold-until sau reload giữ nguyên 100%
+            var holdUntilAfterReload = await session.EvaluateStringRequiredAsync("document.getElementById('reservationCountdownPanel').getAttribute('data-hold-until')");
+            Assert.Equal(holdUntilUtc.ToString("o"), holdUntilAfterReload);
+
+            // F. Countdown sau reload không được reset về 15:00 (900s) mà phải tiếp tục từ mốc thời gian thực
+            var cd3 = await session.EvaluateStringRequiredAsync("document.querySelector('[data-countdown-display]').textContent.trim()");
+            var sec3 = ParseCountdownSecondsStrict(cd3, "cd3_vn_after_reload");
+            Assert.True(sec3 < 900 && sec3 <= sec1, $"Countdown sau reload KHÔNG được reset về 15:00 (900s)! Thực tế: {sec3}s ({cd3})");
+
+            // G. Chờ thêm 1.8 giây để xác nhận countdown tiếp tục đếm ngược sau reload
+            await Task.Delay(1800);
+            var cd4 = await session.EvaluateStringRequiredAsync("document.querySelector('[data-countdown-display]').textContent.trim()");
+            var sec4 = ParseCountdownSecondsStrict(cd4, "cd4_vn_after_reload_delay");
+            Assert.True(sec4 < sec3, $"Countdown phải tiếp tục chạy sau reload! Ngay sau reload: {sec3}s, sau chờ: {sec4}s");
+
+            // H. Kiểm chứng giờ hạn thanh toán hiển thị theo múi giờ Việt Nam
+            var expectedVnTime = AppFormatters.FormatDateTimeSeconds(holdUntilUtc, "Asia/Ho_Chi_Minh");
+            var vnBodyText = await session.EvaluateStringRequiredAsync("document.body.innerText");
+            Assert.NotNull(vnBodyText);
+            Assert.Contains(expectedVnTime, vnBodyText);
+
+            // =========================================================================
+            // 2. KIỂM THỬ ĐƠN CƠ SỞ UTC
+            // =========================================================================
+            var utcUrl = $"{prefix}Reservations/Details?id={resUtc.id}";
+            await session.NavigateAsync(utcUrl);
+
+            // A. data-hold-until cùng instant UTC với đơn VN
+            var holdUntilUtcVal = await session.EvaluateStringRequiredAsync("document.getElementById('reservationCountdownPanel').getAttribute('data-hold-until')");
+            Assert.Equal(holdUntilUtc.ToString("o"), holdUntilUtcVal);
+
+            // B. Countdown cho cơ sở UTC cũng đang chạy
+            var cdUtc = await session.EvaluateStringRequiredAsync("document.querySelector('[data-countdown-display]').textContent.trim()");
+            var secUtc = ParseCountdownSecondsStrict(cdUtc, "cdUtc_initial");
+            Assert.True(secUtc > 0 && secUtc <= 600);
+
+            // C. Giờ hạn hiển thị theo múi giờ UTC
+            var expectedUtcTime = AppFormatters.FormatDateTimeSeconds(holdUntilUtc, "UTC");
+            var utcBodyText = await session.EvaluateStringRequiredAsync("document.body.innerText");
+            Assert.NotNull(utcBodyText);
+            Assert.Contains(expectedUtcTime, utcBodyText);
+
+            // D. Hai giờ địa phương khác nhau đúng theo timezone nhưng instant countdown giống nhau
+            Assert.NotEqual(expectedVnTime, expectedUtcTime);
+
+            // =========================================================================
+            // 3. KIỂM CHỨNG CƠ SỞ DỮ LIỆU: KHÔNG SINH ĐƠN TRÙNG LẶP (IDEMPOTENCY)
+            // =========================================================================
+            using var verifyScope = _factory.Services.CreateScope();
+            var verifyDb = verifyScope.ServiceProvider.GetRequiredService<SelfStorageDbContext>();
+            var count = await verifyDb.reservations.CountAsync(r => r.customer_id == user.id);
+            Assert.Equal(2, count); // Có đúng 2 đơn đã seed ban đầu, reload không làm tăng số đơn
+        }
+        finally
+        {
+            cts.Cancel();
+            listener.Stop();
+            listener.Close();
+            await Task.WhenAny(proxyTask, Task.Delay(500));
+        }
+    }
+
+    [Fact]
+    public async Task ReservationCountdown_BrowserEndToEnd_NegativeControl_WhenJavaScriptDisabled_DetectsFailure()
+    {
+        // Negative Control: Chứng minh rằng khi JavaScript bị vô hiệu hóa (--disable-javascript),
+        // đồng hồ countdown đứng yên và bước kiểm tra countdown chạy sẽ phát hiện thất bại.
+        var edgePath = ResolveEdgeBrowserPath();
+        Assert.True(File.Exists(edgePath), $"Trình duyệt Microsoft Edge không được tìm thấy tại '{edgePath}'.");
+
+        var (client, user, authCookie) = await CreateAuthenticatedCustomerClientAsync("browser_neg_user");
+        var vnFacility = await SeedFacilityWithRateAsync("E2ENEG");
+
+        using var scope = _factory.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<SelfStorageDbContext>();
+        var nowUtc = DateTimeOffset.UtcNow;
+        var holdUntilUtc = nowUtc.AddMinutes(9);
+
+        var res = new reservation
+        {
+            reservation_code = "RES-E2E-NEG",
+            customer_id = user.id,
+            facility_id = vnFacility.FacilityId,
+            unit_type_id = vnFacility.UnitTypeId,
+            facility_rate_id = vnFacility.RateId,
+            start_date = DateOnly.FromDateTime(nowUtc.UtcDateTime).AddDays(1),
+            end_date = DateOnly.FromDateTime(nowUtc.UtcDateTime).AddMonths(1),
+            monthly_rate_snapshot = 1000000m,
+            deposit_snapshot = 1000000m,
+            quoted_total = 2000000m,
+            hold_until = holdUntilUtc,
+            status = "pending",
+            created_at = nowUtc,
+            updated_at = nowUtc
+        };
+        db.reservations.Add(res);
+        await db.SaveChangesAsync();
+
+        var port = Random.Shared.Next(16000, 24000);
+        var prefix = $"http://127.0.0.1:{port}/";
+        using var listener = new HttpListener();
+        listener.Prefixes.Add(prefix);
+        listener.Start();
+
+        using var cts = new CancellationTokenSource();
+        var proxyClient = _factory.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
+
+        var proxyTask = Task.Run(async () =>
+        {
+            while (!cts.Token.IsCancellationRequested)
+            {
+                try
+                {
+                    var context = await listener.GetContextAsync();
+                    _ = Task.Run(async () =>
+                    {
+                        try
+                        {
+                            var req = context.Request;
+                            var targetUri = new Uri(proxyClient.BaseAddress!, req.RawUrl);
+                            using var msg = new HttpRequestMessage(new HttpMethod(req.HttpMethod), targetUri);
+                            foreach (string h in req.Headers)
+                            {
+                                if (h.Equals("Host", StringComparison.OrdinalIgnoreCase)) continue;
+                                msg.Headers.TryAddWithoutValidation(h, req.Headers[h]);
+                            }
+
+                            msg.Headers.TryAddWithoutValidation("Cookie", authCookie);
+                            var resp = await proxyClient.SendAsync(msg);
+                            context.Response.StatusCode = (int)resp.StatusCode;
+                            foreach (var h in resp.Headers)
+                            {
+                                context.Response.Headers[h.Key] = string.Join(", ", h.Value);
+                            }
+                            foreach (var h in resp.Content.Headers)
+                            {
+                                context.Response.Headers[h.Key] = string.Join(", ", h.Value);
+                            }
+
+                            var bytes = await resp.Content.ReadAsByteArrayAsync();
+                            context.Response.ContentLength64 = bytes.Length;
+                            await context.Response.OutputStream.WriteAsync(bytes);
+                            context.Response.OutputStream.Close();
+                        }
+                        catch
+                        {
+                            try { context.Response.Abort(); } catch { }
+                        }
+                    });
+                }
+                catch { break; }
+            }
+        });
+
+        // Khởi chạy Edge với JavaScript bị vô hiệu hóa
+        await using var session = await HeadlessEdgeSession.LaunchAsync(edgePath, disableJs: true);
+
+        try
+        {
+            var targetUrl = $"{prefix}Reservations/Details?id={res.id}";
+            await session.NavigateAsync(targetUrl);
+
+            // Khi không có JS, server render countdown ban đầu
+            var cd1 = await session.EvaluateStringRequiredAsync("document.querySelector('[data-countdown-display]').textContent.trim()");
+            var sec1 = ParseCountdownSecondsStrict(cd1, "cd1_neg_control");
+
+            await Task.Delay(2000);
+            var cd2 = await session.EvaluateStringRequiredAsync("document.querySelector('[data-countdown-display]').textContent.trim()");
+            var sec2 = ParseCountdownSecondsStrict(cd2, "cd2_neg_control");
+
+            // Khẳng định: cả hai mẫu đều là countdown hợp lệ, và khi không có JS thì countdown đứng yên (không giảm)
+            Assert.Equal(cd1, cd2);
+            Assert.Equal(sec1, sec2);
+        }
+        finally
+        {
+            cts.Cancel();
+            listener.Stop();
+            listener.Close();
+            await Task.WhenAny(proxyTask, Task.Delay(500));
+        }
+    }
+
+    [Fact]
+    public async Task ReservationCountdown_DetailsPage_WhenStatusReturns401Or403OrExpired_AppliesCorrectUiAndDoesNotShowFakeExpiredAlert()
+    {
+        // Finding 1: Kiểm chứng trên trang Details thật rằng:
+        // A. Khi gặp 401: reservationAuthAlert hiển thị với link login, reservationExpiredAlert TUYỆT ĐỐI ẨN,
+        //    nội dung nhìn thấy không tuyên bố hết hạn hoặc giải phóng sức chứa.
+        // B. Khi gặp 403: reservationAuthAlert hiển thị từ chối quyền, reservationExpiredAlert ẨN.
+        // C. Khi server trả expired thật: reservationAuthAlert ẨN, reservationExpiredAlert HIỂN THỊ.
+        var edgePath = ResolveEdgeBrowserPath();
+        Assert.True(File.Exists(edgePath), $"Trình duyệt Microsoft Edge không được tìm thấy tại '{edgePath}'.");
+
+        var (client, user, authCookie) = await CreateAuthenticatedCustomerClientAsync("browser_auth_user");
+        var facility = await SeedFacilityWithRateAsync("E2EAUTH");
+
+        using var scope = _factory.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<SelfStorageDbContext>();
+        var nowUtc = DateTimeOffset.UtcNow;
+        var holdUntilUtc = nowUtc.AddMinutes(5);
+
+        var res = new reservation
+        {
+            reservation_code = "RES-E2E-AUTH",
+            customer_id = user.id,
+            facility_id = facility.FacilityId,
+            unit_type_id = facility.UnitTypeId,
+            facility_rate_id = facility.RateId,
+            start_date = DateOnly.FromDateTime(nowUtc.UtcDateTime).AddDays(1),
+            end_date = DateOnly.FromDateTime(nowUtc.UtcDateTime).AddMonths(1),
+            monthly_rate_snapshot = 1000000m,
+            deposit_snapshot = 1000000m,
+            quoted_total = 2000000m,
+            hold_until = holdUntilUtc,
+            status = "pending",
+            created_at = nowUtc,
+            updated_at = nowUtc
+        };
+        db.reservations.Add(res);
+        await db.SaveChangesAsync();
+
+        var port = Random.Shared.Next(16000, 24000);
+        var prefix = $"http://127.0.0.1:{port}/";
+        using var listener = new HttpListener();
+        listener.Prefixes.Add(prefix);
+        listener.Start();
+
+        using var cts = new CancellationTokenSource();
+        var proxyClient = _factory.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
+
+        var proxyTask = Task.Run(async () =>
+        {
+            while (!cts.Token.IsCancellationRequested)
+            {
+                try
+                {
+                    var context = await listener.GetContextAsync();
+                    _ = Task.Run(async () =>
+                    {
+                        try
+                        {
+                            var req = context.Request;
+                            var targetUri = new Uri(proxyClient.BaseAddress!, req.RawUrl);
+                            using var msg = new HttpRequestMessage(new HttpMethod(req.HttpMethod), targetUri);
+                            foreach (string h in req.Headers)
+                            {
+                                if (h.Equals("Host", StringComparison.OrdinalIgnoreCase)) continue;
+                                msg.Headers.TryAddWithoutValidation(h, req.Headers[h]);
+                            }
+
+                            msg.Headers.TryAddWithoutValidation("Cookie", authCookie);
+                            var resp = await proxyClient.SendAsync(msg);
+                            context.Response.StatusCode = (int)resp.StatusCode;
+                            foreach (var h in resp.Headers)
+                            {
+                                context.Response.Headers[h.Key] = string.Join(", ", h.Value);
+                            }
+                            foreach (var h in resp.Content.Headers)
+                            {
+                                context.Response.Headers[h.Key] = string.Join(", ", h.Value);
+                            }
+
+                            var bytes = await resp.Content.ReadAsByteArrayAsync();
+                            context.Response.ContentLength64 = bytes.Length;
+                            await context.Response.OutputStream.WriteAsync(bytes);
+                            context.Response.OutputStream.Close();
+                        }
+                        catch
+                        {
+                            try { context.Response.Abort(); } catch { }
+                        }
+                    });
+                }
+                catch { break; }
+            }
+        });
+
+        await using var session = await HeadlessEdgeSession.LaunchAsync(edgePath);
+
+        try
+        {
+            var targetUrl = $"{prefix}Reservations/Details?id={res.id}";
+            await session.NavigateAsync(targetUrl);
+
+            // 1. Kiểm chứng trạng thái ban đầu khi vừa render
+            var initialAuthAlertHidden = await session.EvaluateBoolAsync("document.getElementById('reservationAuthAlert').classList.contains('d-none')");
+            Assert.True(initialAuthAlertHidden, "reservationAuthAlert ban đầu phải có class d-none");
+
+            var initialExpiredAlertHidden = await session.EvaluateBoolAsync("document.getElementById('reservationExpiredAlert').classList.contains('d-none')");
+            Assert.True(initialExpiredAlertHidden, "reservationExpiredAlert ban đầu phải có class d-none");
+
+            // 2. Kích hoạt xử lý HTTP 401 trên giao diện Details thật
+            await session.ExecuteScriptAsync($"window.ReservationCountdown.applyAuthErrorOnUi(null, 401, {res.id})");
+
+            var isAuthVisible401 = await session.EvaluateBoolAsync("!document.getElementById('reservationAuthAlert').classList.contains('d-none')");
+            Assert.True(isAuthVisible401, "reservationAuthAlert PHẢI HIỂN THỊ khi nhận 401");
+
+            var authHeading401 = await session.EvaluateStringRequiredAsync("document.getElementById('reservationAuthAlertHeading').textContent");
+            Assert.Contains("Phiên đăng nhập đã hết hạn", authHeading401);
+
+            var authLink401 = await session.EvaluateStringRequiredAsync("document.getElementById('reservationAuthAlertLink').getAttribute('href')");
+            Assert.Contains("/Account/Login", authLink401);
+
+            var isExpiredHidden401 = await session.EvaluateBoolAsync("document.getElementById('reservationExpiredAlert').classList.contains('d-none')");
+            Assert.True(isExpiredHidden401, "reservationExpiredAlert TUYỆT ĐỐI PHẢI ẨN (d-none) khi nhận 401");
+
+            var badgeText401 = await session.EvaluateStringRequiredAsync("document.getElementById('reservationStatusBadge').textContent");
+            Assert.Equal("Hết phiên đăng nhập", badgeText401);
+
+            var visibleAlertText401 = await session.EvaluateStringRequiredAsync("document.getElementById('reservationAuthAlert').innerText");
+            Assert.DoesNotContain("đã hết thời hạn 15 phút", visibleAlertText401);
+            Assert.DoesNotContain("sức chứa khả dụng đã được tự động giải phóng", visibleAlertText401);
+
+            var isPaymentDisabled401 = await session.EvaluateBoolAsync("document.getElementById('btnProceedPayment').disabled && document.getElementById('btnProceedPayment').classList.contains('d-none')");
+            Assert.True(isPaymentDisabled401, "Nút Thanh toán phải bị ẩn và disabled");
+
+            var isCancelDisabled401 = await session.EvaluateBoolAsync("document.getElementById('btnCancelReservation').disabled && document.getElementById('btnCancelReservation').classList.contains('d-none')");
+            Assert.True(isCancelDisabled401, "Nút Hủy phải bị ẩn và disabled");
+
+            // 3. Kích hoạt xử lý HTTP 403 trên giao diện Details thật
+            await session.ExecuteScriptAsync($"window.ReservationCountdown.applyAuthErrorOnUi(null, 403, {res.id})");
+
+            var isAuthVisible403 = await session.EvaluateBoolAsync("!document.getElementById('reservationAuthAlert').classList.contains('d-none')");
+            Assert.True(isAuthVisible403, "reservationAuthAlert PHẢI HIỂN THỊ khi nhận 403");
+
+            var authHeading403 = await session.EvaluateStringRequiredAsync("document.getElementById('reservationAuthAlertHeading').textContent");
+            Assert.Contains("Từ chối quyền truy cập", authHeading403);
+
+            var isExpiredHidden403 = await session.EvaluateBoolAsync("document.getElementById('reservationExpiredAlert').classList.contains('d-none')");
+            Assert.True(isExpiredHidden403, "reservationExpiredAlert TUYỆT ĐỐI PHẢI ẨN khi nhận 403");
+
+            var badgeText403 = await session.EvaluateStringRequiredAsync("document.getElementById('reservationStatusBadge').textContent");
+            Assert.Equal("Từ chối quyền", badgeText403);
+
+            // 4. Kích hoạt trạng thái Expired thật từ server
+            await session.ExecuteScriptAsync($"window.ReservationCountdown.applyExpiredStateOnUi(null, {{ statusDisplayName: 'Hết hạn (Expired)' }}, {res.id})");
+
+            var isAuthHiddenOnExpired = await session.EvaluateBoolAsync("document.getElementById('reservationAuthAlert').classList.contains('d-none')");
+            Assert.True(isAuthHiddenOnExpired, "Khi thực sự hết hạn, reservationAuthAlert PHẢI ẨN (d-none)");
+
+            var isExpiredVisibleOnExpired = await session.EvaluateBoolAsync("!document.getElementById('reservationExpiredAlert').classList.contains('d-none')");
+            Assert.True(isExpiredVisibleOnExpired, "Khi thực sự hết hạn, reservationExpiredAlert PHẢI HIỂN THỊ");
+
+            var expiredHeading = await session.EvaluateStringRequiredAsync("document.querySelector('#reservationExpiredAlert .alert-heading').textContent");
+            Assert.Contains("Đơn giữ chỗ đã hết thời hạn 15 phút", expiredHeading);
+        }
+        finally
+        {
+            cts.Cancel();
+            listener.Stop();
+            listener.Close();
+            await Task.WhenAny(proxyTask, Task.Delay(500));
+        }
+    }
+
+    [Fact]
+    public async Task ReservationCountdown_CdpHarness_WhenSelectorNotFoundOrJsThrows_ThrowsFailureAndDetectsError()
+    {
+        var edgePath = ResolveEdgeBrowserPath();
+        Assert.True(File.Exists(edgePath), $"Trình duyệt Microsoft Edge không được tìm thấy tại '{edgePath}'.");
+
+        await using var session = await HeadlessEdgeSession.LaunchAsync(edgePath);
+
+        // 1. Selector không tồn tại gây uncaught TypeError khi gọi .textContent trên null:
+        // Đảm bảo exceptionDetails của CDP được bắt và ném ngoại lệ rõ ràng, không âm thầm trả null pass giả.
+        var exTypeError = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            session.EvaluateStringRequiredAsync("document.querySelector('#nonExistentElement').textContent.trim()"));
+        Assert.Contains("Lỗi JavaScript", exTypeError.Message);
+        Assert.Contains("textContent", exTypeError.Message);
+
+        // 2. Lỗi cú pháp hoặc hàm không tồn tại khi thực thi ExecuteScriptAsync:
+        var exSyntax = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            session.ExecuteScriptAsync("window.nonExistentFunctionCall()"));
+        Assert.Contains("Lỗi JavaScript", exSyntax.Message);
+        Assert.Contains("nonExistentFunctionCall", exSyntax.Message);
+
+        // 3. Biểu thức trả về undefined khi đọc chuỗi bắt buộc:
+        var exUndefined = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            session.EvaluateStringRequiredAsync("undefined"));
+        Assert.Contains("undefined", exUndefined.Message);
+
+        // 4. Biểu thức trả về null khi đọc chuỗi bắt buộc:
+        var exNull = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            session.EvaluateStringRequiredAsync("null"));
+        Assert.Contains("không trả về chuỗi hợp lệ", exNull.Message);
+
+        // 5. Chuỗi rỗng khi đọc chuỗi bắt buộc:
+        var exEmpty = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            session.EvaluateStringRequiredAsync("''"));
+        Assert.Contains("không trả về chuỗi hợp lệ", exEmpty.Message);
+    }
+
+    [Fact]
+    public void ReservationCountdown_CdpHarness_ParseCountdownSecondsStrict_RejectsInvalidFormat()
+    {
+        // 1. Null hoặc chuỗi rỗng:
+        Assert.ThrowsAny<Exception>(() => ParseCountdownSecondsStrict(null, "null_sample"));
+        Assert.ThrowsAny<Exception>(() => ParseCountdownSecondsStrict("", "empty_sample"));
+        Assert.ThrowsAny<Exception>(() => ParseCountdownSecondsStrict("   ", "whitespace_sample"));
+
+        // 2. Không đúng định dạng mm:ss (ví dụ -1, chữ, thiếu số 0 dẫn đầu, giây >= 60):
+        Assert.ThrowsAny<Exception>(() => ParseCountdownSecondsStrict("-1", "negative_one"));
+        Assert.ThrowsAny<Exception>(() => ParseCountdownSecondsStrict("abc", "alpha"));
+        Assert.ThrowsAny<Exception>(() => ParseCountdownSecondsStrict("9:45", "single_digit_min"));
+        Assert.ThrowsAny<Exception>(() => ParseCountdownSecondsStrict("09:5", "single_digit_sec"));
+        Assert.ThrowsAny<Exception>(() => ParseCountdownSecondsStrict("09:60", "sec_at_60"));
+        Assert.ThrowsAny<Exception>(() => ParseCountdownSecondsStrict("09:99", "sec_over_60"));
+
+        // 3. Mẫu hợp lệ:
+        Assert.Equal(599, ParseCountdownSecondsStrict("09:59", "valid_sample_1"));
+        Assert.Equal(0, ParseCountdownSecondsStrict("00:00", "valid_sample_zero"));
+        Assert.Equal(900, ParseCountdownSecondsStrict("15:00", "valid_sample_full_hold"));
     }
 
     #endregion

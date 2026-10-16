@@ -7,6 +7,7 @@ public class ReservationListItemResponse
 
     public long FacilityId { get; set; }
     public string FacilityName { get; set; } = string.Empty;
+    public string FacilityTimezone { get; set; } = "UTC";
 
     public long UnitTypeId { get; set; }
     public string UnitTypeName { get; set; } = string.Empty;
