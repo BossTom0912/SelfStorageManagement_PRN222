@@ -1,0 +1,234 @@
+@page
+@model SelfStorageManagementSystem.Web.Pages.StorageUnits.CreateModel
+@{
+    ViewData["Title"] = "Thêm ô kho mới";
+}
+
+<div class="container py-3" style="max-width: 860px;">
+    <!-- Breadcrumb điều hướng -->
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a asp-page="./Index">Quản trị ô kho</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Thêm mới ô kho</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h1 class="h3 mb-1 fw-bold text-dark">Thêm Mới Ô Kho</h1>
+            <p class="text-muted mb-0 small">
+                Tạo ô kho vật lý mới và đưa vào danh mục quản lý của cơ sở lưu trữ.
+            </p>
+        </div>
+        <a asp-page="./Index" class="btn btn-outline-secondary btn-sm">
+            &larr; Quay lại danh sách
+        </a>
+    </div>
+
+    @if (!Model.CanManage)
+    {
+        <div class="alert alert-warning shadow-sm mb-4" role="alert">
+            <div class="d-flex align-items-center">
+                <span class="me-2 fs-5 text-warning fw-bold">&#9888;</span>
+                <div>
+                    <strong>Chế độ xem:</strong> Vai trò nhân viên cơ sở (Facility Staff) không có thẩm quyền tạo mới ô kho. Thao tác này yêu cầu quyền <strong>Quản lý cơ sở (Facility Manager)</strong> hoặc <strong>Quản trị viên (Administrator)</strong>.
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm mb-4" role="alert">
+            <div class="d-flex align-items-center">
+                <span class="me-2 fs-5 text-danger fw-bold">&#10008;</span>
+                <div>
+                    <strong>Không thể tạo ô kho:</strong> @Model.ErrorMessage
+                </div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
+        </div>
+    }
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3 border-bottom">
+            <h5 class="card-title mb-0 fw-semibold text-primary">Thông Tin Ô Kho Mới</h5>
+        </div>
+        <div class="card-body p-4">
+            <form method="post" id="createStorageUnitForm">
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger shadow-sm mb-4" role="alert"></div>
+
+                <div class="row g-3">
+                    <!-- Cơ sở lưu trữ -->
+                    <div class="col-12 col-md-6">
+                        <label asp-for="Input.FacilityId" class="form-label fw-semibold text-secondary">
+                            Cơ sở lưu trữ <span class="text-danger">*</span>
+                        </label>
+                        <select asp-for="Input.FacilityId" class="form-select" id="selectFacility">
+                            <option value="">-- Chọn cơ sở lưu trữ --</option>
+                            @foreach (var f in Model.Lookups.Facilities)
+                            {
+                                <option value="@f.Id">@f.Name (@f.Code)</option>
+                            }
+                        </select>
+                        <span asp-validation-for="Input.FacilityId" class="text-danger small mt-1 d-block"></span>
+                    </div>
+
+                    <!-- Loại ô kho -->
+                    <div class="col-12 col-md-6">
+                        <label asp-for="Input.UnitTypeId" class="form-label fw-semibold text-secondary">
+                            Loại ô kho <span class="text-danger">*</span>
+                        </label>
+                        <select asp-for="Input.UnitTypeId" class="form-select" id="selectUnitType">
+                            <option value="">-- Chọn loại ô kho --</option>
+                            @foreach (var ut in Model.Lookups.UnitTypes)
+                            {
+                                <option value="@ut.Id">
+                                    @ut.Name (@ut.Code) - @ut.WidthMeters&times;@ut.LengthMeters&times;@ut.HeightMeters m
+                                </option>
+                            }
+                        </select>
+                        <span asp-validation-for="Input.UnitTypeId" class="text-danger small mt-1 d-block"></span>
+                    </div>
+
+                    <!-- Mã ô kho -->
+                    <div class="col-12 col-md-6">
+                        <label asp-for="Input.UnitCode" class="form-label fw-semibold text-secondary">
+                            Mã ô kho <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="Input.UnitCode" class="form-control font-monospace" placeholder="Ví dụ: HN1-A101" maxlength="50" required />
+                        <div class="form-text small text-muted">Mã định danh duy nhất của ô trong cơ sở (tối đa 50 ký tự).</div>
+                        <span asp-validation-for="Input.UnitCode" class="text-danger small mt-1 d-block"></span>
+                    </div>
+
+                    <!-- Khu vực / Tầng -->
+                    <div class="col-12 col-md-6">
+                        <label asp-for="Input.AreaId" class="form-label fw-semibold text-secondary">
+                            Khu vực / Tầng
+                        </label>
+                        <select asp-for="Input.AreaId" class="form-select" id="selectArea">
+                            <option value="">-- Không phân khu / Chưa xác định --</option>
+                            @foreach (var a in Model.Lookups.Areas)
+                            {
+                                <option value="@a.Id">@a.Name (@a.Code)</option>
+                            }
+                        </select>
+                        <span asp-validation-for="Input.AreaId" class="text-danger small mt-1 d-block"></span>
+                    </div>
+
+                    <!-- Nhãn tầng -->
+                    <div class="col-12 col-md-6">
+                        <label asp-for="Input.FloorLabel" class="form-label fw-semibold text-secondary">
+                            Nhãn tầng (Floor Label)
+                        </label>
+                        <input asp-for="Input.FloorLabel" class="form-control" placeholder="Tầng 1, Tầng 2..." maxlength="50" />
+                        <span asp-validation-for="Input.FloorLabel" class="text-danger small mt-1 d-block"></span>
+                    </div>
+
+                    <!-- Nhãn dãy / khu vực -->
+                    <div class="col-12 col-md-6">
+                        <label asp-for="Input.ZoneLabel" class="form-label fw-semibold text-secondary">
+                            Nhãn dãy / Phân khu (Zone Label)
+                        </label>
+                        <input asp-for="Input.ZoneLabel" class="form-control" placeholder="Dãy A, Cánh Đông..." maxlength="50" />
+                        <span asp-validation-for="Input.ZoneLabel" class="text-danger small mt-1 d-block"></span>
+                    </div>
+
+                    <!-- Ghi chú -->
+                    <div class="col-12">
+                        <label asp-for="Input.Notes" class="form-label fw-semibold text-secondary">
+                            Ghi chú kỹ thuật / Vận hành
+                        </label>
+                        <textarea asp-for="Input.Notes" class="form-control" rows="3" placeholder="Nhập ghi chú chi tiết nếu có..." maxlength="500"></textarea>
+                        <span asp-validation-for="Input.Notes" class="text-danger small mt-1 d-block"></span>
+                    </div>
+                </div>
+
+                <div class="alert alert-info-subtle border border-info-subtle mt-4 p-3 rounded" role="note">
+                    <div class="small text-muted">
+                        <strong>Quy chuẩn khởi tạo tự động:</strong> Ô kho mới tạo sẽ mặc định được gán trạng thái vật lý là <code>available</code> (Khả dụng) và trạng thái niêm yết <code>is_listed = true</code>.
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-end gap-2 mt-4 pt-3 border-top">
+                    <a asp-page="./Index" class="btn btn-outline-secondary px-3">
+                        Hủy Bỏ
+                    </a>
+                    <button type="submit" id="btnSubmitCreate" class="btn btn-primary px-4 fw-semibold" @(!Model.CanManage ? "disabled" : "")>
+                        <span id="btnSubmitSpinner" class="spinner-border spinner-border-sm me-1 d-none" role="status" aria-hidden="true"></span>
+                        <span id="btnSubmitText">Tạo Mới Ô Kho</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('createStorageUnitForm');
+            const submitBtn = document.getElementById('btnSubmitCreate');
+            const spinner = document.getElementById('btnSubmitSpinner');
+            const submitText = document.getElementById('btnSubmitText');
+
+            const selectFacility = document.getElementById('selectFacility');
+            const selectUnitType = document.getElementById('selectUnitType');
+            const selectArea = document.getElementById('selectArea');
+
+            // Xử lý nạp động UnitTypes và Areas khi chọn/đổi cơ sở
+            if (selectFacility) {
+                selectFacility.addEventListener('change', async function () {
+                    const facId = this.value;
+                    if (!facId) {
+                        if (selectArea) {
+                            selectArea.innerHTML = '<option value="">-- Không phân khu / Chưa xác định --</option>';
+                        }
+                        return;
+                    }
+
+                    try {
+                        const resp = await fetch(`?handler=FacilityLookups&facilityId=${encodeURIComponent(facId)}`);
+                        if (resp.ok) {
+                            const data = await resp.json();
+                            if (selectUnitType && data.unitTypes) {
+                                const currentTypeVal = selectUnitType.value;
+                                let typeHtml = '<option value="">-- Chọn loại ô kho --</option>';
+                                data.unitTypes.forEach(ut => {
+                                    typeHtml += `<option value="${ut.id}">${ut.name} (${ut.code}) - ${ut.dimensions}</option>`;
+                                });
+                                selectUnitType.innerHTML = typeHtml;
+                                if (currentTypeVal) selectUnitType.value = currentTypeVal;
+                            }
+                            if (selectArea && data.areas) {
+                                let areaHtml = '<option value="">-- Không phân khu / Chưa xác định --</option>';
+                                data.areas.forEach(a => {
+                                    areaHtml += `<option value="${a.id}">${a.name} (${a.code})</option>`;
+                                });
+                                selectArea.innerHTML = areaHtml;
+                            }
+                        } else {
+                            window.location.href = `?facilityId=${encodeURIComponent(facId)}`;
+                        }
+                    } catch (e) {
+                        window.location.href = `?facilityId=${encodeURIComponent(facId)}`;
+                    }
+                });
+            }
+
+            if (form && submitBtn) {
+                form.addEventListener('submit', function (e) {
+                    if ($(form).valid()) {
+                        // Vô hiệu hóa nút bấm chống gửi form 2 lần (double-submit prevention)
+                        submitBtn.disabled = true;
+                        spinner.classList.remove('d-none');
+                        submitText.textContent = 'Đang xử lý...';
+                    }
+                });
+            }
+        });
+    </script>
+}

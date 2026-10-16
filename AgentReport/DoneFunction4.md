@@ -1,6 +1,8 @@
 # Báo Cáo Hoàn Thiện & Nghiệm Thu Chức Năng 4: Payment & Rental Agreement
 *(Bao gồm khắc phục triệt để 12 phát hiện review chuyên sâu và 6 vấn đề ưu tiên P1/P2)*
 
+> **Cập nhật tiến độ 08/10/2026:** Đây là báo cáo của mốc trước (176 passed / 2 skipped), không phải kết luận nghiệm thu hiện tại. Mã nguồn đã được commit lên `Payment&RentalAgreement` tại `2d20ded`; lần kiểm tra mới nhất có **179 passed / 4 SQL tests skipped**. Review vẫn ghi nhận lỗi replay checkout, xử lý lỗi refund và test race chưa đủ kiểm chứng. Xem [tiến độ Function 4 hiện tại](../docs/FIVE_CORE_FUNCTIONS_SUMMARY.md).
+
 - **Dự án**: Self-Storage Facility Rental and Management System
 - **Học phần**: PRN222
 - **Thời gian hoàn thành**: 08/10/2026

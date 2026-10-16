@@ -1,0 +1,1988 @@
+﻿{
+    "manifestVersion":  "1.0",
+    "createdUtc":  "2026-10-15T08:21:36Z",
+    "createdLocal":  "2026-10-15 15:21:36 +07:00",
+    "task":  "T00",
+    "owner":  "Gemini A",
+    "source":  {
+                   "path":  "D:\\FPT\\PRN222\\Project\\Final_Project",
+                   "gitBranch":  "Check-in-and-Digital-Handover",
+                   "gitCommitHead":  "ba599208badb2f0e011ae65355d088d0374f1acd",
+                   "description":  "Working tree of Final_Project including modified and untracked files"
+               },
+    "destination":  {
+                        "path":  "D:\\FPT\\PRN222\\Project\\Final_Project_Web",
+                        "description":  "Independent Save As snapshot workspace for Web Migration",
+                        "initialState":  "Non-existent prior to T00, created cleanly without overwriting"
+                    },
+    "summary":  {
+                    "totalSourceFilesScanned":  1833,
+                    "totalFilesCopied":  300,
+                    "totalFilesExcluded":  1533,
+                    "totalBytesCopied":  3586794,
+                    "allHashesVerifiedMatch":  true
+                },
+    "excludedGroups":  [
+                           {
+                               "group":  ".git",
+                               "description":  "Git version control internal repository (.git/)",
+                               "count":  185
+                           },
+                           {
+                               "group":  ".vs",
+                               "description":  "Visual Studio local cache, solution options and .suo files (.vs/)",
+                               "count":  19
+                           },
+                           {
+                               "group":  "bin",
+                               "description":  "Compiled output binaries (*\\\\bin\\\\*)",
+                               "count":  1120
+                           },
+                           {
+                               "group":  "obj",
+                               "description":  "Intermediate compilation artifacts and assets (*\\\\obj\\\\*)",
+                               "count":  207
+                           },
+                           {
+                               "group":  "*.user",
+                               "description":  "Visual Studio user preferences (*.csproj.user)",
+                               "count":  1
+                           },
+                           {
+                               "group":  "office_lock_temp",
+                               "description":  "Temporary owner/lock files created by Microsoft Word (~$*)",
+                               "count":  1
+                           },
+                           {
+                               "group":  "secrets_and_personal_data",
+                               "description":  "Audit confirmed no .env, private keys (*.key, *.pem, *.pfx), passwords or machine-specific connection strings hardcoded in committed files",
+                               "count":  0
+                           }
+                       ],
+    "function5InventoryAudit":  [
+                                    {
+                                        "path":  "src/SelfStorageManagementSystem.BusinessLogic/Services/Implementations/CheckInService.cs",
+                                        "exists":  true,
+                                        "sha256":  "f168ed2f848133a0e38fdb2380adb3605a979a59577a00c72503dcf906f563e1"
+                                    },
+                                    {
+                                        "path":  "src/SelfStorageManagementSystem.BusinessLogic/Services/Interfaces/ICheckInService.cs",
+                                        "exists":  true,
+                                        "sha256":  "bce513b186b785b9f2719c5423dc873f886286f386fdde41244e2d53416fa643"
+                                    },
+                                    {
+                                        "path":  "src/SelfStorageManagementSystem.DataAccess/Repositories/Implementations/CheckInRepository.cs",
+                                        "exists":  true,
+                                        "sha256":  "1b5456d680a882bf42951d2965416e5d2540cbaf884097f885178b34a5490b85"
+                                    },
+                                    {
+                                        "path":  "src/SelfStorageManagementSystem.DataAccess/Repositories/Interfaces/ICheckInRepository.cs",
+                                        "exists":  true,
+                                        "sha256":  "ea713830e2ac121989ec8a5f4d44a863a0e1c4d7ed9de29e754e998dcdbdb835"
+                                    },
+                                    {
+                                        "path":  "src/SelfStorageManagementSystem.Presentation/Controllers/CheckInController.cs",
+                                        "exists":  true,
+                                        "sha256":  "325bf4ba84aa8b4c9235a8dd39cf5ae126e5353d3011544dfa46fabb8e53efa7"
+                                    },
+                                    {
+                                        "path":  "src/SelfStorageManagementSystem.Presentation/Controllers/MeController.cs",
+                                        "exists":  true,
+                                        "sha256":  "e247cd35e66a89b583662e8692da895d048ce3996a76e984b66d4f0fba557f97"
+                                    },
+                                    {
+                                        "path":  "tests/SelfStorageManagementSystem.Tests/CheckInIntegrationTests.cs",
+                                        "exists":  true,
+                                        "sha256":  "c427573f6360e1c6db7132954c4b4d6d4165f52c8a717dba88271c445c6399c9"
+                                    },
+                                    {
+                                        "path":  "tests/SelfStorageManagementSystem.Tests/CheckInServiceTests.cs",
+                                        "exists":  true,
+                                        "sha256":  "8838e7ce6a2e437e04eb4683f9fb72da89066be8037e8af20c363c4971861f1e"
+                                    },
+                                    {
+                                        "path":  "tests/SelfStorageManagementSystem.Tests/CheckInSqlServerConcurrencyTests.cs",
+                                        "exists":  true,
+                                        "sha256":  "343e2c7de3cda6d5996e26e855a71be95aed79b64d0e4bf30ed55ae84df1b555"
+                                    },
+                                    {
+                                        "path":  "Agent/Gemini/FUNCTION5_BACKEND_PROMPT.md",
+                                        "exists":  true,
+                                        "sha256":  "288fdf8e0b2e418b92433ecb05d39659af2a9c45d8f6901dcb067086a9b233c4"
+                                    },
+                                    {
+                                        "path":  "AgentReport/DoneFunction5.md",
+                                        "exists":  true,
+                                        "sha256":  "c80bb22e3e298a5426cc0dd9f1909301a7896b97cbebe304f690cb4c03107de5"
+                                    },
+                                    {
+                                        "path":  "AgentReport/DoneFunction5Backend.md",
+                                        "exists":  true,
+                                        "sha256":  "9c3358fef8d001cffd6311906b3ab246a56175c79f42a716db24d6fd22cf3c8f"
+                                    },
+                                    {
+                                        "path":  "AgentReport/DoneFunction5BackendFix.md",
+                                        "exists":  true,
+                                        "sha256":  "273ce77ff609e312ceb8cde36316a59ee3a927f7c2c195dad21833b4daf18961"
+                                    },
+                                    {
+                                        "path":  "AgentReport/Function5BackendBugVerification.md",
+                                        "exists":  true,
+                                        "sha256":  "f58307f84a9e144decd7a77ffb4e80e249fb262467d479a717572e80edab355b"
+                                    },
+                                    {
+                                        "path":  "AgentReport/Function5BackendFixPrompt.md",
+                                        "exists":  true,
+                                        "sha256":  "a31c3395693c1242f8a63565ae0077634cafa4728d0fbe1335320c5ae1ae09fe"
+                                    },
+                                    {
+                                        "path":  "AgentReport/Function5BackendPreparation.md",
+                                        "exists":  true,
+                                        "sha256":  "9216a6bc7d4b865a06f9c8c6f2f92b5554093cc47987c21b2f01578b133c5b5d"
+                                    }
+                                ],
+    "teacherCodeInventoryAudit":  [
+                                      {
+                                          "path":  "TeacherCode/1.txt",
+                                          "exists":  true,
+                                          "sha256":  "8fcc864dd19a0abf606042ded01b8e63c4f59d8724bc9db92dba620f94bc4c2e"
+                                      },
+                                      {
+                                          "path":  "TeacherCode/2.txt",
+                                          "exists":  true,
+                                          "sha256":  "f064482a0f4338fd80d715dd5cae32f35703dcf59dbc43c6021380188c4d57ac"
+                                      },
+                                      {
+                                          "path":  "TeacherCode/3.txt",
+                                          "exists":  true,
+                                          "sha256":  "9127376793e24f470848bb1776e49c543d576d3c8f2b49ef93bc0ea664336ea2"
+                                      },
+                                      {
+                                          "path":  "TeacherCode/4.txt",
+                                          "exists":  true,
+                                          "sha256":  "8ec8ce70c46fbc5d489be2dec5f332559f6020eefb97736a5cf25d10f0c4a121"
+                                      },
+                                      {
+                                          "path":  "TeacherCode/5.txt",
+                                          "exists":  true,
+                                          "sha256":  "51be8be3b35e2160563421409f73e8b0c123421729240897c581916a8cb10166"
+                                      },
+                                      {
+                                          "path":  "TeacherCode/10092026.txt",
+                                          "exists":  true,
+                                          "sha256":  "9ada888cad9f417e4f105070f77b3ea8c626b191ab8edfb15972b75a5146f5e8"
+                                      },
+                                      {
+                                          "path":  "TeacherCode/AccountController.cs",
+                                          "exists":  true,
+                                          "sha256":  "5c5ca987aa9e2f0d79c1270da083407d7409faa336d69bd2182ce430c7c43c3f"
+                                      },
+                                      {
+                                          "path":  "TeacherCode/LoginRequest.cs",
+                                          "exists":  true,
+                                          "sha256":  "5e26266ad9baf9c7415e682fa8b3b521f125ff21028fcbdf4618a2c5275656da"
+                                      }
+                                  ],
+    "files":  [
+                  {
+                      "relativePath":  ".gitignore",
+                      "sizeBytes":  366,
+                      "sha256":  "723ee3a045580e311c38ed71fff56668a6169e9339e32a4462247da31e9ff3ee",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "CODEX_RULE.md",
+                      "sizeBytes":  39432,
+                      "sha256":  "b00c053f37f9480ccda03536ed7cb6f5f6845cb96f1d5ffb2fc5b289b2998cc6",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "FER202-SE2041-FA26.xlsx",
+                      "sizeBytes":  16334,
+                      "sha256":  "a860f424074bd6852d6fa90a9723c1fefb35d30b79fe82e0fc75a9f1aaf20f1b",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "README.md",
+                      "sizeBytes":  7536,
+                      "sha256":  "80fb907122a52d69aaa37d6d28af9f52e5ff6e042e0c306a4a5450209b326c6f",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "SelfStorageManagementSystem.sln",
+                      "sizeBytes":  7373,
+                      "sha256":  "7dc4df9ef0d8aa37447b96cf43488f81df9f34f9fddb2289213ee17b7bd0b188",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "Agent/Codex/CODEX_RULE.md",
+                      "sizeBytes":  39432,
+                      "sha256":  "b00c053f37f9480ccda03536ed7cb6f5f6845cb96f1d5ffb2fc5b289b2998cc6",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "Agent/Gemini/FUNCTION5_BACKEND_PROMPT.md",
+                      "sizeBytes":  15100,
+                      "sha256":  "288fdf8e0b2e418b92433ecb05d39659af2a9c45d8f6901dcb067086a9b233c4",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "Agent/Gemini/RULE.md",
+                      "sizeBytes":  21228,
+                      "sha256":  "d1598eb6b009b27ef2df77f960d17fb6463bf2a229034fcd5a773fb8a9e6f82a",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "AgentReport/apiClientHeaderFix.md",
+                      "sizeBytes":  9136,
+                      "sha256":  "6c2922b6d65e140f95e11cd3a7918c86574adca5efb0f10687a79422454f5c3e",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "AgentReport/DoneFunction2.md",
+                      "sizeBytes":  27640,
+                      "sha256":  "0522e6f7b933584c7786d9dcfe3d0811cbb39d71739c749f0a80f628732123fa",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "AgentReport/DoneFunction3.md",
+                      "sizeBytes":  30968,
+                      "sha256":  "fb18b4a49eeccac4fce7f200e8cae56e1c9743a1a2d7ce773d4d4bf783fc7f74",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "AgentReport/DoneFunction4.md",
+                      "sizeBytes":  24802,
+                      "sha256":  "b5fffd285991b2daed085e9aadf2d0d9609dc80204af3952d90977536062bdd3",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "AgentReport/DoneFunction5.md",
+                      "sizeBytes":  23470,
+                      "sha256":  "c80bb22e3e298a5426cc0dd9f1909301a7896b97cbebe304f690cb4c03107de5",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "AgentReport/DoneFunction5Backend.md",
+                      "sizeBytes":  27004,
+                      "sha256":  "9c3358fef8d001cffd6311906b3ab246a56175c79f42a716db24d6fd22cf3c8f",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "AgentReport/DoneFunction5BackendFix.md",
+                      "sizeBytes":  20401,
+                      "sha256":  "273ce77ff609e312ceb8cde36316a59ee3a927f7c2c195dad21833b4daf18961",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "AgentReport/function1Fix.md",
+                      "sizeBytes":  13403,
+                      "sha256":  "16de5cd28fe0d37439011a292be773ee9df7c1a9e55602e9d5b41a3e23014433",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "AgentReport/function2Fix.md",
+                      "sizeBytes":  16209,
+                      "sha256":  "b411a4045e1d0dcdf972b4bc594fbb2a3feddf8ab1729abbd6864b34d4fad39e",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "AgentReport/function2RemainingFixes.md",
+                      "sizeBytes":  10864,
+                      "sha256":  "bfcdb2817bcbd4bcc935e25d5ecf4c770efdf97c157d767b56aa917e9a178858",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "AgentReport/function2WpfFacilityFilterFix.md",
+                      "sizeBytes":  11275,
+                      "sha256":  "8c7b204644a5311aca8cfa530619de9e7c4563a4261994c42096536cbb622a52",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "AgentReport/function3Fix.md",
+                      "sizeBytes":  18509,
+                      "sha256":  "c64a8100fd46d04ad773ec5f7a41d2b382170f21c75221fc246543c713f3c90a",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "AgentReport/function3RemainingFixes.md",
+                      "sizeBytes":  19189,
+                      "sha256":  "c3fa4d21ea0a7b09bd6fa0da8f375815e2f94cf322364b9b3e5ba9e529015661",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "AgentReport/function4FinalConcurrencyFixes.md",
+                      "sizeBytes":  18953,
+                      "sha256":  "30f1e01e0f3544338f36c5e6c3b792a8a9a7876b234df9d37ce764312960b286",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "AgentReport/function4Fix.md",
+                      "sizeBytes":  23729,
+                      "sha256":  "c185eb93f8416c1fa15ef2d566204c2a30243b47051a9cf807b871cc7d32dcb9",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "AgentReport/function4RemainingFixes.md",
+                      "sizeBytes":  23056,
+                      "sha256":  "213433016cb05d6ff596e6120c5c848207024caa230df18ca27f109141e838b3",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "AgentReport/Function5BackendBugVerification.md",
+                      "sizeBytes":  15030,
+                      "sha256":  "f58307f84a9e144decd7a77ffb4e80e249fb262467d479a717572e80edab355b",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "AgentReport/Function5BackendFixPrompt.md",
+                      "sizeBytes":  18144,
+                      "sha256":  "a31c3395693c1242f8a63565ae0077634cafa4728d0fbe1335320c5ae1ae09fe",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "AgentReport/Function5BackendPreparation.md",
+                      "sizeBytes":  6487,
+                      "sha256":  "9216a6bc7d4b865a06f9c8c6f2f92b5554093cc47987c21b2f01578b133c5b5d",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "DB/SelfStoragePRN222_SQLServer_CleanInstall.sql",
+                      "sizeBytes":  118968,
+                      "sha256":  "db5c15ce6dd99ebf5af6ea4ded2db5a9e5ea51b4cc374c28b3f24957bdd9c63a",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "DB/SelfStoragePRN222_SQLServer_Function4_Upgrade_OneRun.sql",
+                      "sizeBytes":  6702,
+                      "sha256":  "af97fa77e6792a2edd9d08e176ffd5e3c69ba6b888b5c0fc5dca9daa412c3e33",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "docs/ACCOUNT_ROLE_MANAGEMENT_GUIDE.md",
+                      "sizeBytes":  10158,
+                      "sha256":  "c3b36bb4dd21d3295330929950516d73297986c2c94883de84e270c2b695c02f",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "docs/BASE_ARCHITECTURE_REPORT.md",
+                      "sizeBytes":  12245,
+                      "sha256":  "9f561649639f921e81e2e554a7975872cf055080e84d69851688bf123c5902a4",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "docs/DB_SCHEMA_REPORT.md",
+                      "sizeBytes":  21538,
+                      "sha256":  "78e7c0635e98e19dbef1721fc11889bdfcea300709cf1b21aa725ede81b87811",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "docs/DEMO_ROADMAP_AND_TECH_SPEC.md",
+                      "sizeBytes":  22780,
+                      "sha256":  "30ed45537952862020a5500a79beee805b7992e79a424fbde2959b189cce3e00",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "docs/FIVE_CORE_FUNCTIONS_SUMMARY.md",
+                      "sizeBytes":  17578,
+                      "sha256":  "92b959b572c098cd2f0a3fc1460f2fb785cf5d7d32421fac5b5d57b9398de184",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "docs/FUNCTION4_PAYMENT_RENTAL_AGREEMENT_PLAN.md",
+                      "sizeBytes":  28014,
+                      "sha256":  "7784828c27f2a24152f75b9e3f62b48911f572f76aec23bf89a3a1f962929ea9",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "docs/KeHoach_Web_Gemini_Va_Codex_Review.docx",
+                      "sizeBytes":  133714,
+                      "sha256":  "3dce22337aa4fe03c1c51602d4bf3c20ac4b0b6bcf16c36e125c9254aceea94a",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "docs/PRE_GITHUB_REVIEW.md",
+                      "sizeBytes":  21050,
+                      "sha256":  "3ec88e56aa45e6ce6162df15dcadfc869e659904b9ba9102869e111910507bec",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/SelfStorageManagementSystem.BusinessLogic.csproj",
+                      "sizeBytes":  492,
+                      "sha256":  "5932247437ec1c6cfcafcf149c6893ed751465a5420d942f9ac6b097b9c9a8ee",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Common/ApiResponse.cs",
+                      "sizeBytes":  1211,
+                      "sha256":  "734766a89d83a411feb8595c494ede5ab7ce3f8850cdd5e6bb8894c45f54cd45",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Common/JwtOptions.cs",
+                      "sizeBytes":  418,
+                      "sha256":  "58e5a627e7ed91f4cc18277f29e30ab84be0f50fc0aef03090c81e0580d31d9b",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Common/PagedRequest.cs",
+                      "sizeBytes":  1014,
+                      "sha256":  "f57e1f548768f149309c718daef55749c60a3709a4722ef0bb7bec6b99ee41b5",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Common/PagedResult.cs",
+                      "sizeBytes":  2116,
+                      "sha256":  "775345b399390eb9c810c200376212462a086bc017a2a76341164b8d311e5ed8",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Common/Constants/EmploymentStatusConstants.cs",
+                      "sizeBytes":  483,
+                      "sha256":  "dfd49b2c612b6d102fb8a69dd9cd2af55443eaa33b406b66e4f2922fd8da021c",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Common/Constants/LoginHistoryResultConstants.cs",
+                      "sizeBytes":  303,
+                      "sha256":  "1cd3b65241f8dbce3373f39cca0cbf643558dac242ddd66269258497abdd99b5",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Common/Constants/RoleConstants.cs",
+                      "sizeBytes":  1021,
+                      "sha256":  "9748dd8b3f500ebe42f236030f2565268b77d261915440f75c785a611b126cee",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Common/Constants/UserStatusConstants.cs",
+                      "sizeBytes":  474,
+                      "sha256":  "318067aaf8cc75f21a4250ff55c5f2829726cc9b69a7df244601908b7aaf829f",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DependencyInjection/ServiceCollectionExtensions.cs",
+                      "sizeBytes":  1446,
+                      "sha256":  "e3007898f8bf3c817bf1a415de139fb43facb12fe33fe86c051769077e34f826",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/.gitkeep",
+                      "sizeBytes":  0,
+                      "sha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/Admin/CreateFacilityAssignmentRequest.cs",
+                      "sizeBytes":  590,
+                      "sha256":  "898dd42b49e2879c0f629bea58b0dc10277557602cced6484b2158d3ab97d1ee",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/Admin/CreateStaffAccountRequest.cs",
+                      "sizeBytes":  1456,
+                      "sha256":  "ecb3af9e8c296007b2e9abcb53eebeac912ce1012d75e4a1743f6704748d98f0",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/Admin/GetAccountsRequest.cs",
+                      "sizeBytes":  308,
+                      "sha256":  "8c4924371dced1b80cc206ecdddbf548b63902189a5d59d5e0f37e5318e74c70",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/Admin/ManageUserRolesRequest.cs",
+                      "sizeBytes":  292,
+                      "sha256":  "7dae2dbbe6ad99f6688ede810ec61a58c6b12699430a1f6651720cb7b185782c",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/Admin/UpdateUserStatusRequest.cs",
+                      "sizeBytes":  303,
+                      "sha256":  "3ff4179430b76410b4d3bbd849c0c06a60473bebe3e1440e584a4bca500eed10",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/Auth/CustomerRegisterRequest.cs",
+                      "sizeBytes":  1513,
+                      "sha256":  "190090bb028002019280b57739846dd86abe17592fbafb2e5244d336cdf87a02",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/Auth/LoginRequest.cs",
+                      "sizeBytes":  427,
+                      "sha256":  "1b34b46fab3718fec67e4fa4731b2fbd8f956486416f4468a1be2997532ad15d",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/Catalog/GetAvailableUnitsRequest.cs",
+                      "sizeBytes":  551,
+                      "sha256":  "f3e6e84aa3ac7facdd7543258fdc4d3c1e38e97a874c08c1ff262ac2f8ac6ae1",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/Catalog/GetFacilitiesCatalogRequest.cs",
+                      "sizeBytes":  317,
+                      "sha256":  "107888c3f99a6d46bd9c0e3d6cd735cae056db4eeb29c4d26af55261ad2cfef9",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/Catalog/GetFacilityFloorMapRequest.cs",
+                      "sizeBytes":  258,
+                      "sha256":  "f767efb6a800d6052f9abe25cc396aa9d87fd769a2d307814e19cb58684c998a",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/Catalog/GetFacilityUnitTypesRequest.cs",
+                      "sizeBytes":  402,
+                      "sha256":  "805c5a4f51abd312838810fac8bedf5247929cfb1b802b6fa3720ffd443321ea",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/CheckIn/AssignUnitRequest.cs",
+                      "sizeBytes":  155,
+                      "sha256":  "8fb95d5f2df6edad26ac43474cb436ca6a3fb18919eafa289d6033192fe0c5ee",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/CheckIn/CompleteCheckInRequest.cs",
+                      "sizeBytes":  306,
+                      "sha256":  "3b8304959d193c392368faee0d95794534be430f79a47e2fac2fd5d3ace36b3b",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/CheckIn/ReissuePinRequest.cs",
+                      "sizeBytes":  311,
+                      "sha256":  "725fd47e1f86574e9afb4f5e76d1686753c9798c6d72f48e85ad180a0a3ceb00",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/CheckIn/ReleaseUnitRequest.cs",
+                      "sizeBytes":  217,
+                      "sha256":  "dd09ca45c004c21e06b08f046ff191da26c32118f68f0110ed0240c109b33623",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/CheckIn/UnitInspectionRequest.cs",
+                      "sizeBytes":  517,
+                      "sha256":  "d936dcfd11c5eb947d32bf9136d0c27fdc32ed3dd3409d0489bf6d110d8b4c23",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/CheckIn/VerifyIdentityRequest.cs",
+                      "sizeBytes":  319,
+                      "sha256":  "3bfddb69e9f08b4d0eeae083b661a2ef3899a5f7964959797bee3861a640b9d6",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/Payments/CheckoutRequest.cs",
+                      "sizeBytes":  507,
+                      "sha256":  "6dbbd16f562b80fe60014cf8ea862b46c740256582f92e987b600052affc0584",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/Payments/DemoPaymentCompleteRequest.cs",
+                      "sizeBytes":  273,
+                      "sha256":  "902cf82c9f40b5142525fe63925bafcc3e6fec8224192a0eda849d4206d7c53d",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/Payments/ReviewRefundRequest.cs",
+                      "sizeBytes":  239,
+                      "sha256":  "932b61a82297b253cddc19cdcd2cf6cd36722c20763b6d4674f1f58ee0bb23b5",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/Reservations/CancelReservationRequest.cs",
+                      "sizeBytes":  304,
+                      "sha256":  "c19ef8e5a2e367fc2251b95e748c236b0ab2c3e43726613f385de922b87065af",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/Reservations/CreateReservationRequest.cs",
+                      "sizeBytes":  825,
+                      "sha256":  "90a886ca25d700611b5a9fdcc9eda950ecdd2cdb5c2ea94b262d4d0932e76f1e",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/Reservations/GetMyReservationsRequest.cs",
+                      "sizeBytes":  235,
+                      "sha256":  "bc3d7730b5a23ae5be2258f878bfe20a1059e3ad0ac95ee4aba0e7bfe4affc07",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/.gitkeep",
+                      "sizeBytes":  0,
+                      "sha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/Admin/FacilityAssignmentDto.cs",
+                      "sizeBytes":  561,
+                      "sha256":  "4bf943614e8cb9d62574c75ec6c926daf104244a595496f7398330abe1bc5ba0",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/Admin/FacilityLookupDto.cs",
+                      "sizeBytes":  417,
+                      "sha256":  "95555e9506077bf0c57ecd70a1c46628bd1f9f23b195c21ea3fb2ba1823854a8",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/Admin/UserAccountDto.cs",
+                      "sizeBytes":  764,
+                      "sha256":  "012de5b2330f2b4c5c09fcd67682778b12a44a52ceeb242f03eaad3a443f5369",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/Agreements/RentalAgreementDetailResponse.cs",
+                      "sizeBytes":  1434,
+                      "sha256":  "401c6ed8567ed209ddb87c43c48dd978c960fc8186e58c0e63f532aa510dc8e3",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/Auth/CurrentUserResponse.cs",
+                      "sizeBytes":  689,
+                      "sha256":  "8f62770d9be337c8b03c8fa3b21cd2741a2e757f15516848761ab1e0350bf413",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/Auth/CustomerRegisterResponse.cs",
+                      "sizeBytes":  314,
+                      "sha256":  "1bdfbb10066c1a8e5f5835968c1537e00bfeab8593fbabc4ef9a14205c350336",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/Auth/LoginResponse.cs",
+                      "sizeBytes":  419,
+                      "sha256":  "ce7d61c5c151cbe47a798d2255678cfcb9149b6f30dd5301de72d58e21fa113a",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/Catalog/AvailableStorageUnitDto.cs",
+                      "sizeBytes":  1129,
+                      "sha256":  "c3682c32146ebb7947bccbe5d35593c0fbb1e31f37cdf8cd7ba77e6d455d8b8e",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/Catalog/FacilityCatalogDto.cs",
+                      "sizeBytes":  740,
+                      "sha256":  "0e8a6727ae593c048777d9b2ac02d05b44db07ad560e62e17cddb30783daa841",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/Catalog/FacilityFloorMapDto.cs",
+                      "sizeBytes":  1984,
+                      "sha256":  "b1cd79900aa530fae43435a4572804a2923a6cf4625ddb1275f447cdcd989370",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/Catalog/FacilityUnitTypeCatalogDto.cs",
+                      "sizeBytes":  1137,
+                      "sha256":  "d0c6eefa9a217376a6adda15dcb16b7a0488e0e06a839b276293a86bd184c04a",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/CheckIn/CheckInSearchResponse.cs",
+                      "sizeBytes":  4085,
+                      "sha256":  "d310da786965b63d930852ee53299552f4979024ffbc139ba4f31c1842d9f172",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/CheckIn/CustomerHandoverResponse.cs",
+                      "sizeBytes":  917,
+                      "sha256":  "895fb8f1b9f99468177daa05df574e162b7b0576c5157f948459ed8fce96ea9f",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/CheckIn/CustomerNotificationResponse.cs",
+                      "sizeBytes":  523,
+                      "sha256":  "122e26feec2e4196324b8e684719873ca7802bfaf94091a5ca360abbb640c25d",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/CheckIn/CustomerUnitListItemResponse.cs",
+                      "sizeBytes":  798,
+                      "sha256":  "76592213e460d482da2bc0ced4aa26ca954762ac101b1692fbaeab22fbb59cc7",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/CheckIn/EligibleUnitResponse.cs",
+                      "sizeBytes":  632,
+                      "sha256":  "16be25216d843e56b7d3326d47f81b7ce073e7a3ac63d6a5f7d783927c07f87e",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/CheckIn/HandoverCompleteResponse.cs",
+                      "sizeBytes":  656,
+                      "sha256":  "d6d6597271ae2aa93af6cae841418a5602de5e1d2ba7192d237986555b6deeaf",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/CheckIn/IdentityVerificationResponse.cs",
+                      "sizeBytes":  567,
+                      "sha256":  "20b6632ceb4fe820325c252c533c27ed5b8b683b71ef1b6b4a1e69261802fc2b",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/CheckIn/InspectionResponse.cs",
+                      "sizeBytes":  944,
+                      "sha256":  "07d521b7acff442fc1234d6183f1f6b8485eb95cafe4dfb8f8454ef55e36f0f4",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/CheckIn/PinReissueResponse.cs",
+                      "sizeBytes":  399,
+                      "sha256":  "12f476689b79cfc780af03bc335f12bf42464f5097ca6bf8d3ca8c378d483db0",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/CheckIn/UnitAllocationResponse.cs",
+                      "sizeBytes":  692,
+                      "sha256":  "9d3ffa5e27715a0de8b188cd92bcc6bfbf9cbaca75a73afeb478a143553d1e35",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/Invoices/InvoiceDetailResponse.cs",
+                      "sizeBytes":  1631,
+                      "sha256":  "0e77a0fd5f77419e61e8b5f47f2dc2e3cf8c0c35aa1585a241c81ca41a3770af",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/Payments/CheckoutQuoteResponse.cs",
+                      "sizeBytes":  1815,
+                      "sha256":  "d2f430c1dce2b90a7fec61ad7bab9f848be02dfaba5862972daa8ee74f16740c",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/Payments/CheckoutResponse.cs",
+                      "sizeBytes":  664,
+                      "sha256":  "a0fe1fc9d14f6ea97d17f971690597a3039bfc7704607386dd9a34618fd463b1",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/Payments/PaymentDetailResponse.cs",
+                      "sizeBytes":  1138,
+                      "sha256":  "c2acdaa217bbc99f274b5e892dbbb47b1d6de964f9506328e7eb618b7ce7c752",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/Payments/RefundDetailResponse.cs",
+                      "sizeBytes":  931,
+                      "sha256":  "1de9eb9d67c90d2b298cea25baf386a169016e3d0847612b63a9997fc5a7ed7d",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/Reservations/ReservationDetailResponse.cs",
+                      "sizeBytes":  2093,
+                      "sha256":  "f140df8fafd7e6d3cae88527ab31a97574f316e545f35e49a286e187c4b50bd0",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/Reservations/ReservationListItemResponse.cs",
+                      "sizeBytes":  1068,
+                      "sha256":  "963c4fe87014c18b8c905d4987baba43a579d980856393b530959dc1c0987972",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Exceptions/BadRequestException.cs",
+                      "sizeBytes":  307,
+                      "sha256":  "a1123dc9b637f85508f5ef5858cd387c082c7b2f1fdd1e675175279a57aaa702",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Exceptions/ConflictException.cs",
+                      "sizeBytes":  301,
+                      "sha256":  "00949e41e2e57d6fd902d9a47efbd385bfe15081159029be149fae45735d629e",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Exceptions/ForbiddenException.cs",
+                      "sizeBytes":  304,
+                      "sha256":  "4a8b3be5f9bdd4f8bdbb6e24875acc46c8fe843af4905b3a9f73eeeb0d411082",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Exceptions/NotFoundException.cs",
+                      "sizeBytes":  301,
+                      "sha256":  "1f45161b71f65d8d0145a66a546e63b563ca94f2e953c11ca771d667102c5c2f",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Exceptions/UnauthorizedException.cs",
+                      "sizeBytes":  313,
+                      "sha256":  "4430af710b12bf58fccca640aa926bdcda93271ee1f16c8da72b99107e1b8878",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Mappings/.gitkeep",
+                      "sizeBytes":  0,
+                      "sha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Services/Implementations/.gitkeep",
+                      "sizeBytes":  0,
+                      "sha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Services/Implementations/AdminAccountService.cs",
+                      "sizeBytes":  23623,
+                      "sha256":  "13b15be4d4c02edd36f26f6a7bcf0dc7a96c6986c7a9b1998b3b04240a3a02e6",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Services/Implementations/AuditService.cs",
+                      "sizeBytes":  2270,
+                      "sha256":  "92795044f7588f05bd8880b6371276646148941b5da7059a260c5b36b32affcc",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Services/Implementations/AuthService.cs",
+                      "sizeBytes":  11614,
+                      "sha256":  "76c9ec8cebb53b21fc9e1edd63f8d2f03cfab2566dbea8afaef2f37e6659b767",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Services/Implementations/CheckInService.cs",
+                      "sizeBytes":  42060,
+                      "sha256":  "f168ed2f848133a0e38fdb2380adb3605a979a59577a00c72503dcf906f563e1",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Services/Implementations/DemoAccountBootstrapService.cs",
+                      "sizeBytes":  2729,
+                      "sha256":  "071815cf63d857139afc07bd17e49fc652a6fb48676f7450a6dd6bef5aa225b4",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Services/Implementations/DemoGateway.cs",
+                      "sizeBytes":  3140,
+                      "sha256":  "a5f4f37ea9e1a425bb83837dae64695fcdd2ae16fc909caf8820381cf136f462",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Services/Implementations/FacilityCatalogService.cs",
+                      "sizeBytes":  19086,
+                      "sha256":  "4240ca81df11394d6f1e6db2fa25e887157d3feae9f2d739560014b9850c3bea",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Services/Implementations/FacilityScopeService.cs",
+                      "sizeBytes":  9441,
+                      "sha256":  "535bd25f205969055d1b0389aad6df281970619df180d449d167e1242363fcf3",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Services/Implementations/InvoiceService.cs",
+                      "sizeBytes":  4044,
+                      "sha256":  "51a7f4246472dd3a6bce3c5a9c7cda9ee80d0aeb8f1da821144c4d57af7ff2e1",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Services/Implementations/JwtTokenGenerator.cs",
+                      "sizeBytes":  2726,
+                      "sha256":  "078213387b3fd0a8aa88ea3f480628e2606ddd645457d115de568ae354a5ac44",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Services/Implementations/PasswordHasher.cs",
+                      "sizeBytes":  1981,
+                      "sha256":  "8c8ea1d1c337e7c9e6a008280aba3a9d22e02368bcda08a5c7f4d49e9f0875f0",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Services/Implementations/PaymentService.cs",
+                      "sizeBytes":  50150,
+                      "sha256":  "d0c43889a8eb5bf3553dc5b0a3c05cb1f77fb6a1b105a7ea8182436fce66bd35",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Services/Implementations/RentalAgreementService.cs",
+                      "sizeBytes":  4659,
+                      "sha256":  "bd9b712a1c152ac50ab2a257f8139369a0cea271284ff2d4df6903c396b2500f",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Services/Implementations/ReservationService.cs",
+                      "sizeBytes":  21961,
+                      "sha256":  "411eb00c1a7f9fe18665198b2d983b887db6526a7fa281e9d15a34e2725eb55a",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Services/Implementations/VnpayGateway.cs",
+                      "sizeBytes":  9174,
+                      "sha256":  "484e4c6c57b17f907f86cbd798fd8b16bbcaa36b2c0d98df4b97758bb00350e5",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Services/Interfaces/.gitkeep",
+                      "sizeBytes":  0,
+                      "sha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Services/Interfaces/IAdminAccountService.cs",
+                      "sizeBytes":  1954,
+                      "sha256":  "7774e407ec76594c2f75c93a5d72bd5237ff0a78804599ff8a9d5b1aa3ff21f0",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Services/Interfaces/IAuditService.cs",
+                      "sizeBytes":  435,
+                      "sha256":  "c7dc74ac573332e14baca99b4e906b1f38adef8b407e596d388232190c0d20f3",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Services/Interfaces/IAuthService.cs",
+                      "sizeBytes":  721,
+                      "sha256":  "a5b04956b28040f91a1b42fd236babdf463adedfa7faf5906249a5f81c0355cf",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Services/Interfaces/ICheckInService.cs",
+                      "sizeBytes":  2777,
+                      "sha256":  "bce513b186b785b9f2719c5423dc873f886286f386fdde41244e2d53416fa643",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Services/Interfaces/IDemoAccountBootstrapService.cs",
+                      "sizeBytes":  208,
+                      "sha256":  "e3786de71c29a56ff43f60dedc4d790aa1f783fe3435502add3adfe49d83a924",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Services/Interfaces/IFacilityCatalogService.cs",
+                      "sizeBytes":  1189,
+                      "sha256":  "576c142f8d4516079361e2c0ac77c8a41fc77138f3c0fb24b9128c41a0585f20",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Services/Interfaces/IFacilityScopeService.cs",
+                      "sizeBytes":  788,
+                      "sha256":  "3694d9ee240cb643c4270444a3920783ad5f0cbae861650a8e4c26094d11c71c",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Services/Interfaces/IInvoiceService.cs",
+                      "sizeBytes":  383,
+                      "sha256":  "dab2273eeb332653eaff0a71a3a8f11cbbfc2bbd242acc0d889f80d34159c883",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Services/Interfaces/IJwtTokenGenerator.cs",
+                      "sizeBytes":  272,
+                      "sha256":  "ade8c76e6eeb98f6c819c6b8011b45db434330673947498161e8ee428c3194ff",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Services/Interfaces/IPasswordHasher.cs",
+                      "sizeBytes":  226,
+                      "sha256":  "1df7be37e8976eb3607bf8bc2feeff66a6347c67c3bdf869f9aea8e277ba6952",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Services/Interfaces/IPaymentGateway.cs",
+                      "sizeBytes":  1632,
+                      "sha256":  "3ba09dbbee6855b312e1021cd27ea3625e07672afe0d0512769f1137921d1661",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Services/Interfaces/IPaymentService.cs",
+                      "sizeBytes":  2000,
+                      "sha256":  "52a705bb2afc9aa92f317ebb1473a1a9f2daccd8c42e2e032a9dd887f2c25169",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Services/Interfaces/IRentalAgreementService.cs",
+                      "sizeBytes":  405,
+                      "sha256":  "3d05bac8c04f0ea0750671d03e1e54f6774a02515a2f89bc34b2e59c140e4d79",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.BusinessLogic/Services/Interfaces/IReservationService.cs",
+                      "sizeBytes":  1299,
+                      "sha256":  "57b9a6b39c87a9d6f5c22d031ac771508d2518ab8a450f9a8ed8c21520ec721f",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/SelfStorageManagementSystem.DataAccess.csproj",
+                      "sizeBytes":  938,
+                      "sha256":  "63ecb9010b057f0104344f80e0c48f58065bab9ea5081811efe7ce3c8ec0f705",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Common/CheckInHelpers.cs",
+                      "sizeBytes":  3979,
+                      "sha256":  "a00891b8cf808786195840a61756fcd2286ad37e7d32a207a117af2d71cc85fe",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Context/SelfStorageDbContext.cs",
+                      "sizeBytes":  104706,
+                      "sha256":  "3e31fa050f735e1d6a3ad4efd1153d77445aa9581a87898e672ab7a607ad4bf4",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/DependencyInjection/.gitkeep",
+                      "sizeBytes":  0,
+                      "sha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/DependencyInjection/ServiceCollectionExtensions.cs",
+                      "sizeBytes":  1531,
+                      "sha256":  "dc93920a7fa7787d0c0f1abaf40843f5d445e0b73c02c5199cb455434e3d99cd",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/access_credential.cs",
+                      "sizeBytes":  1155,
+                      "sha256":  "a7701ba095c6f35feaca3208e6b2ee5b6e170814988ad235434d2d967c974017",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/access_event.cs",
+                      "sizeBytes":  682,
+                      "sha256":  "698f85802e73f6f7971c8fab5f68f884b52c95eaa60b73358947e3205886cdd4",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/access_point.cs",
+                      "sizeBytes":  672,
+                      "sha256":  "7de676a5dfe490ecab1e2589468bb36183c8361296af88c774fbdb9bfe22cbaa",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/appointment.cs",
+                      "sizeBytes":  1123,
+                      "sha256":  "dfaca2c940921c4f1292a65265aa8ebb7e2bce70416bde5cd753fe0e270b5c2e",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/audit_log.cs",
+                      "sizeBytes":  799,
+                      "sha256":  "0d071222b0b0fd152bf6cb7859858a928130d9cbbfb865403cb418848d4be581",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/authorized_access_member.cs",
+                      "sizeBytes":  940,
+                      "sha256":  "2ce92d556d702d05430a22aa0f8d8627af72e5f8d32cef4200a3f867f9e1a884",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/customer_profile.cs",
+                      "sizeBytes":  1428,
+                      "sha256":  "5c5bde1f374af46862aed7d9af87ecc95c7632cb94337a275a165e5d19ef6325",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/delinquency_action.cs",
+                      "sizeBytes":  605,
+                      "sha256":  "23a0ce97fca0b98febf08ebc73a968af121068060da31a46a7a11ca52ecf58a7",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/delinquency_case.cs",
+                      "sizeBytes":  857,
+                      "sha256":  "47b42faa9db26dccf743435077663f7613331332166e99482cec60450c0cc219",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/employee_profile.cs",
+                      "sizeBytes":  2194,
+                      "sha256":  "33f6fb6914f5f506474a7d51c9b05bdb85abfc85a52155f1955e2f6292c7d9e3",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/facility.cs",
+                      "sizeBytes":  2401,
+                      "sha256":  "26e86c40388cf933bebdc6a811884e7379adeaf0a64c2e1489c1fb7cb9ccb56c",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/facility_area.cs",
+                      "sizeBytes":  1243,
+                      "sha256":  "92c03fdb97c112d548a2a9d5f97633aa493a1e404218ea6ac12d5a26151ca747",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/facility_rate.cs",
+                      "sizeBytes":  918,
+                      "sha256":  "b7877289f35027fb696efa18adc4bc5ae4a84fe562a7b927e4a0ac9ed966545d",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/fee_rule.cs",
+                      "sizeBytes":  946,
+                      "sha256":  "d0a6c29fe301bd9dc93f5cbd623ac0abb746e540d4c04f06e113f6f77fb47ec7",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/handover_record.cs",
+                      "sizeBytes":  1075,
+                      "sha256":  "8c499f29fd3f06bd682370041c3ea4c31c811a4a9f936a73a4dce2890ab2f8cb",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/identity_verification.cs",
+                      "sizeBytes":  716,
+                      "sha256":  "7a631a1d89ebbd182e0f44d2022afad8711cfd6a84fd58f96fb9a1e642e62984",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/inspection.cs",
+                      "sizeBytes":  1443,
+                      "sha256":  "ac2fe26418115314073ed72d3273b64be09f05bdfef18fe2dcf96d3dd64bbe8c",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/inspection_item.cs",
+                      "sizeBytes":  555,
+                      "sha256":  "bdfedac3823479e5e9be6ff8b93bf298c2e061de84dd33036593782a692b4190",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/integration_event.cs",
+                      "sizeBytes":  630,
+                      "sha256":  "2f82b43f59fcbb1c2e606585e5d037750416060fd570194274776d337dcd4340",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/invoice.cs",
+                      "sizeBytes":  1900,
+                      "sha256":  "5f85b9dedabda3a25c6aa8ef9f331a55f3291dcaa23a13cd5aebb9d49e43c45c",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/invoice_line.cs",
+                      "sizeBytes":  601,
+                      "sha256":  "f2d4cdd72db265d17a9a06f04639cd64318d1e387f794b66525a03840ba9816c",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/login_history.cs",
+                      "sizeBytes":  534,
+                      "sha256":  "073a4fc45596b6f15025a0e6e1391ac69e3cae90224abbf4b7d06180ea4d1224",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/maintenance_work_order.cs",
+                      "sizeBytes":  1758,
+                      "sha256":  "a055fe3a0a89157375e996ed2c3217e454242c9b50c21dfb157363cbf1167602",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/move_out_request.cs",
+                      "sizeBytes":  863,
+                      "sha256":  "5ccf4328e20ad33b15e69766889b0526e6933f207ba208a1fabe1374b18fd390",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/notification.cs",
+                      "sizeBytes":  851,
+                      "sha256":  "f2abdbb8f58d23b82a6bc5bc7ca9bea05250e71d0c0ce8eb427c9e5f15384eaf",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/payment.cs",
+                      "sizeBytes":  1265,
+                      "sha256":  "62e6c6f80305320e9b1862b0e40df50a3ee79fb54afdfd407b3e6e4a2212faf1",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/payment_allocation.cs",
+                      "sizeBytes":  481,
+                      "sha256":  "04d5a01c1c3ecbfe26769e4dfa9f41ec8eb77cbd4af70ee24e40df6e43782fa1",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/policy_version.cs",
+                      "sizeBytes":  727,
+                      "sha256":  "16078d27aa9e64b32296dc933022a8b50cfe6679429a0c059443d0e42a4955f2",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/price_range.cs",
+                      "sizeBytes":  665,
+                      "sha256":  "2956b12c9b217e6dcce3a3a1310c36d252c6a849019f441880efee9736a71a6c",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/promotion.cs",
+                      "sizeBytes":  1147,
+                      "sha256":  "ea234d8a1d1f9848532f0005f6c5becb615028177144faa6dd310b1d793dd2e3",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/promotion_redemption.cs",
+                      "sizeBytes":  793,
+                      "sha256":  "bad5a76356e73dc731409c99e7d1ee0777800f740a5ad5ba1ea66ddf912887fd",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/promotion_rule.cs",
+                      "sizeBytes":  468,
+                      "sha256":  "b391936eda3806e4127848a2b1cd03fdaedf97ba9205cd5d15bed21a1906203f",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/refund.cs",
+                      "sizeBytes":  1113,
+                      "sha256":  "0ccc646c87c7e64950a70bd8290d59d89dcf8ec9d6ce83417b93a66cc2ab752d",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/refund_approval.cs",
+                      "sizeBytes":  523,
+                      "sha256":  "61b01344fd062f9459f2917c9d01264d68efec095b74dfef70770fe5eb430eeb",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/rental_agreement.cs",
+                      "sizeBytes":  2800,
+                      "sha256":  "74ccdc4700fb2063460042a487a1f738aa907f6f6b25a7a66895df6b94111fab",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/rental_renewal.cs",
+                      "sizeBytes":  971,
+                      "sha256":  "51a8afd92c72829f43f2e3d6df373d597a4aacb9ab772d4e2bfb324d293bac93",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/reservation.cs",
+                      "sizeBytes":  2096,
+                      "sha256":  "a80f8bf451b2dffe7d068fa78148fcd4cf040391148217aa93be9a5b0b1e7842",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/role.cs",
+                      "sizeBytes":  434,
+                      "sha256":  "a0f11bc9ff467d6c9b789260cba71261bdcb5f54f3c1e9c7caedaaf5b403ef61",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/service_rating.cs",
+                      "sizeBytes":  522,
+                      "sha256":  "03b09a1560feee1964c4c9d8889a73989072d7d9e6376de6ba7e389cb8bab7f1",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/shift_assignment.cs",
+                      "sizeBytes":  599,
+                      "sha256":  "124b63e7b8867794374bd3573ca5def36df2b3e024d547fb504c4317313d7ca7",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/staff_facility_assignment.cs",
+                      "sizeBytes":  758,
+                      "sha256":  "3502278c8122d6940611431248989c372ef20d5847b22beffb793ff7d8c3520f",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/staff_shift.cs",
+                      "sizeBytes":  892,
+                      "sha256":  "2b54609b1e47470a055c4d30f878445acbdd1bdef0a39680a136a13f9fbe9ce6",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/staff_task.cs",
+                      "sizeBytes":  1249,
+                      "sha256":  "30a49cb2f024b46d27737ed8c9fafba28d961e870b5a9148fbffbcae2e819894",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/StorageUnitHaTDT.cs",
+                      "sizeBytes":  750,
+                      "sha256":  "d860e55bd5eb8da1368363e93787bf7d4d8debafa0665e0901d2c74bc56a04e8",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/storage_unit.cs",
+                      "sizeBytes":  1987,
+                      "sha256":  "2eb5ac47aa7b49a04f5cd407e76c2e28023c86533216ff4968ea09bdedff42eb",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/support_ticket.cs",
+                      "sizeBytes":  2051,
+                      "sha256":  "07feced3b86838bb3f9105ac126c88285d75baf64bcebf5f4599b0b837773631",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/ticket_assignment.cs",
+                      "sizeBytes":  688,
+                      "sha256":  "e3743bada0c454009108a8557d2b2505c5cc8832b23d282f0d830bdd8c76dae0",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/ticket_attachment.cs",
+                      "sizeBytes":  905,
+                      "sha256":  "862e1e24a1d65276162768bbfb9e9deb832e126a794d271f0d4215717463ee1c",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/ticket_charge_approval.cs",
+                      "sizeBytes":  565,
+                      "sha256":  "8a175e36f5c3854db63a9d9000095c221bdd1abc2f13a49f4303e669fe78707e",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/ticket_charge_proposal.cs",
+                      "sizeBytes":  835,
+                      "sha256":  "e765c0f2027ff06f413e1876ec464b5324ce7483721b79e74aeae55ab4ec50b7",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/ticket_message.cs",
+                      "sizeBytes":  814,
+                      "sha256":  "1b9b4fa40cc688aa8e6fbdc53d106e6a21b66048a5f95d6debadf9aa3d953660",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/UnitTypeHaTDT.cs",
+                      "sizeBytes":  832,
+                      "sha256":  "23cec50a85736abbc02922a688c91a2397a58885ea7e50d3abcc1d921171d4aa",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/unit_allocation.cs",
+                      "sizeBytes":  1136,
+                      "sha256":  "359e3f8176833d9152382cdbbcaa4d2caf9ee2d6154e5ca088beca07b5bd4c3d",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/unit_map_position.cs",
+                      "sizeBytes":  637,
+                      "sha256":  "7cb5b5300351fd4626759571745306cdb3fe548a287fd181bc467f9558ffc1b1",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/unit_status_history.cs",
+                      "sizeBytes":  626,
+                      "sha256":  "8560bc4273fb5b96a56b921f0591a87fab313afcbf62e5221e82e767a98cb725",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/unit_transfer_request.cs",
+                      "sizeBytes":  1227,
+                      "sha256":  "259b9d007d7b5342bc468dc8779a7ecae7c6514aa3af6399a65c6d5bad719ad4",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/unit_type.cs",
+                      "sizeBytes":  1359,
+                      "sha256":  "8eee043aee51e7b48e19269d967c7f44df4b5c77087221f8707341385011a2d7",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/user.cs",
+                      "sizeBytes":  3929,
+                      "sha256":  "267635616000e33679465c4f4a16a33dae756e6d1f49518194707532ed0655c7",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/user_role.cs",
+                      "sizeBytes":  508,
+                      "sha256":  "03091b2a5d1aa5d9d75bbaf3eef0d209b05e64a99a11090402f27f00c8065e51",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Repositories/Implementations/CheckInRepository.cs",
+                      "sizeBytes":  60650,
+                      "sha256":  "1b5456d680a882bf42951d2965416e5d2540cbaf884097f885178b34a5490b85",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Repositories/Implementations/FacilityCatalogRepository.cs",
+                      "sizeBytes":  11745,
+                      "sha256":  "155ca0a0ba62424c350633fb75f4b73620b6d0d89ab96d4fb952f9868ac3f234",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Repositories/Implementations/GenericRepository.cs",
+                      "sizeBytes":  3931,
+                      "sha256":  "428ac2f6dc61035cd20322bb06728b39c9e4ea87cc3b7df9b9cb5460370f1312",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Repositories/Implementations/PaymentRepository.cs",
+                      "sizeBytes":  65107,
+                      "sha256":  "67954cdeadc159a4c703f0d6ec6a04f9d3ecd6e33dff7d5efd75eb66f2c430d6",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Repositories/Implementations/ReservationRepository.cs",
+                      "sizeBytes":  30194,
+                      "sha256":  "278d612d862ceb4e8ecdd344ea651d895b99e186f7ddab888140c8b662d4b797",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Repositories/Implementations/UserRepository.cs",
+                      "sizeBytes":  5803,
+                      "sha256":  "b9dc5e7a4b2d07e9dde9317c69d6004c1474be20d8e5ccf3d9ca0ff3b09e1629",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Repositories/Interfaces/ICheckInRepository.cs",
+                      "sizeBytes":  3582,
+                      "sha256":  "ea713830e2ac121989ec8a5f4d44a863a0e1c4d7ed9de29e754e998dcdbdb835",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Repositories/Interfaces/IFacilityCatalogRepository.cs",
+                      "sizeBytes":  2784,
+                      "sha256":  "6dbd30f862f4c54f8bbe19130b65a21a571839b419a6d81386c54a26e3ee57d4",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Repositories/Interfaces/IPaymentRepository.cs",
+                      "sizeBytes":  5686,
+                      "sha256":  "2690769c1b750d1995801fff3a373ee32677293d3fffddb75ee6f65a1a5fa111",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Repositories/Interfaces/IRepository.cs",
+                      "sizeBytes":  1433,
+                      "sha256":  "7dad91b577e012951c43352713d667359529acb79b0bb1a6b8a496a1c8fceed6",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Repositories/Interfaces/IReservationRepository.cs",
+                      "sizeBytes":  2015,
+                      "sha256":  "ff890aa79bf0f15e541f857450742679024abc33d3e3e331313796fe33863419",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Repositories/Interfaces/IUserRepository.cs",
+                      "sizeBytes":  1611,
+                      "sha256":  "89901b7e0274b24a81191686fc52ec0ddf7b8e55839c6d58acd86c2ee13054ba",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.Presentation/Program.cs",
+                      "sizeBytes":  7679,
+                      "sha256":  "6f2d6a88977bae44a73be197b818a21e6d7aa4ec1f4a1ce656736c4734384fdc",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.Presentation/SelfStorageManagementSystem.Presentation.csproj",
+                      "sizeBytes":  846,
+                      "sha256":  "1b1946a3ef6c8435bd4be472536a1b57710f60e9e14fe042ce98f27c613ca36a",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.Presentation/Configuration/.gitkeep",
+                      "sizeBytes":  0,
+                      "sha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.Presentation/Controllers/AdminAccountsController.cs",
+                      "sizeBytes":  7787,
+                      "sha256":  "1be33f42fdaedce63ac215e9290818f78e5d87578ad477a997034b00d5f69445",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.Presentation/Controllers/AuthController.cs",
+                      "sizeBytes":  3050,
+                      "sha256":  "aa14e3b5491dcf6a0e666cf5170b8f071262fc8395c3624666b1d1e713a577d1",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.Presentation/Controllers/BaseController.cs",
+                      "sizeBytes":  357,
+                      "sha256":  "9381d5c46deabbd5cab0506095355621648b882c67d67f100b6213a9587f6ccf",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.Presentation/Controllers/CatalogController.cs",
+                      "sizeBytes":  5126,
+                      "sha256":  "ec21a2c9cda5da3ae828fb0d9875adedc62e636052d89f167e28a0d8b4e55675",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.Presentation/Controllers/CheckInController.cs",
+                      "sizeBytes":  11037,
+                      "sha256":  "325bf4ba84aa8b4c9235a8dd39cf5ae126e5353d3011544dfa46fabb8e53efa7",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.Presentation/Controllers/InvoicesController.cs",
+                      "sizeBytes":  2345,
+                      "sha256":  "5529429cb0da30b9b14252993cc44fbfe68fdce0c9eeaa43baf9e4c77768674f",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.Presentation/Controllers/MeController.cs",
+                      "sizeBytes":  3666,
+                      "sha256":  "e247cd35e66a89b583662e8692da895d048ce3996a76e984b66d4f0fba557f97",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.Presentation/Controllers/PaymentsController.cs",
+                      "sizeBytes":  14838,
+                      "sha256":  "e8539f377648446201bb2851c6750e1ac90a6b629c0ab9b9da37232cd9abc418",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.Presentation/Controllers/RentalAgreementsController.cs",
+                      "sizeBytes":  2358,
+                      "sha256":  "8393d3c3744f320e863348a078c1ea83f5ea0563e92f4f3cdd5fe24e60877cfa",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.Presentation/Controllers/ReservationsController.cs",
+                      "sizeBytes":  7468,
+                      "sha256":  "98f4efcc2914fba194525d9bad2e30b6b322bba9e346ae2b8d798458c6d53368",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.Presentation/ExceptionHandling/GlobalExceptionHandler.cs",
+                      "sizeBytes":  3414,
+                      "sha256":  "00478fb2f26679af2c56f38cb9991b31f99632b6f7563b6a447f189ac3ff2a8d",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.Presentation/Properties/launchSettings.json",
+                      "sizeBytes":  1081,
+                      "sha256":  "971990f5aacc9b176c6b5ce3706b368ab09c0aca7be3b4b1987051247eda5859",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.Presentation/Workers/ReservationHoldExpirationWorker.cs",
+                      "sizeBytes":  2795,
+                      "sha256":  "dc7aea16e1613ea5822134eecf2779b2290a9fa9e36482d8ceb7354be772a7f4",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.WpfClient/App.xaml",
+                      "sizeBytes":  423,
+                      "sha256":  "58b267043139a65af0e2cdc89618ede69e6e3ef14565a7c80e0f52e7de6093ad",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.WpfClient/App.xaml.cs",
+                      "sizeBytes":  244,
+                      "sha256":  "d0408c6eb6163007e997c6a96abf283c9843fbec174f5bff995d72862f0d638b",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.WpfClient/AssemblyInfo.cs",
+                      "sizeBytes":  643,
+                      "sha256":  "3fac2af92385f676e9a941befd23fe38f0a5fa6167d4a3a88f07e730c5595ca3",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.WpfClient/SelfStorageManagementSystem.WpfClient.csproj",
+                      "sizeBytes":  287,
+                      "sha256":  "d5d43fa74a4e02338991f7c27f735e7257ff8b61fdd4bb431f3fdaa420c0936f",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.WpfClient/Models/CatalogModels.cs",
+                      "sizeBytes":  9164,
+                      "sha256":  "b2bb9ce725690de8f6e3a93deabd4dc0b79b62a2625bc88a808338c8478f2ce8",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.WpfClient/Models/ClientModels.cs",
+                      "sizeBytes":  6860,
+                      "sha256":  "3816953474a98e3f264da98ec3030f3444ee58e7f07d3f134bc00cbc27993ce3",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.WpfClient/Models/PaymentModels.cs",
+                      "sizeBytes":  5971,
+                      "sha256":  "69c78b3934e6abc82fc670fd3f181f6a97fb4ad8ab0bd86f15ace677789fed78",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.WpfClient/Models/ReservationModels.cs",
+                      "sizeBytes":  4356,
+                      "sha256":  "dbba358d5e913c651724da5b382f2fc1b303ffca6041512b70f7babdf40c9239",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.WpfClient/Services/ApiClient.cs",
+                      "sizeBytes":  21996,
+                      "sha256":  "c5d2b1f226171776fbf6a7501bb44752a1fce4d26e1d396dfe3af76ea14d9ca8",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.WpfClient/Services/SessionStore.cs",
+                      "sizeBytes":  1199,
+                      "sha256":  "f3d4edf7d56024d119334856a377122d048f1f6f0406a8f5bee5c1525f2e3929",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.WpfClient/Views/AdminAccountsWindow.xaml",
+                      "sizeBytes":  11071,
+                      "sha256":  "ff3c70cd72335d14f55d470596f2a936574b3255f595c42ef1d51ec113c7e9d3",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.WpfClient/Views/AdminAccountsWindow.xaml.cs",
+                      "sizeBytes":  8811,
+                      "sha256":  "6bf4b17198e3c53d40a3e48497ed2351674014af2f7c7badcfdb30e446fb0259",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.WpfClient/Views/AssignFacilityDialog.xaml",
+                      "sizeBytes":  2923,
+                      "sha256":  "adefab8cfec0f48718901e5ba38caefa77fe976ec0804e44388da88b9c5e7c99",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.WpfClient/Views/AssignFacilityDialog.xaml.cs",
+                      "sizeBytes":  3015,
+                      "sha256":  "eb3d4abaabd4d8e673eaeac59ff2926aed58239fe53d79eb28fc36af8a1474ee",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.WpfClient/Views/CheckoutWindow.xaml",
+                      "sizeBytes":  23209,
+                      "sha256":  "e5f7c8d1f312fab69b5b5c9e9a46f17aa3f3b07d24edd32ac14b41f6ee71aac1",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.WpfClient/Views/CheckoutWindow.xaml.cs",
+                      "sizeBytes":  15591,
+                      "sha256":  "772db4413984785375454a14645610da651fdfcb918aadaa732bfe7cbbb62c36",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.WpfClient/Views/ConfirmReservationDialog.xaml",
+                      "sizeBytes":  6715,
+                      "sha256":  "07881701ce65b7cb96c7a8efa9da7be40ba81b6dc8d9a1526b302ee921292999",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.WpfClient/Views/ConfirmReservationDialog.xaml.cs",
+                      "sizeBytes":  3087,
+                      "sha256":  "05153a2b54c9515aee5718032f0800d59c815371de1e20ea88c3d6235ca98f06",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.WpfClient/Views/CreateStaffDialog.xaml",
+                      "sizeBytes":  4112,
+                      "sha256":  "891507973e46378a6a28dfb11be38d0c14a11cfcb1769068fc594f3acd3c7142",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.WpfClient/Views/CreateStaffDialog.xaml.cs",
+                      "sizeBytes":  3280,
+                      "sha256":  "8f6679b68a4d2bb00b2fd2b7a113094847aef0b035066508ea19a446b570c6cf",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.WpfClient/Views/FacilityCatalogWindow.xaml",
+                      "sizeBytes":  29335,
+                      "sha256":  "fa786e5e4311c4bb9c2b97e8f31c3cb0034101196112da6557287292b9fe8f1e",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.WpfClient/Views/FacilityCatalogWindow.xaml.cs",
+                      "sizeBytes":  38192,
+                      "sha256":  "f98851185672bfee7d02760683232788d311aaf087dae3234fc1e204da8f15d8",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.WpfClient/Views/LoginWindow.xaml",
+                      "sizeBytes":  4544,
+                      "sha256":  "725554404bf48ae4be59f68c75eb8164c8867bfeab1c9c4ddb56257f2db95e46",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.WpfClient/Views/LoginWindow.xaml.cs",
+                      "sizeBytes":  3385,
+                      "sha256":  "fe289a25c83f1b707d935c5713a3383d5081a29681027d7e8c5f8722d0e7e5bd",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.WpfClient/Views/MainWindow.xaml",
+                      "sizeBytes":  8456,
+                      "sha256":  "b2af430bc1156b2bc6ae904e6c5b9b716d91f2fa63259d395513d21ef63a1780",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.WpfClient/Views/MainWindow.xaml.cs",
+                      "sizeBytes":  3636,
+                      "sha256":  "a08f6bfeb1594775ca49796ad4b39f64eaebafbf40bb20dea620e61fa491b727",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.WpfClient/Views/ManageRolesDialog.xaml",
+                      "sizeBytes":  2359,
+                      "sha256":  "2073a2ce68cae2f5e3b3dccee4ae734261734f1079d85a354db4cf32de9fb7e2",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.WpfClient/Views/ManageRolesDialog.xaml.cs",
+                      "sizeBytes":  2321,
+                      "sha256":  "d5bf389749809e92836c0bbcf9e87173857d30b66db73845169fa8cf3d6a37cc",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.WpfClient/Views/MyReservationsWindow.xaml",
+                      "sizeBytes":  6259,
+                      "sha256":  "f271c54bd3429aafae3bfb0053643a478c732d91258bb774c3d701e523841e62",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.WpfClient/Views/MyReservationsWindow.xaml.cs",
+                      "sizeBytes":  3262,
+                      "sha256":  "2aea55dca5e24bb4d429184e9258ac438815c48c77d39f91142c7437f169744b",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.WpfClient/Views/RegisterWindow.xaml",
+                      "sizeBytes":  5179,
+                      "sha256":  "a5cc28ed236f885793e1026420bed03b4e0ef6e03db4478b9f1cca11097efd87",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.WpfClient/Views/RegisterWindow.xaml.cs",
+                      "sizeBytes":  2982,
+                      "sha256":  "e24f83f3e5dd440b39dc5b95f2306353c8edfa31d09193a207896b0df3434604",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.WpfClient/Views/ReservationDetailWindow.xaml",
+                      "sizeBytes":  11878,
+                      "sha256":  "f717ca6306e466290c2e2684cd9cc7714272b5e9d57689bea3746e016a859258",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "src/SelfStorageManagementSystem.WpfClient/Views/ReservationDetailWindow.xaml.cs",
+                      "sizeBytes":  8992,
+                      "sha256":  "b135ca8a6309b5484b5420462fad48128e1171c94235441d25842e010eae9844",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "SRS/drive-download-20260925T083452Z-1-001/Business_Rules_SelfStorageSystem.docx",
+                      "sizeBytes":  39515,
+                      "sha256":  "156fcbcd12f2a5433a1f540f9204f57d6a0dc1ad0a6356a9fd6359d06ef362b0",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "SRS/drive-download-20260925T083452Z-1-001/Diagram",
+                      "sizeBytes":  764932,
+                      "sha256":  "6db48157da8beef201ad720a60885578375b0e7075a46c62b716515faae9134c",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "SRS/drive-download-20260925T083452Z-1-001/SelfStorageSystem_PhanTichHeThong.docx",
+                      "sizeBytes":  29420,
+                      "sha256":  "70c1039b0e566a3e78e0695430782f8903c1844538e9aef5e5eab8c8e761f914",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "SRS/drive-download-20260925T083452Z-1-001/State Chart explanation.docx",
+                      "sizeBytes":  370008,
+                      "sha256":  "4bc711f9887dc5dedf97b6897dd357c6de87102350fd2a84d09edf028a81075a",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "SRS/drive-download-20260925T083452Z-1-001/Thong_Tin_Nhom_va_Rules.docx",
+                      "sizeBytes":  21713,
+                      "sha256":  "6e3db9da90b9c756b2c7cc6cd517c67f88431d1d0f0de267b3d4ebd1dbe723a9",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "TeacherCode/1.txt",
+                      "sizeBytes":  286,
+                      "sha256":  "8fcc864dd19a0abf606042ded01b8e63c4f59d8724bc9db92dba620f94bc4c2e",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "TeacherCode/10092026.txt",
+                      "sizeBytes":  661,
+                      "sha256":  "9ada888cad9f417e4f105070f77b3ea8c626b191ab8edfb15972b75a5146f5e8",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "TeacherCode/2.txt",
+                      "sizeBytes":  904,
+                      "sha256":  "f064482a0f4338fd80d715dd5cae32f35703dcf59dbc43c6021380188c4d57ac",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "TeacherCode/3.txt",
+                      "sizeBytes":  323,
+                      "sha256":  "9127376793e24f470848bb1776e49c543d576d3c8f2b49ef93bc0ea664336ea2",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "TeacherCode/4.txt",
+                      "sizeBytes":  3332,
+                      "sha256":  "8ec8ce70c46fbc5d489be2dec5f332559f6020eefb97736a5cf25d10f0c4a121",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "TeacherCode/5.txt",
+                      "sizeBytes":  295,
+                      "sha256":  "51be8be3b35e2160563421409f73e8b0c123421729240897c581916a8cb10166",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "TeacherCode/AccountController.cs",
+                      "sizeBytes":  2668,
+                      "sha256":  "5c5ca987aa9e2f0d79c1270da083407d7409faa336d69bd2182ce430c7c43c3f",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "TeacherCode/LoginRequest.cs",
+                      "sizeBytes":  189,
+                      "sha256":  "5e26266ad9baf9c7415e682fa8b3b521f125ff21028fcbdf4618a2c5275656da",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "TeacherCode/Account/Account/Forbidden.cshtml",
+                      "sizeBytes":  2188,
+                      "sha256":  "da89cbfb15fbb390f2f0c0a19d8532e140a426e8148dc3c549cce537eb922b14",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "TeacherCode/Account/Account/Login.cshtml",
+                      "sizeBytes":  3206,
+                      "sha256":  "a9c8dfd1c2a0d3910c49e63dac1d8648d7198d0aec17db9f3aa8a047225777f2",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "tests/SelfStorageManagementSystem.Tests/AdminAccountServiceTests.cs",
+                      "sizeBytes":  10576,
+                      "sha256":  "a95aadb6917fb55a893de0f550e34466a1837648c6df771e39f75220778833bf",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "tests/SelfStorageManagementSystem.Tests/ApiClientAuthorizationHeaderTests.cs",
+                      "sizeBytes":  11597,
+                      "sha256":  "a93347a81fb4a24da9da11b6fea796e1438f8c135c5db73f9bf94ab2d7e9418f",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "tests/SelfStorageManagementSystem.Tests/AuthAndAuthorizationIntegrationTests.cs",
+                      "sizeBytes":  15513,
+                      "sha256":  "0712c7c67697878aacdc82e65b784ea7496f230b4ce10ca7cdff03e67834db3a",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "tests/SelfStorageManagementSystem.Tests/AuthServiceTests.cs",
+                      "sizeBytes":  8042,
+                      "sha256":  "3b45b6875ea65695dc7c990ad0f13b2a07d0516e8049d6d0b0f7bac854ad7b78",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "tests/SelfStorageManagementSystem.Tests/CatalogIntegrationTests.cs",
+                      "sizeBytes":  9540,
+                      "sha256":  "6320d7209847d53fafce8fd9ce1a2b1661f39cd1aac408ba4c510a7bb9a41803",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "tests/SelfStorageManagementSystem.Tests/CheckInIntegrationTests.cs",
+                      "sizeBytes":  19234,
+                      "sha256":  "c427573f6360e1c6db7132954c4b4d6d4165f52c8a717dba88271c445c6399c9",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "tests/SelfStorageManagementSystem.Tests/CheckInServiceTests.cs",
+                      "sizeBytes":  48404,
+                      "sha256":  "8838e7ce6a2e437e04eb4683f9fb72da89066be8037e8af20c363c4971861f1e",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "tests/SelfStorageManagementSystem.Tests/CheckInSqlServerConcurrencyTests.cs",
+                      "sizeBytes":  76178,
+                      "sha256":  "343e2c7de3cda6d5996e26e855a71be95aed79b64d0e4bf30ed55ae84df1b555",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "tests/SelfStorageManagementSystem.Tests/DemoAccountBootstrapServiceTests.cs",
+                      "sizeBytes":  3268,
+                      "sha256":  "3b3ab5d0522da34d50142bc650fa613cb18ca0250363007cf00cb612a92fa79a",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "tests/SelfStorageManagementSystem.Tests/FacilityCatalogServiceTests.cs",
+                      "sizeBytes":  33395,
+                      "sha256":  "8d262e874d7736ad175770034f6c7d716172fee6c5e482f0fbaa0b789baee1a0",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "tests/SelfStorageManagementSystem.Tests/FacilityScopeServiceTests.cs",
+                      "sizeBytes":  14293,
+                      "sha256":  "f952e43b54ca74a2900fe188b861e12e23ced988f5706a973d53d9af3fa67da2",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "tests/SelfStorageManagementSystem.Tests/JwtTokenGeneratorTests.cs",
+                      "sizeBytes":  1713,
+                      "sha256":  "2ee692b2fa477e140d3507a7279a7ee1d597e86db6cc46ada96c5bb2b1e0ce91",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "tests/SelfStorageManagementSystem.Tests/PasswordHasherTests.cs",
+                      "sizeBytes":  1805,
+                      "sha256":  "ca5a4dfece362f10d47b30cfb8243e261e4af7e65f420dae75ff10b9e8746ee2",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "tests/SelfStorageManagementSystem.Tests/PaymentIntegrationTests.cs",
+                      "sizeBytes":  29974,
+                      "sha256":  "ac7d177c237c49e609bbbeb6f5e57ec7c98390069acd1ea3afe5cb1b960a7ccd",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "tests/SelfStorageManagementSystem.Tests/PaymentServiceTests.cs",
+                      "sizeBytes":  75087,
+                      "sha256":  "f476dc37cb385109a2b7c3c51a1d6e94de3dff3123cd2d15212675d37ded2930",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "tests/SelfStorageManagementSystem.Tests/PaymentSqlServerConcurrencyTests.cs",
+                      "sizeBytes":  34094,
+                      "sha256":  "f8fc994c13dec8417f2e12e089585716a53607c552e741e6649d0b9261f3b606",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "tests/SelfStorageManagementSystem.Tests/ReservationIntegrationTests.cs",
+                      "sizeBytes":  16529,
+                      "sha256":  "b490b157cc1c2fcdbd67b68856d8e98d081e70ce603a66fe30ae4704ef9bf890",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "tests/SelfStorageManagementSystem.Tests/ReservationServiceTests.cs",
+                      "sizeBytes":  31199,
+                      "sha256":  "b5430a4bcab8546eb6f7d4369944750e71d44518a57746a16b14cc1f70042d22",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "tests/SelfStorageManagementSystem.Tests/ReservationSqlServerConcurrencyTests.cs",
+                      "sizeBytes":  19540,
+                      "sha256":  "72bf76b9cfb5ab47f331cbc6394f8194368cc57a22cdb13daa5ec36f0edb7551",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "tests/SelfStorageManagementSystem.Tests/SelfStorageManagementSystem.Tests.csproj",
+                      "sizeBytes":  1518,
+                      "sha256":  "73757cc17004be6e1f57c25ebdaa6bad83a54bce1ce0178e63b6006629e87f06",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "tests/SelfStorageManagementSystem.Tests/VnpayGatewayTests.cs",
+                      "sizeBytes":  5660,
+                      "sha256":  "6a932c012b8192cf7e0a1b1e8ce2b36cb5be8a36f2f4f5aba53c6a248a5f2e97",
+                      "verifiedMatch":  true
+                  },
+                  {
+                      "relativePath":  "tests/SelfStorageManagementSystem.Tests/WpfCatalogFilterParsingTests.cs",
+                      "sizeBytes":  2441,
+                      "sha256":  "a51ebc7723424741b3adca4aca8f4005a7e36b1f828145f149234550665302a5",
+                      "verifiedMatch":  true
+                  }
+              ]
+}

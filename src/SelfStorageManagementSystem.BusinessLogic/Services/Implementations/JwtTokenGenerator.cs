@@ -29,6 +29,12 @@ public class JwtTokenGenerator : IJwtTokenGenerator
     public (string Token, DateTimeOffset ExpiresAt) GenerateToken(user user, IEnumerable<string> roleCodes)
     {
         ArgumentNullException.ThrowIfNull(user);
+        return GenerateToken(user.id, user.email, roleCodes);
+    }
+
+    public (string Token, DateTimeOffset ExpiresAt) GenerateToken(long userId, string email, IEnumerable<string> roleCodes)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(email);
 
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.Key));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -38,9 +44,9 @@ public class JwtTokenGenerator : IJwtTokenGenerator
 
         var claims = new List<Claim>
         {
-            new(ClaimTypes.NameIdentifier, user.id.ToString()),
-            new(ClaimTypes.Email, user.email),
-            new(JwtRegisteredClaimNames.Sub, user.id.ToString()),
+            new(ClaimTypes.NameIdentifier, userId.ToString()),
+            new(ClaimTypes.Email, email),
+            new(JwtRegisteredClaimNames.Sub, userId.ToString()),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 

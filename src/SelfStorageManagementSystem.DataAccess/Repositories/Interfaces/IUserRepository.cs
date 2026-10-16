@@ -13,6 +13,29 @@ public interface IUserRepository : IRepository<user>
         long id,
         CancellationToken cancellationToken = default);
 
+    Task<user?> GetByEmailWithRolesAndProfilesAsNoTrackingAsync(
+        string normalizedEmail,
+        CancellationToken cancellationToken = default);
+
+    Task<user?> GetByIdWithRolesAndProfilesAsNoTrackingAsync(
+        long id,
+        CancellationToken cancellationToken = default);
+
+    Task<SelfStorageManagementSystem.DataAccess.Models.UserIdentitySnapshot?> GetIdentitySnapshotByIdAsync(
+        long id,
+        DateTimeOffset? asOfUtc = null,
+        CancellationToken cancellationToken = default);
+
+    Task<SelfStorageManagementSystem.DataAccess.Models.UserIdentitySnapshot?> GetIdentitySnapshotByEmailAsync(
+        string normalizedEmail,
+        DateTimeOffset? asOfUtc = null,
+        CancellationToken cancellationToken = default);
+
+    Task UpdateLastLoginAtAsync(
+        long userId,
+        DateTimeOffset lastLoginAt,
+        CancellationToken cancellationToken = default);
+
     Task<(List<user> Users, int TotalCount)> GetPagedUsersAsync(
         string? searchTerm,
         string? status,

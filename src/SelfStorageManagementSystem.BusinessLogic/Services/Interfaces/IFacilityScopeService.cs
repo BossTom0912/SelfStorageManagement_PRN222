@@ -17,4 +17,9 @@ public interface IFacilityScopeService
     Task<List<FacilityAssignmentDto>> GetActiveAssignmentsForUserAsync(
         long userId,
         CancellationToken cancellationToken = default);
+
+    Task<bool> HasCheckInCounterAccessAsync(
+        long userId,
+        long facilityId,
+        CancellationToken cancellationToken = default);
 }

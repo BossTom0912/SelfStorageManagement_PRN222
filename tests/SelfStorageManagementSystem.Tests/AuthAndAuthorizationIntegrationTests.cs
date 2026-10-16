@@ -35,6 +35,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
         builder.UseSetting("VnPay:BaseUrl", "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html");
         builder.UseSetting("VnPay:ReturnUrl", "http://localhost:5000/api/payments/vnpay/return");
         builder.UseSetting("Payment:AllowDemoSimulator", "true");
+        builder.UseSetting("CheckIn:PinHmacSecret", "IntegrationTestPinSecretMustBeLongEnough123456789!");
 
         builder.ConfigureServices(services =>
         {

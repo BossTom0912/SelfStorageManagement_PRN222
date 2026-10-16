@@ -1,0 +1,234 @@
+@using System.Security.Claims
+@using SelfStorageManagementSystem.BusinessLogic.Common.Constants
+@using SelfStorageManagementSystem.Web.Helpers
+
+@{
+    var isAuthenticated = User.Identity?.IsAuthenticated ?? false;
+    var userName = User.Identity?.Name ?? "Người dùng";
+    
+    // Lấy role để hiển thị phù hiệu (ưu tiên claim role, fallback theo IsInRole)
+    var isCustomer = User.IsInRole(RoleConstants.StorageCustomer);
+    var isStaff = User.IsInRole(RoleConstants.FacilityStaff);
+    var isManager = User.IsInRole(RoleConstants.FacilityManager);
+    var isAdmin = User.IsInRole(RoleConstants.SystemAdministrator);
+    var isOperations = User.IsInRole(RoleConstants.BusinessOperationsManager);
+
+    // Xác định vai trò chính hiển thị phù hiệu theo thứ tự ưu tiên đa vai trò
+    var primaryRole = AppFormatters.GetPrimaryRole(User);
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Hệ Thống Quản Lý Kho Tự Quản SelfStorage</title>
+    
+    <!-- Tài nguyên cục bộ (Local Assets only - Không dùng CDN bên ngoài) -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <!-- Lớp phủ trạng thái xử lý toàn màn hình (Loading Overlay) -->
+    <div id="globalLoadingOverlay">
+        <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status">
+            <span class="visually-hidden">Đang xử lý...</span>
+        </div>
+        <div class="fs-5 fw-semibold text-secondary global-loading-text">Đang xử lý, vui lòng đợi...</div>
+    </div>
+
+    <!-- Thanh điều hướng chính (Navbar) theo phong cách TeacherCode PRN222 -->
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-app sticky-top mb-3">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" asp-controller="Home" asp-action="Index">
+                    <span class="brand-title">SelfStorage</span>
+                    <span class="text-muted mx-1">-</span>
+                    <span class="brand-accent">PRN222</span>
+                    <span class="badge bg-secondary brand-badge ms-2">Web</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain"
+                        aria-controls="navbarMain" aria-expanded="false" aria-label="Chuyển đổi điều hướng">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                
+                <div class="collapse navbar-collapse" id="navbarMain">
+                    <!-- Menu phía trái theo từng vai trò -->
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <!-- 1. Menu dùng chung / Công khai -->
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">Trang chủ</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Catalog">Danh mục kho</a>
+                        </li>
+
+                        <!-- 2. Menu dành cho Khách hàng (storage_customer) -->
+                        @if (isCustomer)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" href="/Reservations">Đặt chỗ của tôi</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/MyUnits">Ô kho của tôi</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="customerFinancialMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Thanh toán & Hợp đồng
+                                </a>
+                                <ul class="dropdown-menu shadow-sm" aria-labelledby="customerFinancialMenu">
+                                    <li><a class="dropdown-item" href="/Invoices">Hóa đơn của tôi</a></li>
+                                    <li><a class="dropdown-item" href="/Payments">Lịch sử thanh toán</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="/Agreements">Hợp đồng thuê kho</a></li>
+                                </ul>
+                            </li>
+                        }
+
+                        <!-- 3. Menu dành cho Nhân viên & Quản lý cơ sở (facility_staff, facility_manager) -->
+                        @if (isStaff || isManager)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" href="/Staff/CheckIn">Quầy tiếp nhận</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/StorageUnits">Quản trị ô kho</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="staffOperationsMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Nghiệp vụ cơ sở
+                                </a>
+                                <ul class="dropdown-menu shadow-sm" aria-labelledby="staffOperationsMenu">
+                                    <li><a class="dropdown-item" href="/Invoices">Tra cứu hóa đơn</a></li>
+                                    <li><a class="dropdown-item" href="/Agreements">Tra cứu hợp đồng</a></li>
+                                    @if (isManager)
+                                    {
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" href="/Payments">Đối soát thanh toán & Hoàn tiền</a></li>
+                                    }
+                                </ul>
+                            </li>
+                        }
+
+                        <!-- 4. Menu dành cho Quản trị viên & Vận hành (system_administrator, business_operations_manager) -->
+                        @if (isAdmin || isOperations)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" href="/StorageUnits">Quản trị ô kho</a>
+                            </li>
+                            @if (isAdmin)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/Admin/Accounts">Quản lý tài khoản</a>
+                                </li>
+                            }
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="adminOpsMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Quản trị hệ thống
+                                </a>
+                                <ul class="dropdown-menu shadow-sm" aria-labelledby="adminOpsMenu">
+                                    @if (isAdmin)
+                                    {
+                                        <li><a class="dropdown-item" href="/Admin/Accounts">Tài khoản & Phân quyền</a></li>
+                                    }
+                                    <li><a class="dropdown-item" href="/Staff/CheckIn">Quầy tiếp nhận</a></li>
+                                    <li><a class="dropdown-item" href="/Invoices">Hóa đơn hệ thống</a></li>
+                                    <li><a class="dropdown-item" href="/Payments">Thanh toán & Hoàn tiền</a></li>
+                                    <li><a class="dropdown-item" href="/Agreements">Hợp đồng thuê kho</a></li>
+                                </ul>
+                            </li>
+                        }
+
+                        <!-- 5. Thông báo chung cho người dùng đã đăng nhập -->
+                        @if (isAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" href="/Notifications">
+                                    Thông báo
+                                </a>
+                            </li>
+                        }
+                    </ul>
+
+                    <!-- Menu phía phải: Tài khoản & Phiên đăng nhập -->
+                    <ul class="navbar-nav ms-auto align-items-lg-center">
+                        @if (!isAuthenticated)
+                        {
+                            <li class="nav-item me-2">
+                                <a class="btn btn-outline-primary btn-sm px-3" href="/Account/Login">Đăng nhập</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="btn btn-primary btn-sm px-3" href="/Account/Register">Đăng ký</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userAccountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span class="@AppFormatters.GetRoleBadgeClass(primaryRole) me-2">
+                                        @AppFormatters.GetRoleDisplayName(primaryRole)
+                                    </span>
+                                    <span class="fw-semibold text-dark">@userName</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userAccountDropdown">
+                                    <li class="dropdown-header text-muted small">
+                                        Tài khoản: <strong>@userName</strong>
+                                    </li>
+                                    <li><a class="dropdown-item" href="/Account/Profile">Hồ sơ cá nhân</a></li>
+                                    <li><a class="dropdown-item" href="/Notifications">Trung tâm thông báo</a></li>
+                                    @if (isCustomer)
+                                    {
+                                        <li><a class="dropdown-item" href="/MyUnits">Ô kho đang thuê</a></li>
+                                        <li><a class="dropdown-item" href="/Reservations">Đơn đặt chỗ</a></li>
+                                    }
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <!-- Form đăng xuất POST kèm antiforgery token bảo mật CSRF theo TeacherCode -->
+                                        <form method="post" action="/Account/Logout" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="dropdown-item text-danger d-flex align-items-center">
+                                                <span class="me-2">&#10148;</span> Đăng xuất
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Khối nội dung chính (App Content) -->
+    <div class="app-content container">
+        <!-- Thông báo nhanh từ TempData -->
+        <partial name="_AlertMessages" />
+
+        <main role="main" class="pb-4">
+            @RenderBody()
+        </main>
+    </div>
+
+    <!-- Chân trang (Footer) theo phong cách học phần TeacherCode PRN222 -->
+    <footer class="app-footer">
+        <div class="container text-center text-muted">
+            <div class="mb-1">
+                &copy; 2026 - <strong>Hệ Thống Quản Lý Kho Tự Quản SelfStorage</strong> - <span class="text-danger fw-bold">PRN222 Web</span>
+            </div>
+            <div class="small text-secondary">
+                Đồ án học phần PRN222 &bull; ASP.NET Core (.NET 8) &bull; MVC Cookie &bull; Razor Pages &bull; SignalR &bull; Bootstrap 5.3.3 &bull; jQuery 3.7.1
+            </div>
+        </div>
+    </footer>
+
+    <!-- Các tệp mã nguồn JavaScript cục bộ (Local Scripts) -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    
+    <!-- Điểm nạp mã script riêng của từng trang (Tránh tạo kết nối SignalR toàn cục bừa bãi) -->
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

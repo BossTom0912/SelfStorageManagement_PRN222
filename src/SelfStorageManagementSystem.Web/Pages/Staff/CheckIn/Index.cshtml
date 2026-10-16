@@ -1,0 +1,711 @@
+@page "/Staff/CheckIn"
+@model SelfStorageManagementSystem.Web.Pages.Staff.CheckIn.IndexModel
+@{
+    ViewData["Title"] = "Quầy Tiếp Nhận & Bàn Giao Kho Số Hóa";
+}
+
+<link rel="stylesheet" href="~/css/staff-checkin.css" asp-append-version="true" />
+
+<div class="container py-4">
+    <!-- Breadcrumb & Tiêu đề -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Quầy tiếp nhận</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex align-items-center justify-content-between mb-4 border-bottom pb-3">
+        <div>
+            <h1 class="h3 text-primary mb-1">
+                <i class="bi bi-person-badge-fill me-2"></i>Quầy Tiếp Nhận & Bàn Giao Kho Số Hóa
+            </h1>
+            <p class="text-muted mb-0">
+                Thực hiện xác minh thông tin, gán ô kho vật lý, kiểm tra an toàn và cấp phát mã PIN truy cập số hóa một lần.
+            </p>
+        </div>
+        <div>
+            <span class="badge bg-secondary px-3 py-2 fs-6">
+                <i class="bi bi-clock me-1"></i>Hệ thống Quầy Chuẩn
+            </span>
+        </div>
+    </div>
+
+    <!-- Thông báo lỗi phân quyền hoặc không có phân công -->
+    @if (Model.IsForbiddenAccess)
+    {
+        <div class="alert alert-danger shadow-sm d-flex align-items-start mb-4" role="alert">
+            <i class="bi bi-shield-x text-danger fs-3 me-3 mt-1"></i>
+            <div>
+                <h5 class="alert-heading fw-bold mb-1">Truy Cập Quầy Bị Từ Chối</h5>
+                <p class="mb-0">@(Model.ForbiddenReason ?? "Bạn không có quyền nhân viên quầy hoặc không có phân công hoạt động tại cơ sở này.")</p>
+                <hr />
+                <p class="mb-0 small text-muted">
+                    <em>Quy tắc hệ thống: Chỉ nhân viên (facility_staff) hoặc quản lý (facility_manager) có phân công hoạt động mới được tác nghiệp tại quầy. Không hỗ trợ quyền bypass đối với Quản trị viên (Admin) hoặc Quản lý vận hành (Operations).</em>
+                </p>
+            </div>
+        </div>
+    }
+
+    <!-- Cảnh báo Xung đột dữ liệu / Stale Conflict -->
+    @if (Model.IsStaleConflict)
+    {
+        <div class="alert alert-warning border-warning shadow-sm d-flex align-items-center justify-content-between mb-4 checkin-error-alert" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-exclamation-triangle-fill text-warning fs-3 me-3"></i>
+                <div>
+                    <h5 class="alert-heading fw-bold mb-1">Xung Đột Dữ Liệu (Stale Data Conflict)</h5>
+                    <p class="mb-0">@Model.ErrorMessage</p>
+                    <small class="text-muted">Dữ liệu phân bổ ô kho hoặc biên bản kiểm tra đã bị thay đổi bởi thao tác khác. Vui lòng tải lại trạng thái mới nhất.</small>
+                </div>
+            </div>
+            <div>
+                <a href="/Staff/CheckIn?code=@Model.Code" class="btn btn-warning fw-semibold">
+                    <i class="bi bi-arrow-clockwise me-1"></i>Tải lại dữ liệu mới nhất
+                </a>
+            </div>
+        </div>
+    }
+    else if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger shadow-sm d-flex align-items-center mb-4 checkin-error-alert" role="alert">
+            <i class="bi bi-x-circle-fill text-danger fs-4 me-3"></i>
+            <div class="flex-grow-1">
+                <strong>Lỗi thao tác:</strong> @Model.ErrorMessage
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Thông báo thành công -->
+    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+    {
+        <div class="alert alert-success shadow-sm d-flex align-items-center mb-4" role="alert">
+            <i class="bi bi-check-circle-fill text-success fs-4 me-3"></i>
+            <div class="flex-grow-1">
+                <strong>Thành công:</strong> @Model.SuccessMessage
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Hộp hiển thị mã PIN truy cập số hóa một lần duy nhất (NO-STORE / NO-CACHE) -->
+    @if (!string.IsNullOrEmpty(Model.IssuedPin))
+    {
+        <div id="securityPinSection" class="card border-success shadow-lg mb-4 bg-light">
+            <div class="card-header bg-success text-white d-flex align-items-center justify-content-between py-3">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-shield-lock-fill fs-4 me-2"></i>
+                    <strong class="fs-5">MÃ PIN TRUY CẬP SỐ HÓA @(Model.IsReissueResult ? "(CẤP LẠI)" : "(BÀN GIAO MỚI)")</strong>
+                </div>
+                <span class="badge bg-warning text-dark px-3 py-2 fw-bold">CHỈ HIỂN THỊ 1 LẦN</span>
+            </div>
+            <div class="card-body text-center py-4">
+                <p class="text-muted mb-2 fs-6">
+                    Mã PIN điện tử dùng để mở khóa ô kho thông minh tại cơ sở:
+                </p>
+                <div class="my-3">
+                    <span id="displayPinValue" class="checkin-pin-value shadow-sm">@Model.IssuedPin</span>
+                </div>
+                <div class="mb-3">
+                    <button id="btnCopyPin" type="button" class="btn btn-outline-primary px-4 fw-semibold">
+                        <i class="bi bi-clipboard me-1"></i>Sao chép mã PIN
+                    </button>
+                </div>
+                <div class="alert alert-warning d-flex align-items-start justify-content-center mx-auto text-start" style="max-width: 700px;">
+                    <i class="bi bi-exclamation-octagon-fill text-warning fs-4 me-3 mt-1"></i>
+                    <div class="small">
+                        <strong>Quy định bảo mật nghiêm ngặt (Zero Persistence):</strong>
+                        Mã PIN này chỉ được truyền trực tiếp từ phản hồi của máy chủ và hiển thị 01 lần duy nhất trên màn hình này.
+                        Mã PIN <strong>KHÔNG</strong> được lưu trong Cookie, LocalStorage, SessionStorage hay nhật ký trình duyệt.
+                        Nếu tải lại trang (Refresh / F5) hoặc điều hướng sang trang khác, mã PIN sẽ biến mất vĩnh viễn khỏi màn hình.
+                    </div>
+                </div>
+                @if (Model.IssuedCredentialExpiresAt.HasValue)
+                {
+                    <p class="text-muted small mb-0">
+                        Thời hạn hiệu lực mã PIN: <strong>@AppFormatters.FormatDateTime(Model.IssuedCredentialExpiresAt, Model.CheckInData?.FacilityTimezone)</strong>
+                    </p>
+                }
+            </div>
+        </div>
+    }
+
+    <!-- Khung Tìm Kiếm / Tra Cứu Mã Đơn -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body p-4">
+            <form method="post" asp-page-handler="Search" class="row g-3 align-items-center">
+                <div class="col-md-9">
+                    <label for="searchCode" class="form-label fw-bold">Mã Đặt Chỗ (Reservation Code) hoặc Mã Hợp Đồng (Agreement No):</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white"><i class="bi bi-search text-muted"></i></span>
+                        <input type="text" id="searchCode" name="searchCode" value="@Model.Code" class="form-control form-control-lg text-uppercase font-monospace" placeholder="VD: RSV-12345 hoặc AGR-12345" required />
+                    </div>
+                    <div class="form-text">Nhập chính xác mã đặt chỗ hoặc hợp đồng do khách hàng cung cấp tại quầy tiếp nhận.</div>
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold">
+                        <i class="bi bi-arrow-right-circle me-1"></i>Tra Cứu Quầy
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Khi Đã Tìm Thấy Dữ Liệu Check-In -->
+    @if (Model.CheckInData != null)
+    {
+        var data = Model.CheckInData;
+        var isVerified = data.LatestVerification?.Result == "verified";
+        var hasActiveAllocation = data.ActiveAllocation != null;
+        var isInspectionPassed = data.LatestInspection?.HasPassed == true;
+        var isHandoverCompleted = data.HandoverRecord?.IsCompleted == true || data.AgreementStatus == "active";
+
+        <!-- Tiến trình các bước nghiệp vụ (Step Tracker) -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body p-4">
+                <ul class="checkin-step-tracker mb-0">
+                    <li class="checkin-step-item completed">
+                        <div class="checkin-step-circle"><i class="bi bi-search"></i></div>
+                        <div class="checkin-step-title">1. Tra cứu đơn</div>
+                    </li>
+                    <li class="checkin-step-item @(isVerified ? "completed" : "active")">
+                        <div class="checkin-step-circle">
+                            @if (isVerified) { <i class="bi bi-check-lg"></i> } else { <span>2</span> }
+                        </div>
+                        <div class="checkin-step-title">2. Xác minh giấy tờ</div>
+                    </li>
+                    <li class="checkin-step-item @(hasActiveAllocation ? "completed" : (isVerified ? "active" : ""))">
+                        <div class="checkin-step-circle">
+                            @if (hasActiveAllocation) { <i class="bi bi-check-lg"></i> } else { <span>3</span> }
+                        </div>
+                        <div class="checkin-step-title">3. Gán ô kho</div>
+                    </li>
+                    <li class="checkin-step-item @(isInspectionPassed ? "completed" : (hasActiveAllocation ? "active" : ""))">
+                        <div class="checkin-step-circle">
+                            @if (isInspectionPassed) { <i class="bi bi-check-lg"></i> } else { <span>4</span> }
+                        </div>
+                        <div class="checkin-step-title">4. Kiểm tra an toàn</div>
+                    </li>
+                    <li class="checkin-step-item @(isHandoverCompleted ? "completed" : (isInspectionPassed ? "active" : ""))">
+                        <div class="checkin-step-circle">
+                            @if (isHandoverCompleted) { <i class="bi bi-check-lg"></i> } else { <span>5</span> }
+                        </div>
+                        <div class="checkin-step-title">5. Bàn giao & PIN</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Bảng Tổng Quan Thông Tin Đơn Đặt Chỗ & Khách Hàng -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white py-3 d-flex align-items-center justify-content-between">
+                <h5 class="card-title mb-0 fw-bold text-dark">
+                    <i class="bi bi-info-circle-fill text-primary me-2"></i>Hồ Sơ Tiếp Nhận: @data.ReservationCode
+                </h5>
+                <div>
+                    <span class="badge @(data.ReservationStatus == "confirmed" ? "bg-success" : "bg-warning text-dark") px-3 py-2">
+                        Trạng thái đơn: @data.ReservationStatus
+                    </span>
+                    @if (!string.IsNullOrEmpty(data.AgreementStatus))
+                    {
+                        <span class="badge @(data.AgreementStatus == "active" ? "bg-primary" : "bg-info text-dark") px-3 py-2 ms-2">
+                            Hợp đồng: @data.AgreementStatus
+                        </span>
+                    }
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row g-4">
+                    <!-- Thông tin Khách hàng -->
+                    <div class="col-md-6 border-end">
+                        <h6 class="text-uppercase text-muted fw-bold small mb-3">Thông Tin Khách Hàng</h6>
+                        <div class="mb-2">
+                            <span class="text-muted">Họ và tên:</span>
+                            <strong class="ms-1">@data.CustomerName</strong>
+                        </div>
+                        <div class="mb-2">
+                            <span class="text-muted">Số điện thoại:</span>
+                            <span class="ms-1">@(data.CustomerPhone ?? "Chưa cung cấp")</span>
+                        </div>
+                        <div class="mb-2">
+                            <span class="text-muted">Email:</span>
+                            <span class="ms-1">@(data.CustomerEmail ?? "Chưa cung cấp")</span>
+                        </div>
+                        <div class="mb-2">
+                            <span class="text-muted">Số giấy tờ hồ sơ:</span>
+                            <strong class="ms-1 font-monospace">@(data.MaskedIdentityNumber ?? "Chưa có trên hệ thống")</strong>
+                        </div>
+                    </div>
+
+                    <!-- Thông tin Cơ sở & Loại Kho -->
+                    <div class="col-md-6">
+                        <h6 class="text-uppercase text-muted fw-bold small mb-3">Cơ Sở & Kho Thuê</h6>
+                        <div class="mb-2">
+                            <span class="text-muted">Cơ sở lưu trữ:</span>
+                            <strong class="ms-1">@data.FacilityName</strong> (@data.FacilityCode)
+                        </div>
+                        <div class="mb-2">
+                            <span class="text-muted">Loại ô kho:</span>
+                            <strong class="ms-1">@data.UnitTypeName</strong>
+                            <span class="badge bg-light text-dark border ms-1">@data.AreaM2.ToString("N1") m²</span>
+                            @if (data.ClimateControlled)
+                            {
+                                <span class="badge bg-info-subtle text-info border ms-1"><i class="bi bi-snow me-1"></i>Có điều hòa</span>
+                            }
+                        </div>
+                        <div class="mb-2">
+                            <span class="text-muted">Thời hạn thuê:</span>
+                            <span class="ms-1">@data.StartDate.ToString("dd/MM/yyyy") &rarr; @data.EndDate.ToString("dd/MM/yyyy")</span>
+                        </div>
+                        <div class="mb-2">
+                            <span class="text-muted">Thanh toán kỳ đầu:</span>
+                            @if (data.IsFullyPaid)
+                            {
+                                <span class="badge bg-success ms-1"><i class="bi bi-check-circle me-1"></i>Đã thanh toán đủ (@AppFormatters.FormatVnd(data.PaidAmount))</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger ms-1"><i class="bi bi-x-circle me-1"></i>Chưa thanh toán đủ (@AppFormatters.FormatVnd(data.PaidAmount) / @AppFormatters.FormatVnd(data.TotalAmount))</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lý do chưa thể check-in (nếu có) -->
+                @if (data.ReasonsCannotProceed.Count > 0 && !isHandoverCompleted)
+                {
+                    <div class="alert alert-warning mt-3 mb-0">
+                        <h6 class="fw-bold mb-1"><i class="bi bi-exclamation-triangle me-2"></i>Các điều kiện cần hoàn thiện trước khi bàn giao:</h6>
+                        <ul class="mb-0 ps-3">
+                            @foreach (var reason in data.ReasonsCannotProceed)
+                            {
+                                <li>@reason</li>
+                            }
+                        </ul>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- CỘT TRÁI: BƯỚC 2 & BƯỚC 3 -->
+            <div class="col-lg-6">
+                <!-- BƯỚC 2: XÁC MINH GIẤY TỜ TÙY THÂN -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white py-3 d-flex align-items-center justify-content-between">
+                        <h6 class="card-title mb-0 fw-bold">
+                            <span class="badge bg-primary me-2">Bước 2</span>Xác Minh Giấy Tờ Tùy Thân
+                        </h6>
+                        @if (isVerified)
+                        {
+                            <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>ĐÃ XÁC MINH</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark"><i class="bi bi-clock me-1"></i>CHỜ XÁC MINH</span>
+                        }
+                    </div>
+                    <div class="card-body">
+                        @if (isVerified)
+                        {
+                            var verif = data.LatestVerification!;
+                            <div class="alert alert-success d-flex align-items-center mb-0">
+                                <i class="bi bi-shield-check text-success fs-3 me-3"></i>
+                                <div>
+                                    <div class="fw-bold">Khách hàng đã được xác minh danh tính thành công.</div>
+                                    <div class="small text-muted">
+                                        Phương thức: <strong>@(verif.VerificationMethod == "government_id" ? "Căn cước công dân / CMND" : "Hộ chiếu")</strong>
+                                        &bull; Thời gian: @verif.VerifiedAt.ToString("HH:mm dd/MM/yyyy")
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <form method="post" asp-page-handler="VerifyId">
+                                <input type="hidden" name="ReservationId" value="@data.ReservationId" />
+                                <input type="hidden" name="Code" value="@data.ReservationCode" />
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Phương thức xác minh:</label>
+                                    <div class="d-flex gap-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="VerificationMethod" id="verifGovId" value="government_id" checked>
+                                            <label class="form-check-label" for="verifGovId">
+                                                Căn cước công dân / CMND
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="VerificationMethod" id="verifPassport" value="passport">
+                                            <label class="form-check-label" for="verifPassport">
+                                                Hộ chiếu (Passport)
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="verifDocNumber" class="form-label fw-semibold">Số giấy tờ xuất trình:</label>
+                                    <input type="text" id="verifDocNumber" name="DocumentNumber" class="form-control font-monospace" placeholder="Nhập số CCCD hoặc số Hộ chiếu của khách" />
+                                    <div class="form-text">
+                                        Số đã lưu trong hồ sơ: <strong>@(data.MaskedIdentityNumber ?? "Chưa có")</strong>
+                                    </div>
+                                </div>
+
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" name="IsConfirmedMatch" value="true" id="chkVerifMatch" required />
+                                    <label class="form-check-label fw-semibold text-dark" for="chkVerifMatch">
+                                        Tôi xác nhận đã đối chiếu ảnh và thông tin giấy tờ trùng khớp với khách hàng có mặt tại quầy.
+                                    </label>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="verifNotes" class="form-label">Ghi chú xác minh (nếu có):</label>
+                                    <input type="text" id="verifNotes" name="Notes" class="form-control" placeholder="Ghi chú về giấy tờ..." />
+                                </div>
+
+                                <button type="submit" class="btn btn-primary w-100 fw-bold">
+                                    <i class="bi bi-shield-check me-1"></i>Xác Nhận Giấy Tờ Tùy Thân
+                                </button>
+                            </form>
+                        }
+                    </div>
+                </div>
+
+                <!-- BƯỚC 3: GÁN Ô KHO VẬT LÝ -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white py-3 d-flex align-items-center justify-content-between">
+                        <h6 class="card-title mb-0 fw-bold">
+                            <span class="badge bg-primary me-2">Bước 3</span>Gán Ô Kho Vật Lý
+                        </h6>
+                        @if (hasActiveAllocation)
+                        {
+                            <span class="badge bg-success"><i class="bi bi-box-seam me-1"></i>ĐÃ GÁN Ô: @data.ActiveAllocation!.UnitCode</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary"><i class="bi bi-hourglass me-1"></i>CHƯA GÁN Ô</span>
+                        }
+                    </div>
+                    <div class="card-body">
+                        @if (hasActiveAllocation)
+                        {
+                            var alloc = data.ActiveAllocation!;
+                            <div class="p-3 bg-light rounded border mb-3">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <div class="text-muted small">Ô kho đang gán:</div>
+                                        <div class="h4 text-primary fw-bold mb-1 font-monospace">@alloc.UnitCode</div>
+                                        <div class="small text-muted">ID phân bổ: @alloc.AllocationId &bull; Thời gian: @alloc.CreatedAt.ToString("HH:mm dd/MM/yyyy")</div>
+                                    </div>
+                                    <span class="badge bg-success px-3 py-2">Hoạt động (Active)</span>
+                                </div>
+                            </div>
+
+                            @if (!isHandoverCompleted)
+                            {
+                                <!-- Form Giải phóng ô kho đã gán -->
+                                <form method="post" asp-page-handler="ReleaseUnit" onsubmit="return confirm('Bạn có chắc chắn muốn giải phóng ô kho này để gán ô khác không?');">
+                                    <input type="hidden" name="ReservationId" value="@data.ReservationId" />
+                                    <input type="hidden" name="Code" value="@data.ReservationCode" />
+                                    <input type="hidden" name="CurrentAllocationId" value="@alloc.AllocationId" />
+
+                                    <div class="mb-3">
+                                        <label for="releaseReason" class="form-label small fw-semibold text-muted">Lý do giải phóng ô kho:</label>
+                                        <input type="text" id="releaseReason" name="Reason" class="form-control form-control-sm" placeholder="VD: Khách hàng đổi ý, ô kho có vấn đề kỹ thuật..." required />
+                                    </div>
+
+                                    <button type="submit" class="btn btn-outline-danger btn-sm w-100">
+                                        <i class="bi bi-box-arrow-right me-1"></i>Giải Phóng Ô Kho Này (Đổi ô khác)
+                                    </button>
+                                </form>
+                            }
+                        }
+                        else if (!isVerified)
+                        {
+                            <div class="alert alert-secondary mb-0">
+                                <i class="bi bi-info-circle me-1"></i>Vui lòng hoàn tất <strong>Bước 2: Xác minh giấy tờ</strong> trước khi gán ô kho vật lý.
+                            </div>
+                        }
+                        else
+                        {
+                            <!-- Danh sách các ô kho khả dụng hợp lệ (Eligible Units) -->
+                            <h6 class="fw-bold small text-muted text-uppercase mb-3">Danh Sách Ô Kho Khả Dụng Để Gán (@Model.EligibleUnits.Count ô):</h6>
+
+                            @if (Model.EligibleUnits.Count == 0)
+                            {
+                                <div class="alert alert-warning mb-0">
+                                    <i class="bi bi-exclamation-triangle me-1"></i>Không tìm thấy ô kho khả dụng nào phù hợp với loại kho này tại cơ sở. Vui lòng kiểm tra lại sơ đồ kho hoặc liên hệ quản lý.
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="list-group">
+                                    @foreach (var unit in Model.EligibleUnits)
+                                    {
+                                        <div class="list-group-item list-group-item-action d-flex align-items-center justify-content-between p-3">
+                                            <div>
+                                                <div class="fw-bold fs-5 font-monospace text-primary">@unit.UnitCode</div>
+                                                <div class="small text-muted">
+                                                    @(unit.AreaName ?? "Khu vực chung") &bull; @(unit.FloorLabel ?? "Tầng 1")
+                                                    @if (!string.IsNullOrEmpty(unit.ZoneLabel)) { <span>&bull; Dãy @unit.ZoneLabel</span> }
+                                                </div>
+                                            </div>
+                                            <form method="post" asp-page-handler="AssignUnit">
+                                                <input type="hidden" name="ReservationId" value="@data.ReservationId" />
+                                                <input type="hidden" name="Code" value="@data.ReservationCode" />
+                                                <input type="hidden" name="StorageUnitId" value="@unit.UnitId" />
+                                                <button type="submit" class="btn btn-primary btn-sm fw-bold">
+                                                    <i class="bi bi-plus-circle me-1"></i>Gán Ô Này
+                                                </button>
+                                            </form>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- CỘT PHẢI: BƯỚC 4 & BƯỚC 5 -->
+            <div class="col-lg-6">
+                <!-- BƯỚC 4: KIỂM TRA TÌNH TRẠNG Ô KHO (INSPECTION CHECKLIST) -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white py-3 d-flex align-items-center justify-content-between">
+                        <h6 class="card-title mb-0 fw-bold">
+                            <span class="badge bg-primary me-2">Bước 4</span>Kiểm Tra An Toàn Ô Kho (Checklist)
+                        </h6>
+                        @if (isInspectionPassed)
+                        {
+                            <span class="badge bg-success"><i class="bi bi-clipboard-check me-1"></i>ĐẠT YÊU CẦU</span>
+                        }
+                        else if (data.LatestInspection != null && !data.LatestInspection.HasPassed)
+                        {
+                            <span class="badge bg-danger"><i class="bi bi-x-octagon me-1"></i>KHÔNG ĐẠT</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary"><i class="bi bi-clipboard me-1"></i>CHƯA KIỂM TRA</span>
+                        }
+                    </div>
+                    <div class="card-body">
+                        @if (!hasActiveAllocation)
+                        {
+                            <div class="alert alert-secondary mb-0">
+                                <i class="bi bi-info-circle me-1"></i>Vui lòng gán ô kho vật lý trước khi thực hiện kiểm tra an toàn.
+                            </div>
+                        }
+                        else if (isInspectionPassed && !Model.IsStaleConflict)
+                        {
+                            var insp = data.LatestInspection!;
+                            <div class="alert alert-success mb-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-check-circle-fill text-success fs-3 me-3"></i>
+                                    <div>
+                                        <h6 class="fw-bold mb-1">Biên bản kiểm tra: ĐẠT YÊU CẦU</h6>
+                                        <div class="small text-muted">
+                                            Tình trạng chung: <strong>@(insp.OverallCondition == "good" ? "Tốt (Good)" : "Chấp nhận được (Acceptable)")</strong>
+                                            &bull; Thời gian: @insp.InspectedAt?.ToString("HH:mm dd/MM/yyyy")
+                                        </div>
+                                        @if (!string.IsNullOrEmpty(insp.Summary))
+                                        {
+                                            <div class="small mt-1 fst-italic">Ghi chú: "@insp.Summary"</div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <form id="inspectionForm" method="post" asp-page-handler="PerformInspection">
+                                <input type="hidden" name="ReservationId" value="@data.ReservationId" />
+                                <input type="hidden" name="Code" value="@data.ReservationCode" />
+                                <input type="hidden" name="CurrentAllocationId" value="@data.ActiveAllocation!.AllocationId" />
+
+                                <div class="alert alert-info py-2 small mb-3">
+                                    <i class="bi bi-info-circle me-1"></i>Bắt buộc kiểm tra đầy đủ 4 hạng mục theo tiêu chuẩn vận hành cơ sở.
+                                </div>
+
+                                <!-- Cờ Nguy Hiểm IsUnsafe -->
+                                <div class="form-check form-switch p-3 bg-danger-subtle rounded border border-danger-subtle mb-3">
+                                    <input class="form-check-input ms-0 me-3" type="checkbox" role="switch" id="chkIsUnsafe" name="IsUnsafe" value="true">
+                                    <label class="form-check-label fw-bold text-danger" for="chkIsUnsafe">
+                                        <i class="bi bi-exclamation-triangle-fill me-1"></i>Ô kho có dấu hiệu mất an toàn nghiêm trọng (IsUnsafe)
+                                    </label>
+                                    <div class="small text-muted mt-1 ps-4">
+                                        Nếu bật cờ này, ô kho lập tức không đạt kiểm tra, tự động bị giải phóng khỏi hợp đồng và đưa vào trạng thái bảo trì.
+                                    </div>
+                                </div>
+
+                                <!-- Bảng 4 Hạng Mục Kiểm Tra Bắt Buộc -->
+                                <div class="table-responsive mb-3">
+                                    <table class="table table-bordered table-sm align-middle checkin-checklist-table mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 35%;">Hạng mục</th>
+                                                <th style="width: 35%;">Tình trạng</th>
+                                                <th style="width: 30%;">Ghi chú</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @for (int i = 0; i < Model.InspectionForm.Items.Count; i++)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <input type="hidden" name="Items[@i].ItemName" value="@Model.InspectionForm.Items[i].ItemName" />
+                                                        <strong>@Model.InspectionForm.Items[i].ItemName</strong>
+                                                    </td>
+                                                    <td>
+                                                        <select name="Items[@i].Condition" class="form-select form-select-sm" required>
+                                                            <option value="good" selected="@(Model.InspectionForm.Items[i].Condition == "good")">Tốt (Good)</option>
+                                                            <option value="acceptable" selected="@(Model.InspectionForm.Items[i].Condition == "acceptable")">Chấp nhận được (Acceptable)</option>
+                                                            <option value="damaged" selected="@(Model.InspectionForm.Items[i].Condition == "damaged")">Hư hỏng (Damaged)</option>
+                                                            <option value="missing" selected="@(Model.InspectionForm.Items[i].Condition == "missing")">Mất / Thiếu (Missing)</option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" name="Items[@i].Notes" value="@Model.InspectionForm.Items[i].Notes" class="form-control form-control-sm" placeholder="Ghi chú..." />
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="inspSummary" class="form-label small fw-semibold">Đánh giá chung tình trạng kho:</label>
+                                    <textarea id="inspSummary" name="OverallSummary" rows="2" class="form-control form-control-sm" placeholder="Tóm tắt tình trạng ô kho trước khi giao..."></textarea>
+                                </div>
+
+                                <button type="submit" class="btn btn-warning w-100 fw-bold">
+                                    <i class="bi bi-clipboard-check me-1"></i>Lập Biên Bản & Xác Nhận Kiểm Tra
+                                </button>
+                            </form>
+                        }
+                    </div>
+                </div>
+
+                <!-- BƯỚC 5: HOÀN TẤT BÀN GIAO & CẤP MÃ PIN (HOẶC CẤP LẠI PIN) -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white py-3 d-flex align-items-center justify-content-between">
+                        <h6 class="card-title mb-0 fw-bold">
+                            <span class="badge bg-primary me-2">Bước 5</span>Bàn Giao & Cấp Mã PIN Số Hóa
+                        </h6>
+                        @if (isHandoverCompleted)
+                        {
+                            <span class="badge bg-success"><i class="bi bi-key-fill me-1"></i>ĐÃ BÀN GIAO</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary"><i class="bi bi-lock me-1"></i>CHƯA BÀN GIAO</span>
+                        }
+                    </div>
+                    <div class="card-body">
+                        @if (isHandoverCompleted)
+                        {
+                            <!-- Đã bàn giao thành công -->
+                            <div class="alert alert-success mb-3">
+                                <h6 class="fw-bold mb-1"><i class="bi bi-check-circle-fill me-2"></i>Hợp đồng đã bàn giao và đang hoạt động!</h6>
+                                <p class="mb-1 small">
+                                    Mã hợp đồng: <strong>@data.AgreementNo</strong> &bull; Ngày bàn giao: @(data.HandoverRecord?.HandedAt.ToString("HH:mm dd/MM/yyyy") ?? "Đã kích hoạt")
+                                </p>
+                                @if (data.ActiveCredential != null)
+                                {
+                                    <div class="small text-muted mt-2">
+                                        Mã truy cập: ID <strong>@data.ActiveCredential.CredentialId</strong> &bull;
+                                        Mã PIN hiện tại: <span class="checkin-masked-credential">******</span> (Bảo mật) &bull;
+                                        Hết hạn: @(data.ActiveCredential.ExpiresAt?.ToString("dd/MM/yyyy") ?? "Theo hợp đồng")
+                                    </div>
+                                }
+                            </div>
+
+                            <!-- Nghiệp vụ Cấp lại mã PIN tại quầy (Reissue PIN) -->
+                            <div class="border rounded p-3 bg-light">
+                                <h6 class="fw-bold mb-2 text-dark">
+                                    <i class="bi bi-arrow-repeat text-primary me-1"></i>Cấp Lại Mã PIN Tại Quầy (Reissue PIN)
+                                </h6>
+                                <p class="small text-muted mb-3">
+                                    Dành cho trường hợp khách hàng quên mã PIN hoặc yêu cầu cấp lại mã mới tại quầy tiếp nhận.
+                                </p>
+
+                                @if (data.ActiveCredential != null)
+                                {
+                                    <form method="post" asp-page-handler="ReissuePin" onsubmit="return confirm('Cấp lại mã PIN mới sẽ lập tức vô hiệu hóa mã PIN cũ. Bạn có chắc chắn muốn thực hiện?');">
+                                        <input type="hidden" name="ReservationId" value="@data.ReservationId" />
+                                        <input type="hidden" name="Code" value="@data.ReservationCode" />
+                                        <input type="hidden" name="CurrentCredentialId" value="@data.ActiveCredential.CredentialId" />
+
+                                        <div class="mb-2">
+                                            <label for="reissueDoc" class="form-label small fw-semibold">Số giấy tờ đối chiếu lại:</label>
+                                            <input type="text" id="reissueDoc" name="DocumentNumber" class="form-control form-control-sm font-monospace" placeholder="Nhập số CCCD/Hộ chiếu khách xuất trình" required />
+                                        </div>
+
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="checkbox" name="IsConfirmedMatch" value="true" id="chkReissueMatch" required />
+                                            <label class="form-check-label small fw-semibold" for="chkReissueMatch">
+                                                Xác nhận đúng khách hàng sở hữu hợp đồng xuất trình giấy tờ.
+                                            </label>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="reissueReason" class="form-label small fw-semibold">Lý do cấp lại PIN:</label>
+                                            <input type="text" id="reissueReason" name="Reason" class="form-control form-control-sm" placeholder="VD: Khách quên mã PIN, đổi mã định kỳ..." required />
+                                        </div>
+
+                                        <button type="submit" class="btn btn-outline-primary btn-sm w-100 fw-bold">
+                                            <i class="bi bi-arrow-repeat me-1"></i>Cấp Lại Mã PIN Mới
+                                        </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <div class="text-muted small fst-italic">Hợp đồng hiện chưa có mã truy cập hoạt động để cấp lại.</div>
+                                }
+                            </div>
+                        }
+                        else if (!isInspectionPassed)
+                        {
+                            <div class="alert alert-secondary mb-0">
+                                <i class="bi bi-info-circle me-1"></i>Vui lòng hoàn tất <strong>Bước 4: Kiểm tra an toàn</strong> đạt yêu cầu trước khi tiến hành bàn giao kho.
+                            </div>
+                        }
+                        else
+                        {
+                            <!-- Form Hoàn tất bàn giao và Cấp mã PIN -->
+                            <form method="post" asp-page-handler="CompleteCheckIn">
+                                <input type="hidden" name="ReservationId" value="@data.ReservationId" />
+                                <input type="hidden" name="Code" value="@data.ReservationCode" />
+                                <input type="hidden" name="CurrentAllocationId" value="@data.ActiveAllocation!.AllocationId" />
+                                <input type="hidden" name="CurrentInspectionId" value="@data.LatestInspection!.InspectionId" />
+
+                                <div class="p-3 bg-light rounded border mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="CustomerAcknowledged" value="true" id="chkAcknowledge" required />
+                                        <label class="form-check-label fw-bold text-dark" for="chkAcknowledge">
+                                            Khách hàng đã trực tiếp có mặt tại quầy, đã nhận biên bản kiểm tra và đồng ý nhận bàn giao ô kho @data.ActiveAllocation.UnitCode.
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="completeNotes" class="form-label small fw-semibold">Ghi chú bàn giao (nếu có):</label>
+                                    <input type="text" id="completeNotes" name="Notes" class="form-control" placeholder="Ghi chú bàn giao..." />
+                                </div>
+
+                                <button type="submit" class="btn btn-success btn-lg w-100 fw-bold shadow-sm">
+                                    <i class="bi bi-key-fill me-2"></i>Hoàn Tất Bàn Giao & Cấp Mã PIN Số Hóa
+                                </button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="~/js/staff-checkin.js" asp-append-version="true"></script>
+}

@@ -57,6 +57,16 @@ public class RentalAgreementService : IRentalAgreementService
             }
         }
 
+        var activeAllocation = agreement.unit_allocations.FirstOrDefault(ua => ua.status == "active");
+        var isAllocated = activeAllocation != null;
+        var notice = agreement.status switch
+        {
+            "active" => "Hợp đồng đã kích hoạt thành công (đã hoàn tất check-in và bàn giao kho).",
+            "scheduled" when isAllocated => "Ô kho đã được gán, đang chờ kiểm tra và hoàn tất bàn giao tại quầy.",
+            "scheduled" => "Hợp đồng ở trạng thái scheduled (chờ bàn giao kho). Ô kho cụ thể và biên bản bàn giao sẽ được thực hiện khi làm thủ tục check-in tại quầy (Function 5).",
+            _ => $"Hợp đồng ở trạng thái {agreement.status}."
+        };
+
         return new RentalAgreementDetailResponse
         {
             AgreementId = agreement.id,
@@ -76,8 +86,12 @@ public class RentalAgreementService : IRentalAgreementService
             DepositBalance = agreement.deposit_balance,
             Status = agreement.status,
             SignedAt = agreement.signed_at,
-            IsStorageUnitAllocated = false,
-            CreatedAt = agreement.created_at
+            CheckedInAt = agreement.checked_in_at,
+            IsStorageUnitAllocated = isAllocated,
+            StorageUnitId = activeAllocation?.storage_unit_id,
+            StorageUnitCode = activeAllocation?.storage_unit?.unit_code,
+            CreatedAt = agreement.created_at,
+            Notice = notice
         };
     }
 }

@@ -982,3 +982,49 @@ Before finishing:
 Never generate business code first and force the database to match the code.
 
 When uncertain, inspect the real database and existing code before making assumptions.
+
+---
+
+## 38. Web Migration Engineering Rules (MVC, Razor Pages, Cookie, SignalR)
+
+For the Web application migration in `Final_Project_Web`:
+
+### 38.1. Web Solution & Layering Rules
+1. **Solution**: `SelfStorageManagementSystem.Web.sln` contains `SelfStorageManagementSystem.Web`, `SelfStorageManagementSystem.BusinessLogic`, `SelfStorageManagementSystem.DataAccess`, and `SelfStorageManagementSystem.WebTests`.
+2. **Strict Project Reference**: `SelfStorageManagementSystem.Web` references ONLY `SelfStorageManagementSystem.BusinessLogic`. Direct references to `DataAccess`, `Presentation` (API), or `WpfClient` are strictly forbidden.
+3. **No Direct DataAccess from Web**: MVC Controllers, Razor PageModels, and SignalR Hubs must NEVER inject `DbContext` or repositories. All data operations go through BLL services.
+4. **BLL Composition Entrypoint**: Use `AddSelfStorageWebComposition(IConfiguration)` to wire DAL and BLL Core.
+
+### 38.2. Authentication & Identity Rules
+1. **Cookie-Based Authentication**: Use ASP.NET Core Cookie Authentication (`AddCookie`).
+   - Lifespan: 5 minutes (`ExpireTimeSpan = TimeSpan.FromMinutes(5)`), sliding expiration enabled.
+   - Security: `HttpOnly = true`, `SecurePolicy = CookieSecurePolicy.Always`, `SameSite = SameSiteMode.Lax`.
+   - Paths: LoginPath `/Account/Login`, AccessDeniedPath `/Account/Forbidden`.
+2. **Zero JWT Secret on Web Host**: The Web host must NOT register `IJwtTokenGenerator` or require any JWT secret key (`Jwt:Key` / `JWT_SECRET_KEY`). Web host must boot cleanly without JWT configuration.
+3. **TeacherCode Compliance**: Align MVC Account controller and views with `TeacherCode/AccountController.cs` and `TeacherCode/1.txt`, while fixing teacher code bugs (e.g., await SignOutAsync, proper CSRF, no plain auxiliary role cookies).
+
+### 38.3. Razor Pages & SignalR Realtime Rules
+1. **Razor Pages CRUD**: Admin Storage Unit CRUD is implemented via Razor Pages (`Pages/StorageUnits/`), refactored to use DTOs and BLL services.
+2. **SignalR Hub**: Exposed at `/storageUnitHub` with methods `HubCreate_StorageUnit`, `HubUpdate_StorageUnit`, `HubDelete_StorageUnit` and client receivers `Receiver_CreateStorageUnit`, `Receiver_UpdateStorageUnit`, `Receiver_DeleteStorageUnit`.
+3. **Atomic Operations & Capacity Lock**: Storage unit CRUD and reservation operations must execute under proper capacity locks; never perform non-atomic delete/update operations.
+
+### 38.4. Local Static Assets & HTTPS Port
+1. **Local Serving Only**: Bootstrap 5.3.3, jQuery 3.7.1, jQuery Validation 1.20.0, and SignalR JS Client 8.0.7 must be served from `wwwroot/lib/`. External CDN links are strictly prohibited.
+2. **HTTPS Port**: Web host runs on HTTPS port 7041 (`https://localhost:7041`).
+
+### 38.5. Database Bootstrap Safety Rules
+1. **Strict Target Allowlist**: Only `SelfStoragePRN222_WebDemo`, `SelfStoragePRN222_WebTest`, and `SelfStoragePRN222_WebE2eTest` are allowed.
+2. **No DROP Statements**: The bootstrap scripts must NEVER contain any `DROP DATABASE` or DROP statement.
+3. **Stop If Exists**: The bootstrap script must check `DB_ID` and stop immediately if the target database already exists.
+4. **Source Database Protection**: Never reference, modify, or drop the source database `SelfStoragePRN222`.
+
+### 38.6. PIN & Sensitive Data Protection
+1. **One-Time Reveal**: PINs are generated and displayed exactly once in the response.
+2. **Zero Leakage**: PINs must NEVER be logged, sent via URL query string, stored in cookies/localStorage/sessionStorage, or broadcast over SignalR.
+
+### 38.7. Multi-Agent Ownership Matrix
+1. **Gemini A**: Owns foundation, Auth/Identity separation, shared files (solution, csproj, Program.cs, DI, layout after T04), integration, and TaskBoard.
+2. **Gemini B**: Owns Storage Unit Admin DAL, BLL, Razor CRUD, Hub realtime JS, and SQL integration tests.
+3. **Gemini C**: Owns initial Layout (T04), Catalog, Counter Check-in, Admin/Customer pages, and browser tests.
+4. **Codex**: Performs independent code review at T20 and T22.
+

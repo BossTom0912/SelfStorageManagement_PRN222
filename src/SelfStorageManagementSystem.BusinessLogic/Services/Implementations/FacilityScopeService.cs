@@ -207,4 +207,42 @@ public class FacilityScopeService : IFacilityScopeService
             })
             .ToListAsync(cancellationToken);
     }
+
+    public async Task<bool> HasCheckInCounterAccessAsync(
+        long userId,
+        long facilityId,
+        CancellationToken cancellationToken = default)
+    {
+        var user = await _userRepository.GetByIdWithRolesAndProfilesAsync(userId, cancellationToken);
+        if (user == null || user.status != UserStatusConstants.Active)
+        {
+            return false;
+        }
+
+        // Strictly check roles: MUST have facility_staff or facility_manager. NO bypass for admin/operations manager!
+        var roles = user.user_roleusers.Select(ur => ur.role.code).ToList();
+        var hasRequiredRole = roles.Contains(RoleConstants.FacilityStaff) ||
+                              roles.Contains(RoleConstants.FacilityManager);
+
+        if (!hasRequiredRole)
+        {
+            return false;
+        }
+
+        // Must have active employee profile
+        if (user.employee_profile == null || user.employee_profile.employment_status != EmploymentStatusConstants.Active)
+        {
+            return false;
+        }
+
+        var now = DateTimeOffset.UtcNow;
+        // Must have an active assignment to this exact facility
+        return await _context.staff_facility_assignments
+            .AnyAsync(a => a.employee_id == userId &&
+                           a.facility_id == facilityId &&
+                           (a.assignment_role == RoleConstants.FacilityStaff || a.assignment_role == RoleConstants.FacilityManager) &&
+                           a.starts_at <= now &&
+                           (a.ends_at == null || a.ends_at > now),
+                      cancellationToken);
+    }
 }

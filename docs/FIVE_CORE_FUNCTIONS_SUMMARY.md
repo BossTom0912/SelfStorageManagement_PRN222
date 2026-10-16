@@ -20,7 +20,7 @@ Tài liệu này tóm tắt hiện trạng theo [roadmap 5 chức năng](DEMO_RO
 | 1 | Xác thực, quản lý tài khoản và phân quyền (Authentication & RBAC) | Khách đăng ký/đăng nhập; admin quản lý tài khoản, role và phân công cơ sở; WPF điều hướng theo quyền | **Đã triển khai cốt lõi** |
 | 2 | Tra cứu cơ sở và ô kho khả dụng (Facility & Storage Unit Catalog) | Khách lọc cơ sở, loại kho, giá và ô kho còn trống; xem sơ đồ vị trí đơn giản trên WPF; nối trực tiếp sang luồng giữ chỗ | **Đã triển khai catalog & đã nối giữ chỗ** |
 | 3 | Đặt chỗ và giữ kho 15 phút (Reservation & Hold Unit) | Khách tạo/hủy đặt chỗ theo loại kho; giữ chỗ 15 phút; chống đặt vượt sức chứa; tự giải phóng hold quá hạn (worker & read-time); WPF đếm ngược và hủy đơn | **Đã triển khai cốt lõi; chờ kiểm chứng SQL Server/WPF thực tế** |
-| 4 | Thanh toán cọc, tiền thuê và tạo hợp đồng (Payment & Rental Agreement) | Tính cọc 1 tháng + thuê tháng đầu + booking fee - voucher, checkout idempotency có xác minh payload, Demo/VNPAY Gateway, hóa đơn paid, hợp đồng scheduled, xử lý trễ/khoản tiền thứ hai tạo refund, quản lý duyệt hoàn tiền, màn hình WPF minh bạch rủi ro | **Đã hoàn thiện & kiểm thử chuyên sâu; chờ kiểm chứng SQL Server/WPF thực tế** |
+| 4 | Thanh toán cọc, tiền thuê và tạo hợp đồng (Payment & Rental Agreement) | Tính cọc 1 tháng + thuê tháng đầu + booking fee - voucher, checkout idempotency có xác minh payload, Demo/VNPAY Gateway, hóa đơn paid, hợp đồng scheduled, xử lý trễ/khoản tiền thứ hai tạo refund, quản lý duyệt hoàn tiền, màn hình WPF minh bạch rủi ro | **Đã triển khai cốt lõi; còn lỗi review và chưa nghiệm thu** |
 | 5 | Check-in và bàn giao kho (Check-in & Digital Handover) | Staff xác minh khách, gán ô kho, hoàn tất bàn giao, cấp thông tin truy cập và kích hoạt hợp đồng | **Chưa triển khai** |
 
 ## Phạm vi từng chức năng
@@ -54,12 +54,12 @@ Tài liệu này tóm tắt hiện trạng theo [roadmap 5 chức năng](DEMO_RO
 
 **Tiến độ function 3:** Hoàn tất luồng API tạo/xem danh sách/xem chi tiết/hủy đơn, giữ sức chứa 15 phút, worker hết hạn và màn hình WPF xác nhận, xem đơn, đếm ngược, hủy đơn. Bộ test tự động hiện đạt 124/124 bài được chạy; bài SQL Server concurrency chưa chạy do chưa có database test riêng. Chưa kiểm chứng end-to-end với SQL Server thật và thao tác WPF trực tiếp. Phần thanh toán, hóa đơn, hợp đồng và chuyển `confirmed` thuộc function 4.
 
-### 4. Thanh toán cọc, tiền thuê và tạo hợp đồng — Đã hoàn thiện & kiểm thử chuyên sâu
+### 4. Thanh toán cọc, tiền thuê và tạo hợp đồng — Đã triển khai cốt lõi, chưa nghiệm thu
 
 **Đã có:**
 - **API & Nghiệp vụ:**
   - `GET /api/reservations/{id}/checkout-quote`: Báo giá chính xác kỳ đầu: Cọc bằng 1 tháng thuê (**BR-FIN-01**) + Tiền thuê tháng đầu + Phí đặt chỗ - Giảm giá voucher. Kiểm tra hold còn hạn, snapshot cọc khớp giá tháng, voucher (`fixed`, `percentage`, `free_days` tính chuẩn theo số ngày thực tế của tháng 28/29/30/31 ngày, không giảm tiền cọc; chặn ngày lẻ). Thuế demo `tax_amount = 0`.
-  - `POST /api/payments/checkout`: Tạo payment attempt và invoice trong database transaction với thứ tự khóa chuẩn (`SS_Reservation` trước `SS_Promotion`); kiểm tra idempotency key bắt buộc kèm đối chiếu payload (`customer_id`, `reservation_id`, `provider`, `amount`) chống xung đột payload (409 Conflict); đối chiếu tổng tiền trigger SQL Server tính toán; hỗ trợ retry làm mới invoice lines khi quote thay đổi.
+  - `POST /api/payments/checkout`: Tạo payment attempt và invoice trong database transaction với thứ tự khóa (`SS_Reservation` trước `SS_Promotion`); kiểm tra idempotency key và so sánh customer, reservation, provider, method, amount, policy version, voucher trong nhánh repository sau khóa; đối chiếu tổng tiền do trigger SQL Server tính toán. Khi retry cần báo giá khác, code void hóa đơn cũ đã có payment attempt và tạo hóa đơn mới.
   - Cổng thanh toán: `DemoGateway` (chỉ cho phép trong Development/Test khi cấu hình `Payment:AllowDemoSimulator=true`, từ chối payment khác provider demo) và `VnpayGateway` (fail-fast khi thiếu secret, kiểm tra số nguyên VND, HMAC-SHA512, GMT+7, VND x 100).
   - Webhook IPN & Callback: `GET /api/payments/vnpay/ipn` kiểm tra toàn diện chữ ký (97), TmnCode (97), currency VND (04), amount khớp payment (04), txnRef tồn tại (01), và xử lý idempotent (02).
   - Xử lý khoản tiền thứ hai & hold hết hạn: Phân xử hold theo thời gian server UTC; worker quét quá hạn dùng chung khóa applock; nếu tiền về sau hạn hoặc đơn đã được thanh toán bởi attempt khác, ghi nhận payment `succeeded`, đánh dấu `reconciliation_required = true`, tạo đúng 1 yêu cầu hoàn tiền `refunds`, không tạo trùng hợp đồng.
@@ -75,7 +75,17 @@ Tài liệu này tóm tắt hiện trạng theo [roadmap 5 chức năng](DEMO_RO
   - 10 integration tests cho API endpoints (quyền truy cập, checkout, demo completion, invoice/agreement retrieval, IPN responses 00/01/04/97, refund endpoints RBAC).
   - 4 SQL Server concurrency tests (`PaymentSqlServerConcurrencyTests` và `ReservationSqlServerConcurrencyTests`) với `[SqlIntegrationFact]`; cả 4 chưa chạy vì chưa có database test riêng.
 
-**Tiến độ function 4:** Đã có backend, WPF và bộ kiểm thử tự động (179 passed / 4 skipped). Các lỗi review về replay thanh toán, xử lý lỗi và kiểm chứng race trên SQL Server vẫn cần xử lý trước khi nghiệm thu và bàn giao cho Chức năng 5.
+**Tiến độ Function 4 (08/10/2026):** Backend, WPF, luồng đối soát và duyệt hoàn tiền đã có trong code trên nhánh `Payment&RentalAgreement` (commit `2d20ded`). Test toàn solution: **179 passed, 4 skipped, 0 failed**. Đây là trạng thái **đã triển khai cốt lõi, chưa nghiệm thu**.
+
+**Database:** Đã đổi FK `core.refund_approvals.decided_by` sang `core.users(id)` và đồng bộ EF mapping. Script [nâng cấp một lần cho DB hiện hữu](../DB/SelfStoragePRN222_SQLServer_Function4_Upgrade_OneRun.sql) giữ dữ liệu; [script cài mới đầy đủ](../DB/SelfStoragePRN222_SQLServer_CleanInstall.sql) xóa và tạo lại đúng DB `SelfStoragePRN222`. DB cục bộ đã xác nhận FK được bật và trusted. Script cài mới không dùng để chuẩn bị database test có tên khác.
+
+**Còn mở trước nghiệm thu:**
+
+1. Nhánh replay checkout kiểm tra payment/invoice trước khóa; callback và retry có thể đổi trạng thái sau kiểm tra nhưng trước lúc tạo checkout URL. Cần đồng bộ kiểm tra trạng thái với thao tác phát hành URL và chặn reservation không còn thanh toán được.
+2. WPF hiện cấp `Idempotency-Key` mới cho mọi lỗi checkout, kể cả lỗi mạng khi server có thể đã tạo payment. Cần giữ khả năng truy vấn hoặc tiếp tục attempt cũ khi kết quả chưa xác định.
+3. Duyệt refund đang chuyển mọi `DbUpdateException` thành HTTP 409. Cần chỉ map lỗi tranh chấp đã nhận diện; lỗi FK/trigger khác phải được ghi nhận và xử lý đúng nguyên nhân.
+4. Bốn SQL Server concurrency tests đang `SKIP` vì chưa có DB test riêng. Test race checkout retry/IPN hiện void invoice trực tiếp, chưa chạy đúng luồng retry với thứ tự race có kiểm soát. Cần sửa test và chạy trên SQL Server test trước khi xác nhận transaction, applock, trigger.
+5. Chưa kiểm chứng thủ công WPF end-to-end và IPN thật từ VNPAY Sandbox tới endpoint có thể truy cập công khai.
 
 ### 5. Check-in và bàn giao kho — Chưa triển khai
 
@@ -92,5 +102,6 @@ Tài liệu này tóm tắt hiện trạng theo [roadmap 5 chức năng](DEMO_RO
 
 ## Thứ tự thực hiện tiếp
 
-1. Triển khai Chức năng 5: Check-in, gán ô kho cụ thể theo **BR-RSV-03**, lập biên bản bàn giao và kích hoạt hợp đồng (`scheduled → active`).
-2. Kiểm chứng liên hoàn luồng nghiệp vụ từ Chức năng 1 đến Chức năng 5 trên môi trường demo thực tế.
+1. Xử lý các lỗi review của Function 4, chuẩn bị DB test an toàn và chạy 4 SQL Server concurrency tests; kiểm chứng thủ công WPF/VNPAY.
+2. Sau khi nghiệm thu Function 4, triển khai Chức năng 5: Check-in, gán ô kho cụ thể theo **BR-RSV-03**, lập biên bản bàn giao và kích hoạt hợp đồng (`scheduled → active`).
+3. Kiểm chứng liên hoàn luồng nghiệp vụ từ Chức năng 1 đến Chức năng 5 trên môi trường demo thực tế.

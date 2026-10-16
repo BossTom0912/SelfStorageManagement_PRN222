@@ -29,17 +29,20 @@ public class AuthServiceTests
 
     public AuthServiceTests()
     {
-        _authService = new AuthService(
+        var accountIdentityService = new AccountIdentityService(
             _userRepoMock.Object,
             _roleRepoMock.Object,
             _userRoleRepoMock.Object,
             _customerProfileRepoMock.Object,
             _loginHistoryRepoMock.Object,
             _passwordHasherMock.Object,
-            _jwtGeneratorMock.Object,
             _facilityScopeMock.Object,
             _auditMock.Object,
-            _loggerMock.Object);
+            new Microsoft.Extensions.Logging.Abstractions.NullLogger<AccountIdentityService>());
+
+        _authService = new AuthService(
+            accountIdentityService,
+            _jwtGeneratorMock.Object);
     }
 
     [Fact]
@@ -64,6 +67,8 @@ public class AuthServiceTests
         _passwordHasherMock.Setup(h => h.VerifyPassword("hashed_pw", password))
             .Returns(true);
 
+        _jwtGeneratorMock.Setup(g => g.GenerateToken(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<IEnumerable<string>>()))
+            .Returns(("dummy_token", DateTimeOffset.UtcNow.AddHours(1)));
         _jwtGeneratorMock.Setup(g => g.GenerateToken(user, It.IsAny<IEnumerable<string>>()))
             .Returns(("dummy_token", DateTimeOffset.UtcNow.AddHours(1)));
 

@@ -12,5 +12,6 @@ public class CurrentUserResponse
     public List<string> Roles { get; set; } = new();
     public string? UserType { get; set; } // "customer", "employee", "admin"
     public string? EmployeeCode { get; set; }
+    public string? EmploymentStatus { get; set; }
     public List<FacilityAssignmentDto> ActiveAssignments { get; set; } = new();
 }

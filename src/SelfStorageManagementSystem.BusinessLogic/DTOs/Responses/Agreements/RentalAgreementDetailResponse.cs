@@ -19,7 +19,10 @@ public class RentalAgreementDetailResponse
     public decimal DepositBalance { get; set; }
     public string Status { get; set; } = "scheduled";
     public DateTimeOffset? SignedAt { get; set; }
+    public DateTimeOffset? CheckedInAt { get; set; }
     public bool IsStorageUnitAllocated { get; set; } = false;
+    public long? StorageUnitId { get; set; }
+    public string? StorageUnitCode { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
     public string Notice { get; set; } =
         "Hợp đồng ở trạng thái scheduled (chờ bàn giao kho). Ô kho cụ thể và biên bản bàn giao sẽ được thực hiện khi làm thủ tục check-in tại quầy (Function 5).";

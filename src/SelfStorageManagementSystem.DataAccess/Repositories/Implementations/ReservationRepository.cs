@@ -222,7 +222,8 @@ public class ReservationRepository : GenericRepository<reservation>, IReservatio
                     r.end_date > newReservation.start_date &&
                     (r.status == "confirmed" ||
                      ((r.status == "pending" || r.status == "awaiting_deposit") && r.hold_until > nowUtc)) &&
-                    !_context.unit_allocations.Any(ua => ua.reservation_id == r.id && ua.status == "active"))
+                    !_context.unit_allocations.Any(ua => ua.status == "active" &&
+                        (ua.reservation_id == r.id || (ua.agreement != null && ua.agreement.reservation_id == r.id))))
                 .CountAsync(cancellationToken);
 
             var availableCapacity = candidateUnits - activeReservations;
@@ -680,10 +681,7 @@ public class ReservationRepository : GenericRepository<reservation>, IReservatio
                     pr.status = "released";
                 }
 
-                if (invs.Count > 0 || redemptions.Count > 0)
-                {
-                    await _context.SaveChangesAsync(cancellationToken);
-                }
+                await _context.SaveChangesAsync(cancellationToken);
                 affected = 1;
             }
 
@@ -744,7 +742,8 @@ public class ReservationRepository : GenericRepository<reservation>, IReservatio
                 r.end_date > startDate &&
                 (r.status == "confirmed" ||
                  ((r.status == "pending" || r.status == "awaiting_deposit") && r.hold_until > nowUtc)) &&
-                !_context.unit_allocations.Any(ua => ua.reservation_id == r.id && ua.status == "active"))
+                !_context.unit_allocations.Any(ua => ua.status == "active" &&
+                    (ua.reservation_id == r.id || (ua.agreement != null && ua.agreement.reservation_id == r.id))))
             .CountAsync(cancellationToken);
     }
 }

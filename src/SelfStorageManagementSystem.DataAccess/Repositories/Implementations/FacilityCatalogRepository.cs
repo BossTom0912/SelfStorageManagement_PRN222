@@ -168,7 +168,8 @@ public class FacilityCatalogRepository : GenericRepository<facility>, IFacilityC
                 r.end_date > startDate &&
                 (r.status == "confirmed" ||
                  ((r.status == "pending" || r.status == "awaiting_deposit") && r.hold_until > nowUtc)) &&
-                !_context.unit_allocations.Any(ua => ua.reservation_id == r.id && ua.status == "active"))
+                !_context.unit_allocations.Any(ua => ua.status == "active" &&
+                    (ua.reservation_id == r.id || (ua.agreement != null && ua.agreement.reservation_id == r.id))))
             .CountAsync(cancellationToken);
     }
 

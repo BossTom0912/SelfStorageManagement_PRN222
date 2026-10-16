@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using SelfStorageManagementSystem.DataAccess.Context;
 using SelfStorageManagementSystem.DataAccess.Entities;
+using SelfStorageManagementSystem.DataAccess.Models;
 using SelfStorageManagementSystem.DataAccess.Repositories.Interfaces;
 
 namespace SelfStorageManagementSystem.DataAccess.Repositories.Implementations;
@@ -38,6 +39,159 @@ public class UserRepository : GenericRepository<user>, IUserRepository
                 .ThenInclude(ep => ep!.staff_facility_assignments)
                     .ThenInclude(sfa => sfa.facility)
             .FirstOrDefaultAsync(u => u.id == id, cancellationToken);
+    }
+
+    public async Task<user?> GetByEmailWithRolesAndProfilesAsNoTrackingAsync(
+        string normalizedEmail,
+        CancellationToken cancellationToken = default)
+    {
+        return await _dbSet
+            .AsNoTracking()
+            .Include(u => u.user_roleusers)
+                .ThenInclude(ur => ur.role)
+            .Include(u => u.customer_profile)
+            .Include(u => u.employee_profile)
+                .ThenInclude(ep => ep!.staff_facility_assignments)
+                    .ThenInclude(sfa => sfa.facility)
+            .FirstOrDefaultAsync(u => u.email == normalizedEmail, cancellationToken);
+    }
+
+    public async Task<user?> GetByIdWithRolesAndProfilesAsNoTrackingAsync(
+        long id,
+        CancellationToken cancellationToken = default)
+    {
+        return await _dbSet
+            .AsNoTracking()
+            .Include(u => u.user_roleusers)
+                .ThenInclude(ur => ur.role)
+            .Include(u => u.customer_profile)
+            .Include(u => u.employee_profile)
+                .ThenInclude(ep => ep!.staff_facility_assignments)
+                    .ThenInclude(sfa => sfa.facility)
+            .FirstOrDefaultAsync(u => u.id == id, cancellationToken);
+    }
+
+    public async Task<UserIdentitySnapshot?> GetIdentitySnapshotByIdAsync(
+        long id,
+        DateTimeOffset? asOfUtc = null,
+        CancellationToken cancellationToken = default)
+    {
+        var now = asOfUtc ?? DateTimeOffset.UtcNow;
+
+        return await _dbSet
+            .AsNoTracking()
+            .Where(u => u.id == id)
+            .Select(u => new UserIdentitySnapshot
+            {
+                UserId = u.id,
+                Email = u.email,
+                PhoneNumber = u.phone_number,
+                PasswordHash = u.password_hash,
+                Status = u.status,
+                LastLoginAt = u.last_login_at,
+                CreatedAt = u.created_at,
+                UpdatedAt = u.updated_at,
+                CustomerFullName = u.customer_profile != null ? u.customer_profile.full_name : null,
+                IdentityNumber = u.customer_profile != null ? u.customer_profile.identity_number : null,
+                EmployeeFullName = u.employee_profile != null ? u.employee_profile.full_name : null,
+                EmployeeCode = u.employee_profile != null ? u.employee_profile.employee_code : null,
+                EmploymentStatus = u.employee_profile != null ? u.employee_profile.employment_status : null,
+                Roles = u.user_roleusers.Select(ur => ur.role.code).ToList(),
+                ActiveAssignments = (u.employee_profile != null &&
+                                     u.employee_profile.employment_status == "active" &&
+                                     u.user_roleusers.Any(ur => ur.role.code == "facility_manager" || ur.role.code == "facility_staff"))
+                    ? u.employee_profile.staff_facility_assignments
+                        .Where(a => a.starts_at <= now &&
+                                    (a.ends_at == null || a.ends_at > now) &&
+                                    ((a.assignment_role == "facility_manager" && u.user_roleusers.Any(ur => ur.role.code == "facility_manager")) ||
+                                     (a.assignment_role == "facility_staff")))
+                        .Select(a => new StaffAssignmentSnapshot
+                        {
+                            Id = a.id,
+                            EmployeeId = a.employee_id,
+                            FacilityId = a.facility_id,
+                            FacilityCode = a.facility.code,
+                            FacilityName = a.facility.name,
+                            AssignmentRole = a.assignment_role,
+                            StartsAt = a.starts_at,
+                            EndsAt = a.ends_at,
+                            CreatedAt = a.created_at
+                        }).ToList()
+                    : new List<StaffAssignmentSnapshot>()
+            })
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<UserIdentitySnapshot?> GetIdentitySnapshotByEmailAsync(
+        string normalizedEmail,
+        DateTimeOffset? asOfUtc = null,
+        CancellationToken cancellationToken = default)
+    {
+        var now = asOfUtc ?? DateTimeOffset.UtcNow;
+
+        return await _dbSet
+            .AsNoTracking()
+            .Where(u => u.email == normalizedEmail)
+            .Select(u => new UserIdentitySnapshot
+            {
+                UserId = u.id,
+                Email = u.email,
+                PhoneNumber = u.phone_number,
+                PasswordHash = u.password_hash,
+                Status = u.status,
+                LastLoginAt = u.last_login_at,
+                CreatedAt = u.created_at,
+                UpdatedAt = u.updated_at,
+                CustomerFullName = u.customer_profile != null ? u.customer_profile.full_name : null,
+                IdentityNumber = u.customer_profile != null ? u.customer_profile.identity_number : null,
+                EmployeeFullName = u.employee_profile != null ? u.employee_profile.full_name : null,
+                EmployeeCode = u.employee_profile != null ? u.employee_profile.employee_code : null,
+                EmploymentStatus = u.employee_profile != null ? u.employee_profile.employment_status : null,
+                Roles = u.user_roleusers.Select(ur => ur.role.code).ToList(),
+                ActiveAssignments = (u.employee_profile != null &&
+                                     u.employee_profile.employment_status == "active" &&
+                                     u.user_roleusers.Any(ur => ur.role.code == "facility_manager" || ur.role.code == "facility_staff"))
+                    ? u.employee_profile.staff_facility_assignments
+                        .Where(a => a.starts_at <= now &&
+                                    (a.ends_at == null || a.ends_at > now) &&
+                                    ((a.assignment_role == "facility_manager" && u.user_roleusers.Any(ur => ur.role.code == "facility_manager")) ||
+                                     (a.assignment_role == "facility_staff")))
+                        .Select(a => new StaffAssignmentSnapshot
+                        {
+                            Id = a.id,
+                            EmployeeId = a.employee_id,
+                            FacilityId = a.facility_id,
+                            FacilityCode = a.facility.code,
+                            FacilityName = a.facility.name,
+                            AssignmentRole = a.assignment_role,
+                            StartsAt = a.starts_at,
+                            EndsAt = a.ends_at,
+                            CreatedAt = a.created_at
+                        }).ToList()
+                    : new List<StaffAssignmentSnapshot>()
+            })
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task UpdateLastLoginAtAsync(
+        long userId,
+        DateTimeOffset lastLoginAt,
+        CancellationToken cancellationToken = default)
+    {
+        var trackedUser = _context.ChangeTracker.Entries<user>().FirstOrDefault(e => e.Entity.id == userId)?.Entity;
+        if (trackedUser != null)
+        {
+            trackedUser.last_login_at = lastLoginAt;
+            await _context.SaveChangesAsync(cancellationToken);
+            return;
+        }
+
+        var user = await _dbSet.FirstOrDefaultAsync(u => u.id == userId, cancellationToken);
+        if (user != null)
+        {
+            user.last_login_at = lastLoginAt;
+            await _context.SaveChangesAsync(cancellationToken);
+        }
     }
 
     public async Task<(List<user> Users, int TotalCount)> GetPagedUsersAsync(
@@ -156,6 +310,28 @@ public class UserRepository : GenericRepository<user>, IUserRepository
     public async Task<IDbContextTransaction> BeginTransactionAsync(
         CancellationToken cancellationToken = default)
     {
-        return await _context.Database.BeginTransactionAsync(cancellationToken);
+        if (_context.Database.IsRelational())
+        {
+            return await _context.Database.BeginTransactionAsync(cancellationToken);
+        }
+
+        return new NoOpDbContextTransaction();
+    }
+
+    private sealed class NoOpDbContextTransaction : IDbContextTransaction
+    {
+        public Guid TransactionId { get; } = Guid.NewGuid();
+
+        public void Commit() { }
+
+        public Task CommitAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;
+
+        public void Rollback() { }
+
+        public Task RollbackAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;
+
+        public void Dispose() { }
+
+        public ValueTask DisposeAsync() => ValueTask.CompletedTask;
     }
 }

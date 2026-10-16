@@ -167,6 +167,8 @@ public class PaymentRepository : IPaymentRepository
             .Include(a => a.facility)
             .Include(a => a.policy_version)
             .Include(a => a.reservation)
+            .Include(a => a.unit_allocations)
+                .ThenInclude(ua => ua.storage_unit)
             .FirstOrDefaultAsync(a => a.id == agreementId, cancellationToken);
     }
 

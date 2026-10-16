@@ -1,5 +1,7 @@
 # Báo Cáo Sửa Chữa Chuyên Sâu Function 4: Concurrency, Idempotency & Reconciliation
 
+> **Ghi chú review 08/10/2026:** Báo cáo này ghi lại phần agent đã triển khai; trạng thái "hoàn tất" bên dưới chưa đồng nghĩa đã nghiệm thu. Bốn SQL Server concurrency tests vẫn bị skip; review còn phát hiện race ở replay checkout, WPF đổi idempotency key khi kết quả request chưa rõ, bắt `DbUpdateException` quá rộng và test retry/IPN chưa mô phỏng đúng luồng checkout. Xem [tiến độ Function 4 hiện tại](../docs/FIVE_CORE_FUNCTIONS_SUMMARY.md).
+
 - **Dự án**: Self-Storage Facility Rental and Management System (PRN222)
 - **Thời gian thực hiện**: 08/10/2026
 - **Branch**: `Payment&RentalAgreement`
