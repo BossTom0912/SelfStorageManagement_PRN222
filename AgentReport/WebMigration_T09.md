@@ -7,11 +7,22 @@
 - **Chờ (Dependencies)**: T08 (**VERIFIED** / **IMPLEMENTED**)
 - **Trạng thái**: **VERIFIED**
 - **Contract Version**: **v1 (Storage Unit Admin Form CRUD)**
-- **Thời điểm hoàn thành**: 2026-10-16 14:30:00 +07:00
+- **Nghiệm thu lại**: 2026-10-16; bằng chứng Web solution sau cùng: `tommy@TOM 2026-10-16 15:11:28`
 - **Môi trường**: Windows 11, .NET SDK 8.0.425 / 10.0.401, PowerShell 5.1
 - **Solution Web**: `SelfStorageManagementSystem.Web.sln`
 
 ---
+
+## 0. Sửa finding và nghiệm thu lại ngày 2026-10-16
+
+- `Create.cshtml`: tạo từng `option` bằng `document.createElement`, gán `value` và `textContent` cho cả loại kho và khu vực. Nhãn JSON không được phân tích như HTML.
+- Mỗi lần đổi cơ sở: abort request trước, xóa cả hai lookup và khóa submit. Kiểm tra cả controller hiện hành và facility đang chọn sau `fetch` và sau `json`; phản hồi/lỗi cũ không thể ghi đè hay điều hướng. Handler submit cũng từ chối trong lúc nạp hoặc khi chưa chọn cơ sở. Quyền ghi ban đầu của nút được giữ khi mở khóa.
+- Giữ nguyên kiểm tra scope ở BLL.
+- Browser smoke: **PASS**, Edge Chromium qua Playwright có sẵn; `Browser plugin not available`. URL `http://127.0.0.1:5189/StorageUnits/Create`; viewport 1440×1000 và 390×844. Kestrel proxy tạm gọi ứng dụng thật qua `WebApplicationFactory`, dữ liệu EF InMemory; fetch lookup được điều khiển để mô phỏng request cũ vẫn hoàn thành sau abort.
+- Payload `</option><option value="999">Injected` ở cả tên loại kho và khu vực hiển thị nguyên văn; không xuất hiện option `999`. A → B, B trả trước và A trả sau: chỉ còn dữ liệu B. Lỗi A sau thành công B không đổi URL. Cả hai dropdown xóa khi chọn cơ sở rỗng; submit bị khóa lúc nạp.
+- Page/title đúng, nội dung không rỗng, không có error overlay; không có console error/warning hoặc page error. Đã xem screenshot desktop/mobile.
+- Bằng chứng browser: `C:/Users/tommy/.codex/visualizations/2026/10/16/01a1438b-ef07-7d80-9aa2-36f69ca0c837/t09-t11/T09-browser-result.json` và hai ảnh `T09-safe-lookups-desktop.png`, `T09-safe-lookups-mobile.png` cùng thư mục.
+- Lần test sau sửa: T09 **18/18**, nhóm T09–T11 **55/55**, Web solution **244/244**, không failed/skipped. TRX tại `AgentReport/TestResults/T09-T11/`.
 
 ## 1. Tóm Tắt Kết Quả & Tiêu Chí Nghiệm Thu (Acceptance Criteria)
 
@@ -23,7 +34,7 @@
 | **Scope cơ sở & Thuộc tính bất biến** | Tải Lookups đúng scope của người dùng; giữ `facilityId` từ Index sang Create; nạp động `UnitTypes` và `Areas` theo cơ sở; BLL thẩm định scope không tin client; giữ `FacilityId` và `UnitTypeId` bất biến khi Edit; truyền `ExpectedUpdatedAt` dạng round-trip. | Link Index forward `facilityId` sang Create; Create tự động xác định `effectiveFacilityId` và hỗ trợ AJAX handler `OnGetFacilityLookupsAsync` nạp lại `UnitTypes`/`Areas` khi đổi cơ sở, không để dropdown rỗng; BLL kiểm tra phân công chặt chẽ; Edit khóa chặt `FacilityId` và `UnitTypeId` nhãn bất biến; `ExpectedUpdatedAt` round-trip UTC ISO-8601 `Z`. | **ĐẠT** |
 | **Xử lý lỗi & PRG** | Bắt và hiển thị rõ ràng Conflict (409), lỗi tham chiếu (occupied/allocations), lỗi quyền (403); POST Delete ngoài phạm vi trả về từ chối có kiểm soát không gây 500; tuân thủ Post-Redirect-Get không chứa secret. | Hiển thị thông báo thân thiện cho mọi ngoại lệ `ConflictException`, `ForbiddenException`, `BadRequestException`; POST Delete ngoài phạm vi trả lỗi kiểm soát an toàn (HTTP 200, CanDelete = false), loại bỏ hoàn toàn gọi lại `GetByIdAsync` gây 500; redirect kèm `TempData["SuccessMessage"]` sau khi submit thành công. | **ĐẠT** |
 | **Chuẩn bị cho T13** | Chuẩn bị ID dòng ổn định (`unit-row-@item.Id`), data attribute (`data-unit-id="@item.Id"`) và vùng thông báo (`storageUnitsMessageArea`); chống submit hai lần; chưa kết nối Hub sớm. | Index đã gắn đầy đủ stable DOM IDs và message area; JavaScript chặn double-click và hiện spinner; không chứa kết nối SignalR sớm. | **ĐẠT** |
-| **Kiểm thử tự động** | Đầy đủ 18 kịch bản kiểm thử tích hợp bao phủ Index, Create (kèm forward facilityId & dynamic areas AJAX), Edit, Details, Delete (kèm controlled forbidden), stale data, duplicate code, manager ngoài cơ sở, staff read-only. | Bộ test `StorageUnitsRazorPagesTests.cs` đạt **18/18 PASS** (100%); Toàn bộ test suite Web đạt **242/242 PASS** (100%). | **VERIFIED** |
+| **Kiểm thử tự động** | Đầy đủ 18 kịch bản kiểm thử tích hợp bao phủ Index, Create (kèm forward facilityId & dynamic areas AJAX), Edit, Details, Delete (kèm controlled forbidden), stale data, duplicate code, manager ngoài cơ sở, staff read-only. | Bộ test `StorageUnitsRazorPagesTests.cs` đạt **18/18 PASS** (100%); Toàn bộ test suite Web đạt **244/244 PASS** (100%). | **VERIFIED** |
 
 ---
 
@@ -152,14 +163,12 @@ Toàn bộ các file trên đã được đối chiếu, phân tích khuyết t�
 Bộ kiểm thử tích hợp chuyên biệt `StorageUnitsRazorPagesTests.cs` (bao gồm 18 kịch bản tích hợp hoàn chỉnh) đã được thực thi và xác nhận:
 
 ### 5.1. Kết quả kiểm thử bộ test T09 (`StorageUnitsRazorPagesTests`)
+
+Lệnh thực tế chạy chung ba bộ chuyên biệt:
 ```powershell
-dotnet test .\tests\SelfStorageManagementSystem.WebTests\SelfStorageManagementSystem.WebTests.csproj `
-  --filter "FullyQualifiedName~StorageUnitsRazorPagesTests" --nologo
+dotnet test tests/SelfStorageManagementSystem.WebTests/SelfStorageManagementSystem.WebTests.csproj --filter "FullyQualifiedName~StorageUnitsRazorPagesTests|FullyQualifiedName~ReservationRazorPagesAndWorkerTests|FullyQualifiedName~StaffCheckInPageTests" --logger "trx;LogFileName=T09-T11-specialized.trx" --results-directory AgentReport/TestResults/T09-T11
 ```
-**Kết quả**:
-```text
-Passed!  - Failed:     0, Passed:    18, Skipped:     0, Total:    18, Duration: 4 s - SelfStorageManagementSystem.WebTests.dll (net8.0)
-```
+Kết quả: **55 Passed, 0 Failed, 0 Skipped**, trong đó T09 **18 Passed** (đối chiếu tên class trong TRX).
 
 Chi tiết 18 test cases đã vượt qua:
 1. `Index_AnonymousUser_RedirectsToLogin`: Khách vãng lai truy cập `/StorageUnits` bị chuyển hướng về `/Account/Login`.
@@ -183,28 +192,12 @@ Chi tiết 18 test cases đã vượt qua:
 
 ---
 
-### 5.2. Kết quả kiểm thử kiến trúc (Architecture & Decoupling Test)
-```powershell
-dotnet test .\tests\SelfStorageManagementSystem.WebTests\SelfStorageManagementSystem.WebTests.csproj `
-  --filter "FullyQualifiedName~Architecture" --nologo
-```
-**Kết quả**:
-```text
-Passed!  - Failed:     0, Passed:     3, Skipped:     0, Total:     3, Duration: 1 s - SelfStorageManagementSystem.WebTests.dll (net8.0)
-```
-- Xác nhận: Không một PageModel nào trong `Pages/StorageUnits` inject `DbContext` hay `IRepository`.
+### 5.2. Kiểm thử kiến trúc và toàn bộ Web solution
 
----
-
-### 5.3. Kết quả hồi quy toàn bộ WebTests
 ```powershell
-dotnet test .\SelfStorageManagementSystem.Web.sln --nologo
+dotnet test SelfStorageManagementSystem.Web.sln --no-restore --logger "trx;LogFileName=Web-solution.trx" --results-directory AgentReport/TestResults/T09-T11
 ```
-**Kết quả**:
-```text
-Passed!  - Failed:     0, Passed:   242, Skipped:     0, Total:   242, Duration: 5 s - SelfStorageManagementSystem.WebTests.dll (net8.0)
-```
-- **242/242 tests PASS** trên toàn bộ solution Web (0 failed, 0 skipped).
+Kết quả: **244 Passed, 0 Failed, 0 Skipped**. Trong lần chạy này có **3 test có tên chứa `Architecture` đạt**, xác nhận các thành phần Presentation không inject DbContext/Repository theo assertion của bộ smoke test.
 
 ---
 
@@ -230,4 +223,4 @@ Passed!  - Failed:     0, Passed:   242, Skipped:     0, Total:   242, Duration:
 ---
 
 ## 7. Kết Luận
-Task **T09** đã được hoàn thành xuất sắc và đạt trạng thái **VERIFIED**. Tất cả các yêu cầu về scaffold cô lập, refactor sang BLL Service, form CRUD bảo mật với Anti-forgery và Concurrency round-trip, phân quyền theo scope cơ sở và chuẩn bị cấu trúc DOM cho T13 đã được kiểm chứng bằng 100% test tự động. Sẵn sàng bàn giao cho **T13** (SignalR Create Update Delete) tiếp nhận triển khai.
+Task **T09** đã hoàn thành và đạt trạng thái **VERIFIED**. Tất cả các yêu cầu về scaffold cô lập, refactor sang BLL Service, form CRUD bảo mật với Anti-forgery và Concurrency round-trip, phân quyền theo scope cơ sở và chuẩn bị cấu trúc DOM cho T13 đã được kiểm chứng bằng bộ test HTTP và browser smoke nêu trên. Sẵn sàng bàn giao cho **T13** (SignalR Create Update Delete) tiếp nhận triển khai.

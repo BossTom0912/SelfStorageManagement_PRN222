@@ -11,6 +11,7 @@ public class ReservationDetailResponse
 
     public long FacilityId { get; set; }
     public string FacilityName { get; set; } = string.Empty;
+    public string FacilityTimezone { get; set; } = "UTC";
     public string FacilityCode { get; set; } = string.Empty;
     public string FacilityAddress { get; set; } = string.Empty;
 

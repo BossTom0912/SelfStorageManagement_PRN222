@@ -121,6 +121,55 @@ public class StaffCheckInPageTests : IClassFixture<CheckInWebTestFixture>
     #region 2. Tra cứu Đơn đặt chỗ (Search CheckIn)
 
     [Fact]
+    public async Task TerminatedStaff_WithExistingSession_CannotSearchOrVerifyIdentity()
+    {
+        var seed = await _factory.SeedFullCheckInEnvironmentAsync(Guid.NewGuid().ToString("N")[..6]);
+        // Obtain a real session and valid form token before employment is terminated.
+        using (var db = _factory.CreateDbContext())
+        {
+            var employee = await db.employee_profiles.SingleAsync(e => e.user_id == seed.StaffTerminated.id);
+            employee.employment_status = "active";
+            await db.SaveChangesAsync();
+        }
+        var client = await _factory.CreateAuthenticatedClientAsync(seed.StaffTerminated.email, CheckInWebTestFixture.DefaultPassword);
+        var allowed = await client.GetAsync($"/Staff/CheckIn?code={seed.ReservationCode}");
+        Assert.Equal(HttpStatusCode.OK, allowed.StatusCode);
+        var allowedHtml = await allowed.Content.ReadAsStringAsync();
+        Assert.Contains(seed.ReservationCode, allowedHtml);
+        var token = ExtractAntiforgeryToken(allowedHtml);
+        Assert.NotEmpty(token);
+        using (var db = _factory.CreateDbContext())
+        {
+            var employee = await db.employee_profiles.SingleAsync(e => e.user_id == seed.StaffTerminated.id);
+            employee.employment_status = "terminated";
+            await db.SaveChangesAsync();
+        }
+
+        var post = await client.PostAsync("/Staff/CheckIn?handler=VerifyId", new FormUrlEncodedContent(new Dictionary<string, string>
+        {
+            ["__RequestVerificationToken"] = token,
+            ["ReservationId"] = seed.Reservation.id.ToString(),
+            ["Code"] = seed.ReservationCode,
+            ["VerificationMethod"] = "government_id",
+            ["DocumentNumber"] = seed.CustomerIdentityNumber,
+            ["IsConfirmedMatch"] = "true"
+        }));
+        var get = await client.GetAsync($"/Staff/CheckIn?code={seed.ReservationCode}");
+        foreach (var response in new[] { post, get })
+        {
+            Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
+            Assert.Contains("/Account/Login", response.Headers.Location?.OriginalString);
+            var html = await response.Content.ReadAsStringAsync();
+            Assert.DoesNotContain(seed.ReservationCode, html);
+            Assert.DoesNotContain(seed.CustomerIdentityNumber, html);
+            Assert.DoesNotContain("********1234", html);
+        }
+        using var verificationDb = _factory.CreateDbContext();
+        Assert.False(await verificationDb.identity_verifications.AnyAsync(v => v.reservation_id == seed.Reservation.id));
+        Assert.Equal("confirmed", (await verificationDb.reservations.FindAsync(seed.Reservation.id))!.status);
+    }
+
+    [Fact]
     public async Task Search_NonExistentCode_ShowsErrorMessage()
     {
         var suffix = Guid.NewGuid().ToString("N")[..6];

@@ -178,49 +178,66 @@
             const selectFacility = document.getElementById('selectFacility');
             const selectUnitType = document.getElementById('selectUnitType');
             const selectArea = document.getElementById('selectArea');
+            const canManage = submitBtn && !submitBtn.disabled;
+            let lookupController;
+            let lookupLoading = false;
+
+            function resetOptions(select, placeholder) {
+                if (!select) return;
+                const option = document.createElement('option');
+                option.value = '';
+                option.textContent = placeholder;
+                select.replaceChildren(option);
+            }
+
+            function appendOption(select, value, label) {
+                if (!select) return;
+                const option = document.createElement('option');
+                option.value = String(value);
+                option.textContent = label;
+                select.appendChild(option);
+            }
 
             // Xử lý nạp động UnitTypes và Areas khi chọn/đổi cơ sở
             if (selectFacility) {
                 selectFacility.addEventListener('change', async function () {
                     const facId = this.value;
+                    lookupController?.abort();
+                    const controller = new AbortController();
+                    lookupController = controller;
+                    const isCurrent = () => lookupController === controller && selectFacility.value === facId;
+                    resetOptions(selectUnitType, '-- Chọn loại ô kho --');
+                    resetOptions(selectArea, '-- Không phân khu / Chưa xác định --');
+                    lookupLoading = !!facId;
+                    if (submitBtn) submitBtn.disabled = true;
                     if (!facId) {
-                        if (selectArea) {
-                            selectArea.innerHTML = '<option value="">-- Không phân khu / Chưa xác định --</option>';
-                        }
                         return;
                     }
 
                     try {
-                        const resp = await fetch(`?handler=FacilityLookups&facilityId=${encodeURIComponent(facId)}`);
-                        if (resp.ok) {
-                            const data = await resp.json();
-                            if (selectUnitType && data.unitTypes) {
-                                const currentTypeVal = selectUnitType.value;
-                                let typeHtml = '<option value="">-- Chọn loại ô kho --</option>';
-                                data.unitTypes.forEach(ut => {
-                                    typeHtml += `<option value="${ut.id}">${ut.name} (${ut.code}) - ${ut.dimensions}</option>`;
-                                });
-                                selectUnitType.innerHTML = typeHtml;
-                                if (currentTypeVal) selectUnitType.value = currentTypeVal;
-                            }
-                            if (selectArea && data.areas) {
-                                let areaHtml = '<option value="">-- Không phân khu / Chưa xác định --</option>';
-                                data.areas.forEach(a => {
-                                    areaHtml += `<option value="${a.id}">${a.name} (${a.code})</option>`;
-                                });
-                                selectArea.innerHTML = areaHtml;
-                            }
-                        } else {
+                        const resp = await fetch(`?handler=FacilityLookups&facilityId=${encodeURIComponent(facId)}`, { signal: controller.signal });
+                        if (!isCurrent()) return;
+                        if (!resp.ok) throw new Error('Lookup request failed');
+                        const data = await resp.json();
+                        if (!isCurrent()) return;
+                        data.unitTypes.forEach(ut => appendOption(selectUnitType, ut.id, `${ut.name} (${ut.code}) - ${ut.dimensions}`));
+                        data.areas.forEach(a => appendOption(selectArea, a.id, `${a.name} (${a.code})`));
+                        lookupLoading = false;
+                        if (submitBtn) submitBtn.disabled = !canManage;
+                    } catch (e) {
+                        if (e.name !== 'AbortError' && isCurrent()) {
                             window.location.href = `?facilityId=${encodeURIComponent(facId)}`;
                         }
-                    } catch (e) {
-                        window.location.href = `?facilityId=${encodeURIComponent(facId)}`;
                     }
                 });
             }
 
             if (form && submitBtn) {
                 form.addEventListener('submit', function (e) {
+                    if (lookupLoading || !selectFacility.value || !canManage) {
+                        e.preventDefault();
+                        return;
+                    }
                     if ($(form).valid()) {
                         // Vô hiệu hóa nút bấm chống gửi form 2 lần (double-submit prevention)
                         submitBtn.disabled = true;
