@@ -153,7 +153,10 @@ public sealed class SecurityHttpServerFixture : IAsyncLifetime
         // Origin gate for Realtime SignalR Hub (T16)
         _app.UseStorageUnitHubOriginRestriction();
 
-        _app.MapHub<StorageUnitHub>("/storageUnitHub");
+        _app.MapHub<StorageUnitHub>("/storageUnitHub", options =>
+        {
+            options.CloseOnAuthenticationExpiration = true;
+        });
         _app.MapControllerRoute(
             name: "default",
             pattern: "{controller=Home}/{action=Index}/{id?}");
