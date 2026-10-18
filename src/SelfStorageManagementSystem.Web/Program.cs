@@ -86,6 +86,9 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Origin gate for Realtime SignalR Hub (T16)
+app.UseStorageUnitHubOriginRestriction();
+
 // Realtime SignalR Hub Endpoint
 app.MapHub<StorageUnitHub>("/storageUnitHub");
 

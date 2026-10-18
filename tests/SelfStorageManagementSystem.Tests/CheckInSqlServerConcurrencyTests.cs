@@ -9,6 +9,7 @@ using Xunit;
 
 namespace SelfStorageManagementSystem.Tests;
 
+[Collection("SqlServerConcurrency")]
 public class CheckInSqlServerConcurrencyTests
 {
     private static string GetTestConnectionString()

@@ -1,4 +1,4 @@
-﻿/* ============================================================================
+/* ============================================================================
    SelfStorage Web Migration Database Bootstrap Script
    Target Database: SelfStoragePRN222_WebE2eTest
    
@@ -888,7 +888,7 @@ CREATE TABLE [core].invoices (
     customer_id bigint NOT NULL REFERENCES [core].customer_profiles(user_id) ON DELETE NO ACTION,
     reservation_id bigint REFERENCES [core].reservations(id) ON DELETE NO ACTION,
     agreement_id bigint REFERENCES [core].rental_agreements(id) ON DELETE NO ACTION,
-    ticket_charge_proposal_id bigint UNIQUE REFERENCES [core].ticket_charge_proposals(id) ON DELETE NO ACTION,
+    ticket_charge_proposal_id bigint REFERENCES [core].ticket_charge_proposals(id) ON DELETE NO ACTION,
     billing_period nvarchar(64),
     issue_date date NOT NULL,
     due_date date NOT NULL,
@@ -918,6 +918,9 @@ CREATE INDEX invoices_agreement_id_idx ON [core].invoices (agreement_id)
 CREATE UNIQUE INDEX invoices_agreement_billing_period_uidx
     ON [core].invoices (agreement_id, billing_period)
     WHERE agreement_id IS NOT NULL AND billing_period IS NOT NULL AND status <> 'voided';
+CREATE UNIQUE INDEX invoices_ticket_charge_proposal_id_uidx
+    ON [core].invoices (ticket_charge_proposal_id)
+    WHERE ticket_charge_proposal_id IS NOT NULL;
 CREATE INDEX invoices_open_due_idx ON [core].invoices (due_date)
     WHERE status IN ('open', 'partially_paid', 'overdue');
 

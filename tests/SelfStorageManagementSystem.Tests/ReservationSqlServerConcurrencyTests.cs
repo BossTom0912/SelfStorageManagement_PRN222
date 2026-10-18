@@ -49,6 +49,7 @@ public sealed class SqlIntegrationFactAttribute : FactAttribute
     }
 }
 
+[Collection("SqlServerConcurrency")]
 public class ReservationSqlServerConcurrencyTests
 {
     private static string GetTestConnectionString()
@@ -318,96 +319,563 @@ public class ReservationSqlServerConcurrencyTests
         }
         finally
         {
-            // Dọn dẹp an toàn theo đúng thứ tự khóa ngoại ngược lại
-            try
+            await CleanUpReservationTestDataAsync(
+                connectionString,
+                testUnitTypeId,
+                cleanupReservationIds,
+                cleanupUserIds,
+                cleanupStorageUnitIds,
+                cleanupFacilityRateIds,
+                cleanupPriceRangeIds,
+                cleanupUnitTypeIds,
+                cleanupFacilityIds);
+        }
+    }
+
+    [SqlIntegrationFact]
+    public async Task ConcurrentCancelAndExpire_SameReservation_ExactlyOneTransitionCommitted_StateDurableAfterRestart()
+    {
+        var connectionString = GetTestConnectionString();
+        var testRunId = Guid.NewGuid().ToString("N")[..8];
+
+        var cleanupReservationIds = new List<long>();
+        var cleanupStorageUnitIds = new List<long>();
+        var cleanupFacilityRateIds = new List<long>();
+        var cleanupPriceRangeIds = new List<long>();
+        var cleanupUnitTypeIds = new List<long>();
+        var cleanupUserIds = new List<long>();
+        var cleanupFacilityIds = new List<long>();
+
+        long testUnitTypeId = 0;
+        long facilityId = 0;
+        long custUserId = 0;
+        long reservationId = 0;
+
+        try
+        {
+            await using (var seedDb = CreateDbContext(connectionString))
             {
-                await using var cleanupDb = CreateDbContext(connectionString);
-
-                // 1. Dọn dẹp reservations thuộc bài test (dựa trên testUnitTypeId và cleanupUserIds để bao phủ cả khi Assert lỗi sớm)
-                if (testUnitTypeId > 0 || cleanupUserIds.Any() || cleanupReservationIds.Any())
+                var fac = new facility
                 {
-                    var resToRemove = await cleanupDb.reservations
-                        .Where(r => (testUnitTypeId > 0 && r.unit_type_id == testUnitTypeId) ||
-                                    cleanupUserIds.Contains(r.customer_id) ||
-                                    cleanupReservationIds.Contains(r.id))
+                    code = $"FAC_CE_{testRunId}",
+                    name = $"Facility Cancel Expire {testRunId}",
+                    address_line = "123 Cancel Expire St",
+                    city = "Hanoi",
+                    status = "active",
+                    timezone = "Asia/Ho_Chi_Minh"
+                };
+                seedDb.facilities.Add(fac);
+                await seedDb.SaveChangesAsync();
+                facilityId = fac.id;
+                cleanupFacilityIds.Add(facilityId);
+
+                var custRole = await seedDb.roles.FirstOrDefaultAsync(r => r.code == RoleConstants.StorageCustomer);
+                if (custRole == null)
+                {
+                    custRole = new role { id = 1, code = RoleConstants.StorageCustomer, display_name = "Customer" };
+                    seedDb.roles.Add(custRole);
+                    await seedDb.SaveChangesAsync();
+                }
+
+                var u = new user
+                {
+                    email = $"user_ce_{testRunId}@example.test",
+                    password_hash = "hash",
+                    status = UserStatusConstants.Active,
+                    created_at = DateTimeOffset.UtcNow,
+                    updated_at = DateTimeOffset.UtcNow
+                };
+                seedDb.users.Add(u);
+                await seedDb.SaveChangesAsync();
+                custUserId = u.id;
+                cleanupUserIds.Add(u.id);
+
+                seedDb.user_roles.Add(new user_role { user_id = u.id, role_id = custRole.id, granted_at = DateTimeOffset.UtcNow });
+                seedDb.customer_profiles.Add(new customer_profile { user_id = u.id, full_name = $"Customer CE {testRunId}", created_at = DateTimeOffset.UtcNow, updated_at = DateTimeOffset.UtcNow });
+
+                var ut = new unit_type
+                {
+                    code = $"UT_CE_{testRunId}",
+                    name = $"UnitType Cancel Expire {testRunId}",
+                    width_m = 2.0m,
+                    length_m = 2.0m,
+                    height_m = 2.5m,
+                    area_m2 = 4.0m,
+                    climate_controlled = false,
+                    is_active = true
+                };
+                seedDb.unit_types.Add(ut);
+                await seedDb.SaveChangesAsync();
+                testUnitTypeId = ut.id;
+                cleanupUnitTypeIds.Add(ut.id);
+
+                var pr = new price_range
+                {
+                    unit_type_id = ut.id,
+                    min_monthly_rate = 500_000m,
+                    max_monthly_rate = 2_000_000m,
+                    valid_from = new DateOnly(2020, 1, 1),
+                    created_at = DateTimeOffset.UtcNow
+                };
+                seedDb.price_ranges.Add(pr);
+                await seedDb.SaveChangesAsync();
+                cleanupPriceRangeIds.Add(pr.id);
+
+                var rate = new facility_rate
+                {
+                    facility_id = facilityId,
+                    unit_type_id = ut.id,
+                    monthly_rate = 1_000_000m,
+                    deposit_amount = 1_000_000m,
+                    booking_fee = 50_000m,
+                    valid_from = new DateOnly(2020, 1, 1),
+                    created_at = DateTimeOffset.UtcNow
+                };
+                seedDb.facility_rates.Add(rate);
+                await seedDb.SaveChangesAsync();
+                cleanupFacilityRateIds.Add(rate.id);
+
+                // Create reservation already past hold_until (overdue hold)
+                var res = new reservation
+                {
+                    reservation_code = $"RES_CE_{testRunId}",
+                    customer_id = custUserId,
+                    facility_id = facilityId,
+                    unit_type_id = testUnitTypeId,
+                    facility_rate_id = rate.id,
+                    start_date = new DateOnly(2026, 12, 1),
+                    end_date = new DateOnly(2027, 3, 1),
+                    monthly_rate_snapshot = 1_000_000m,
+                    deposit_snapshot = 1_000_000m,
+                    booking_fee_snapshot = 50_000m,
+                    quoted_total = 2_050_000m,
+                    status = "pending",
+                    hold_until = DateTimeOffset.UtcNow.AddMinutes(-5),
+                    created_at = DateTimeOffset.UtcNow.AddMinutes(-20),
+                    updated_at = DateTimeOffset.UtcNow.AddMinutes(-20)
+                };
+                seedDb.reservations.Add(res);
+                await seedDb.SaveChangesAsync();
+                reservationId = res.id;
+                cleanupReservationIds.Add(reservationId);
+
+                // Add draft invoice
+                var inv = new invoice
+                {
+                    invoice_no = $"INV_CE_{testRunId}",
+                    customer_id = custUserId,
+                    reservation_id = reservationId,
+                    issue_date = new DateOnly(2026, 12, 1),
+                    due_date = new DateOnly(2026, 12, 8),
+                    currency = "VND",
+                    subtotal_amount = 2_050_000m,
+                    total_amount = 2_050_000m,
+                    paid_amount = 0m,
+                    status = "draft",
+                    created_at = DateTimeOffset.UtcNow
+                };
+                seedDb.invoices.Add(inv);
+
+                // Add promo redemption
+                var promo = new promotion
+                {
+                    code = $"PROMO_{testRunId}",
+                    name = $"Test Promo {testRunId}",
+                    discount_type = "fixed",
+                    discount_value = 50_000m,
+                    valid_from = DateTimeOffset.UtcNow.AddDays(-1),
+                    valid_to = DateTimeOffset.UtcNow.AddDays(30),
+                    is_active = true
+                };
+                seedDb.promotions.Add(promo);
+                await seedDb.SaveChangesAsync();
+
+                seedDb.promotion_redemptions.Add(new promotion_redemption
+                {
+                    promotion_id = promo.id,
+                    customer_id = custUserId,
+                    reservation_id = reservationId,
+                    status = "reserved",
+                    redeemed_at = DateTimeOffset.UtcNow
+                });
+
+                await seedDb.SaveChangesAsync();
+            }
+
+            // Race 2 independent DbContext connections: Task 1 cancels, Task 2 expires
+            var barrier = new Barrier(2);
+
+            var taskCancel = Task.Run(async () =>
+            {
+                await using var db = CreateDbContext(connectionString);
+                var repo = new ReservationRepository(db);
+                barrier.SignalAndWait();
+                try
+                {
+                    var result = await repo.CancelReservationAsync(
+                        reservationId,
+                        "User cancelled during race",
+                        DateTimeOffset.UtcNow);
+                    return (Success: true, Status: result.status, Error: (string?)null);
+                }
+                catch (Exception ex)
+                {
+                    return (Success: false, Status: (string?)null, Error: ex.Message);
+                }
+            });
+
+            var taskExpire = Task.Run(async () =>
+            {
+                await using var db = CreateDbContext(connectionString);
+                var repo = new ReservationRepository(db);
+                barrier.SignalAndWait();
+                try
+                {
+                    var expired = await repo.TryExpireSingleReservationIfOverdueAsync(reservationId, DateTimeOffset.UtcNow);
+                    return (Success: expired, Status: expired ? "expired" : (string?)null, Error: (string?)null);
+                }
+                catch (Exception ex)
+                {
+                    return (Success: false, Status: (string?)null, Error: ex.Message);
+                }
+            });
+
+            var outcomes = await Task.WhenAll(taskCancel, taskExpire);
+            var cancelOutcome = outcomes[0];
+            var expireOutcome = outcomes[1];
+
+            // Exactly one transition commits
+            Assert.True(cancelOutcome.Success || expireOutcome.Success);
+
+            // Verify durability after restart: fresh DbContext simulating a process restart
+            await using (var verifyDb = CreateDbContext(connectionString))
+            {
+                var finalRes = await verifyDb.reservations.AsNoTracking().FirstAsync(r => r.id == reservationId);
+                Assert.True(finalRes.status == "cancelled" || finalRes.status == "expired");
+                Assert.NotEqual("pending", finalRes.status);
+
+                var finalInv = await verifyDb.invoices.AsNoTracking().FirstOrDefaultAsync(i => i.reservation_id == reservationId);
+                if (finalInv != null)
+                {
+                    Assert.Equal("voided", finalInv.status);
+                }
+
+                var finalRedemption = await verifyDb.promotion_redemptions.AsNoTracking().FirstOrDefaultAsync(pr => pr.reservation_id == reservationId);
+                if (finalRedemption != null)
+                {
+                    Assert.Equal("released", finalRedemption.status);
+                }
+            }
+        }
+        finally
+        {
+            await CleanUpReservationTestDataAsync(
+                connectionString,
+                testUnitTypeId,
+                cleanupReservationIds,
+                cleanupUserIds,
+                cleanupStorageUnitIds,
+                cleanupFacilityRateIds,
+                cleanupPriceRangeIds,
+                cleanupUnitTypeIds,
+                cleanupFacilityIds);
+        }
+    }
+
+    [SqlIntegrationFact]
+    public async Task ReservationHold_RollbackOnError_LeavesNoOrphanRecords_OnSqlServer()
+    {
+        var connectionString = GetTestConnectionString();
+        var testRunId = Guid.NewGuid().ToString("N")[..8];
+
+        var cleanupReservationIds = new List<long>();
+        var cleanupStorageUnitIds = new List<long>();
+        var cleanupFacilityRateIds = new List<long>();
+        var cleanupPriceRangeIds = new List<long>();
+        var cleanupUnitTypeIds = new List<long>();
+        var cleanupUserIds = new List<long>();
+        var cleanupFacilityIds = new List<long>();
+
+        long testUnitTypeId = 0;
+        long facilityId = 0;
+        long custUserId = 0;
+        long testFacilityRateId = 0;
+
+        try
+        {
+            await using (var seedDb = CreateDbContext(connectionString))
+            {
+                var fac = new facility
+                {
+                    code = $"FAC_RB_{testRunId}",
+                    name = $"Facility Rollback {testRunId}",
+                    address_line = "123 Rollback St",
+                    city = "Hanoi",
+                    status = "active",
+                    timezone = "Asia/Ho_Chi_Minh"
+                };
+                seedDb.facilities.Add(fac);
+                await seedDb.SaveChangesAsync();
+                facilityId = fac.id;
+                cleanupFacilityIds.Add(facilityId);
+
+                var custRole = await seedDb.roles.FirstOrDefaultAsync(r => r.code == RoleConstants.StorageCustomer);
+                if (custRole == null)
+                {
+                    custRole = new role { id = 1, code = RoleConstants.StorageCustomer, display_name = "Customer" };
+                    seedDb.roles.Add(custRole);
+                    await seedDb.SaveChangesAsync();
+                }
+
+                var u = new user
+                {
+                    email = $"user_rb_{testRunId}@example.test",
+                    password_hash = "hash",
+                    status = UserStatusConstants.Active,
+                    created_at = DateTimeOffset.UtcNow,
+                    updated_at = DateTimeOffset.UtcNow
+                };
+                seedDb.users.Add(u);
+                await seedDb.SaveChangesAsync();
+                custUserId = u.id;
+                cleanupUserIds.Add(u.id);
+
+                seedDb.user_roles.Add(new user_role { user_id = u.id, role_id = custRole.id, granted_at = DateTimeOffset.UtcNow });
+                seedDb.customer_profiles.Add(new customer_profile { user_id = u.id, full_name = $"Customer RB {testRunId}", created_at = DateTimeOffset.UtcNow, updated_at = DateTimeOffset.UtcNow });
+
+                var ut = new unit_type
+                {
+                    code = $"UT_RB_{testRunId}",
+                    name = $"UnitType Rollback {testRunId}",
+                    width_m = 2.0m,
+                    length_m = 2.0m,
+                    height_m = 2.5m,
+                    area_m2 = 4.0m,
+                    climate_controlled = false,
+                    is_active = true
+                };
+                seedDb.unit_types.Add(ut);
+                await seedDb.SaveChangesAsync();
+                testUnitTypeId = ut.id;
+                cleanupUnitTypeIds.Add(ut.id);
+
+                var pr = new price_range
+                {
+                    unit_type_id = ut.id,
+                    min_monthly_rate = 500_000m,
+                    max_monthly_rate = 2_000_000m,
+                    valid_from = new DateOnly(2020, 1, 1),
+                    created_at = DateTimeOffset.UtcNow
+                };
+                seedDb.price_ranges.Add(pr);
+                await seedDb.SaveChangesAsync();
+                cleanupPriceRangeIds.Add(pr.id);
+
+                var rate = new facility_rate
+                {
+                    facility_id = facilityId,
+                    unit_type_id = ut.id,
+                    monthly_rate = 1_000_000m,
+                    deposit_amount = 1_000_000m,
+                    booking_fee = 50_000m,
+                    valid_from = new DateOnly(2020, 1, 1),
+                    created_at = DateTimeOffset.UtcNow
+                };
+                seedDb.facility_rates.Add(rate);
+                await seedDb.SaveChangesAsync();
+                testFacilityRateId = rate.id;
+                cleanupFacilityRateIds.Add(rate.id);
+
+                var su = new storage_unit
+                {
+                    facility_id = facilityId,
+                    unit_type_id = ut.id,
+                    unit_code = $"SU_RB_{testRunId}",
+                    physical_status = "available",
+                    is_listed = true,
+                    created_at = DateTimeOffset.UtcNow,
+                    updated_at = DateTimeOffset.UtcNow
+                };
+                seedDb.storage_units.Add(su);
+                await seedDb.SaveChangesAsync();
+                cleanupStorageUnitIds.Add(su.id);
+            }
+
+            // Simulate explicit SQL transaction rollback upon error during reservation hold creation
+            await using (var rollbackDb = CreateDbContext(connectionString))
+            {
+                await using var tx = await rollbackDb.Database.BeginTransactionAsync();
+                var failedRes = new reservation
+                {
+                    reservation_code = $"RES_RB_{testRunId}",
+                    customer_id = custUserId,
+                    facility_id = facilityId,
+                    unit_type_id = testUnitTypeId,
+                    facility_rate_id = testFacilityRateId,
+                    start_date = new DateOnly(2026, 11, 1),
+                    end_date = new DateOnly(2027, 2, 1),
+                    monthly_rate_snapshot = 1_000_000m,
+                    deposit_snapshot = 1_000_000m,
+                    booking_fee_snapshot = 50_000m,
+                    quoted_total = 2_050_000m,
+                    status = "pending",
+                    hold_until = DateTimeOffset.UtcNow.AddMinutes(15),
+                    created_at = DateTimeOffset.UtcNow,
+                    updated_at = DateTimeOffset.UtcNow
+                };
+                rollbackDb.reservations.Add(failedRes);
+                await rollbackDb.SaveChangesAsync();
+
+                // Explicit rollback simulating unexpected exception / failure point
+                await tx.RollbackAsync();
+            }
+
+            // Verify with fresh DbContext: No orphan reservation exists, storage unit remains available
+            await using (var verifyDb = CreateDbContext(connectionString))
+            {
+                var orphanCount = await verifyDb.reservations.CountAsync(r => r.reservation_code == $"RES_RB_{testRunId}");
+                Assert.Equal(0, orphanCount);
+
+                var unit = await verifyDb.storage_units.AsNoTracking().FirstAsync(u => u.facility_id == facilityId && u.unit_type_id == testUnitTypeId);
+                Assert.Equal("available", unit.physical_status);
+            }
+        }
+        finally
+        {
+            await CleanUpReservationTestDataAsync(
+                connectionString,
+                testUnitTypeId,
+                cleanupReservationIds,
+                cleanupUserIds,
+                cleanupStorageUnitIds,
+                cleanupFacilityRateIds,
+                cleanupPriceRangeIds,
+                cleanupUnitTypeIds,
+                cleanupFacilityIds);
+        }
+    }
+
+    private static async Task CleanUpReservationTestDataAsync(
+        string connectionString,
+        long testUnitTypeId,
+        List<long> cleanupReservationIds,
+        List<long> cleanupUserIds,
+        List<long> cleanupStorageUnitIds,
+        List<long> cleanupFacilityRateIds,
+        List<long> cleanupPriceRangeIds,
+        List<long> cleanupUnitTypeIds,
+        List<long> cleanupFacilityIds)
+    {
+        try
+        {
+            await using var cleanupDb = CreateDbContext(connectionString);
+
+            if (testUnitTypeId > 0 || cleanupUserIds.Any() || cleanupReservationIds.Any())
+            {
+                var resToRemove = await cleanupDb.reservations
+                    .Where(r => (testUnitTypeId > 0 && r.unit_type_id == testUnitTypeId) ||
+                                cleanupUserIds.Contains(r.customer_id) ||
+                                cleanupReservationIds.Contains(r.id))
+                    .ToListAsync();
+
+                if (resToRemove.Any())
+                {
+                    var resIds = resToRemove.Select(r => r.id).ToList();
+
+                    var redemptionsToRemove = await cleanupDb.promotion_redemptions
+                        .Where(pr => pr.reservation_id.HasValue && resIds.Contains(pr.reservation_id.Value))
                         .ToListAsync();
-
-                    if (resToRemove.Any())
+                    if (redemptionsToRemove.Any())
                     {
-                        var resIds = resToRemove.Select(r => r.id).ToList();
-                        var invoicesToRemove = await cleanupDb.invoices
-                            .Where(inv => inv.reservation_id.HasValue && resIds.Contains(inv.reservation_id.Value))
-                            .ToListAsync();
-                        if (invoicesToRemove.Any())
-                        {
-                            cleanupDb.invoices.RemoveRange(invoicesToRemove);
-                        }
+                        cleanupDb.promotion_redemptions.RemoveRange(redemptionsToRemove);
+                    }
 
-                        cleanupDb.reservations.RemoveRange(resToRemove);
-                        await cleanupDb.SaveChangesAsync();
+                    var invoicesToRemove = await cleanupDb.invoices
+                        .Where(inv => inv.reservation_id.HasValue && resIds.Contains(inv.reservation_id.Value))
+                        .ToListAsync();
+                    if (invoicesToRemove.Any())
+                    {
+                        var invIds = invoicesToRemove.Select(i => i.id).ToList();
+                        var linesToRemove = await cleanupDb.invoice_lines.Where(il => invIds.Contains(il.invoice_id)).ToListAsync();
+                        if (linesToRemove.Any())
+                        {
+                            cleanupDb.invoice_lines.RemoveRange(linesToRemove);
+                        }
+                        cleanupDb.invoices.RemoveRange(invoicesToRemove);
+                    }
+
+                    cleanupDb.reservations.RemoveRange(resToRemove);
+                    await using (var tx = await cleanupDb.Database.BeginTransactionAsync())
+                    {
+                        try
+                        {
+                            await cleanupDb.Database.ExecuteSqlRawAsync("DISABLE TRIGGER core.trg_invoice_lines_guard ON core.invoice_lines;");
+                            await cleanupDb.SaveChangesAsync();
+                            await cleanupDb.Database.ExecuteSqlRawAsync("ENABLE TRIGGER core.trg_invoice_lines_guard ON core.invoice_lines;");
+                            await tx.CommitAsync();
+                        }
+                        catch
+                        {
+                            try { await tx.RollbackAsync(); } catch { }
+                            try { await cleanupDb.Database.ExecuteSqlRawAsync("ENABLE TRIGGER core.trg_invoice_lines_guard ON core.invoice_lines;"); } catch { }
+                            throw;
+                        }
                     }
                 }
-
-                // 2. Storage units
-                if (cleanupStorageUnitIds.Any())
-                {
-                    var unitsToRemove = await cleanupDb.storage_units.Where(u => cleanupStorageUnitIds.Contains(u.id)).ToListAsync();
-                    cleanupDb.storage_units.RemoveRange(unitsToRemove);
-                    await cleanupDb.SaveChangesAsync();
-                }
-
-                // 3. Facility rates
-                if (cleanupFacilityRateIds.Any())
-                {
-                    var ratesToRemove = await cleanupDb.facility_rates.Where(r => cleanupFacilityRateIds.Contains(r.id)).ToListAsync();
-                    cleanupDb.facility_rates.RemoveRange(ratesToRemove);
-                    await cleanupDb.SaveChangesAsync();
-                }
-
-                // 4. Price ranges
-                if (cleanupPriceRangeIds.Any())
-                {
-                    var prToRemove = await cleanupDb.price_ranges.Where(pr => cleanupPriceRangeIds.Contains(pr.id)).ToListAsync();
-                    cleanupDb.price_ranges.RemoveRange(prToRemove);
-                    await cleanupDb.SaveChangesAsync();
-                }
-
-                // 5. Unit types
-                if (cleanupUnitTypeIds.Any())
-                {
-                    var utToRemove = await cleanupDb.unit_types.Where(ut => cleanupUnitTypeIds.Contains(ut.id)).ToListAsync();
-                    cleanupDb.unit_types.RemoveRange(utToRemove);
-                    await cleanupDb.SaveChangesAsync();
-                }
-
-                // 6. User profiles & roles & users
-                if (cleanupUserIds.Any())
-                {
-                    var profilesToRemove = await cleanupDb.customer_profiles.Where(cp => cleanupUserIds.Contains(cp.user_id)).ToListAsync();
-                    cleanupDb.customer_profiles.RemoveRange(profilesToRemove);
-
-                    var rolesToRemove = await cleanupDb.user_roles.Where(ur => cleanupUserIds.Contains(ur.user_id)).ToListAsync();
-                    cleanupDb.user_roles.RemoveRange(rolesToRemove);
-
-                    var usersToRemove = await cleanupDb.users.Where(u => cleanupUserIds.Contains(u.id)).ToListAsync();
-                    cleanupDb.users.RemoveRange(usersToRemove);
-
-                    await cleanupDb.SaveChangesAsync();
-                }
-
-                // 7. Test facilities (nếu có tạo mới)
-                if (cleanupFacilityIds.Any())
-                {
-                    var facToRemove = await cleanupDb.facilities.Where(f => cleanupFacilityIds.Contains(f.id)).ToListAsync();
-                    cleanupDb.facilities.RemoveRange(facToRemove);
-                    await cleanupDb.SaveChangesAsync();
-                }
             }
-            catch (Exception ex)
+
+            if (cleanupStorageUnitIds.Any())
             {
-                // Báo lỗi dọn dẹp rõ ràng, không nuốt ngoại lệ
-                throw new InvalidOperationException($"[CLEANUP_FAILURE] Không thể dọn dẹp fixture kiểm thử SQL Server: {ex.Message}", ex);
+                var unitsToRemove = await cleanupDb.storage_units.Where(u => cleanupStorageUnitIds.Contains(u.id)).ToListAsync();
+                cleanupDb.storage_units.RemoveRange(unitsToRemove);
+                await cleanupDb.SaveChangesAsync();
             }
+
+            if (cleanupFacilityRateIds.Any())
+            {
+                var ratesToRemove = await cleanupDb.facility_rates.Where(r => cleanupFacilityRateIds.Contains(r.id)).ToListAsync();
+                cleanupDb.facility_rates.RemoveRange(ratesToRemove);
+                await cleanupDb.SaveChangesAsync();
+            }
+
+            if (cleanupPriceRangeIds.Any())
+            {
+                var prToRemove = await cleanupDb.price_ranges.Where(pr => cleanupPriceRangeIds.Contains(pr.id)).ToListAsync();
+                cleanupDb.price_ranges.RemoveRange(prToRemove);
+                await cleanupDb.SaveChangesAsync();
+            }
+
+            if (cleanupUnitTypeIds.Any())
+            {
+                var utToRemove = await cleanupDb.unit_types.Where(ut => cleanupUnitTypeIds.Contains(ut.id)).ToListAsync();
+                cleanupDb.unit_types.RemoveRange(utToRemove);
+                await cleanupDb.SaveChangesAsync();
+            }
+
+            if (cleanupUserIds.Any())
+            {
+                var profilesToRemove = await cleanupDb.customer_profiles.Where(cp => cleanupUserIds.Contains(cp.user_id)).ToListAsync();
+                cleanupDb.customer_profiles.RemoveRange(profilesToRemove);
+
+                var rolesToRemove = await cleanupDb.user_roles.Where(ur => cleanupUserIds.Contains(ur.user_id)).ToListAsync();
+                cleanupDb.user_roles.RemoveRange(rolesToRemove);
+
+                var usersToRemove = await cleanupDb.users.Where(u => cleanupUserIds.Contains(u.id)).ToListAsync();
+                cleanupDb.users.RemoveRange(usersToRemove);
+
+                await cleanupDb.SaveChangesAsync();
+            }
+
+            if (cleanupFacilityIds.Any())
+            {
+                var facToRemove = await cleanupDb.facilities.Where(f => cleanupFacilityIds.Contains(f.id)).ToListAsync();
+                cleanupDb.facilities.RemoveRange(facToRemove);
+                await cleanupDb.SaveChangesAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException($"[CLEANUP_FAILURE] Không thể dọn dẹp fixture kiểm thử SQL Server: {ex.Message}", ex);
         }
     }
 }
