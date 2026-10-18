@@ -22,6 +22,8 @@ public class PagedResult<T>
         init => _pageNumber = value < 1 ? 1 : value;
     }
 
+    public int CurrentPage => PageNumber;
+
     public int PageSize
     {
         get => _pageSize;

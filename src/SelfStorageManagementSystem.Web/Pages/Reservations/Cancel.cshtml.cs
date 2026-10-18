@@ -7,6 +7,7 @@ using SelfStorageManagementSystem.BusinessLogic.DTOs.Requests.Reservations;
 using SelfStorageManagementSystem.BusinessLogic.DTOs.Responses.Reservations;
 using SelfStorageManagementSystem.BusinessLogic.Exceptions;
 using SelfStorageManagementSystem.BusinessLogic.Services.Interfaces;
+using SelfStorageManagementSystem.Web.Realtime;
 
 namespace SelfStorageManagementSystem.Web.Pages.Reservations;
 
@@ -14,14 +15,17 @@ namespace SelfStorageManagementSystem.Web.Pages.Reservations;
 public class CancelModel : PageModel
 {
     private readonly IReservationService _reservationService;
+    private readonly IWebRealtimePublisher? _realtimePublisher;
     private readonly ILogger<CancelModel> _logger;
 
     public CancelModel(
         IReservationService reservationService,
-        ILogger<CancelModel> logger)
+        ILogger<CancelModel> logger,
+        IWebRealtimePublisher? realtimePublisher = null)
     {
         _reservationService = reservationService ?? throw new ArgumentNullException(nameof(reservationService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _realtimePublisher = realtimePublisher;
     }
 
     [BindProperty]
@@ -112,6 +116,29 @@ public class CancelModel : PageModel
         {
             var request = new CancelReservationRequest { Reason = Reason };
             var cancelled = await _reservationService.CancelReservationAsync(userId, roles, Id, request, cancellationToken);
+
+            if (_realtimePublisher != null)
+            {
+                try
+                {
+                    await _realtimePublisher.PublishReservationChangedAsync(cancelled.Id, cancelled.FacilityId, cancelled.CustomerId, "cancelled", cancellationToken);
+                    await _realtimePublisher.PublishCatalogInvalidatedAsync(cancelled.FacilityId, cancelled.UnitTypeId, cancellationToken);
+                }
+                catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+                {
+                    throw;
+                }
+                catch (RealtimePublishDegradedException ex)
+                {
+                    _logger.LogWarning(ex, "Realtime publish degraded after cancelling reservation {ReservationId}", cancelled.Id);
+                    TempData["WarningMessage"] = "Đơn đặt chỗ đã được hủy thành công trong hệ thống. Tuy nhiên, đồng bộ thời gian thực gặp sự cố tạm thời; thông tin sẽ tự động làm mới khi tải lại trang.";
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "Unexpected realtime publish error after cancelling reservation {ReservationId}", cancelled.Id);
+                    TempData["WarningMessage"] = "Đơn đặt chỗ đã được hủy thành công trong hệ thống, nhưng đồng bộ thời gian thực gặp sự cố.";
+                }
+            }
 
             TempData["SuccessMessage"] = $"Đơn đặt chỗ {cancelled.ReservationCode} đã được hủy thành công.";
             return RedirectToPage("Details", new { id = Id });

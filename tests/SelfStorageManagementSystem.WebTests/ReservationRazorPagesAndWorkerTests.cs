@@ -269,7 +269,7 @@ public class ReservationRazorPagesAndWorkerTests : IClassFixture<CookieAuthWebTe
         var (_, userB, _) = await CreateAuthenticatedCustomerClientAsync("custB_victim");
         var (facilityId, unitTypeId, _) = await SeedFacilityAndUnitTypeAsync("SPOOF", unitCount: 2);
 
-        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var today = DateOnly.FromDateTime(TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, AppFormatters.DefaultFacilityTimeZone));
         var (afToken, afCookie) = await CookieAuthWebTestFixture.GetAntiforgeryTokenAndCookieAsync(
             clientA,
             $"/Reservations/Create?facilityId={facilityId}&unitTypeId={unitTypeId}");

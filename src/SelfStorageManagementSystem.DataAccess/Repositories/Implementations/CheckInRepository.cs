@@ -794,7 +794,7 @@ public class CheckInRepository : GenericRepository<reservation>, ICheckInReposit
         }
     }
 
-    public async Task<(handover_record Handover, string? Pin, long? CredentialId, DateTimeOffset? CredentialExpiresAt, bool IsAlreadyCompleted)> CompleteCheckInWithLockAsync(
+    public async Task<(handover_record Handover, string? Pin, long? CredentialId, DateTimeOffset? CredentialExpiresAt, bool IsAlreadyCompleted, long? NotificationId)> CompleteCheckInWithLockAsync(
         long reservationId,
         long currentAllocationId,
         long currentInspectionId,
@@ -909,7 +909,7 @@ public class CheckInRepository : GenericRepository<reservation>, ICheckInReposit
                 {
                     var activeCred = agreement.access_credentials.FirstOrDefault(c => c.status == "active");
                     if (transaction != null) await transaction.CommitAsync(cancellationToken);
-                    return (existingHandover, null, activeCred?.id, activeCred?.expires_at, true);
+                    return (existingHandover, null, activeCred?.id, activeCred?.expires_at, true, null);
                 }
 
                 throw new InvalidOperationException("HANDOVER_REPLAY_CONFLICT");
@@ -1087,7 +1087,7 @@ public class CheckInRepository : GenericRepository<reservation>, ICheckInReposit
 
             handover.agreement = agreement;
             handover.unit_allocation = allocation;
-            return (handover, pin, credential.id, credential.expires_at, false);
+            return (handover, pin, credential.id, credential.expires_at, false, notification.id);
         }
         catch (Exception ex)
         {

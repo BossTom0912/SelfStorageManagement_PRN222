@@ -2,6 +2,8 @@ using SelfStorageManagementSystem.DataAccess.Entities;
 
 namespace SelfStorageManagementSystem.DataAccess.Repositories.Interfaces;
 
+public record ExpiredReservationHoldInfo(long ReservationId, long FacilityId, long CustomerUserId);
+
 public interface IReservationRepository : IRepository<reservation>
 {
     Task<reservation?> GetByIdWithDetailsAsync(
@@ -52,6 +54,10 @@ public interface IReservationRepository : IRepository<reservation>
         CancellationToken cancellationToken = default);
 
     Task<int> ExpireOverdueReservationHoldsAsync(
+        DateTimeOffset nowUtc,
+        CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<ExpiredReservationHoldInfo>> ExpireOverdueReservationHoldsDetailedAsync(
         DateTimeOffset nowUtc,
         CancellationToken cancellationToken = default);
 

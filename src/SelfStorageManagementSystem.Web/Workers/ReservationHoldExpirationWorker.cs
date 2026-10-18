@@ -65,19 +65,19 @@ public class ReservationHoldExpirationWorker : BackgroundService
                 using var scope = _scopeFactory.CreateScope();
                 var reservationService = scope.ServiceProvider.GetRequiredService<IReservationService>();
 
-                var expiredCount = await reservationService.ExpireOverdueHoldsAsync(stoppingToken);
-                if (expiredCount > 0)
+                var expiredHolds = await reservationService.ExpireOverdueHoldsDetailedAsync(stoppingToken);
+                if (expiredHolds.Count > 0)
                 {
                     _logger.LogInformation(
                         "Web Worker successfully expired {Count} overdue reservation hold(s) and released capacity.",
-                        expiredCount);
+                        expiredHolds.Count);
 
                     var hook = _injectedHook ?? scope.ServiceProvider.GetService<IReservationExpirationHook>();
                     if (hook != null)
                     {
                         try
                         {
-                            await hook.OnHoldsExpiredAsync(expiredCount, stoppingToken);
+                            await hook.OnHoldsExpiredWithDetailsAsync(expiredHolds, stoppingToken);
                         }
                         catch (Exception hookEx)
                         {

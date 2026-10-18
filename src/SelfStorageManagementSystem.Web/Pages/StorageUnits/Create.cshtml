@@ -156,6 +156,10 @@
                     <a asp-page="./Index" class="btn btn-outline-secondary px-3">
                         Hủy Bỏ
                     </a>
+                    <button type="button" id="btnCreateBySignalR" class="btn btn-outline-success px-4 fw-semibold" @(!Model.CanManage ? "disabled" : "")>
+                        <span id="btnSignalRSpinner" class="spinner-border spinner-border-sm me-1 d-none" role="status" aria-hidden="true"></span>
+                        Tạo bằng SignalR
+                    </button>
                     <button type="submit" id="btnSubmitCreate" class="btn btn-primary px-4 fw-semibold" @(!Model.CanManage ? "disabled" : "")>
                         <span id="btnSubmitSpinner" class="spinner-border spinner-border-sm me-1 d-none" role="status" aria-hidden="true"></span>
                         <span id="btnSubmitText">Tạo Mới Ô Kho</span>
@@ -244,6 +248,88 @@
                         spinner.classList.remove('d-none');
                         submitText.textContent = 'Đang xử lý...';
                     }
+                });
+            }
+
+            // =========================================================================
+            // SignalR Create Integration (Theo mẫu TeacherCode 10092026.txt & 4.txt)
+            // =========================================================================
+            const btnCreateBySignalR = document.getElementById("btnCreateBySignalR");
+            if (btnCreateBySignalR && canManage) {
+                // 1. Khởi tạo HubConnection
+                const connection = new signalR.HubConnectionBuilder()
+                    .withUrl("/storageUnitHub")
+                    .withAutomaticReconnect()
+                    .build();
+
+                // 2. Đăng ký listener trước start()
+                connection.on("Receiver_CreateStorageUnit", function (item) {
+                    console.log("Receiver_CreateStorageUnit received on Create page:", item);
+                });
+
+                connection.start().then(function () {
+                    console.log("Connected to the SignalR Hub on Create page");
+                }).catch(function (err) {
+                    return console.error("SignalR start error:", err.toString());
+                });
+
+                // 3. Sự kiện click: JSON.stringify payload, gọi invoke("HubCreate_StorageUnit", dataObj), chặn form submit lần 2
+                btnCreateBySignalR.addEventListener("click", function (event) {
+                    event.preventDefault();
+
+                    if (!selectFacility.value) {
+                        alert("Vui lòng chọn cơ sở lưu trữ.");
+                        selectFacility.focus();
+                        return;
+                    }
+
+                    if (!selectUnitType.value) {
+                        alert("Vui lòng chọn loại ô kho.");
+                        selectUnitType.focus();
+                        return;
+                    }
+
+                    const unitCodeInput = document.querySelector('input[name="Input.UnitCode"]');
+                    if (!unitCodeInput || !unitCodeInput.value.trim()) {
+                        alert("Vui lòng nhập mã ô kho.");
+                        if (unitCodeInput) unitCodeInput.focus();
+                        return;
+                    }
+
+                    const floorInput = document.querySelector('input[name="Input.FloorLabel"]');
+                    const zoneInput = document.querySelector('input[name="Input.ZoneLabel"]');
+                    const notesInput = document.querySelector('textarea[name="Input.Notes"]');
+                    const spinnerSignalR = document.getElementById("btnSignalRSpinner");
+
+                    // Chống bấm đúp (double-write prevention)
+                    btnCreateBySignalR.disabled = true;
+                    if (submitBtn) submitBtn.disabled = true;
+                    if (spinnerSignalR) spinnerSignalR.classList.remove('d-none');
+
+                    var dataObj = JSON.stringify({
+                        FacilityId: parseInt(selectFacility.value, 10),
+                        UnitTypeId: parseInt(selectUnitType.value, 10),
+                        AreaId: selectArea && selectArea.value ? parseInt(selectArea.value, 10) : null,
+                        UnitCode: unitCodeInput.value.trim(),
+                        FloorLabel: floorInput ? floorInput.value.trim() : null,
+                        ZoneLabel: zoneInput ? zoneInput.value.trim() : null,
+                        Notes: notesInput ? notesInput.value.trim() : null
+                    });
+
+                    console.log("Invoking HubCreate_StorageUnit with dataObj:", dataObj);
+
+                    connection.invoke("HubCreate_StorageUnit", dataObj)
+                        .then(function (result) {
+                            console.log("HubCreate_StorageUnit success:", result);
+                            window.location.href = "/StorageUnits?facilityId=" + encodeURIComponent(selectFacility.value);
+                        })
+                        .catch(function (err) {
+                            console.error("HubCreate_StorageUnit failed:", err.toString());
+                            btnCreateBySignalR.disabled = false;
+                            if (submitBtn) submitBtn.disabled = !canManage;
+                            if (spinnerSignalR) spinnerSignalR.classList.add('d-none');
+                            alert("Lỗi khi tạo ô kho qua SignalR: " + err.toString());
+                        });
                 });
             }
         });

@@ -12,13 +12,16 @@ public class FacilityScopeService : IFacilityScopeService
 {
     private readonly SelfStorageDbContext _context;
     private readonly IUserRepository _userRepository;
+    private readonly TimeProvider _timeProvider;
 
     public FacilityScopeService(
         SelfStorageDbContext context,
-        IUserRepository userRepository)
+        IUserRepository userRepository,
+        TimeProvider? timeProvider = null)
     {
         _context = context;
         _userRepository = userRepository;
+        _timeProvider = timeProvider ?? TimeProvider.System;
     }
 
     public async Task<bool> HasAccessToFacilityAsync(
@@ -48,7 +51,7 @@ public class FacilityScopeService : IFacilityScopeService
             return false;
         }
 
-        var now = DateTimeOffset.UtcNow;
+        var now = _timeProvider.GetUtcNow();
 
         var query = _context.staff_facility_assignments
             .Where(a => a.employee_id == userId &&
@@ -127,7 +130,7 @@ public class FacilityScopeService : IFacilityScopeService
             return new List<long>();
         }
 
-        var now = DateTimeOffset.UtcNow;
+        var now = _timeProvider.GetUtcNow();
         var query = _context.staff_facility_assignments
             .Where(a => a.employee_id == userId &&
                         a.starts_at <= now &&
@@ -174,7 +177,7 @@ public class FacilityScopeService : IFacilityScopeService
             return new List<FacilityAssignmentDto>();
         }
 
-        var now = DateTimeOffset.UtcNow;
+        var now = _timeProvider.GetUtcNow();
 
         var query = _context.staff_facility_assignments
             .Include(a => a.facility)
@@ -235,7 +238,7 @@ public class FacilityScopeService : IFacilityScopeService
             return false;
         }
 
-        var now = DateTimeOffset.UtcNow;
+        var now = _timeProvider.GetUtcNow();
         // Must have an active assignment to this exact facility
         return await _context.staff_facility_assignments
             .AnyAsync(a => a.employee_id == userId &&

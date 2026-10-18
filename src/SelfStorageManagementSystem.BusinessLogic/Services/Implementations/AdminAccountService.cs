@@ -24,6 +24,7 @@ public class AdminAccountService : IAdminAccountService
     private readonly IPasswordHasher _passwordHasher;
     private readonly IAuditService _auditService;
     private readonly ILogger<AdminAccountService> _logger;
+    private readonly IUserScopeChangedNotifier? _scopeChangedNotifier;
 
     public AdminAccountService(
         SelfStorageDbContext context,
@@ -35,7 +36,8 @@ public class AdminAccountService : IAdminAccountService
         IRepository<facility> facilityRepository,
         IPasswordHasher passwordHasher,
         IAuditService auditService,
-        ILogger<AdminAccountService> logger)
+        ILogger<AdminAccountService> logger,
+        IUserScopeChangedNotifier? scopeChangedNotifier = null)
     {
         _context = context;
         _userRepository = userRepository;
@@ -47,6 +49,7 @@ public class AdminAccountService : IAdminAccountService
         _passwordHasher = passwordHasher;
         _auditService = auditService;
         _logger = logger;
+        _scopeChangedNotifier = scopeChangedNotifier;
     }
 
     public async Task<PagedResult<UserAccountDto>> GetAccountsAsync(
@@ -225,6 +228,7 @@ public class AdminAccountService : IAdminAccountService
                 ? new List<staff_facility_assignment> { initialAssignment }
                 : new List<staff_facility_assignment>();
 
+            userRole.role = roleEntity;
             newUser.employee_profile = profile;
             newUser.user_roleusers.Add(userRole);
 
@@ -279,22 +283,43 @@ public class AdminAccountService : IAdminAccountService
         _userRepository.Update(user);
         await _userRepository.SaveChangesAsync(cancellationToken);
 
-        await _auditService.LogAsync(
-            actorUserId,
-            RoleConstants.SystemAdministrator,
-            "users",
-            user.id.ToString(),
-            "UPDATE_USER_STATUS",
-            new { Status = oldStatus },
-            new { Status = normalizedStatus },
-            ipAddress,
-            requestId,
-            cancellationToken);
+        // T13-R4-F01: Once DB commit succeeds, scope revocation notification MUST execute reliably
+        // using CancellationToken.None BEFORE any potentially cancellable post-commit operation.
+        if (_scopeChangedNotifier != null)
+        {
+            try
+            {
+                await _scopeChangedNotifier.NotifyUserScopeChangedAsync(user.id, CancellationToken.None);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to notify scope changes for user {UserId}", user.id);
+            }
+        }
+
+        try
+        {
+            await _auditService.LogAsync(
+                actorUserId,
+                RoleConstants.SystemAdministrator,
+                "users",
+                user.id.ToString(),
+                "UPDATE_USER_STATUS",
+                new { Status = oldStatus },
+                new { Status = normalizedStatus },
+                ipAddress,
+                requestId,
+                CancellationToken.None);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to write audit log after commit for user {UserId}", user.id);
+        }
 
         var assignments = await _context.staff_facility_assignments
             .Include(a => a.facility)
             .Where(a => a.employee_id == userId)
-            .ToListAsync(cancellationToken);
+            .ToListAsync(CancellationToken.None);
 
         return MapToDto(user, assignments);
     }
@@ -391,23 +416,44 @@ public class AdminAccountService : IAdminAccountService
         _userRepository.Update(user);
         await _context.SaveChangesAsync(cancellationToken);
 
-        await _auditService.LogAsync(
-            actorUserId,
-            RoleConstants.SystemAdministrator,
-            "user_roles",
-            user.id.ToString(),
-            "MANAGE_USER_ROLES",
-            new { Roles = currentRoleCodes },
-            new { Roles = normalizedRoles },
-            ipAddress,
-            requestId,
-            cancellationToken);
+        // T13-R4-F01: Once DB commit succeeds, scope revocation notification MUST execute reliably
+        // using CancellationToken.None BEFORE any potentially cancellable post-commit operation.
+        if (_scopeChangedNotifier != null)
+        {
+            try
+            {
+                await _scopeChangedNotifier.NotifyUserScopeChangedAsync(userId, CancellationToken.None);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to notify scope changes for user {UserId}", userId);
+            }
+        }
 
-        var refreshedUser = await _userRepository.GetByIdWithRolesAndProfilesAsync(userId, cancellationToken);
+        try
+        {
+            await _auditService.LogAsync(
+                actorUserId,
+                RoleConstants.SystemAdministrator,
+                "user_roles",
+                user.id.ToString(),
+                "MANAGE_USER_ROLES",
+                new { Roles = currentRoleCodes },
+                new { Roles = normalizedRoles },
+                ipAddress,
+                requestId,
+                CancellationToken.None);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to write audit log after commit for user {UserId}", userId);
+        }
+
+        var refreshedUser = await _userRepository.GetByIdWithRolesAndProfilesAsync(userId, CancellationToken.None);
         var assignments = await _context.staff_facility_assignments
             .Include(a => a.facility)
             .Where(a => a.employee_id == userId)
-            .ToListAsync(cancellationToken);
+            .ToListAsync(CancellationToken.None);
 
         return MapToDto(refreshedUser!, assignments);
     }
@@ -489,24 +535,45 @@ public class AdminAccountService : IAdminAccountService
         await _assignmentRepository.AddAsync(assignment, cancellationToken);
         await _assignmentRepository.SaveChangesAsync(cancellationToken);
 
-        await _auditService.LogAsync(
-            actorUserId,
-            RoleConstants.SystemAdministrator,
-            "staff_facility_assignments",
-            assignment.id.ToString(),
-            "ASSIGN_FACILITY",
-            null,
-            new
+        // T13-R4-F01: Once DB commit succeeds, scope revocation notification MUST execute reliably
+        // using CancellationToken.None BEFORE any potentially cancellable post-commit operation.
+        if (_scopeChangedNotifier != null)
+        {
+            try
             {
-                EmployeeId = userId,
-                FacilityId = request.FacilityId,
-                Role = normalizedRole,
-                StartsAt = request.StartsAt,
-                EndsAt = request.EndsAt
-            },
-            ipAddress,
-            requestId,
-            cancellationToken);
+                await _scopeChangedNotifier.NotifyUserScopeChangedAsync(userId, CancellationToken.None);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to notify scope changes for user {UserId}", userId);
+            }
+        }
+
+        try
+        {
+            await _auditService.LogAsync(
+                actorUserId,
+                RoleConstants.SystemAdministrator,
+                "staff_facility_assignments",
+                assignment.id.ToString(),
+                "ASSIGN_FACILITY",
+                null,
+                new
+                {
+                    EmployeeId = userId,
+                    FacilityId = request.FacilityId,
+                    Role = normalizedRole,
+                    StartsAt = request.StartsAt,
+                    EndsAt = request.EndsAt
+                },
+                ipAddress,
+                requestId,
+                CancellationToken.None);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to write audit log after commit for user {UserId}", userId);
+        }
 
         return new FacilityAssignmentDto
         {
@@ -547,17 +614,38 @@ public class AdminAccountService : IAdminAccountService
         _assignmentRepository.Update(assignment);
         await _assignmentRepository.SaveChangesAsync(cancellationToken);
 
-        await _auditService.LogAsync(
-            actorUserId,
-            RoleConstants.SystemAdministrator,
-            "staff_facility_assignments",
-            assignment.id.ToString(),
-            "TERMINATE_FACILITY_ASSIGNMENT",
-            new { EndsAt = previousEnd },
-            new { EndsAt = now },
-            ipAddress,
-            requestId,
-            cancellationToken);
+        // T13-R4-F01: Once DB commit succeeds, scope revocation notification MUST execute reliably
+        // using CancellationToken.None BEFORE any potentially cancellable post-commit operation.
+        if (_scopeChangedNotifier != null)
+        {
+            try
+            {
+                await _scopeChangedNotifier.NotifyUserScopeChangedAsync(assignment.employee_id, CancellationToken.None);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to notify scope changes for user {UserId}", assignment.employee_id);
+            }
+        }
+
+        try
+        {
+            await _auditService.LogAsync(
+                actorUserId,
+                RoleConstants.SystemAdministrator,
+                "staff_facility_assignments",
+                assignment.id.ToString(),
+                "TERMINATE_FACILITY_ASSIGNMENT",
+                new { EndsAt = previousEnd },
+                new { EndsAt = now },
+                ipAddress,
+                requestId,
+                CancellationToken.None);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to write audit log after commit for user {UserId}", assignment.employee_id);
+        }
     }
 
     public async Task<List<FacilityLookupDto>> GetFacilitiesAsync(
@@ -585,7 +673,7 @@ public class AdminAccountService : IAdminAccountService
             Status = u.status,
             LastLoginAt = u.last_login_at,
             CreatedAt = u.created_at,
-            Roles = u.user_roleusers.Select(ur => ur.role.code).ToList(),
+            Roles = u.user_roleusers.Where(ur => ur.role != null).Select(ur => ur.role.code).ToList(),
             FullName = u.customer_profile?.full_name ?? u.employee_profile?.full_name,
             IdentityNumber = u.customer_profile?.identity_number,
             EmployeeCode = u.employee_profile?.employee_code,

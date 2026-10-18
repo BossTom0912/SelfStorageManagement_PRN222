@@ -520,7 +520,7 @@ public class CatalogRazorPagesTests : IClassFixture<WebTestFixture>
         // Arrange
         var suffix = Guid.NewGuid().ToString("N")[..6];
         var (facilityId, unitTypeId, _) = await SeedFacilityWithUnitsAsync(suffix);
-        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var today = DateOnly.FromDateTime(TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, SelfStorageManagementSystem.Web.Helpers.AppFormatters.DefaultFacilityTimeZone));
 
         // Act - Truy vấn ngày bắt đầu trong quá khứ
         var response = await _client.GetAsync($"/Catalog/Details?facilityId={facilityId}&RentalStartDate=2020-01-01&RentalEndDate=2020-02-01");

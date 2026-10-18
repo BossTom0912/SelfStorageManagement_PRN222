@@ -29,6 +29,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ICheckInService, CheckInService>();
         services.AddScoped<IAccountIdentityService, AccountIdentityService>();
         services.AddScoped<IStorageUnitAdminService, StorageUnitAdminService>();
+        services.AddScoped<IUserScopeChangedNotifier, NullUserScopeChangedNotifier>();
 
         return services;
     }

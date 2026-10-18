@@ -12,24 +12,30 @@ using SelfStorageManagementSystem.BusinessLogic.DTOs.Responses.StorageUnits;
 using SelfStorageManagementSystem.BusinessLogic.Exceptions;
 using SelfStorageManagementSystem.BusinessLogic.Services.Interfaces;
 
+using SelfStorageManagementSystem.Web.Realtime;
+
 namespace SelfStorageManagementSystem.Web.Pages.StorageUnits;
 
 /// <summary>
 /// PageModel cho trang chỉnh sửa ô kho (/StorageUnits/Edit).
 /// Refactor từ khung scaffold sang BLL Service IStorageUnitAdminService.UpdateAsync.
 /// Giữ FacilityId và UnitTypeId bất biến; truyền ExpectedUpdatedAt dạng round-trip phục vụ kiểm soát xung đột đồng thời.
+/// Phát sự kiện realtime thông qua IStorageUnitRealtimePublisher.
 /// </summary>
 [Authorize(Policy = "StaffOnly")]
 public class EditModel : PageModel
 {
     private readonly IStorageUnitAdminService _storageUnitAdminService;
+    private readonly IStorageUnitRealtimePublisher _realtimePublisher;
     private readonly ILogger<EditModel> _logger;
 
     public EditModel(
         IStorageUnitAdminService storageUnitAdminService,
+        IStorageUnitRealtimePublisher realtimePublisher,
         ILogger<EditModel> logger)
     {
         _storageUnitAdminService = storageUnitAdminService ?? throw new ArgumentNullException(nameof(storageUnitAdminService));
+        _realtimePublisher = realtimePublisher ?? throw new ArgumentNullException(nameof(realtimePublisher));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
@@ -119,11 +125,10 @@ public class EditModel : PageModel
             return Page();
         }
 
+        StorageUnitAdminDto updated;
         try
         {
-            var updated = await _storageUnitAdminService.UpdateAsync(Id, Input, actorUserId, cancellationToken);
-            TempData["SuccessMessage"] = $"Cập nhật thông tin ô kho '{updated.UnitCode}' thành công.";
-            return RedirectToPage("./Index", new { facilityId = updated.FacilityId });
+            updated = await _storageUnitAdminService.UpdateAsync(Id, Input, actorUserId, cancellationToken);
         }
         catch (ConflictException ex)
         {
@@ -165,6 +170,26 @@ public class EditModel : PageModel
             ModelState.AddModelError(string.Empty, ErrorMessage);
             await ReloadStateAsync(Id, actorUserId, cancellationToken);
             return Page();
+        }
+
+        // T13-R6-F01: Thao tác DB đã lưu thành công. Xử lý đồng bộ realtime sau commit độc lập.
+        try
+        {
+            await _realtimePublisher.PublishUpdatedAsync(updated, cancellationToken);
+            TempData["SuccessMessage"] = $"Cập nhật thông tin ô kho '{updated.UnitCode}' thành công.";
+            return RedirectToPage("./Index", new { facilityId = updated.FacilityId });
+        }
+        catch (RealtimePublishDegradedException ex)
+        {
+            _logger.LogWarning(ex, "Đã cập nhật ô kho '{UnitCode}' (ID: {UnitId}) thành công trong CSDL nhưng đồng bộ realtime bị suy giảm cho cơ sở {FacilityId}.", updated.UnitCode, updated.Id, updated.FacilityId);
+            TempData["WarningMessage"] = $"Cập nhật ô kho '{updated.UnitCode}' thành công trong cơ sở dữ liệu, nhưng thông báo thời gian thực chưa thể đồng bộ tự động tới các màn hình khác. Vui lòng tải lại trang để xem cập nhật mới nhất.";
+            return RedirectToPage("./Index", new { facilityId = updated.FacilityId });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Lỗi ngoài dự kiến khi phát realtime cập nhật cho ô kho '{UnitCode}' (ID: {UnitId}).", updated.UnitCode, updated.Id);
+            TempData["WarningMessage"] = $"Cập nhật ô kho '{updated.UnitCode}' thành công trong cơ sở dữ liệu, nhưng thông báo thời gian thực gặp sự cố khi phát tin. Vui lòng tải lại trang để cập nhật.";
+            return RedirectToPage("./Index", new { facilityId = updated.FacilityId });
         }
     }
 

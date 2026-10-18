@@ -8,6 +8,7 @@ using SelfStorageManagementSystem.BusinessLogic.Exceptions;
 using SelfStorageManagementSystem.BusinessLogic.Services.Interfaces;
 using SelfStorageManagementSystem.DataAccess.Entities;
 using SelfStorageManagementSystem.DataAccess.Repositories.Interfaces;
+using ExpiredReservationHoldInfo = SelfStorageManagementSystem.BusinessLogic.DTOs.Responses.Reservations.ExpiredReservationHoldInfo;
 
 namespace SelfStorageManagementSystem.BusinessLogic.Services.Implementations;
 
@@ -313,13 +314,21 @@ public class ReservationService : IReservationService
 
     public async Task<int> ExpireOverdueHoldsAsync(CancellationToken cancellationToken = default)
     {
+        var list = await ExpireOverdueHoldsDetailedAsync(cancellationToken);
+        return list.Count;
+    }
+
+    public async Task<IReadOnlyList<ExpiredReservationHoldInfo>> ExpireOverdueHoldsDetailedAsync(CancellationToken cancellationToken = default)
+    {
         var nowUtc = DateTimeOffset.UtcNow;
-        var count = await _reservationRepository.ExpireOverdueReservationHoldsAsync(nowUtc, cancellationToken);
-        if (count > 0)
+        var dalList = await _reservationRepository.ExpireOverdueReservationHoldsDetailedAsync(nowUtc, cancellationToken);
+        if (dalList.Count > 0)
         {
-            _logger.LogInformation("Background worker expired {Count} overdue reservation holds at {NowUtc}", count, nowUtc);
+            _logger.LogInformation("Background worker expired {Count} overdue reservation holds at {NowUtc}", dalList.Count, nowUtc);
         }
-        return count;
+        return dalList
+            .Select(h => new ExpiredReservationHoldInfo(h.ReservationId, h.FacilityId, h.CustomerUserId))
+            .ToList();
     }
 
     private async Task VerifyAccessPermissionAsync(

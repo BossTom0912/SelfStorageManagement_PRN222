@@ -31,4 +31,7 @@ public interface IReservationService
 
     Task<int> ExpireOverdueHoldsAsync(
         CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<ExpiredReservationHoldInfo>> ExpireOverdueHoldsDetailedAsync(
+        CancellationToken cancellationToken = default);
 }

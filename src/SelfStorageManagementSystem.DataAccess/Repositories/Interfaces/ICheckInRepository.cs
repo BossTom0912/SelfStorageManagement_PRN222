@@ -50,7 +50,7 @@ public interface ICheckInRepository : IRepository<reservation>
         Action<Common.StaffCounterPermissionSnapshot, long>? validatePermission = null,
         CancellationToken cancellationToken = default);
 
-    Task<(handover_record Handover, string? Pin, long? CredentialId, DateTimeOffset? CredentialExpiresAt, bool IsAlreadyCompleted)> CompleteCheckInWithLockAsync(
+    Task<(handover_record Handover, string? Pin, long? CredentialId, DateTimeOffset? CredentialExpiresAt, bool IsAlreadyCompleted, long? NotificationId)> CompleteCheckInWithLockAsync(
         long reservationId,
         long currentAllocationId,
         long currentInspectionId,

@@ -8,6 +8,7 @@ using SelfStorageManagementSystem.BusinessLogic.DTOs.Requests.CheckIn;
 using SelfStorageManagementSystem.BusinessLogic.DTOs.Responses.CheckIn;
 using SelfStorageManagementSystem.BusinessLogic.Exceptions;
 using SelfStorageManagementSystem.BusinessLogic.Services.Interfaces;
+using SelfStorageManagementSystem.Web.Realtime;
 
 namespace SelfStorageManagementSystem.Web.Pages.Staff.CheckIn;
 
@@ -15,14 +16,17 @@ namespace SelfStorageManagementSystem.Web.Pages.Staff.CheckIn;
 public class IndexModel : PageModel
 {
     private readonly ICheckInService _checkInService;
+    private readonly IWebRealtimePublisher? _realtimePublisher;
     private readonly ILogger<IndexModel> _logger;
 
     public IndexModel(
         ICheckInService checkInService,
-        ILogger<IndexModel> logger)
+        ILogger<IndexModel> logger,
+        IWebRealtimePublisher? realtimePublisher = null)
     {
         _checkInService = checkInService ?? throw new ArgumentNullException(nameof(checkInService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _realtimePublisher = realtimePublisher;
     }
 
     [BindProperty(SupportsGet = true)]
@@ -35,6 +39,8 @@ public class IndexModel : PageModel
     public string? ErrorMessage { get; set; }
 
     public string? SuccessMessage { get; set; }
+
+    public string? WarningMessage { get; set; }
 
     public bool IsStaleConflict { get; set; }
 
@@ -112,6 +118,19 @@ public class IndexModel : PageModel
             SuccessMessage = $"Xác minh giấy tờ tùy thân thành công ({result.VerificationMethod}).";
 
             await LoadCheckInDataAsync(input.Code, cancellationToken);
+
+            if (_realtimePublisher != null)
+            {
+                try
+                {
+                    await _realtimePublisher.PublishCheckInChangedAsync(result.VerificationId, input.ReservationId, 0, CheckInData?.FacilityId ?? 0, CheckInData?.CustomerId, "verified", cancellationToken);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "Realtime publish degraded after verify identity for reservation {ReservationId}", input.ReservationId);
+                }
+            }
+
             return Page();
         }
         catch (BadRequestException ex)
@@ -156,6 +175,20 @@ public class IndexModel : PageModel
             SuccessMessage = $"Gán ô kho {result.UnitCode} thành công!";
 
             await LoadCheckInDataAsync(input.Code, cancellationToken);
+
+            if (_realtimePublisher != null)
+            {
+                try
+                {
+                    await _realtimePublisher.PublishCheckInChangedAsync(result.AllocationId, input.ReservationId, result.StorageUnitId, CheckInData?.FacilityId ?? 0, CheckInData?.CustomerId, "allocated", cancellationToken);
+                    await _realtimePublisher.PublishCatalogInvalidatedAsync(CheckInData?.FacilityId ?? 0, null, cancellationToken);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "Realtime publish degraded after assign unit for reservation {ReservationId}", input.ReservationId);
+                }
+            }
+
             return Page();
         }
         catch (ConflictException ex)
@@ -208,6 +241,30 @@ public class IndexModel : PageModel
             SuccessMessage = $"Đã giải phóng ô kho {result.UnitCode}. Vui lòng chọn và gán ô kho mới.";
 
             await LoadCheckInDataAsync(input.Code, cancellationToken);
+
+            if (_realtimePublisher != null)
+            {
+                try
+                {
+                    await _realtimePublisher.PublishCheckInChangedAsync(result.AllocationId, input.ReservationId, result.StorageUnitId, CheckInData?.FacilityId ?? 0, CheckInData?.CustomerId, "verified", cancellationToken);
+                    await _realtimePublisher.PublishCatalogInvalidatedAsync(CheckInData?.FacilityId ?? 0, null, cancellationToken);
+                }
+                catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+                {
+                    throw;
+                }
+                catch (RealtimePublishDegradedException ex)
+                {
+                    _logger.LogWarning(ex, "Realtime publish degraded after release unit for reservation {ReservationId}", input.ReservationId);
+                    WarningMessage = "Thao tác gán ô kho đã lưu thành công vào cơ sở dữ liệu, nhưng đồng bộ thời gian thực gặp sự cố tạm thời.";
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "Unexpected error in realtime publish after release unit for reservation {ReservationId}", input.ReservationId);
+                    WarningMessage = "Thao tác gán ô kho đã lưu thành công vào cơ sở dữ liệu, nhưng thông báo thời gian thực gặp sự cố.";
+                }
+            }
+
             return Page();
         }
         catch (ConflictException ex)
@@ -283,6 +340,33 @@ public class IndexModel : PageModel
             }
 
             await LoadCheckInDataAsync(input.Code, cancellationToken);
+
+            if (_realtimePublisher != null)
+            {
+                try
+                {
+                    await _realtimePublisher.PublishCheckInChangedAsync(result.InspectionId, input.ReservationId, result.StorageUnitId ?? 0, CheckInData?.FacilityId ?? 0, CheckInData?.CustomerId, "inspected", cancellationToken);
+                    if (result.Status == "failed" || result.UnitReleasedDueToFailure)
+                    {
+                        await _realtimePublisher.PublishCatalogInvalidatedAsync(CheckInData?.FacilityId ?? 0, null, cancellationToken);
+                    }
+                }
+                catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+                {
+                    throw;
+                }
+                catch (RealtimePublishDegradedException ex)
+                {
+                    _logger.LogWarning(ex, "Realtime publish degraded after perform inspection for reservation {ReservationId}", input.ReservationId);
+                    WarningMessage = "Biên bản kiểm tra đã lưu thành công vào cơ sở dữ liệu, nhưng đồng bộ thời gian thực gặp sự cố tạm thời.";
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "Unexpected error in realtime publish after perform inspection for reservation {ReservationId}", input.ReservationId);
+                    WarningMessage = "Biên bản kiểm tra đã lưu thành công vào cơ sở dữ liệu, nhưng thông báo thời gian thực gặp sự cố.";
+                }
+            }
+
             return Page();
         }
         catch (ConflictException ex)
@@ -347,6 +431,36 @@ public class IndexModel : PageModel
             SuccessMessage = "Bàn giao ô kho và kích hoạt hợp đồng thành công!";
 
             await LoadCheckInDataAsync(input.Code, cancellationToken);
+
+            if (_realtimePublisher != null)
+            {
+                try
+                {
+                    var customerId = CheckInData?.CustomerId;
+                    var facilityId = CheckInData?.FacilityId ?? 0;
+                    await _realtimePublisher.PublishCheckInChangedAsync(result.UnitAllocationId, input.ReservationId, result.StorageUnitId, facilityId, customerId, "completed", cancellationToken);
+                    await _realtimePublisher.PublishCatalogInvalidatedAsync(facilityId, null, cancellationToken);
+                    if (customerId.HasValue && customerId.Value > 0 && result.NotificationId.HasValue && result.NotificationId.Value > 0)
+                    {
+                        await _realtimePublisher.PublishNotificationsChangedAsync(customerId.Value, result.NotificationId.Value, cancellationToken);
+                    }
+                }
+                catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+                {
+                    throw;
+                }
+                catch (RealtimePublishDegradedException ex)
+                {
+                    _logger.LogWarning(ex, "Realtime publish degraded after complete checkin for reservation {ReservationId}", input.ReservationId);
+                    WarningMessage = "Bàn giao kho đã lưu thành công vào cơ sở dữ liệu. Tuy nhiên, tính năng đồng bộ thời gian thực gặp sự cố tạm thời; các màn hình khác sẽ cập nhật khi tải lại trang.";
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "Unexpected error in realtime publish after complete checkin for reservation {ReservationId}", input.ReservationId);
+                    WarningMessage = "Bàn giao kho đã lưu thành công vào cơ sở dữ liệu. Tuy nhiên, thông báo thời gian thực gặp sự cố.";
+                }
+            }
+
             return Page();
         }
         catch (ConflictException ex)

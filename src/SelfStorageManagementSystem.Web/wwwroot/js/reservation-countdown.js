@@ -345,6 +345,31 @@
      * Áp dụng giao diện trạng thái kết thúc (confirmed / cancelled) cho đơn đặt chỗ
      */
     function applyStatusUpdateOnUi(container, data, reservationId) {
+        // Hỗ trợ linh hoạt cả 2 chữ ký:
+        // 1. applyStatusUpdateOnUi(container, data, reservationId)
+        // 2. applyStatusUpdateOnUi(reservationId, statusString, displayName)
+        if (typeof container === 'number' || (typeof container === 'string' && !document.getElementById(container))) {
+            const passedId = container;
+            const passedStatus = typeof data === 'string' ? data : (data && data.status ? data.status : 'confirmed');
+            const passedDisplayName = reservationId || (data && data.statusDisplayName ? data.statusDisplayName : (passedStatus === 'confirmed' ? 'Đã xác nhận' : passedStatus));
+            reservationId = passedId;
+            data = {
+                status: passedStatus,
+                statusDisplayName: passedDisplayName,
+                canCancel: false,
+                isHoldActive: false
+            };
+            container = document.querySelector('[data-reservation-id="' + reservationId + '"]') ||
+                        document.querySelector('[data-reservation-countdown][data-reservation-id="' + reservationId + '"]');
+        } else if (typeof data === 'string') {
+            data = {
+                status: data,
+                statusDisplayName: data === 'confirmed' ? 'Đã xác nhận' : (data === 'cancelled' ? 'Đã hủy' : data),
+                canCancel: false,
+                isHoldActive: false
+            };
+        }
+
         // A. Cập nhật theo dòng cụ thể trên Index hoặc MyReservations
         const row = (container && container.closest('tr')) || document.querySelector('[data-reservation-row="' + reservationId + '"]');
         if (row) {
@@ -543,12 +568,62 @@
         }
     }
 
+    // T15 R3 Fix (R2-F04): Lắng nghe phục hồi kết nối SignalR để refetch canonical state ngay lập tức
+    function resyncAllActiveReservations() {
+        console.log('[ReservationCountdown] Realtime reconnected. Resyncing canonical reservation states...');
+        const candidateContainers = document.querySelectorAll('[data-reservation-countdown], [data-reservation-id], #reservationCountdownPanel');
+        const processedIds = new Set();
+
+        candidateContainers.forEach(function (cont) {
+            const resId = cont.getAttribute('data-reservation-id');
+            if (!resId || processedIds.has(resId)) return;
+            processedIds.add(resId);
+
+            const statusUrl = '/Reservations/Details?id=' + encodeURIComponent(resId) + '&handler=Status';
+            fetch(statusUrl, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(function (response) {
+                if (response.status === 401) {
+                    applyAuthErrorOnUi(cont, 401, resId);
+                    return null;
+                }
+                if (response.status === 403) {
+                    applyAuthErrorOnUi(cont, 403, resId);
+                    return null;
+                }
+                if (!response.ok) return null;
+                return response.json();
+            })
+            .then(function (resData) {
+                if (!resData || !resData.success) return;
+
+                if (resData.status === 'expired') {
+                    applyExpiredStateOnUi(cont, resData, resId);
+                } else if (resData.status === 'confirmed' || resData.status === 'cancelled' ||
+                           resData.status === 'checked_in' || resData.status === 'completed' || resData.status === 'converted') {
+                    applyStatusUpdateOnUi(cont, resData, resId);
+                }
+            })
+            .catch(function (err) {
+                console.warn('[ReservationCountdown] Reconnect status fetch error for reservation ' + resId + ':', err);
+            });
+        });
+    }
+
+    document.addEventListener('app:realtime-reconnected', resyncAllActiveReservations);
+
     // Expose helpers for testing and programmatic invocation
     window.ReservationCountdown = {
         init: initReservationCountdown,
         applyExpiredStateOnUi: applyExpiredStateOnUi,
         applyStatusUpdateOnUi: applyStatusUpdateOnUi,
-        applyAuthErrorOnUi: applyAuthErrorOnUi
+        applyAuthErrorOnUi: applyAuthErrorOnUi,
+        resyncAllActiveReservations: resyncAllActiveReservations
     };
     window.initReservationCountdown = initReservationCountdown;
 
