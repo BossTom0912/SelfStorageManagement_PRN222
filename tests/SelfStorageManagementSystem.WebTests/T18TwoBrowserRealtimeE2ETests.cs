@@ -784,7 +784,6 @@ public class T18TwoBrowserRealtimeE2ETests
         Assert.Contains(CookieAuthExtensions.CookieName, await ctxCust.GetCookieNamesAsync());
 
         // 1. Prepare ready-for-checkin reservation & scheduled agreement starting today
-        var today = DateOnly.FromDateTime(DateTime.UtcNow);
         var rsvSuffix = Guid.NewGuid().ToString("N")[..6].ToUpperInvariant();
         var rsvCode = $"RSV-T18-{rsvSuffix}";
         var agrNumber = $"AGR-T18-{rsvSuffix}";
@@ -798,6 +797,13 @@ public class T18TwoBrowserRealtimeE2ETests
             using (var scope = harness.CreateScope())
             {
                 var db = scope.ServiceProvider.GetRequiredService<SelfStorageDbContext>();
+                var facilityTimeZoneId = await db.facilities
+                    .Where(f => f.id == 1L)
+                    .Select(f => f.timezone)
+                    .SingleAsync();
+                var today = DateOnly.FromDateTime(TimeZoneInfo.ConvertTimeFromUtc(
+                    DateTime.UtcNow,
+                    SelfStorageManagementSystem.Web.Helpers.AppFormatters.ResolveFacilityTimeZone(facilityTimeZoneId)));
 
                 // Finding 2: Create an isolated, dedicated storage unit specifically for this test fixture.
                 // Do NOT rewrite or reset unrelated seeded units 1-4, and do NOT cancel other tests' reservations.
