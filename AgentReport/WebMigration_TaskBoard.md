@@ -273,3 +273,4 @@
 - **Kiểm thử Codex**: live WebSocket expiry 1/1 PASS; SecurityHttpLiveServerTests 40/40 PASS; Web solution 450/450 PASS; legacy default 225 PASS, 19 SKIP. Không chạy lại SQL concurrency vì T21 không đổi SQL; T17 đã xác minh 19/19.
 - **Bảo toàn**: `/storageUnitHub`, ba Hub methods, ba Receiver events, thời hạn cookie 5 phút và kiểm tra Origin RFC 6454. Test Web tạo lại 19 PNG T18; đã khôi phục từ evidence R6 đồng bộ, không còn diff.
 - **Đồng bộ**: Toàn bộ tệp T21/T22 và báo cáo/memory/TaskBoard khớp SHA-256 giữa `Final_Project_Web` và `Final_Project`. Git chỉ lấy các tệp T21/T22; ba tệp loại trừ và thay đổi line ending không liên quan ở ngoài commit.
+- **Git**: Nhánh `codex/webmigration-t21-t22-final`, commit phạm vi `002d84e1dfdb4bea51b4bd58244ef290a623a294`, merge commit đã push lên `main` `57a6bf0fedba46d17a6a9d35afc2dd119546d65f`.

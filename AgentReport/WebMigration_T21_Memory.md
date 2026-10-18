@@ -80,6 +80,8 @@
 - Feature Commit for T19-T20 Handoff: `87ee0b3d926ebe4f868076b6af7a292ba17031f5`.
 - Git Policy: Gemini does not commit, push, or merge; Codex manages the Git lifecycle after independent review.
 - Workspace Synchronization: All scoped T21 files are synchronized to `D:\FPT\PRN222\Project\Final_Project` and verified with exact SHA-256 match.
+- Final Git branch: `codex/webmigration-t21-t22-final`; scoped feature commit `002d84e1dfdb4bea51b4bd58244ef290a623a294`; merge into `main` `57a6bf0fedba46d17a6a9d35afc2dd119546d65f` (pushed to `origin/main`).
+- Gemini T21 implementation chat: `https://127.0.0.1:50608/c/06a8e4fd-e223-43ee-a8ad-3df980bdc40b`; Codex T22 review chat: `01a14fcb-6606-7d81-92f6-769fd9b04817`.
 
 ---
 
