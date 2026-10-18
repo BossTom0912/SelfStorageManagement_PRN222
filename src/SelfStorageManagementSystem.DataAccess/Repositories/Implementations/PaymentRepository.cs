@@ -1077,6 +1077,10 @@ public class PaymentRepository : IPaymentRepository
             payment.failure_reason = null;
             payment.updated_at = parameters.PaidAt;
 
+            // Persist payment status update first inside existing transaction so that
+            // when payment_allocation is inserted, trigger trg_payment_allocation_guard sees payment.status == 'succeeded'
+            await _context.SaveChangesAsync(cancellationToken);
+
             var effectiveAmount = parameters.Amount > 0 ? parameters.Amount : payment.amount;
 
             // Add payment allocation

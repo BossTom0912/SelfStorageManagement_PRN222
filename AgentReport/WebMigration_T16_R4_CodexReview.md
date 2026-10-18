@@ -1,0 +1,8 @@
+# Codex independent review — T16 R4
+
+- Reviewed input: `AgentReport/WebMigration_T16_R4_FindingFixes.md`, SHA-256 `0403BF1D5F8F09EF87C3F602B4C6390C3A15A40E7CD7407F58B0E2169A3FF841`; identical in `Final_Project_Web` and `Final_Project`.
+- Result: **No findings.** `HubOriginSecurityExtensions.IsAllowedHubOrigin` now compares scheme, host and effective port, with no loopback alias exception. The middleware applies to `/storageUnitHub` before the Hub mapping in production and in the live Kestrel fixture. Direct clients without Origin remain supported.
+- Inspected the extension, `Program.cs` and fixture call sites, the changed Kestrel tests for wrong scheme, loopback alias, wrong port, same origin and default port, and the unchanged T12–T15 Hub/Receiver names. SHA-256 for extension `A9EF7A92852431783ABE6A3396AA1C0635E3450C82EBD3116FB9DA5F8FB1EF08`, Program `77471871E79E8E2B3883E12BADE702E7BEB896D533543167F151C6348FD974E5`, fixture `8243C50F3EF6461083982A9E9639E034142A699566957DB6CBF5B4BD86623037`, and live tests `A347BF93C58672A1D3958EA5134343CEED7CDF5533B5C7F2FE31744315F5147F` matches both workspaces and R4's evidence table.
+- Independent command: `dotnet test tests/SelfStorageManagementSystem.WebTests/SelfStorageManagementSystem.WebTests.csproj --no-restore --filter 'FullyQualifiedName~SecurityHttpLiveServerTests' --logger 'console;verbosity=minimal'`: **39 passed, 0 failed, 0 skipped**. The R4 author reports the separate nonbrowser WebTests regression **426/426 passed**.
+
+Review limit: this result covers T16 through R4 only. T17 has been independently verified, while T18 remains under separate review. T19–T22 remain WAITING. The three preexisting outside-commit files and T12–T15 realtime contract must remain unchanged.

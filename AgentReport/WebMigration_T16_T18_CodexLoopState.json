@@ -1,0 +1,236 @@
+{
+  "scope": "T16,T17,T18 only; T19-T22 remain WAITING",
+  "implementationWorkspace": "D:\\FPT\\PRN222\\Project\\Final_Project_Web",
+  "synchronizedWorkspace": "D:\\FPT\\PRN222\\Project\\Final_Project",
+  "baselineGitSha": "82496d648624ddf9af82d481017cfdd12e612787",
+  "baselineBranch": "main",
+  "baselineSmoke": {
+    "command": "dotnet test tests\\SelfStorageManagementSystem.WebTests\\SelfStorageManagementSystem.WebTests.csproj --no-restore --verbosity quiet",
+    "passed": 403,
+    "failed": 0,
+    "skipped": 0,
+    "duration": "4m36s"
+  },
+  "automationId": "webmigration-t16-t18-codex-review-loop",
+  "heartbeatStatus": "ACTIVE",
+  "interactiveBridgeVerified": true,
+  "scheduledBridgeVerified": true,
+  "scheduledBridgeEvidence": "First scheduled heartbeat read T16 only; T17/T18 switching was interrupted. On 2026-10-18 later retry, Computer Use read exact Antigravity conversation URLs for T16 51757cf2..., T17 0f3897a9..., and T18 aebd0fd9..., and verified each R1 fix prompt as a new user message in its own chat.",
+  "scheduledBridgeAttemptAtUtc": "2026-10-18T03:58:59.7489962Z",
+  "preservedPreexistingOutOfCommitFiles": [
+    "docs/KeHoach_Web_Gemini_Va_Codex_Review.docx",
+    "AgentReport/WebMigration_T15_CodexLoopState.json",
+    "scratch/generate_r3_report.js"
+  ],
+  "preservedFileSha256AtDispatch": {
+    "docs/KeHoach_Web_Gemini_Va_Codex_Review.docx": "8809241D1C6A87611E930576F8D669105C7D5EE2EE009E22C330ECE5E68418A3",
+    "AgentReport/WebMigration_T15_CodexLoopState.json": "170B2B6AFA6F355245F000F0B768E01FF820B163205858A9CBD7CF69165B6E1C",
+    "scratch/generate_r3_report.js": "6EFE26FF4900690D2FB415463EB83259632C62B422D3AE872DA81A0CC92AB6E9"
+  },
+  "dispatchTaskBoardSha256": "94C04E43FD80BE36C620518A376030EE1581BE7506E24484BBD039A2FFD13A6F",
+  "tasks": {
+    "T16": {
+      "owner": "Gemini A",
+      "status": "VERIFIED",
+      "conversationId": "51757cf2-ced8-476f-a163-417e862d7a60",
+      "conversationUrl": "https://127.0.0.1:50608/c/51757cf2-ced8-476f-a163-417e862d7a60",
+      "promptPath": "Agent/Gemini/WEBMIGRATION_T16_IMPLEMENT_PROMPT.md",
+      "promptSha256": "61DCACB6375144A2D32DB38C4DF3FE6BBD159D0D3A231EB38BE54CD4CBE35A10",
+      "sent": true,
+      "received": true,
+      "expectedReport": "AgentReport/WebMigration_T16_R4_FindingFixes.md",
+      "processedReports": [
+        {
+          "reviewResult": "Findings",
+          "reviewedAtUtc": "2026-10-18T03:58:59.7611032Z",
+          "path": "AgentReport/WebMigration_T16_R1_FindingFixes.md",
+          "sha256": "1389F307BB4E9B39E2F6F7720BB66A822411BA71C7B5F907B39D73322F4BE0E0"
+        },
+        {
+          "reviewResult": "Findings",
+          "reviewedAtUtc": "2026-10-18T04:22:50.788151Z",
+          "sha256": "79FBCE4E15B8F9DB895F32E071706CC0C8A3C60E2E0DE38CB8CA92AAA8077272",
+          "path": "AgentReport/WebMigration_T16_R2_FindingFixes.md"
+        },
+        {
+          "sha256": "5F8CABA9917AD8D5831E31A3C3591AA27F5A562FA3B9AD2A917738B587D33865",
+          "reviewResult": "Findings",
+          "path": "AgentReport/WebMigration_T16_R3_FindingFixes.md",
+          "reviewedAtUtc": "2026-10-18T04:33:32.124154Z"
+        },
+        {
+          "sha256": "0403BF1D5F8F09EF87C3F602B4C6390C3A15A40E7CD7407F58B0E2169A3FF841",
+          "path": "AgentReport/WebMigration_T16_R4_FindingFixes.md",
+          "reviewResult": "No findings",
+          "reviewedAtUtc": "2026-10-18T07:51:49.4065911Z"
+        }
+      ],
+      "findings": [
+        "R1: role/scope/sliding coverage fixed",
+        "R2 P1: authenticated WebSocket accepts malicious Origin and test asserts it",
+        "R2 P2: R2 report SHA-256 for two T16 source files is stale",
+        "R3 P1: Origin scheme and loopback alias accepted across origins",
+        "R3 P2: R3 report source SHA-256 table stale"
+      ],
+      "ownedPaths": [
+        "tests/SelfStorageManagementSystem.WebTests/*Security*",
+        "tests/SelfStorageManagementSystem.WebTests/*Http*",
+        "AgentReport/WebMigration_T16_R*_FindingFixes.md"
+      ],
+      "fixPromptPath": "Agent/Gemini/WEBMIGRATION_T16_R3_FIX_PROMPT.md",
+      "fixPromptSha256": "9E16F8E19FDCC491FD4479B1734906D0016FA3D36DF52FBA49E0255A143F3DEC",
+      "fixPromptSent": true,
+      "independentR2Tests": "SecurityHttpLiveServerTests 32/32 PASS",
+      "independentR3Tests": "SecurityHttpLiveServerTests 35/35 PASS",
+      "reviewEvidencePath": "AgentReport/WebMigration_T16_R4_CodexReview.md",
+      "reviewEvidenceSha256": "9289F762F1E71BC16E3F7D5D032BF2D311CD944E862D5D4D03383BD6A290FE34",
+      "verificationRequestSent": true,
+      "taskBoardVerified": true,
+      "independentR4Tests": "SecurityHttpLiveServerTests 39/39 PASS"
+    },
+    "T17": {
+      "owner": "Gemini B",
+      "status": "VERIFIED",
+      "conversationId": "0f3897a9-5890-4809-8dab-9ce97ea52b21",
+      "conversationUrl": "https://127.0.0.1:50608/c/0f3897a9-5890-4809-8dab-9ce97ea52b21",
+      "promptPath": "Agent/Gemini/WEBMIGRATION_T17_IMPLEMENT_PROMPT.md",
+      "promptSha256": "F5486177EA3F47F126D861957CA9864C0FB76D2C42BC628A5A187AE84ECD8FF1",
+      "sent": true,
+      "received": true,
+      "expectedReport": "AgentReport/WebMigration_T17_R4_FindingFixes.md",
+      "processedReports": [
+        {
+          "reviewResult": "Findings",
+          "reviewedAtUtc": "2026-10-18T03:58:59.7645282Z",
+          "path": "AgentReport/WebMigration_T17_R1_FindingFixes.md",
+          "sha256": "5898D11D648F027FE59176EF40110E2C257954503147E8F5694810D9F48265AC"
+        },
+        {
+          "reviewResult": "Findings",
+          "reviewedAtUtc": "2026-10-18T04:22:50.788151Z",
+          "sha256": "CF48348FEF88E686AD1C88859AB33946235AE1A83F6B5110B217AEF1F9C4725E",
+          "path": "AgentReport/WebMigration_T17_R2_FindingFixes.md"
+        },
+        {
+          "sha256": "382EDA771EB6F6BCA0C83571618625368304399C6E1ADEA266ABBE0ED06BB0A7",
+          "reviewResult": "Findings",
+          "path": "AgentReport/WebMigration_T17_R3_FindingFixes.md",
+          "reviewedAtUtc": "2026-10-18T04:33:32.124154Z"
+        },
+        {
+          "path": "AgentReport/WebMigration_T17_R4_FindingFixes.md",
+          "reviewResult": "No findings",
+          "sha256": "F1FA57FEBF2011EBC35525642ACC4713F23358A993F618D1020A3F3B23A124C2",
+          "reviewedAtUtc": "2026-10-18T04:41:15.2009727Z"
+        }
+      ],
+      "findings": [
+        "R1: normal SQL payment and nullable unique index fixed",
+        "R2 P1: cleanup disables six database-wide triggers before try/finally and without transaction",
+        "R3 P2: active enforcement test accepts FK error 547, a false positive for trigger execution"
+      ],
+      "ownedPaths": [
+        "tests/SelfStorageManagementSystem.Tests/*SqlServer*",
+        "tests/SelfStorageManagementSystem.WebTests/*SqlServer*",
+        "AgentReport/WebMigration_T17_R*_FindingFixes.md"
+      ],
+      "fixPromptPath": "Agent/Gemini/WEBMIGRATION_T17_R3_FIX_PROMPT.md",
+      "fixPromptSha256": "2CC2582875CBA39865CEBDFAE77109E7A7C3DE3F518893B755FFA4F5A3A26E22",
+      "fixPromptSent": true,
+      "independentR2Tests": "SqlServerConcurrencyTests 18/18 PASS; nonconcurrency 225/225 PASS; six triggers enabled afterward",
+      "independentR3Tests": "SqlServerConcurrencyTests 19/19 PASS",
+      "reviewEvidencePath": "AgentReport/WebMigration_T17_R4_CodexReview.md",
+      "reviewEvidenceSha256": "1B8DA4191D1C712FEB7E2EDBE951EE6D50661EEB37764D5DB220135EDE891DBC",
+      "verificationRequestSent": true,
+      "independentR4Tests": "SqlServerConcurrencyTests 19/19 PASS; six triggers is_disabled=0",
+      "taskBoardVerified": true
+    },
+    "T18": {
+      "owner": "Gemini C",
+      "status": "VERIFIED",
+      "conversationId": "aebd0fd9-5c74-4f9a-9921-b48a79bd0886",
+      "conversationUrl": "https://127.0.0.1:50608/c/aebd0fd9-5c74-4f9a-9921-b48a79bd0886",
+      "promptPath": "Agent/Gemini/WEBMIGRATION_T18_IMPLEMENT_PROMPT.md",
+      "promptSha256": "7694A6A45A8EF22D0711F3F454E7973BE0F6927C2AABB381DEE218D782DD0979",
+      "sent": true,
+      "received": true,
+      "expectedReport": "AgentReport/WebMigration_T18_R6_FindingFixes.md",
+      "processedReports": [
+        {
+          "reviewResult": "Findings",
+          "reviewedAtUtc": "2026-10-18T03:58:59.7646142Z",
+          "path": "AgentReport/WebMigration_T18_R1_FindingFixes.md",
+          "sha256": "7DE55CF230FE56E205EF85032CD7C472F7104348A77D1E875FAA78EEFF4652A9"
+        },
+        {
+          "sha256": "F3EF9F0294B8240A684567F4F6C2B131B4CAF8532B152B7E6FC57B895DCFB976",
+          "path": "AgentReport/WebMigration_T18_R2_FindingFixes.md",
+          "reviewResult": "Findings",
+          "reviewedAtUtc": "2026-10-18T07:51:49.4065911Z"
+        },
+        {
+          "path": "AgentReport/WebMigration_T18_R3_FindingFixes.md",
+          "sha256": "A70E3E00DAD351A7B404455CC513679D55D42B67AE55AF60A670A95CDCF75EC7",
+          "reviewResult": "Findings",
+          "reviewedAtUtc": "2026-10-18T08:38:27.173091Z"
+        },
+        {
+          "path": "AgentReport/WebMigration_T18_R4_FindingFixes.md",
+          "sha256": "0692442BC8663A23D9ABB314685E8F0F572AF00175B2CCC5EDD2DE8DDF48994E",
+          "reviewResult": "Findings",
+          "reviewedAtUtc": "2026-10-18T09:08:06.7722884Z"
+        },
+        {
+          "path": "AgentReport/WebMigration_T18_R5_FindingFixes.md",
+          "sha256": "AB00C44E078CD094030F906CEA48E5A824F272BA01C7723150D83C2D3B480E81",
+          "reviewResult": "Findings",
+          "reviewedAtUtc": "2026-10-18T09:27:27.6884026Z"
+        },
+        {
+          "path": "AgentReport/WebMigration_T18_R6_FindingFixes.md",
+          "sha256": "18A2AA0D0462483FB3CE923D2A194E76279645EA701959BB2FE4077AE7BE7C29",
+          "reviewResult": "No findings",
+          "reviewedAtUtc": "2026-10-18T09:44:12.5048821Z"
+        }
+      ],
+      "findings": [
+        "P1 payment/check-in/account E2E tests only visit headings",
+        "P1 Edge absence silently passes and SQL failure falls back to InMemory",
+        "P2 screenshot pixels not sanitized; duplicate evidence",
+        "R2 P1: payment cleanup refers to nonexistent payments.reservation_id and swallows SQL error; refund fixtures remain",
+        "R2 P1: check-in fixture rewrites unrelated seeded units and reservations",
+        "R2 P2: browser assertions not tied to specific reservation/payment; Staff cancellation evidence unchanged",
+        "R2 P2: screenshot masking failure is swallowed and raw PNG can be saved",
+        "R3 P1: shared harness startup rewrites unrelated reservations, users and units",
+        "R3 P2: reservation browser assertions only after reload, not realtime event",
+        "R3 P2: report source hashes stale",
+        "R4 P1: Test 02 cleanup disables reservation trigger outside transaction and swallows failure; trigger is UPDATE-only so DDL is unnecessary",
+        "R5 P2: exception filter on cleanup excludes double-failure path, allowing cleanup exception to replace primary browser/test failure"
+      ],
+      "ownedPaths": [
+        "tests/SelfStorageManagementSystem.WebTests/*Browser*",
+        "tests/SelfStorageManagementSystem.WebTests/BrowserTests/*",
+        "AgentReport/WebMigration_T18_R*_FindingFixes.md"
+      ],
+      "fixPromptPath": "Agent/Gemini/WEBMIGRATION_T18_R5_FIX_PROMPT.md",
+      "fixPromptSha256": "BFB78DD2154A6BC68D74842BDE50C327001034C3E9C68A5D2CC6D5428531BFE5",
+      "fixPromptSent": true,
+      "independentR2Tests": "T18TwoBrowserRealtimeE2ETests 6/6 PASS; SQL cleanup failure confirmed by DB schema and residual records",
+      "independentR3Review": "Full T18 code, SQL and call sites inspected; WebTests build 0 errors/0 warnings; Edge/SQL rerun withheld due destructive shared harness startup; 24/24 screenshot hashes match report in both workspaces.",
+      "independentR4Tests": "T18 Edge/SQL Test 02 1/1 PASS (18s); trigger is_disabled=0 afterward; lingering T18 reservations=0; 24/24 R4 evidence PNGs restored/match report in both workspaces.",
+      "independentR5Tests": "T18 Edge/SQL Test 02 1/1 PASS (18s); trigger is_disabled=0; no lingering reservation; 24/24 evidence PNGs restored/match report in both workspaces.",
+      "reviewEvidencePath": "AgentReport/WebMigration_T18_R6_CodexReview.md",
+      "reviewEvidenceSha256": "631E6D7B0EE9EB60A49A20DB8A0E191F0EC46D4F8EC453D3AACA81A6D5297B75",
+      "verificationRequestPath": "Agent/Gemini/WEBMIGRATION_T18_R6_VERIFICATION_REQUEST.md",
+      "verificationRequestSha256": "7864F123BB11240BC7D7B9B408F974B2354404609823AC2F2837D3AD5A1383DB",
+      "verificationRequestSent": true,
+      "independentR6Tests": "T18 Edge/SQL 7/7 PASS (1m36s); full Web solution 449/449 PASS (4m36s); six triggers enabled; T18 fixture counts 0; 24 PNG evidence hashes match R6 in both workspaces.",
+      "taskBoardVerified": true
+    }
+  },
+  "sharedFileRule": "Gemini must notify Codex before edits to shared files; Codex schedules integration. No reset/restore of another agent's changes.",
+  "reportIdentityRule": "Review each report only once by relative path plus SHA-256",
+  "notificationPolicy": "Only new findings, real blocker, or all three VERIFIED",
+  "lastVerifiedTaskBoardSha256": "F6FEDA584769FBF8A20B029843C8EAFDF4AD600666938852B8350F2A8C09B516",
+  "handoffStatus": "T16-T18 VERIFIED; Git branch/merge and new-chat handoff in progress"
+}
