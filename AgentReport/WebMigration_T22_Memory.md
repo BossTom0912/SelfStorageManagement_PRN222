@@ -26,6 +26,6 @@
 
 - The focused test uses a two-second ticket instead of waiting five minutes; it exercises the production cookie scheme and endpoint option. Gemini's disabled-option negative control failed as expected, and Codex independently verified the enabled case.
 - The full Web run regenerated 19 T18 PNGs. They were restored from the synchronized R6 evidence, leaving no T18 evidence diff.
-- Base Git commit: `b67563aea6257e7d41e7da5843bb3f8593ec7a1a` on `main`. The scoped T21/T22 Git branch, commit, push, and merge follow this verified snapshot.
+- Base Git commit: `b67563aea6257e7d41e7da5843bb3f8593ec7a1a` on `main`. Final branch: `codex/webmigration-t21-t22-final`; scoped feature commit: `002d84e1dfdb4bea51b4bd58244ef290a623a294`; merge commit on pushed `main`: `57a6bf0fedba46d17a6a9d35afc2dd119546d65f`.
 - Keep outside the commit: `docs/KeHoach_Web_Gemini_Va_Codex_Review.docx`, `AgentReport/WebMigration_T15_CodexLoopState.json`, `scratch/generate_r3_report.js`, and unrelated line-ending-only changes.
-- Next task: begin in a new chat using this memory and the TaskBoard. No further T21/T22 implementation work is required.
+- Next task: begin in a new chat using this memory and the TaskBoard. T21 Gemini chat: `https://127.0.0.1:50608/c/06a8e4fd-e223-43ee-a8ad-3df980bdc40b`; T22 Codex review chat: `01a14fcb-6606-7d81-92f6-769fd9b04817`. No further T21/T22 implementation work is required.
