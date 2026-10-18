@@ -4,7 +4,7 @@ Date: 2026-10-19 (Asia/Bangkok). Owner: Codex. Base: `main` / `origin/main` at `
 
 ## Result
 
-**No findings. All required release gates passed.** The final scoped change fixes one date-sensitive T18 browser fixture and adds T23/T24 review evidence. No production BLL, DAL, Web host, schema, or contract code changed in T23/T24. T24 is ready for the scoped Git release.
+**No findings. All required release gates passed and the scoped Git release was merged and pushed.** The final scoped change fixes one date-sensitive T18 browser fixture and adds T23/T24 review evidence. No production BLL, DAL, Web host, schema, or contract code changed in T23/T24.
 
 ## Test execution
 
@@ -35,4 +35,4 @@ The current Web host still maps `/storageUnitHub` with `CloseOnAuthenticationExp
 
 ## Git release
 
-Git branch, commit, merge, and push references will be recorded in `AgentReport/WebMigration_T24_Memory.md` after the release actions complete.
+Scoped branch `codex/webmigration-t23-t24-final` was pushed with feature commit `db876be10e77ea02d467b98bbb56ecc3a3bacaad`. It was merged into `main` by `e7843d22309443431d2ab4af8364affcc3c4d34b`, and `main` was pushed to `origin`. The final TaskBoard and memory record were updated afterward in a separate scoped documentation commit. The excluded DOCX, T15 loop state, scratch generator, unrelated line-ending changes, and regenerated PNGs were not included in either release commit.

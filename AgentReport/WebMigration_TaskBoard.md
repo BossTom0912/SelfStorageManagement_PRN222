@@ -1,6 +1,6 @@
 # Bảng Theo Dõi Tiến Độ Chuyển Đổi Web (Web Migration Task Board)
 
-- **Cập nhật lần cuối**: 2026-10-19 (T01, T08, T23 VERIFIED; T24 RELEASE READY — tests and review passed)
+- **Cập nhật lần cuối**: 2026-10-19 (T01, T08, T23, T24 VERIFIED; Git release đã push main)
 - **Đầu mối duy trì**: Gemini A (Foundation & Integration Lead)
 - **Không gian làm việc**: `D:\FPT\PRN222\Project\Final_Project_Web`
 - **Solution Web**: `SelfStorageManagementSystem.Web.sln`
@@ -65,7 +65,7 @@
 [Đợt 10: Đóng review còn treo]            T23 [VERIFIED — T01/T08 Closure]
                                            │
                                            ▼
-                                          T24 [RELEASE READY — Git pending]
+                                          T24 [VERIFIED — released]
 ```
 
 ---
@@ -98,7 +98,7 @@
 | **T21** | Sửa các finding Codex đã giao | 9 | Gemini A | **VERIFIED** | T20 | [`WebMigration_FindingFixes.md`](file:///D:/FPT/PRN222/Project/Final_Project_Web/AgentReport/WebMigration_FindingFixes.md) / [`WebMigration_T21_Memory.md`](file:///D:/FPT/PRN222/Project/Final_Project_Web/AgentReport/WebMigration_T21_Memory.md) | Codex nghiệm thu độc lập: No findings. `CloseOnAuthenticationExpiration = true` đóng WebSocket khi ticket hết hạn; test Kestrel thật 1/1 PASS; Web solution 450/450 PASS; giữ route, Hub/Receiver contract và Origin RFC 6454. |
 | **T22** | Review lại và kết luận nghiệm thu | 9 | Codex | **VERIFIED — Accepted** | T21 | [`WebMigration_CodexFinalReview.md`](file:///D:/FPT/PRN222/Project/Final_Project_Web/AgentReport/WebMigration_CodexFinalReview.md) / [`WebMigration_T22_Memory.md`](file:///D:/FPT/PRN222/Project/Final_Project_Web/AgentReport/WebMigration_T22_Memory.md) | No findings; test độc lập 1/1 live expiry, 40/40 security HTTP, 450/450 Web, 225 PASS/19 SKIP legacy; SHA-256 tệp phạm vi khớp hai workspace. |
 | **T23** | Đóng review T01/T08 còn treo | 10 | Gemini A + Codex | **VERIFIED** | T22; T01/T08 review debt | [`WebMigration_T23_BacklogClosure.md`](file:///D:/FPT/PRN222/Project/Final_Project_Web/AgentReport/WebMigration_T23_BacklogClosure.md) / [`WebMigration_T23_CodexReview.md`](file:///D:/FPT/PRN222/Project/Final_Project_Web/AgentReport/WebMigration_T23_CodexReview.md) / [`WebMigration_T23_Memory.md`](file:///D:/FPT/PRN222/Project/Final_Project_Web/AgentReport/WebMigration_T23_Memory.md) | Codex No findings sau 3 vòng sửa báo cáo; 36/36 focused tests độc lập PASS; Gemini 131/131 Admin, 443/443 non-browser Web PASS, legacy 225 PASS/19 expected SKIP; SHA-256 hai workspace khớp. T01/T08 VERIFIED. |
-| **T24** | Kiểm thử cuối và phát hành Git | 10 | Codex | **RELEASE READY** | T23 VERIFIED; T01/T08 VERIFIED | [`WebMigration_T24_FinalReview.md`](file:///D:/FPT/PRN222/Project/Final_Project_Web/AgentReport/WebMigration_T24_FinalReview.md) / [`WebMigration_T24_Memory.md`](file:///D:/FPT/PRN222/Project/Final_Project_Web/AgentReport/WebMigration_T24_Memory.md) | No findings; Web 450/450 (7 browser), legacy 225 PASS/19 expected SKIP, SQL concurrency 19/19; six triggers enabled in both DBs and test fixtures cleaned. Scoped Git release pending. |
+| **T24** | Kiểm thử cuối và phát hành Git | 10 | Codex | **VERIFIED** | T23 VERIFIED; T01/T08 VERIFIED | [`WebMigration_T24_FinalReview.md`](file:///D:/FPT/PRN222/Project/Final_Project_Web/AgentReport/WebMigration_T24_FinalReview.md) / [`WebMigration_T24_Memory.md`](file:///D:/FPT/PRN222/Project/Final_Project_Web/AgentReport/WebMigration_T24_Memory.md) | No findings; Web 450/450 (7 browser), legacy 225 PASS/19 expected SKIP, SQL concurrency 19/19; six triggers enabled in both DBs and test fixtures cleaned. Branch `codex/webmigration-t23-t24-final` và merge commit `e7843d22309443431d2ab4af8364affcc3c4d34b` đã push. |
 
 ---
 
@@ -323,9 +323,9 @@
 
 ---
 
-## 20. T24 final gate trước phát hành Git (2026-10-19)
+## 20. T24 final gate và phát hành Git (2026-10-19)
 
-- **Trạng thái**: RELEASE READY. Codex review **No findings**; xem [`WebMigration_T24_FinalReview.md`](file:///D:/FPT/PRN222/Project/Final_Project_Web/AgentReport/WebMigration_T24_FinalReview.md) và [`WebMigration_T24_Memory.md`](file:///D:/FPT/PRN222/Project/Final_Project_Web/AgentReport/WebMigration_T24_Memory.md).
+- **Trạng thái**: **VERIFIED**. Codex review **No findings**; xem [`WebMigration_T24_FinalReview.md`](file:///D:/FPT/PRN222/Project/Final_Project_Web/AgentReport/WebMigration_T24_FinalReview.md) và [`WebMigration_T24_Memory.md`](file:///D:/FPT/PRN222/Project/Final_Project_Web/AgentReport/WebMigration_T24_Memory.md).
 - **Kết quả cuối**: Web 450 passed/0 failed/0 skipped gồm bảy browser tests; legacy default 225 passed/0 failed/19 expected SQL skips; SQL Server concurrency trên WebTest 19 passed/0 failed/0 skipped.
 - **Toàn vẹn DB/evidence**: Sáu trigger nghiệp vụ bật ở cả WebTest và WebE2eTest; fixture T18 và SQL concurrency đã dọn; 20 PNG tái tạo được khôi phục từ 24 bản R6 có hash đúng. Test check-in T18 được sửa để dùng ngày theo múi giờ cơ sở.
-- **Bước còn lại**: Tạo nhánh `codex/`, commit/push đúng phạm vi T23/T24, merge/push main. Sau khi Git hoàn tất, ghi ref vào memory và chuyển T24 VERIFIED.
+- **Git**: Nhánh `codex/webmigration-t23-t24-final`, feature commit `db876be10e77ea02d467b98bbb56ecc3a3bacaad`, merge commit trên `main` `e7843d22309443431d2ab4af8364affcc3c4d34b` đã push. Commit tài liệu chốt cập nhật report/memory/TaskBoard sau merge. Các tệp loại trừ và line-ending không liên quan vẫn ngoài commit.
