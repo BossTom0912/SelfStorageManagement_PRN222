@@ -212,10 +212,97 @@
         });
     };
 
+    function getCurrentFacilityId() {
+        const el = document.querySelector('[data-facility-id]');
+        if (el) {
+            const id = el.getAttribute('data-facility-id');
+            if (id) return id.trim();
+        }
+        try {
+            const url = new URL(window.location.href);
+            const param = url.searchParams.get('facilityId');
+            if (param) return param.trim();
+            const match = window.location.pathname.match(/\/Catalog\/(?:Details\/)?(\d+)/i);
+            if (match) return match[1];
+        } catch (e) {}
+        return null;
+    }
+
+    function showCatalogNotice(messageText) {
+        const container = document.querySelector('.container') || document.querySelector('main');
+        if (!container || document.getElementById('catalogRealtimeNotice')) return;
+
+        const noticeDiv = document.createElement('div');
+        noticeDiv.id = 'catalogRealtimeNotice';
+        noticeDiv.className = 'alert alert-info alert-dismissible fade show shadow-sm mb-3';
+        noticeDiv.setAttribute('role', 'alert');
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'd-flex align-items-center justify-content-between flex-wrap gap-2';
+
+        const textDiv = document.createElement('div');
+        textDiv.className = 'd-flex align-items-center';
+
+        const iconSpan = document.createElement('span');
+        iconSpan.className = 'me-2 fs-5 text-info';
+        iconSpan.textContent = 'ℹ';
+
+        const messageSpan = document.createElement('div');
+        const strong = document.createElement('strong');
+        strong.textContent = 'Dữ liệu sơ đồ & sức chứa: ';
+        messageSpan.appendChild(strong);
+        messageSpan.appendChild(document.createTextNode(messageText));
+
+        textDiv.appendChild(iconSpan);
+        textDiv.appendChild(messageSpan);
+        wrapper.appendChild(textDiv);
+
+        const reloadBtn = document.createElement('button');
+        reloadBtn.type = 'button';
+        reloadBtn.className = 'btn btn-info btn-sm fw-semibold';
+        reloadBtn.textContent = 'Tải lại trang';
+        reloadBtn.onclick = function () { window.location.reload(); };
+        wrapper.appendChild(reloadBtn);
+
+        noticeDiv.appendChild(wrapper);
+        container.prepend(noticeDiv);
+    }
+
+    /**
+     * T15 R2 Fix (F04, F07): Lắng nghe sự kiện CatalogInvalidated và RealtimeReconnected
+     */
+    Catalog.initRealtimeSync = function () {
+        document.addEventListener('app:catalog-invalidated', function (e) {
+            const detail = e.detail;
+            const currentFacId = getCurrentFacilityId();
+
+            // Nếu người dùng đang xem một cơ sở cụ thể, chỉ hiển thị thông báo khi event thuộc đúng cơ sở đó (hoặc cơ sở 0 = toàn hệ thống)
+            if (detail && detail.facilityId > 0 && currentFacId && String(detail.facilityId) !== String(currentFacId)) {
+                return;
+            }
+
+            showCatalogNotice('Có thay đổi về ô kho hoặc sức chứa tại cơ sở. Vui lòng tải lại để xem sơ đồ mới nhất.');
+        });
+
+        // F07: Reconnect sync
+        document.addEventListener('app:realtime-reconnected', function () {
+            console.log('[Catalog] Phục hồi kết nối realtime. Refetching trạng thái chuẩn từ server...');
+            const currentFacId = getCurrentFacilityId();
+            if (currentFacId) {
+                fetch(window.location.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                    .then(function () {
+                        showCatalogNotice('Kết nối mạng đã được khôi phục. Sức chứa và sơ đồ mới nhất sẵn sàng cập nhật.');
+                    })
+                    .catch(function () {});
+            }
+        });
+    };
+
     // Khởi tạo khi DOM sẵn sàng
     $(document).ready(function () {
         Catalog.initFloorMap();
         Catalog.initTabSync();
+        Catalog.initRealtimeSync();
     });
 
     window.Catalog = Catalog;

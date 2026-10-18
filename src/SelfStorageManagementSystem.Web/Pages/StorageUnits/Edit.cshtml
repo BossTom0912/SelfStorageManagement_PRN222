@@ -71,6 +71,25 @@
         </div>
     }
 
+    <!-- T13-F02: Cảnh báo realtime bản đang xem đã lỗi thời (chặn lưu đè dữ liệu) -->
+    <div id="realtimeStaleWarning" class="alert alert-warning shadow-sm mb-4 border-warning d-none" role="alert">
+        <div class="d-flex align-items-start">
+            <span class="me-3 fs-4 text-warning">&#9888;</span>
+            <div class="flex-grow-1">
+                <h6 class="alert-heading fw-bold mb-1">Cảnh báo: Dữ liệu ô kho vừa được cập nhật bởi một người dùng khác</h6>
+                <p class="mb-2 small">
+                    Ô kho này vừa được cập nhật trên hệ thống (Cập nhật lúc: <code id="staleRemoteUpdatedAt"></code>).
+                    Biểu mẫu hiện tại chứa thông tin cũ và đã bị <strong>khóa nút lưu</strong> để tránh ghi đè làm mất các thay đổi của người khác.
+                </p>
+                <div class="d-flex gap-2 mt-2">
+                    <button type="button" class="btn btn-warning btn-sm fw-semibold" onclick="window.location.reload();">
+                        <span>&#8635;</span> Tải Lại Dữ Liệu Mới Nhất
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     @if (!string.IsNullOrEmpty(Model.ErrorMessage) && !Model.IsConcurrencyConflict)
     {
         <div class="alert alert-danger alert-dismissible fade show shadow-sm mb-4" role="alert">
@@ -189,6 +208,10 @@
                     <a asp-page="./Index" class="btn btn-outline-secondary px-3">
                         Hủy Bỏ
                     </a>
+                    <button type="button" id="btnUpdateBySignalR" class="btn btn-outline-success px-4 fw-semibold" @(!Model.CanManage ? "disabled" : "")>
+                        <span id="btnSignalRSpinner" class="spinner-border spinner-border-sm me-1 d-none" role="status" aria-hidden="true"></span>
+                        Lưu bằng SignalR
+                    </button>
                     <button type="submit" id="btnSubmitEdit" class="btn btn-primary px-4 fw-semibold" @(!Model.CanManage ? "disabled" : "")>
                         <span id="btnSubmitSpinner" class="spinner-border spinner-border-sm me-1 d-none" role="status" aria-hidden="true"></span>
                         <span id="btnSubmitText">Lưu Thay Đổi</span>
@@ -207,14 +230,155 @@
             const submitBtn = document.getElementById('btnSubmitEdit');
             const spinner = document.getElementById('btnSubmitSpinner');
             const submitText = document.getElementById('btnSubmitText');
+            const canManage = @(Model.CanManage ? "true" : "false");
+            const currentUnitId = @Model.Id;
+
+            let isFormStale = false;
 
             if (form && submitBtn) {
                 form.addEventListener('submit', function (e) {
+                    if (isFormStale) {
+                        e.preventDefault();
+                        alert("Dữ liệu ô kho đã bị thay đổi trên máy chủ bởi người dùng khác. Vui lòng tải lại trang để nạp thông tin mới nhất trước khi chỉnh sửa.");
+                        return false;
+                    }
                     if ($(form).valid()) {
                         submitBtn.disabled = true;
                         spinner.classList.remove('d-none');
                         submitText.textContent = 'Đang lưu...';
                     }
+                });
+            }
+
+            // =========================================================================
+            // SignalR Update Integration (Theo mẫu TeacherCode 4.txt line 9 & 10)
+            // =========================================================================
+            const btnUpdateBySignalR = document.getElementById("btnUpdateBySignalR");
+            if (btnUpdateBySignalR && canManage) {
+                // 1. Khởi tạo HubConnection
+                const connection = new signalR.HubConnectionBuilder()
+                    .withUrl("/storageUnitHub")
+                    .withAutomaticReconnect()
+                    .build();
+
+                // 2. Đăng ký listeners trước start()
+                // Receiver_UpdateStorageUnit: Cập nhật thông tin và làm nổi bật theo mẫu TeacherCode
+                connection.on("Receiver_UpdateTransactionCashDepositSlip", function (depositSlip) {
+                    // Tương thích tên listener của TeacherCode nếu phát song song
+                    handleRealtimeUpdate(depositSlip);
+                });
+
+                connection.on("Receiver_UpdateStorageUnit", function (item) {
+                    handleRealtimeUpdate(item);
+                });
+
+                function handleRealtimeUpdate(item) {
+                    if (Number(item.id) !== currentUnitId) return;
+
+                    // T13-F02: Không tự động nhận ETag mới cho dữ liệu form cũ!
+                    // Giữ nguyên ExpectedUpdatedAt cũ để nếu cố ý submit thì BLL vẫn phát hiện xung đột đồng thời 409 Conflict.
+                    isFormStale = true;
+
+                    // Hiển thị cảnh báo bản đang xem đã lỗi thời
+                    const staleWarning = document.getElementById("realtimeStaleWarning");
+                    if (staleWarning) {
+                        const timeSpan = document.getElementById("staleRemoteUpdatedAt");
+                        if (timeSpan && item.updatedAt) {
+                            timeSpan.textContent = item.updatedAt;
+                        }
+                        staleWarning.classList.remove("d-none");
+                    }
+
+                    // Khóa các nút lưu để chặn người dùng ghi đè dữ liệu cũ
+                    if (submitBtn) {
+                        submitBtn.disabled = true;
+                        submitBtn.setAttribute("title", "Dữ liệu ô kho đã bị thay đổi bởi người khác. Vui lòng tải lại trang.");
+                    }
+                    if (btnUpdateBySignalR) {
+                        btnUpdateBySignalR.disabled = true;
+                        btnUpdateBySignalR.setAttribute("title", "Dữ liệu ô kho đã bị thay đổi bởi người khác. Vui lòng tải lại trang.");
+                    }
+
+                    // Theo mẫu TeacherCode: document.getElementById("Code").innerHTML = depositSlip.code; color = blue, background = yellow
+                    // Đổi màu nổi bật theo mẫu TeacherCode để báo hiệu mã ô vừa được cập nhật ở máy chủ
+                    const codeElement = document.querySelector('input[name="Input.UnitCode"]');
+                    if (codeElement && item.unitCode) {
+                        codeElement.style.color = "blue";
+                        codeElement.style.backgroundColor = "yellow";
+                    }
+
+                    console.warn("T13-F02: Realtime update received for unit being edited. Form locked to prevent lost updates:", item);
+                }
+
+                // Nếu ô kho bị xóa trong lúc đang mở trang Edit
+                connection.on("Receiver_DeleteStorageUnit", function (id) {
+                    if (String(id) === String(currentUnitId)) {
+                        alert("Cảnh báo: Ô kho này vừa bị xóa khỏi hệ thống bởi một người dùng khác.");
+                        btnUpdateBySignalR.disabled = true;
+                        if (submitBtn) submitBtn.disabled = true;
+                        window.location.href = "/StorageUnits";
+                    }
+                });
+
+                // Khởi chạy SignalR
+                connection.start().then(function () {
+                    console.log("Connected to the SignalR Hub on Edit page");
+                }).catch(function (err) {
+                    return console.error("SignalR start error:", err.toString());
+                });
+
+                // 3. Sự kiện click: JSON.stringify payload, gọi invoke("HubUpdate_StorageUnit", dataObj), chặn form submit lần 2
+                btnUpdateBySignalR.addEventListener("click", function (event) {
+                    event.preventDefault();
+
+                    if (isFormStale) {
+                        alert("Dữ liệu ô kho đã bị thay đổi trên máy chủ bởi người dùng khác. Vui lòng tải lại trang để nạp thông tin mới nhất trước khi chỉnh sửa.");
+                        return;
+                    }
+
+                    const unitCodeInput = document.querySelector('input[name="Input.UnitCode"]');
+                    if (!unitCodeInput || !unitCodeInput.value.trim()) {
+                        alert("Vui lòng nhập mã ô kho.");
+                        if (unitCodeInput) unitCodeInput.focus();
+                        return;
+                    }
+
+                    const areaSelect = document.querySelector('select[name="Input.AreaId"]');
+                    const floorInput = document.querySelector('input[name="Input.FloorLabel"]');
+                    const zoneInput = document.querySelector('input[name="Input.ZoneLabel"]');
+                    const notesInput = document.querySelector('textarea[name="Input.Notes"]');
+                    const expInput = document.querySelector('input[name="Input.ExpectedUpdatedAt"]');
+                    const spinnerSignalR = document.getElementById("btnSignalRSpinner");
+
+                    // Chống bấm đúp (double-write prevention)
+                    btnUpdateBySignalR.disabled = true;
+                    if (submitBtn) submitBtn.disabled = true;
+                    if (spinnerSignalR) spinnerSignalR.classList.remove('d-none');
+
+                    var dataObj = JSON.stringify({
+                        Id: currentUnitId,
+                        UnitCode: unitCodeInput.value.trim(),
+                        AreaId: areaSelect && areaSelect.value ? parseInt(areaSelect.value, 10) : null,
+                        FloorLabel: floorInput ? floorInput.value.trim() : null,
+                        ZoneLabel: zoneInput ? zoneInput.value.trim() : null,
+                        Notes: notesInput ? notesInput.value.trim() : null,
+                        ExpectedUpdatedAt: expInput ? expInput.value : null
+                    });
+
+                    console.log("Invoking HubUpdate_StorageUnit with dataObj:", dataObj);
+
+                    connection.invoke("HubUpdate_StorageUnit", dataObj)
+                        .then(function (result) {
+                            console.log("HubUpdate_StorageUnit success:", result);
+                            window.location.href = "/StorageUnits";
+                        })
+                        .catch(function (err) {
+                            console.error("HubUpdate_StorageUnit failed:", err.toString());
+                            btnUpdateBySignalR.disabled = false;
+                            if (submitBtn) submitBtn.disabled = !canManage;
+                            if (spinnerSignalR) spinnerSignalR.classList.add('d-none');
+                            alert("Lỗi cập nhật ô kho qua SignalR: " + err.toString());
+                        });
                 });
             }
         });

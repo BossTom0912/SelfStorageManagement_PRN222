@@ -476,6 +476,15 @@ public class PaymentService : IPaymentService
         var rawPayloadJson = JsonSerializer.Serialize(queryParams);
         var externalEventId = $"VNPAY-{verifyResult.TxnRef}-{verifyResult.ProviderTransactionId ?? verifyResult.ResponseCode}";
 
+        var reservationId = payment.target_invoice?.reservation_id
+            ?? payment.target_invoice?.reservation?.id
+            ?? payment.target_invoice?.agreement?.reservation_id
+            ?? 0;
+        var facilityId = payment.target_invoice?.reservation?.facility_id
+            ?? payment.target_invoice?.agreement?.facility_id
+            ?? 0;
+        var customerUserId = payment.customer_id;
+
         if (!verifyResult.IsSuccess)
         {
             _logger.LogInformation("VNPAY callback reported failed payment for Payment {PaymentId}. Reason: {Reason}", paymentId, verifyResult.FailureReason);
@@ -490,9 +499,25 @@ public class PaymentService : IPaymentService
                 FailedAt = nowUtc
             };
 
-            await _paymentRepository.ExecuteFinalizeFailedPaymentTransactionAsync(failedParams, cancellationToken);
+            var failedResult = await _paymentRepository.ExecuteFinalizeFailedPaymentTransactionAsync(failedParams, cancellationToken);
+            verifyResult.PaymentId = paymentId;
+            verifyResult.ReservationId = reservationId;
+            verifyResult.FacilityId = facilityId;
+            verifyResult.CustomerUserId = customerUserId;
+
+            if (failedResult.CurrentStatus == "succeeded")
+            {
+                verifyResult.IpnResponseCode = "02";
+                verifyResult.IpnResponseMessage = "Order already confirmed";
+                verifyResult.IsStatusTransitionCommitted = false;
+                verifyResult.CommittedStatus = "completed";
+                return verifyResult;
+            }
+
             verifyResult.IpnResponseCode = "00";
             verifyResult.IpnResponseMessage = "Confirm Success";
+            verifyResult.CommittedStatus = "failed";
+            verifyResult.IsStatusTransitionCommitted = failedResult.IsTransitionCommitted;
             return verifyResult;
         }
 
@@ -508,12 +533,36 @@ public class PaymentService : IPaymentService
         };
 
         var finalResult = await _paymentRepository.ExecuteFinalizePaymentTransactionAsync(finalizeParams, cancellationToken);
+        verifyResult.PaymentId = paymentId;
+        verifyResult.ReservationId = reservationId;
+        verifyResult.FacilityId = facilityId;
+        verifyResult.CustomerUserId = customerUserId;
+
+        if (finalResult.IsAlreadyProcessed)
+        {
+            // Idempotent callback: No DB transition committed in this run
+            verifyResult.IsStatusTransitionCommitted = false;
+            verifyResult.ReconciliationRequired = finalResult.ReconciliationRequired;
+            verifyResult.CommittedStatus = finalResult.ReconciliationRequired ? "reconciliation_required" : "completed";
+            verifyResult.IpnResponseCode = "02";
+            verifyResult.IpnResponseMessage = "Order already confirmed";
+            return verifyResult;
+        }
+
+        // New transition committed in DB
+        verifyResult.IsStatusTransitionCommitted = true;
         if (finalResult.ReconciliationRequired)
         {
             _logger.LogWarning(
                 "Payment {PaymentId} succeeded at VNPAY, but hold expired/cancelled. Reconciliation required: {Reason}",
                 paymentId,
                 finalResult.ReconciliationReason);
+            verifyResult.CommittedStatus = "reconciliation_required";
+            verifyResult.ReconciliationRequired = true;
+        }
+        else
+        {
+            verifyResult.CommittedStatus = "completed";
         }
 
         verifyResult.IpnResponseCode = "00";
@@ -538,7 +587,8 @@ public class PaymentService : IPaymentService
         var allowDemo = bool.TryParse(allowDemoStr, out var d) && d;
 
         var isDevOrTest = env.Equals("Development", StringComparison.OrdinalIgnoreCase) ||
-                          env.Equals("Test", StringComparison.OrdinalIgnoreCase);
+                          env.Equals("Test", StringComparison.OrdinalIgnoreCase) ||
+                          env.Equals("Testing", StringComparison.OrdinalIgnoreCase);
 
         if (!isDevOrTest || !allowDemo)
         {
@@ -784,7 +834,16 @@ public class PaymentService : IPaymentService
             UpdatedAt = reviewed.updated_at,
             Decision = reviewed.refund_approval?.decision,
             DecidedBy = reviewed.refund_approval?.decided_by,
-            DecidedAt = reviewed.refund_approval?.decided_at
+            DecidedAt = reviewed.refund_approval?.decided_at,
+            ReservationId = refRecord.payment?.target_invoice?.reservation_id
+                ?? refRecord.payment?.target_invoice?.reservation?.id
+                ?? refRecord.agreement?.reservation_id
+                ?? 0,
+            FacilityId = refRecord.payment?.target_invoice?.reservation?.facility_id
+                ?? refRecord.agreement?.facility_id
+                ?? 0,
+            CustomerUserId = refRecord.payment?.customer_id
+                ?? refRecord.agreement?.customer_id
         };
     }
 

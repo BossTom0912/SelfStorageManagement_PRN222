@@ -21,6 +21,7 @@ namespace SelfStorageManagementSystem.WebTests.Fixtures;
 public class CookieAuthWebTestFixture : WebApplicationFactory<Program>
 {
     private readonly string _dbName = Guid.NewGuid().ToString("N");
+    public string DatabaseName => $"SelfStorage_CookieAuthTests_{_dbName}";
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {

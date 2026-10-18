@@ -13,7 +13,7 @@ namespace SelfStorageManagementSystem.DataAccess.Repositories.Implementations;
 public class PaymentRepository : IPaymentRepository
 {
     private readonly SelfStorageDbContext _context;
-    private static readonly System.Collections.Concurrent.ConcurrentDictionary<string, SemaphoreSlim> InMemorySemaphores = new();
+    internal static readonly System.Collections.Concurrent.ConcurrentDictionary<string, SemaphoreSlim> InMemorySemaphores = new();
 
     public PaymentRepository(SelfStorageDbContext context)
     {
@@ -229,31 +229,32 @@ public class PaymentRepository : IPaymentRepository
 
         SemaphoreSlim? inMemoryResSemaphore = null;
         SemaphoreSlim? inMemoryPromoSemaphore = null;
-        if (!isRelational)
-        {
-            inMemoryResSemaphore = InMemorySemaphores.GetOrAdd(reservationLockKey, _ => new SemaphoreSlim(1, 1));
-            var enteredRes = await inMemoryResSemaphore.WaitAsync(TimeSpan.FromSeconds(5), cancellationToken);
-            if (!enteredRes)
-            {
-                throw new InvalidOperationException("CONCURRENCY_LOCK_TIMEOUT");
-            }
-
-            if (promotionLockKey != null)
-            {
-                inMemoryPromoSemaphore = InMemorySemaphores.GetOrAdd(promotionLockKey, _ => new SemaphoreSlim(1, 1));
-                var enteredPromo = await inMemoryPromoSemaphore.WaitAsync(TimeSpan.FromSeconds(5), cancellationToken);
-                if (!enteredPromo)
-                {
-                    inMemoryResSemaphore.Release();
-                    throw new InvalidOperationException("CONCURRENCY_LOCK_TIMEOUT");
-                }
-            }
-        }
-
+        bool resSemaphoreAcquired = false;
+        bool promoSemaphoreAcquired = false;
         IDbContextTransaction? transaction = null;
+
         try
         {
-            if (isRelational)
+            if (!isRelational)
+            {
+                inMemoryResSemaphore = InMemorySemaphores.GetOrAdd(reservationLockKey, _ => new SemaphoreSlim(1, 1));
+                resSemaphoreAcquired = await inMemoryResSemaphore.WaitAsync(TimeSpan.FromSeconds(5), cancellationToken);
+                if (!resSemaphoreAcquired)
+                {
+                    throw new InvalidOperationException("CONCURRENCY_LOCK_TIMEOUT");
+                }
+
+                if (promotionLockKey != null)
+                {
+                    inMemoryPromoSemaphore = InMemorySemaphores.GetOrAdd(promotionLockKey, _ => new SemaphoreSlim(1, 1));
+                    promoSemaphoreAcquired = await inMemoryPromoSemaphore.WaitAsync(TimeSpan.FromSeconds(5), cancellationToken);
+                    if (!promoSemaphoreAcquired)
+                    {
+                        throw new InvalidOperationException("CONCURRENCY_LOCK_TIMEOUT");
+                    }
+                }
+            }
+            else
             {
                 transaction = await _context.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, cancellationToken);
 
@@ -695,8 +696,8 @@ public class PaymentRepository : IPaymentRepository
         finally
         {
             if (transaction != null) await transaction.DisposeAsync();
-            inMemoryPromoSemaphore?.Release();
-            inMemoryResSemaphore?.Release();
+            if (promoSemaphoreAcquired) inMemoryPromoSemaphore?.Release();
+            if (resSemaphoreAcquired) inMemoryResSemaphore?.Release();
         }
     }
 
@@ -731,43 +732,80 @@ public class PaymentRepository : IPaymentRepository
             throw new InvalidOperationException("PAYMENT_NOT_FOUND");
         }
 
-        var reservationId = payment.target_invoice.reservation_id ?? 0;
-        var lockKey = $"SS_Reservation_{reservationId}";
+        var reservationId = payment.target_invoice?.reservation_id ?? 0;
+        var reservationLockKey = reservationId > 0 ? $"SS_Reservation_{reservationId}" : null;
+        var paymentLockKey = $"SS_Payment_{parameters.PaymentId}";
         var isRelational = _context.Database.IsRelational();
 
-        SemaphoreSlim? inMemorySemaphore = null;
-        if (!isRelational)
-        {
-            inMemorySemaphore = InMemorySemaphores.GetOrAdd(lockKey, _ => new SemaphoreSlim(1, 1));
-            var entered = await inMemorySemaphore.WaitAsync(TimeSpan.FromSeconds(5), cancellationToken);
-            if (!entered)
-            {
-                throw new InvalidOperationException("CONCURRENCY_LOCK_TIMEOUT");
-            }
-        }
-
+        SemaphoreSlim? inMemoryResSemaphore = null;
+        SemaphoreSlim? inMemoryPaySemaphore = null;
+        bool resSemaphoreAcquired = false;
+        bool paySemaphoreAcquired = false;
         IDbContextTransaction? transaction = null;
+
         try
         {
-            if (isRelational)
+            if (!isRelational)
+            {
+                if (reservationLockKey != null)
+                {
+                    inMemoryResSemaphore = InMemorySemaphores.GetOrAdd(reservationLockKey, _ => new SemaphoreSlim(1, 1));
+                    resSemaphoreAcquired = await inMemoryResSemaphore.WaitAsync(TimeSpan.FromSeconds(10), cancellationToken);
+                    if (!resSemaphoreAcquired)
+                    {
+                        throw new InvalidOperationException("CONCURRENCY_LOCK_TIMEOUT");
+                    }
+                }
+
+                inMemoryPaySemaphore = InMemorySemaphores.GetOrAdd(paymentLockKey, _ => new SemaphoreSlim(1, 1));
+                paySemaphoreAcquired = await inMemoryPaySemaphore.WaitAsync(TimeSpan.FromSeconds(10), cancellationToken);
+                if (!paySemaphoreAcquired)
+                {
+                    throw new InvalidOperationException("CONCURRENCY_LOCK_TIMEOUT");
+                }
+            }
+            else
             {
                 transaction = await _context.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, cancellationToken);
 
-                var resultParam = new SqlParameter
+                if (reservationLockKey != null)
                 {
-                    ParameterName = "@Result",
+                    var resResultParam = new SqlParameter
+                    {
+                        ParameterName = "@ResResult",
+                        SqlDbType = SqlDbType.Int,
+                        Direction = ParameterDirection.Output
+                    };
+                    var resResourceParam = new SqlParameter("@ResResource", reservationLockKey);
+
+                    await _context.Database.ExecuteSqlRawAsync(
+                        "EXEC @ResResult = sp_getapplock @Resource = @ResResource, @LockMode = 'Exclusive', @LockOwner = 'Transaction', @LockTimeout = 10000",
+                        new object[] { resResultParam, resResourceParam },
+                        cancellationToken);
+
+                    var resLockResult = (int)(resResultParam.Value ?? -999);
+                    if (resLockResult < 0)
+                    {
+                        await transaction.RollbackAsync(cancellationToken);
+                        throw new InvalidOperationException("CONCURRENCY_LOCK_TIMEOUT");
+                    }
+                }
+
+                var payResultParam = new SqlParameter
+                {
+                    ParameterName = "@PayResult",
                     SqlDbType = SqlDbType.Int,
                     Direction = ParameterDirection.Output
                 };
-                var resourceParam = new SqlParameter("@Resource", lockKey);
+                var payResourceParam = new SqlParameter("@PayResource", paymentLockKey);
 
                 await _context.Database.ExecuteSqlRawAsync(
-                    "EXEC @Result = sp_getapplock @Resource = @Resource, @LockMode = 'Exclusive', @LockOwner = 'Transaction', @LockTimeout = 5000",
-                    new object[] { resultParam, resourceParam },
+                    "EXEC @PayResult = sp_getapplock @Resource = @PayResource, @LockMode = 'Exclusive', @LockOwner = 'Transaction', @LockTimeout = 10000",
+                    new object[] { payResultParam, payResourceParam },
                     cancellationToken);
 
-                var lockResult = (int)(resultParam.Value ?? -999);
-                if (lockResult < 0)
+                var payLockResult = (int)(payResultParam.Value ?? -999);
+                if (payLockResult < 0)
                 {
                     await transaction.RollbackAsync(cancellationToken);
                     throw new InvalidOperationException("CONCURRENCY_LOCK_TIMEOUT");
@@ -775,21 +813,32 @@ public class PaymentRepository : IPaymentRepository
             }
 
             // Check if integration event has already been processed (idempotency)
+            // Finding R4-F01: Do NOT consider a prior failure event as an already-processed success!
             var existingEvent = await _context.integration_events
                 .FirstOrDefaultAsync(e => e.source == parameters.Provider &&
                                           e.external_event_id == parameters.ExternalEventId,
                                           cancellationToken);
 
-            if (existingEvent != null && existingEvent.status == "processed")
+            if (existingEvent != null &&
+                existingEvent.status == "processed" &&
+                existingEvent.event_type != "payment_failed")
             {
                 var existingAgreement = await _context.rental_agreements
                     .FirstOrDefaultAsync(a => a.reservation_id == reservationId, cancellationToken);
 
                 if (transaction != null) await transaction.CommitAsync(cancellationToken);
 
+                var isReconProcessed = payment.failure_reason == "LATE_PAYMENT_HOLD_EXPIRED" ||
+                                       payment.failure_reason == "PAYMENT_ALREADY_FAILED" ||
+                                       payment.failure_reason == "INVOICE_VOIDED" ||
+                                       payment.failure_reason == "INVOICE_AMOUNT_MISMATCH" ||
+                                       (payment.metadata != null && payment.metadata.Contains("\"reconciliation_required\":true"));
+
                 return new FinalizePaymentResult
                 {
                     IsAlreadyProcessed = true,
+                    ReconciliationRequired = isReconProcessed,
+                    ReconciliationReason = isReconProcessed ? payment.failure_reason : null,
                     Payment = payment,
                     Invoice = payment.target_invoice,
                     Reservation = payment.target_invoice.reservation!,
@@ -838,9 +887,14 @@ public class PaymentRepository : IPaymentRepository
 
                 if (transaction != null) await transaction.CommitAsync(cancellationToken);
 
+                var isReconSucceeded = payment.failure_reason == "LATE_PAYMENT_HOLD_EXPIRED" ||
+                                       (payment.metadata != null && payment.metadata.Contains("\"reconciliation_required\":true"));
+
                 return new FinalizePaymentResult
                 {
                     IsAlreadyProcessed = true,
+                    ReconciliationRequired = isReconSucceeded,
+                    ReconciliationReason = isReconSucceeded ? payment.failure_reason : null,
                     Payment = payment,
                     Invoice = invoice,
                     Reservation = reservation,
@@ -848,26 +902,33 @@ public class PaymentRepository : IPaymentRepository
                 };
             }
 
-            // Check if reservation hold is expired, cancelled, or invoice voided/amount mismatch (Issue 2)
+            // Check if reservation hold is expired, cancelled, invoice voided/amount mismatch, or payment was already failed/cancelled
             var nowUtc = DateTimeOffset.UtcNow;
             var isHoldExpiredOrCancelled = reservation.hold_until <= nowUtc ||
                                            reservation.status == "cancelled" ||
                                            reservation.status == "expired";
             var isInvoiceVoidedOrMismatch = invoice.status == "voided" || invoice.total_amount != payment.amount;
+            var isPaymentAlreadyFailedOrCancelled = payment.status == "failed" || payment.status == "cancelled";
 
-            if (isHoldExpiredOrCancelled || isInvoiceVoidedOrMismatch)
+            if (isHoldExpiredOrCancelled || isInvoiceVoidedOrMismatch || isPaymentAlreadyFailedOrCancelled)
             {
                 var failureReason = isHoldExpiredOrCancelled
                     ? "LATE_PAYMENT_HOLD_EXPIRED"
-                    : (invoice.status == "voided" ? "INVOICE_VOIDED" : "INVOICE_AMOUNT_MISMATCH");
+                    : (isInvoiceVoidedOrMismatch
+                        ? (invoice.status == "voided" ? "INVOICE_VOIDED" : "INVOICE_AMOUNT_MISMATCH")
+                        : "PAYMENT_ALREADY_FAILED");
 
                 var reasonText = isHoldExpiredOrCancelled
                     ? "Khoản thanh toán đến sau khi hold giữ chỗ đã hết hạn/hủy (Cần đối soát & hoàn tiền)"
-                    : $"Khoản thanh toán không khớp hóa đơn hiệu lực ({failureReason}) (Cần đối soát & hoàn tiền)";
+                    : (isInvoiceVoidedOrMismatch
+                        ? $"Khoản thanh toán không khớp hóa đơn hiệu lực ({failureReason}) (Cần đối soát & hoàn tiền)"
+                        : "Khoản thanh toán đến sau khi giao dịch đã bị ghi nhận thất bại/hủy (Cần đối soát & hoàn tiền)");
 
                 var reconReason = isHoldExpiredOrCancelled
                     ? "Hold đã hết hạn trước khi thanh toán hoàn tất. Hệ thống đã ghi nhận khoản tiền và tạo yêu cầu hoàn tiền để nhân sự đối soát."
-                    : $"Hóa đơn đã bị hủy hoặc số tiền thanh toán không khớp với hóa đơn hiện hành ({failureReason}). Hệ thống đã ghi nhận khoản tiền và tạo yêu cầu hoàn tiền để nhân sự đối soát.";
+                    : (isInvoiceVoidedOrMismatch
+                        ? $"Hóa đơn đã bị hủy hoặc số tiền thanh toán không khớp với hóa đơn hiện hành ({failureReason}). Hệ thống đã ghi nhận khoản tiền và tạo yêu cầu hoàn tiền để nhân sự đối soát."
+                        : "Giao dịch thanh toán đã bị đánh dấu thất bại hoặc hủy trước đó, nhưng cổng thanh toán sau đó gửi xác nhận thành công. Hệ thống đã ghi nhận khoản tiền và tạo yêu cầu hoàn tiền để nhân sự đối soát.");
 
                 // Provider confirmed money, but hold expired/cancelled or invoice voided/mismatched!
                 // DO NOT restore reservation!
@@ -919,6 +980,8 @@ public class PaymentRepository : IPaymentRepository
                 }
                 else
                 {
+                    existingEvent.event_type = "payment_succeeded_reconciliation";
+                    existingEvent.payload = parameters.RawPayloadJson;
                     existingEvent.status = "processed";
                     existingEvent.processed_at = nowUtc;
                 }
@@ -1011,6 +1074,7 @@ public class PaymentRepository : IPaymentRepository
             payment.status = "succeeded";
             payment.paid_at = parameters.PaidAt;
             payment.provider_transaction_id = parameters.ProviderTransactionId;
+            payment.failure_reason = null;
             payment.updated_at = parameters.PaidAt;
 
             var effectiveAmount = parameters.Amount > 0 ? parameters.Amount : payment.amount;
@@ -1195,6 +1259,8 @@ public class PaymentRepository : IPaymentRepository
             }
             else
             {
+                existingEvent.event_type = "payment_succeeded";
+                existingEvent.payload = parameters.RawPayloadJson;
                 existingEvent.status = "processed";
                 existingEvent.processed_at = parameters.PaidAt;
             }
@@ -1224,59 +1290,195 @@ public class PaymentRepository : IPaymentRepository
         finally
         {
             if (transaction != null) await transaction.DisposeAsync();
-            inMemorySemaphore?.Release();
+            if (paySemaphoreAcquired) inMemoryPaySemaphore?.Release();
+            if (resSemaphoreAcquired) inMemoryResSemaphore?.Release();
         }
     }
 
-    public async Task<bool> ExecuteFinalizeFailedPaymentTransactionAsync(
+    public async Task<FinalizeFailedPaymentResult> ExecuteFinalizeFailedPaymentTransactionAsync(
         FinalizeFailedPaymentParams parameters,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(parameters);
 
-        var payment = await _context.payments
+        var initialPayment = await _context.payments
             .Include(p => p.target_invoice)
             .FirstOrDefaultAsync(p => p.id == parameters.PaymentId, cancellationToken);
 
-        if (payment == null) return false;
-
-        // If payment is already terminal, no update needed
-        if (payment.status == "succeeded" || payment.status == "cancelled")
+        if (initialPayment == null)
         {
-            return false;
-        }
-
-        payment.status = "failed";
-        payment.failure_reason = parameters.FailureReason;
-        payment.updated_at = parameters.FailedAt;
-
-        var existingEvent = await _context.integration_events
-            .FirstOrDefaultAsync(e => e.source == parameters.Provider &&
-                                      e.external_event_id == parameters.ExternalEventId,
-                                      cancellationToken);
-
-        if (existingEvent == null)
-        {
-            var failedEvent = new integration_event
+            return new FinalizeFailedPaymentResult
             {
-                source = parameters.Provider,
-                external_event_id = parameters.ExternalEventId,
-                event_type = "payment_failed",
-                payload = parameters.RawPayloadJson,
-                status = "processed",
-                received_at = parameters.FailedAt,
-                processed_at = parameters.FailedAt
+                IsTransitionCommitted = false,
+                CurrentStatus = string.Empty
             };
-            _context.integration_events.Add(failedEvent);
-        }
-        else
-        {
-            existingEvent.status = "processed";
-            existingEvent.processed_at = parameters.FailedAt;
         }
 
-        await _context.SaveChangesAsync(cancellationToken);
-        return true;
+        var reservationId = initialPayment.target_invoice?.reservation_id ?? 0;
+        var reservationLockKey = reservationId > 0 ? $"SS_Reservation_{reservationId}" : null;
+        var paymentLockKey = $"SS_Payment_{parameters.PaymentId}";
+        var isRelational = _context.Database.IsRelational();
+
+        SemaphoreSlim? inMemoryResSemaphore = null;
+        SemaphoreSlim? inMemoryPaySemaphore = null;
+        bool resSemaphoreAcquired = false;
+        bool paySemaphoreAcquired = false;
+        IDbContextTransaction? transaction = null;
+
+        try
+        {
+            if (!isRelational)
+            {
+                if (reservationLockKey != null)
+                {
+                    inMemoryResSemaphore = InMemorySemaphores.GetOrAdd(reservationLockKey, _ => new SemaphoreSlim(1, 1));
+                    resSemaphoreAcquired = await inMemoryResSemaphore.WaitAsync(TimeSpan.FromSeconds(10), cancellationToken);
+                    if (!resSemaphoreAcquired)
+                    {
+                        throw new InvalidOperationException("CONCURRENCY_LOCK_TIMEOUT");
+                    }
+                }
+
+                inMemoryPaySemaphore = InMemorySemaphores.GetOrAdd(paymentLockKey, _ => new SemaphoreSlim(1, 1));
+                paySemaphoreAcquired = await inMemoryPaySemaphore.WaitAsync(TimeSpan.FromSeconds(10), cancellationToken);
+                if (!paySemaphoreAcquired)
+                {
+                    throw new InvalidOperationException("CONCURRENCY_LOCK_TIMEOUT");
+                }
+            }
+            else
+            {
+                transaction = await _context.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, cancellationToken);
+
+                if (reservationLockKey != null)
+                {
+                    var resResultParam = new SqlParameter
+                    {
+                        ParameterName = "@ResResult",
+                        SqlDbType = SqlDbType.Int,
+                        Direction = ParameterDirection.Output
+                    };
+                    var resResourceParam = new SqlParameter("@ResResource", reservationLockKey);
+
+                    await _context.Database.ExecuteSqlRawAsync(
+                        "EXEC @ResResult = sp_getapplock @Resource = @ResResource, @LockMode = 'Exclusive', @LockOwner = 'Transaction', @LockTimeout = 10000",
+                        new object[] { resResultParam, resResourceParam },
+                        cancellationToken);
+
+                    var resLockResult = (int)(resResultParam.Value ?? -999);
+                    if (resLockResult < 0)
+                    {
+                        await transaction.RollbackAsync(cancellationToken);
+                        throw new InvalidOperationException("CONCURRENCY_LOCK_TIMEOUT");
+                    }
+                }
+
+                var payResultParam = new SqlParameter
+                {
+                    ParameterName = "@PayResult",
+                    SqlDbType = SqlDbType.Int,
+                    Direction = ParameterDirection.Output
+                };
+                var payResourceParam = new SqlParameter("@PayResource", paymentLockKey);
+
+                await _context.Database.ExecuteSqlRawAsync(
+                    "EXEC @PayResult = sp_getapplock @Resource = @PayResource, @LockMode = 'Exclusive', @LockOwner = 'Transaction', @LockTimeout = 10000",
+                    new object[] { payResultParam, payResourceParam },
+                    cancellationToken);
+
+                var payLockResult = (int)(payResultParam.Value ?? -999);
+                if (payLockResult < 0)
+                {
+                    await transaction.RollbackAsync(cancellationToken);
+                    throw new InvalidOperationException("CONCURRENCY_LOCK_TIMEOUT");
+                }
+            }
+
+            // Reload fresh payment state under the exclusive lock
+            _context.Entry(initialPayment).State = EntityState.Detached;
+            if (initialPayment.target_invoice != null)
+            {
+                _context.Entry(initialPayment.target_invoice).State = EntityState.Detached;
+            }
+
+            var payment = await _context.payments
+                .Include(p => p.target_invoice)
+                .FirstOrDefaultAsync(p => p.id == parameters.PaymentId, cancellationToken);
+
+            if (payment == null)
+            {
+                if (transaction != null) await transaction.RollbackAsync(cancellationToken);
+                return new FinalizeFailedPaymentResult
+                {
+                    IsTransitionCommitted = false,
+                    CurrentStatus = string.Empty
+                };
+            }
+
+            // Terminal status check: If payment already reached a terminal status (succeeded, failed, cancelled), do NOT transition!
+            if (payment.status == "succeeded" || payment.status == "failed" || payment.status == "cancelled")
+            {
+                if (transaction != null) await transaction.CommitAsync(cancellationToken);
+                return new FinalizeFailedPaymentResult
+                {
+                    IsTransitionCommitted = false,
+                    CurrentStatus = payment.status
+                };
+            }
+
+            payment.status = "failed";
+            payment.failure_reason = parameters.FailureReason;
+            payment.updated_at = parameters.FailedAt;
+
+            var existingEvent = await _context.integration_events
+                .FirstOrDefaultAsync(e => e.source == parameters.Provider &&
+                                          e.external_event_id == parameters.ExternalEventId,
+                                          cancellationToken);
+
+            if (existingEvent == null)
+            {
+                var failedEvent = new integration_event
+                {
+                    source = parameters.Provider,
+                    external_event_id = parameters.ExternalEventId,
+                    event_type = "payment_failed",
+                    payload = parameters.RawPayloadJson,
+                    status = "processed",
+                    received_at = parameters.FailedAt,
+                    processed_at = parameters.FailedAt
+                };
+                _context.integration_events.Add(failedEvent);
+            }
+            else
+            {
+                existingEvent.status = "processed";
+                existingEvent.processed_at = parameters.FailedAt;
+            }
+
+            await _context.SaveChangesAsync(cancellationToken);
+
+            if (transaction != null)
+            {
+                await transaction.CommitAsync(cancellationToken);
+            }
+
+            return new FinalizeFailedPaymentResult
+            {
+                IsTransitionCommitted = true,
+                CurrentStatus = "failed"
+            };
+        }
+        catch
+        {
+            if (transaction != null) await transaction.RollbackAsync(cancellationToken);
+            throw;
+        }
+        finally
+        {
+            if (transaction != null) await transaction.DisposeAsync();
+            if (paySemaphoreAcquired) inMemoryPaySemaphore?.Release();
+            if (resSemaphoreAcquired) inMemoryResSemaphore?.Release();
+        }
     }
 
     public async Task<List<refund>> GetRefundsAsync(

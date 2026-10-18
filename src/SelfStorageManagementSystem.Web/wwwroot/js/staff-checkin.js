@@ -98,4 +98,111 @@ document.addEventListener('DOMContentLoaded', function () {
             errorAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     }
+
+    // 4. T15: Lắng nghe sự kiện CheckInChanged thời gian thực
+    document.addEventListener('app:checkin-changed', function (e) {
+        const detail = e.detail;
+        const container = document.querySelector('.container') || document.querySelector('main');
+        if (!container || document.getElementById('checkinRealtimeAlert')) return;
+
+        const alertDiv = document.createElement('div');
+        alertDiv.id = 'checkinRealtimeAlert';
+        alertDiv.className = 'alert alert-info alert-dismissible fade show shadow-sm mb-3';
+        alertDiv.setAttribute('role', 'alert');
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'd-flex align-items-center justify-content-between flex-wrap gap-2';
+
+        const textDiv = document.createElement('div');
+        textDiv.className = 'd-flex align-items-center';
+
+        const iconSpan = document.createElement('span');
+        iconSpan.className = 'me-2 fs-5 text-info';
+        iconSpan.textContent = 'ℹ';
+
+        const messageSpan = document.createElement('div');
+        const strong = document.createElement('strong');
+        strong.textContent = 'Tiếp nhận cập nhật: ';
+        messageSpan.appendChild(strong);
+        messageSpan.appendChild(document.createTextNode('Phiên tiếp nhận vừa có thay đổi trạng thái (' + (detail.status || 'mới') + '). Nhấn để tải lại dữ liệu.'));
+
+        textDiv.appendChild(iconSpan);
+        textDiv.appendChild(messageSpan);
+        wrapper.appendChild(textDiv);
+
+        const reloadBtn = document.createElement('button');
+        reloadBtn.type = 'button';
+        reloadBtn.className = 'btn btn-info btn-sm fw-semibold';
+        reloadBtn.textContent = 'Tải lại';
+        reloadBtn.onclick = function () { window.location.reload(); };
+        wrapper.appendChild(reloadBtn);
+
+        alertDiv.appendChild(wrapper);
+        container.prepend(alertDiv);
+    });
+
+    // 5. T15 R2 Fix (F07): Xử lý khôi phục kết nối (app:realtime-reconnected)
+    document.addEventListener('app:realtime-reconnected', function () {
+        console.log('[StaffCheckIn] Phục hồi kết nối realtime SignalR.');
+
+        // Bảo vệ nghiêm ngặt: Tuyệt đối không làm mất mã PIN một lần đang hiển thị
+        if (document.getElementById('securityPinSection')) {
+            console.log('[StaffCheckIn] Đang hiển thị mã PIN một lần. Bỏ qua reload tự động để bảo toàn PIN.');
+            return;
+        }
+
+        // Không làm gián đoạn form đang nhập dở
+        const active = document.activeElement;
+        if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.tagName === 'SELECT')) {
+            console.log('[StaffCheckIn] Nhân viên đang thao tác form. Không gián đoạn nhập liệu.');
+            return;
+        }
+
+        const url = new URL(window.location.href);
+        const code = url.searchParams.get('code');
+        if (code) {
+            // Refetch canonical state từ server
+            fetch('/Staff/CheckIn?code=' + encodeURIComponent(code), {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            }).then(function () {
+                const container = document.querySelector('.container') || document.querySelector('main');
+                if (!container || document.getElementById('checkinRealtimeAlert')) return;
+
+                const alertDiv = document.createElement('div');
+                alertDiv.id = 'checkinRealtimeAlert';
+                alertDiv.className = 'alert alert-info alert-dismissible fade show shadow-sm mb-3';
+                alertDiv.setAttribute('role', 'alert');
+
+                const wrapper = document.createElement('div');
+                wrapper.className = 'd-flex align-items-center justify-content-between flex-wrap gap-2';
+
+                const textDiv = document.createElement('div');
+                textDiv.className = 'd-flex align-items-center';
+
+                const iconSpan = document.createElement('span');
+                iconSpan.className = 'me-2 fs-5 text-info';
+                iconSpan.textContent = 'ℹ';
+
+                const messageSpan = document.createElement('div');
+                const strong = document.createElement('strong');
+                strong.textContent = 'Đã khôi phục kết nối: ';
+                messageSpan.appendChild(strong);
+                messageSpan.appendChild(document.createTextNode('Dữ liệu mới nhất sẵn sàng đồng bộ. Nhấn để cập nhật.'));
+
+                textDiv.appendChild(iconSpan);
+                textDiv.appendChild(messageSpan);
+                wrapper.appendChild(textDiv);
+
+                const reloadBtn = document.createElement('button');
+                reloadBtn.type = 'button';
+                reloadBtn.className = 'btn btn-info btn-sm fw-semibold';
+                reloadBtn.textContent = 'Cập nhật';
+                reloadBtn.onclick = function () { window.location.reload(); };
+                wrapper.appendChild(reloadBtn);
+
+                alertDiv.appendChild(wrapper);
+                container.prepend(alertDiv);
+            }).catch(function () {});
+        }
+    });
 });

@@ -19,4 +19,7 @@ public class RefundDetailResponse
     public string? Decision { get; set; }
     public long? DecidedBy { get; set; }
     public DateTimeOffset? DecidedAt { get; set; }
+    public long ReservationId { get; set; }
+    public long FacilityId { get; set; }
+    public long? CustomerUserId { get; set; }
 }

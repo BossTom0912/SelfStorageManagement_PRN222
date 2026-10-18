@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using SelfStorageManagementSystem.BusinessLogic.Common.Constants;
 using SelfStorageManagementSystem.BusinessLogic.DependencyInjection;
+using SelfStorageManagementSystem.BusinessLogic.Services.Interfaces;
 using SelfStorageManagementSystem.Web.Extensions;
 using SelfStorageManagementSystem.Web.Hubs;
+using SelfStorageManagementSystem.Web.Realtime;
 using SelfStorageManagementSystem.Web.Workers;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,10 +17,17 @@ builder.Services.AddSelfStorageWebComposition(builder.Configuration);
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddSignalR();
+builder.Services.AddSingleton<IStorageUnitHubConnectionTracker, StorageUnitHubConnectionTracker>();
+builder.Services.AddScoped<StorageUnitRealtimePublisher>();
+builder.Services.AddScoped<IStorageUnitRealtimePublisher>(sp => sp.GetRequiredService<StorageUnitRealtimePublisher>());
+builder.Services.AddScoped<IWebRealtimePublisher>(sp => sp.GetRequiredService<StorageUnitRealtimePublisher>());
+builder.Services.AddScoped<StorageUnitHubScopeRevocationService>();
+builder.Services.AddScoped<IUserScopeChangedNotifier>(sp => sp.GetRequiredService<StorageUnitHubScopeRevocationService>());
+builder.Services.AddHostedService<StorageUnitScopeSyncWorker>();
 builder.Services.AddSingleton(System.Text.Encodings.Web.HtmlEncoder.Create(System.Text.Unicode.UnicodeRanges.All));
 
-// 3. Đăng ký Background Worker xử lý hết hạn giữ chỗ 15 phút (BR-RSV-01) và Hook chuẩn bị cho T15
-builder.Services.AddSingleton<IReservationExpirationHook, NullReservationExpirationHook>();
+// 3. Đăng ký Background Worker xử lý hết hạn giữ chỗ 15 phút (BR-RSV-01) và Hook cho T15
+builder.Services.AddScoped<IReservationExpirationHook, ReservationExpirationRealtimeHook>();
 if (builder.Configuration.GetValue<bool?>("ReservationWorker:Enabled") ?? true)
 {
     builder.Services.AddHostedService<ReservationHoldExpirationWorker>();
@@ -84,6 +93,9 @@ app.MapHub<StorageUnitHub>("/storageUnitHub");
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+// Attribute-routed API Controllers (VNPAY callbacks, Demo simulator)
+app.MapControllers();
 
 // Razor Pages Route
 app.MapRazorPages();

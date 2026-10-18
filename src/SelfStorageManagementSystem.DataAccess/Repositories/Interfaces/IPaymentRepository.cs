@@ -62,6 +62,12 @@ public class FinalizeFailedPaymentParams
     public DateTimeOffset FailedAt { get; set; }
 }
 
+public class FinalizeFailedPaymentResult
+{
+    public bool IsTransitionCommitted { get; set; }
+    public string CurrentStatus { get; set; } = string.Empty;
+}
+
 public interface IPaymentRepository
 {
     Task<reservation?> GetReservationForQuoteAsync(
@@ -132,7 +138,7 @@ public interface IPaymentRepository
         FinalizePaymentParams parameters,
         CancellationToken cancellationToken = default);
 
-    Task<bool> ExecuteFinalizeFailedPaymentTransactionAsync(
+    Task<FinalizeFailedPaymentResult> ExecuteFinalizeFailedPaymentTransactionAsync(
         FinalizeFailedPaymentParams parameters,
         CancellationToken cancellationToken = default);
 

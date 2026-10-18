@@ -45,12 +45,15 @@
             _ => Model.StorageUnit.PhysicalStatus
         };
 
+        <!-- Vùng thông báo realtime theo mẫu TeacherCode 3.txt (depositSliptID) -->
+        <div id="depositSliptID" class="mb-3"></div>
+
         <!-- Header thẻ chi tiết -->
         <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
             <div>
                 <div class="d-flex align-items-center gap-2 mb-1">
-                    <h1 class="h3 mb-0 fw-bold text-dark font-monospace">@Model.StorageUnit.UnitCode</h1>
-                    <span class="badge @statusBadgeClass px-3 py-1 fs-6">@statusText</span>
+                    <h1 class="h3 mb-0 fw-bold text-dark font-monospace" id="Code">@Model.StorageUnit.UnitCode</h1>
+                    <span class="badge @statusBadgeClass px-3 py-1 fs-6" id="statusBadge">@statusText</span>
                     @if (Model.StorageUnit.IsListed)
                     {
                         <span class="badge bg-info-subtle text-info border border-info-subtle">Niêm yết</span>
@@ -248,3 +251,113 @@
         </div>
     }
 </div>
+
+@section Scripts {
+    <script src="~/js/storage-units-realtime.js" asp-append-version="true"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            @if (Model.StorageUnit != null)
+            {
+                <text>
+                const currentUnitId = @Model.StorageUnit.Id;
+
+                // 1. Khởi tạo HubConnection theo mẫu TeacherCode 3.txt & 4.txt
+                const connection = new signalR.HubConnectionBuilder()
+                    .withUrl("/storageUnitHub")
+                    .withAutomaticReconnect()
+                    .build();
+
+                // 2. Đăng ký listeners trước connection.start()
+
+                // Listener: Receiver_UpdateStorageUnit (theo mẫu TeacherCode 4.txt line 10)
+                // document.getElementById("Code").innerHTML = depositSlip.code; color = blue, background = yellow
+                connection.on("Receiver_UpdateTransactionCashDepositSlip", function (depositSlip) {
+                    handleDetailsUpdate(depositSlip);
+                });
+
+                connection.on("Receiver_UpdateStorageUnit", function (item) {
+                    handleDetailsUpdate(item);
+                });
+
+                function handleDetailsUpdate(item) {
+                    if (Number(item.id) !== currentUnitId) return;
+
+                    const codeEl = document.getElementById("Code");
+                    if (codeEl && item.unitCode) {
+                        codeEl.textContent = item.unitCode;
+                        codeEl.style.color = "blue";
+                        codeEl.style.backgroundColor = "yellow";
+                        setTimeout(() => {
+                            codeEl.style.color = "";
+                            codeEl.style.backgroundColor = "";
+                        }, 3000);
+                    }
+
+                    const badgeEl = document.getElementById("statusBadge");
+                    if (badgeEl && item.status) {
+                        const badgeInfo = StorageUnitsRealtime.getStatusBadge(item.status);
+                        badgeEl.textContent = badgeInfo.text;
+                        badgeEl.className = 'badge ' + badgeInfo.css + ' px-3 py-1 fs-6';
+                    }
+
+                    StorageUnitsRealtime.showMessage(
+                        'depositSliptID',
+                        'info',
+                        `Thông tin ô kho vừa được cập nhật thời gian thực vào lúc ${StorageUnitsRealtime.formatDateTime(item.updatedAt)}.`,
+                        5000
+                    );
+                }
+
+                // Listener: Receiver_DeleteStorageUnit (theo mẫu TeacherCode 3.txt line 1)
+                // document.getElementById("depositSliptID").innerHTML = "This item was deleted";
+                connection.on("Receiver_DeleteTransactionCashDepositSlip", function (depositSlipId) {
+                    handleDetailsDelete(depositSlipId);
+                });
+
+                connection.on("Receiver_DeleteStorageUnit", function (id) {
+                    handleDetailsDelete(id);
+                });
+
+                function handleDetailsDelete(id) {
+                    if (String(id) === String(currentUnitId)) {
+                        console.warn("Current storage unit was deleted:", id);
+                        const alertContainer = document.getElementById("depositSliptID");
+                        if (alertContainer) {
+                            alertContainer.innerHTML = `
+                                <div class="alert alert-danger shadow-sm border-danger p-3 mb-4" role="alert">
+                                    <div class="d-flex align-items-center">
+                                        <span class="fs-4 me-2">&#9888;</span>
+                                        <div>
+                                            <h5 class="alert-heading fw-bold mb-1">This item was deleted</h5>
+                                            <p class="mb-0 small">Ô kho này vừa bị xóa khỏi hệ thống bởi một người dùng khác. Bạn không thể tiếp tục chỉnh sửa hoặc thao tác trên bản ghi này.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }
+
+                        // Vô hiệu hóa hoặc ẩn các nút chỉnh sửa/xóa
+                        document.querySelectorAll('a[asp-page="./Edit"], a[asp-page="./Delete"]').forEach(el => {
+                            el.classList.add('disabled');
+                            el.style.pointerEvents = 'none';
+                        });
+                    }
+                }
+
+                // Tự động tải lại sau khi reconnect phục hồi
+                connection.onreconnected(function (connectionId) {
+                    console.log("Details page SignalR reconnected:", connectionId);
+                    window.location.reload();
+                });
+
+                // 3. Khởi chạy kết nối
+                connection.start().then(function () {
+                    console.log("Connected to SignalR Hub on Details page.");
+                }).catch(function (err) {
+                    console.error("SignalR connection error on Details:", err.toString());
+                });
+                </text>
+            }
+        });
+    </script>
+}

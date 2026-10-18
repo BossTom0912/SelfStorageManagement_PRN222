@@ -28,6 +28,15 @@ public class PaymentGatewayCallbackResult
     public string? IpnResponseCode { get; set; }
     public string? IpnResponseMessage { get; set; }
     public IDictionary<string, string> RawParameters { get; set; } = new Dictionary<string, string>();
+
+    // T15 R2 Fixes: Reliable committed metadata for realtime events (F01, F03)
+    public long PaymentId { get; set; }
+    public long ReservationId { get; set; }
+    public long FacilityId { get; set; }
+    public long? CustomerUserId { get; set; }
+    public string? CommittedStatus { get; set; }
+    public bool IsStatusTransitionCommitted { get; set; }
+    public bool ReconciliationRequired { get; set; }
 }
 
 public interface IPaymentGateway

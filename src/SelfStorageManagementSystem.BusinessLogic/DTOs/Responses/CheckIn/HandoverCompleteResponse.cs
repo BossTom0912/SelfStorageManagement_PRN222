@@ -13,4 +13,5 @@ public class HandoverCompleteResponse
     public string? Pin { get; set; }
     public long? CredentialId { get; set; }
     public DateTimeOffset? CredentialExpiresAt { get; set; }
+    public long? NotificationId { get; set; }
 }

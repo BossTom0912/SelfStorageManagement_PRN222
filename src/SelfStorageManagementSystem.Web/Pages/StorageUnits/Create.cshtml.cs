@@ -12,23 +12,29 @@ using SelfStorageManagementSystem.BusinessLogic.DTOs.Responses.StorageUnits;
 using SelfStorageManagementSystem.BusinessLogic.Exceptions;
 using SelfStorageManagementSystem.BusinessLogic.Services.Interfaces;
 
+using SelfStorageManagementSystem.Web.Realtime;
+
 namespace SelfStorageManagementSystem.Web.Pages.StorageUnits;
 
 /// <summary>
 /// PageModel cho trang tạo mới ô kho (/StorageUnits/Create).
 /// Gọi BLL Service IStorageUnitAdminService.CreateAsync và ràng buộc CreateStorageUnitRequest DTO.
+/// Phát sự kiện realtime thông qua IStorageUnitRealtimePublisher.
 /// </summary>
 [Authorize(Policy = "StaffOnly")]
 public class CreateModel : PageModel
 {
     private readonly IStorageUnitAdminService _storageUnitAdminService;
+    private readonly IStorageUnitRealtimePublisher _realtimePublisher;
     private readonly ILogger<CreateModel> _logger;
 
     public CreateModel(
         IStorageUnitAdminService storageUnitAdminService,
+        IStorageUnitRealtimePublisher realtimePublisher,
         ILogger<CreateModel> logger)
     {
         _storageUnitAdminService = storageUnitAdminService ?? throw new ArgumentNullException(nameof(storageUnitAdminService));
+        _realtimePublisher = realtimePublisher ?? throw new ArgumentNullException(nameof(realtimePublisher));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
@@ -146,11 +152,10 @@ public class CreateModel : PageModel
             return Page();
         }
 
+        StorageUnitAdminDto created;
         try
         {
-            var created = await _storageUnitAdminService.CreateAsync(Input, actorUserId, cancellationToken);
-            TempData["SuccessMessage"] = $"Tạo mới ô kho '{created.UnitCode}' tại cơ sở '{created.FacilityName}' thành công.";
-            return RedirectToPage("./Index", new { facilityId = created.FacilityId });
+            created = await _storageUnitAdminService.CreateAsync(Input, actorUserId, cancellationToken);
         }
         catch (ConflictException ex)
         {
@@ -178,11 +183,31 @@ public class CreateModel : PageModel
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Lỗi hệ thống khi tạo ô kho.");
+            _logger.LogError(ex, "Lỗi hệ thống khi tạo ô kho trong CSDL.");
             ErrorMessage = "Đã xảy ra lỗi không mong muốn khi tạo ô kho. Vui lòng thử lại.";
             ModelState.AddModelError(string.Empty, ErrorMessage);
             await ReloadLookupsAsync(actorUserId, cancellationToken);
             return Page();
+        }
+
+        // T13-R6-F01: Thao tác DB đã lưu thành công. Xử lý đồng bộ realtime sau commit độc lập.
+        try
+        {
+            await _realtimePublisher.PublishCreatedAsync(created, cancellationToken);
+            TempData["SuccessMessage"] = $"Tạo mới ô kho '{created.UnitCode}' tại cơ sở '{created.FacilityName}' thành công.";
+            return RedirectToPage("./Index", new { facilityId = created.FacilityId });
+        }
+        catch (RealtimePublishDegradedException ex)
+        {
+            _logger.LogWarning(ex, "Đã tạo ô kho '{UnitCode}' (ID: {UnitId}) thành công trong CSDL nhưng đồng bộ realtime bị suy giảm cho cơ sở {FacilityId}.", created.UnitCode, created.Id, created.FacilityId);
+            TempData["WarningMessage"] = $"Tạo mới ô kho '{created.UnitCode}' thành công trong cơ sở dữ liệu, nhưng thông báo thời gian thực chưa thể đồng bộ tự động tới các màn hình khác. Vui lòng tải lại trang để xem cập nhật mới nhất.";
+            return RedirectToPage("./Index", new { facilityId = created.FacilityId });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Lỗi ngoài dự kiến khi phát realtime tạo mới cho ô kho '{UnitCode}' (ID: {UnitId}).", created.UnitCode, created.Id);
+            TempData["WarningMessage"] = $"Tạo mới ô kho '{created.UnitCode}' thành công trong cơ sở dữ liệu, nhưng thông báo thời gian thực gặp sự cố khi phát tin. Vui lòng tải lại trang để cập nhật.";
+            return RedirectToPage("./Index", new { facilityId = created.FacilityId });
         }
     }
 

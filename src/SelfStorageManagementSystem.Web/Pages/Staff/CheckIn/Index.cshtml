@@ -89,6 +89,18 @@
         </div>
     }
 
+    <!-- Cảnh báo trạng thái realtime degraded -->
+    @if (!string.IsNullOrEmpty(Model.WarningMessage))
+    {
+        <div class="alert alert-warning shadow-sm d-flex align-items-center mb-4" role="alert">
+            <i class="bi bi-exclamation-triangle-fill text-warning fs-4 me-3"></i>
+            <div class="flex-grow-1">
+                <strong>Cảnh báo đồng bộ:</strong> @Model.WarningMessage
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
     <!-- Hộp hiển thị mã PIN truy cập số hóa một lần duy nhất (NO-STORE / NO-CACHE) -->
     @if (!string.IsNullOrEmpty(Model.IssuedPin))
     {

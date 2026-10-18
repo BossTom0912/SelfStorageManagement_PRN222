@@ -11,6 +11,8 @@ using SelfStorageManagementSystem.BusinessLogic.DTOs.Responses.StorageUnits;
 using SelfStorageManagementSystem.BusinessLogic.Exceptions;
 using SelfStorageManagementSystem.BusinessLogic.Services.Interfaces;
 
+using SelfStorageManagementSystem.Web.Realtime;
+
 namespace SelfStorageManagementSystem.Web.Pages.StorageUnits;
 
 /// <summary>
@@ -20,18 +22,22 @@ namespace SelfStorageManagementSystem.Web.Pages.StorageUnits;
 /// - POST thực thi xóa nguyên tử thông qua BLL Service IStorageUnitAdminService.DeleteAsync.
 /// - Truyền ExpectedUpdatedAt dạng round-trip để bảo vệ chống xóa đè khi dữ liệu đã stale.
 /// - Bắt và hiển thị rõ ràng lỗi ConflictException, ForbiddenException, NotFoundException.
+/// - Phát sự kiện realtime thông qua IStorageUnitRealtimePublisher.
 /// </summary>
 [Authorize(Policy = "StaffOnly")]
 public class DeleteModel : PageModel
 {
     private readonly IStorageUnitAdminService _storageUnitAdminService;
+    private readonly IStorageUnitRealtimePublisher _realtimePublisher;
     private readonly ILogger<DeleteModel> _logger;
 
     public DeleteModel(
         IStorageUnitAdminService storageUnitAdminService,
+        IStorageUnitRealtimePublisher realtimePublisher,
         ILogger<DeleteModel> logger)
     {
         _storageUnitAdminService = storageUnitAdminService ?? throw new ArgumentNullException(nameof(storageUnitAdminService));
+        _realtimePublisher = realtimePublisher ?? throw new ArgumentNullException(nameof(realtimePublisher));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
@@ -105,11 +111,14 @@ public class DeleteModel : PageModel
 
         CheckUserRole();
 
+        DeleteStorageUnitResult result;
+        long facilityId = 0;
         try
         {
-            var result = await _storageUnitAdminService.DeleteAsync(Id, ExpectedUpdatedAt, actorUserId, cancellationToken);
-            TempData["SuccessMessage"] = $"Xóa thành công ô kho '{result.UnitCode}' khỏi hệ thống.";
-            return RedirectToPage("./Index");
+            var existingUnit = await _storageUnitAdminService.GetByIdAsync(Id, actorUserId, cancellationToken);
+            facilityId = existingUnit?.FacilityId ?? 0;
+
+            result = await _storageUnitAdminService.DeleteAsync(Id, ExpectedUpdatedAt, actorUserId, cancellationToken);
         }
         catch (ConflictException ex)
         {
@@ -174,6 +183,34 @@ public class DeleteModel : PageModel
             ModelState.AddModelError(string.Empty, ErrorMessage);
             CanDelete = false;
             return Page();
+        }
+
+        // T13-R6-F01: Thao tác DB đã lưu thành công. Xử lý đồng bộ realtime sau commit độc lập.
+        try
+        {
+            if (facilityId > 0)
+            {
+                await _realtimePublisher.PublishDeletedAsync(Id, facilityId, cancellationToken);
+            }
+            else
+            {
+                await _realtimePublisher.PublishDeletedAsync(Id, cancellationToken);
+            }
+
+            TempData["SuccessMessage"] = $"Xóa thành công ô kho '{result.UnitCode}' khỏi hệ thống.";
+            return RedirectToPage("./Index");
+        }
+        catch (RealtimePublishDegradedException ex)
+        {
+            _logger.LogWarning(ex, "Đã xóa ô kho '{UnitCode}' (ID: {UnitId}) thành công trong CSDL nhưng đồng bộ realtime bị suy giảm cho cơ sở {FacilityId}.", result.UnitCode, Id, facilityId);
+            TempData["WarningMessage"] = $"Xóa ô kho '{result.UnitCode}' thành công trong cơ sở dữ liệu, nhưng thông báo thời gian thực chưa thể đồng bộ tự động tới các màn hình khác. Vui lòng tải lại trang để xem cập nhật mới nhất.";
+            return RedirectToPage("./Index");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Lỗi ngoài dự kiến khi phát realtime xóa cho ô kho '{UnitCode}' (ID: {UnitId}).", result.UnitCode, Id);
+            TempData["WarningMessage"] = $"Xóa ô kho '{result.UnitCode}' thành công trong cơ sở dữ liệu, nhưng thông báo thời gian thực gặp sự cố khi phát tin. Vui lòng tải lại trang để cập nhật.";
+            return RedirectToPage("./Index");
         }
     }
 

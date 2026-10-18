@@ -1,0 +1,1659 @@
+{
+  "task": "T15",
+  "purpose": "Pre-implementation source and test baseline for independent diff",
+  "workspace": "D:\\FPT\\PRN222\\Project\\Final_Project_Web",
+  "files": [
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/SelfStorageManagementSystem.BusinessLogic.csproj",
+      "sha256": "5932247437EC1C6CFCAFCF149C6893ED751465A5420D942F9AC6B097B9C9A8EE"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Common/ApiResponse.cs",
+      "sha256": "734766A89D83A411FEB8595C494EDE5AB7CE3F8850CDD5E6BB8894C45F54CD45"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Common/JwtOptions.cs",
+      "sha256": "58E5A627E7ED91F4CC18277F29E30AB84BE0F50FC0AEF03090C81E0580D31D9B"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Common/PagedRequest.cs",
+      "sha256": "F57E1F548768F149309C718DAEF55749C60A3709A4722EF0BB7BEC6B99EE41B5"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Common/PagedResult.cs",
+      "sha256": "5DB0B762663A3D4135B46132B610FE5C4636D6CB657AFE0A64F5D4DE612B6FB3"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Common/Constants/EmploymentStatusConstants.cs",
+      "sha256": "DFD49B2C612B6D102FB8A69DD9CD2AF55443EAA33B406B66E4F2922FD8DA021C"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Common/Constants/LoginHistoryResultConstants.cs",
+      "sha256": "1CD3B65241F8DBCE3373F39CCA0CBF643558DAC242DDD66269258497ABDD99B5"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Common/Constants/RoleConstants.cs",
+      "sha256": "9748DD8B3F500EBE42F236030F2565268B77D261915440F75C785A611B126CEE"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Common/Constants/UserStatusConstants.cs",
+      "sha256": "318067AAF8CC75F21A4250FF55C5F2829726CC9B69A7DF244601908B7AAF829F"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DependencyInjection/ServiceCollectionExtensions.cs",
+      "sha256": "0C0AD29CDCA1E86A07BEC8B072972146DAAF65E60BE81B170A4C344974A040A3"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/.gitkeep",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/Admin/CreateFacilityAssignmentRequest.cs",
+      "sha256": "898DD42B49E2879C0F629BEA58B0DC10277557602CCED6484B2158D3AB97D1EE"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/Admin/CreateStaffAccountRequest.cs",
+      "sha256": "ECB3AF9E8C296007B2E9ABCB53EEBEAC912CE1012D75E4A1743F6704748D98F0"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/Admin/GetAccountsRequest.cs",
+      "sha256": "8C4924371DCED1B80CC206ECDDDBF548B63902189A5D59D5E0F37E5318E74C70"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/Admin/ManageUserRolesRequest.cs",
+      "sha256": "7DAE2DBBE6AD99F6688EDE810EC61A58C6B12699430A1F6651720CB7B185782C"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/Admin/UpdateUserStatusRequest.cs",
+      "sha256": "3FF4179430B76410B4D3BBD849C0C06A60473BEBE3E1440E584A4BCA500EED10"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/Auth/CustomerRegisterRequest.cs",
+      "sha256": "190090BB028002019280B57739846DD86ABE17592FBAFB2E5244D336CDF87A02"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/Auth/LoginRequest.cs",
+      "sha256": "1B34B46FAB3718FEC67E4FA4731B2FBD8F956486416F4468A1BE2997532AD15D"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/Catalog/GetAvailableUnitsRequest.cs",
+      "sha256": "F3E6E84AA3AC7FACDD7543258FDC4D3C1E38E97A874C08C1FF262AC2F8AC6AE1"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/Catalog/GetFacilitiesCatalogRequest.cs",
+      "sha256": "107888C3F99A6D46BD9C0E3D6CD735CAE056DB4EEB29C4D26AF55261AD2CFEF9"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/Catalog/GetFacilityFloorMapRequest.cs",
+      "sha256": "F767EFB6A800D6052F9ABE25CC396AA9D87FD769A2D307814E19CB58684C998A"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/Catalog/GetFacilityUnitTypesRequest.cs",
+      "sha256": "805C5A4F51ABD312838810FAC8BEDF5247929CFB1B802B6FA3720FFD443321EA"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/CheckIn/AssignUnitRequest.cs",
+      "sha256": "8FB95D5F2DF6EDAD26AC43474CB436CA6A3FB18919EAFA289D6033192FE0C5EE"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/CheckIn/CompleteCheckInRequest.cs",
+      "sha256": "3B8304959D193C392368FAEE0D95794534BE430F79A47E2FAC2FD5D3ACE36B3B"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/CheckIn/ReissuePinRequest.cs",
+      "sha256": "725FD47E1F86574E9AFB4F5E76D1686753C9798C6D72F48E85AD180A0A3CEB00"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/CheckIn/ReleaseUnitRequest.cs",
+      "sha256": "DD09CA45C004C21E06B08F046FF191DA26C32118F68F0110ED0240C109B33623"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/CheckIn/UnitInspectionRequest.cs",
+      "sha256": "D936DCFD11C5EB947D32BF9136D0C27FDC32ED3DD3409D0489BF6D110D8B4C23"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/CheckIn/VerifyIdentityRequest.cs",
+      "sha256": "3BFDDB69E9F08B4D0EEAE083B661A2EF3899A5F7964959797BEE3861A640B9D6"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/Payments/CheckoutRequest.cs",
+      "sha256": "6DBBD16F562B80FE60014CF8EA862B46C740256582F92E987B600052AFFC0584"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/Payments/DemoPaymentCompleteRequest.cs",
+      "sha256": "902CF82C9F40B5142525FE63925BAFCC3E6FEC8224192A0EDA849D4206D7C53D"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/Payments/ReviewRefundRequest.cs",
+      "sha256": "932B61A82297B253CDDC19CDCD2CF6CD36722C20763B6D4674F1F58EE0BB23B5"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/Reservations/CancelReservationRequest.cs",
+      "sha256": "C19EF8E5A2E367FC2251B95E748C236B0AB2C3E43726613F385DE922B87065AF"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/Reservations/CreateReservationRequest.cs",
+      "sha256": "90A886CA25D700611B5A9FDCC9EDA950ECDD2CDB5C2EA94B262D4D0932E76F1E"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/Reservations/GetMyReservationsRequest.cs",
+      "sha256": "BC3D7730B5A23AE5BE2258F878BFE20A1059E3AD0AC95EE4ABA0E7BFE4AFFC07"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/StorageUnits/CreateStorageUnitRequest.cs",
+      "sha256": "650383D687635D87E3D725D2E1A2B805D7F3C89D4B9FA5A5C2B83B07D84F2126"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/StorageUnits/StorageUnitFilterRequest.cs",
+      "sha256": "0A96ACF459675EE4AC4BB05442A1C8A88DB714498E264A613B7729F92862CE89"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Requests/StorageUnits/UpdateStorageUnitRequest.cs",
+      "sha256": "0266446EA6E34F2BD0A5283E85CC539CFE432022B575DA0B4B7DECBAC5161ADC"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/.gitkeep",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/Admin/FacilityAssignmentDto.cs",
+      "sha256": "4BF943614E8CB9D62574C75EC6C926DAF104244A595496F7398330ABE1BC5BA0"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/Admin/FacilityLookupDto.cs",
+      "sha256": "95555E9506077BF0C57ECD70A1C46628BD1F9F23B195C21EA3FB2BA1823854A8"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/Admin/UserAccountDto.cs",
+      "sha256": "012DE5B2330F2B4C5C09FCD67682778B12A44A52CEEB242F03EAAD3A443F5369"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/Agreements/RentalAgreementDetailResponse.cs",
+      "sha256": "401C6ED8567ED209DDB87C43C48DD978C960FC8186E58C0E63F532AA510DC8E3"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/Auth/AuthenticatedAccountResponse.cs",
+      "sha256": "E0062F59DFC409374D0E43193FC760F55362FED5119088ECC967A3BBF392D99B"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/Auth/CurrentUserResponse.cs",
+      "sha256": "2404D0F881FA41CB8AB16BBF22D247CC60E2C145CA8991A7BE3D86FE509971AD"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/Auth/CustomerRegisterResponse.cs",
+      "sha256": "1BDFBB10066C1A8E5F5835968C1537E00BFEAB8593FBABC4EF9A14205C350336"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/Auth/LoginResponse.cs",
+      "sha256": "CE7D61C5C151CBE47A798D2255678CFCB9149B6F30DD5301DE72D58E21FA113A"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/Catalog/AvailableStorageUnitDto.cs",
+      "sha256": "C3682C32146EBB7947BCCBE5D35593C0FBB1E31F37CDF8CD7BA77E6D455D8B8E"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/Catalog/FacilityCatalogDto.cs",
+      "sha256": "0E8A6727AE593C048777D9B2AC02D05B44DB07AD560E62E17CDDB30783DAA841"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/Catalog/FacilityFloorMapDto.cs",
+      "sha256": "B1CD79900AA530FAE43435A4572804A2923A6CF4625DDB1275F447CDCD989370"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/Catalog/FacilityUnitTypeCatalogDto.cs",
+      "sha256": "D0C6EEFA9A217376A6ADDA15DCB16B7A0488E0E06A839B276293A86BD184C04A"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/CheckIn/CheckInSearchResponse.cs",
+      "sha256": "D310DA786965B63D930852EE53299552F4979024FFBC139BA4F31C1842D9F172"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/CheckIn/CustomerHandoverResponse.cs",
+      "sha256": "895FB8F1B9F99468177DAA05DF574E162B7B0576C5157F948459ED8FCE96EA9F"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/CheckIn/CustomerNotificationResponse.cs",
+      "sha256": "122E26FEEC2E4196324B8E684719873CA7802BFAF94091A5CA360ABBB640C25D"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/CheckIn/CustomerUnitListItemResponse.cs",
+      "sha256": "76592213E460D482DA2BC0CED4AA26CA954762AC101B1692FBAEAB22FBB59CC7"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/CheckIn/EligibleUnitResponse.cs",
+      "sha256": "16BE25216D843E56B7D3326D47F81B7CE073E7A3AC63D6A5F7D783927C07F87E"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/CheckIn/HandoverCompleteResponse.cs",
+      "sha256": "D6D6597271AE2AA93AF6CAE841418A5602DE5E1D2BA7192D237986555B6DEEAF"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/CheckIn/IdentityVerificationResponse.cs",
+      "sha256": "20B6632CEB4FE820325C252C533C27ED5B8B683B71EF1B6B4A1E69261802FC2B"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/CheckIn/InspectionResponse.cs",
+      "sha256": "07D521B7ACFF442FC1234D6183F1F6B8485EB95CAFE4DFB8F8454EF55E36F0F4"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/CheckIn/PinReissueResponse.cs",
+      "sha256": "12F476689B79CFC780AF03BC335F12BF42464F5097CA6BF8D3CA8C378D483DB0"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/CheckIn/UnitAllocationResponse.cs",
+      "sha256": "9D3FFA5E27715A0DE8B188CD92BCC6BFBF9CBACA75A73AFEB478A143553D1E35"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/Invoices/InvoiceDetailResponse.cs",
+      "sha256": "0E77A0FD5F77419E61E8B5F47F2DC2E3CF8C0C35AA1585A241C81CA41A3770AF"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/Payments/CheckoutQuoteResponse.cs",
+      "sha256": "D2F430C1DCE2B90A7FEC61AD7BAB9F848BE02DFABA5862972DAA8EE74F16740C"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/Payments/CheckoutResponse.cs",
+      "sha256": "A0FE1FC9D14F6EA97D17F971690597A3039BFC7704607386DD9A34618FD463B1"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/Payments/PaymentDetailResponse.cs",
+      "sha256": "C2ACDAA217BBC99F274B5E892DBBB47B1D6DE964F9506328E7EB618B7CE7C752"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/Payments/RefundDetailResponse.cs",
+      "sha256": "1DE9EB9D67C90D2B298CEA25BAF386A169016E3D0847612B63A9997FC5A7ED7D"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/Reservations/ReservationDetailResponse.cs",
+      "sha256": "3BC641C7FDB9BF8293A0F6E9F98E9FCEB459E225E11B6039E1EF76F0F9FA4D01"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/Reservations/ReservationListItemResponse.cs",
+      "sha256": "F1FDDE465EF282D42BFFFEA953AAD359116E2ACC3D7AC9B363D26F0BE7C12FBC"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/StorageUnits/DeleteStorageUnitResult.cs",
+      "sha256": "E198455DF9C0590774551F69E5747C990932CB1F955948858C2BBAAA12715A09"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/StorageUnits/StorageUnitAdminDetailDto.cs",
+      "sha256": "44F99D5AE15300A1C6E5E18BF1D310AE271EFADEE52440445228ECF8CF8ED979"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/StorageUnits/StorageUnitAdminDto.cs",
+      "sha256": "C95C7EFED662710A776B08807DEEE93CEB2DE940EEB9EF766608A786021C2786"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/DTOs/Responses/StorageUnits/StorageUnitLookupsDto.cs",
+      "sha256": "4A82927A0FA81F738385080B8DC4204B62BAB0005EFB47C64897C84DFF86B5FF"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Exceptions/BadRequestException.cs",
+      "sha256": "A1123DC9B637F85508F5EF5858CD387C082C7B2F1FDD1E675175279A57AAA702"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Exceptions/ConflictException.cs",
+      "sha256": "00949E41E2E57D6FD902D9A47EFBD385BFE15081159029BE149FAE45735D629E"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Exceptions/ForbiddenException.cs",
+      "sha256": "4A8B3BE5F9BDD4F8BDBB6E24875ACC46C8FE843AF4905B3A9F73EEEB0D411082"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Exceptions/NotFoundException.cs",
+      "sha256": "1F45161B71F65D8D0145A66A546E63B563CA94F2E953C11CA771D667102C5C2F"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Exceptions/UnauthorizedException.cs",
+      "sha256": "4430AF710B12BF58FCCCA640AA926BDCDA93271EE1F16C8DA72B99107E1B8878"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Mappings/.gitkeep",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Services/Implementations/.gitkeep",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Services/Implementations/AccountIdentityService.cs",
+      "sha256": "7669B42FF63CA3FF7071E891626A9F12E8C2EB940A327A0295BE38424811984D"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Services/Implementations/AdminAccountService.cs",
+      "sha256": "317F97761EB3FD7FD21708F0000CCDF20D18D9998257962479EDE41AA60FD210"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Services/Implementations/AuditService.cs",
+      "sha256": "92795044F7588F05BD8880B6371276646148941B5DA7059A260C5B36B32AFFCC"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Services/Implementations/AuthService.cs",
+      "sha256": "9AA90F5EDC6141F13D78A3C2C4903582429F66FCA0F45E47ECE13DF262B9DAC3"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Services/Implementations/CheckInService.cs",
+      "sha256": "F168ED2F848133A0E38FDB2380ADB3605A979A59577A00C72503DCF906F563E1"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Services/Implementations/DemoAccountBootstrapService.cs",
+      "sha256": "071815CF63D857139AFC07BD17E49FC652A6FB48676F7450A6DD6BEF5AA225B4"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Services/Implementations/DemoGateway.cs",
+      "sha256": "A5F4F37EA9E1A425BB83837DAE64695FCDD2AE16FC909CAF8820381CF136F462"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Services/Implementations/FacilityCatalogService.cs",
+      "sha256": "4240CA81DF11394D6F1E6DB2FA25E887157D3FEAE9F2D739560014B9850C3BEA"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Services/Implementations/FacilityScopeService.cs",
+      "sha256": "BB9F883D69EA7EA1E892EED2B1FD1BFE39BE34BD285E344491C8119C930A436F"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Services/Implementations/InvoiceService.cs",
+      "sha256": "51A7F4246472DD3A6BCE3C5A9C7CDA9EE80D0AEB8F1DA821144C4D57AF7FF2E1"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Services/Implementations/JwtTokenGenerator.cs",
+      "sha256": "5A0C5AF4724C1D0CA9A89EE0F790942D22D881CB06861BBECD979B0D626710DC"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Services/Implementations/NullUserScopeChangedNotifier.cs",
+      "sha256": "B68270841A66DD2F5FF6810308A2B3E1E338ADBC7551EDD6C9A126D0B1C85A5C"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Services/Implementations/PasswordHasher.cs",
+      "sha256": "8C8EA1D1C337E7C9E6A008280ABA3A9D22E02368BCDA08A5C7F4D49E9F0875F0"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Services/Implementations/PaymentService.cs",
+      "sha256": "896CEBA01B2D880A1A8339873247F96B1119939C12C210B9B8BF03B1DAAF3CDB"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Services/Implementations/RentalAgreementService.cs",
+      "sha256": "BD9B712A1C152AC50AB2A257F8139369A0CEA271284FF2D4DF6903C396B2500F"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Services/Implementations/ReservationService.cs",
+      "sha256": "7917A05E51A01DE01F632DFF7AD4AAC3D6AE7485E9FD3D95BAA60051DE0BFAD8"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Services/Implementations/StorageUnitAdminService.cs",
+      "sha256": "E0DD11ED0412B729955789F4813535ACC7ABC1F6A1F9FD7AACB249817EF63B83"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Services/Implementations/VnpayGateway.cs",
+      "sha256": "484E4C6C57B17F907F86CBD798FD8B16BBCAA36B2C0D98DF4B97758BB00350E5"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Services/Interfaces/.gitkeep",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Services/Interfaces/IAccountIdentityService.cs",
+      "sha256": "06A5383E041C3CA22505C0C396509238757951BB7C5006EC9AF6873F29D7075F"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Services/Interfaces/IAdminAccountService.cs",
+      "sha256": "7774E407EC76594C2F75C93A5D72BD5237FF0A78804599FF8A9D5B1AA3FF21F0"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Services/Interfaces/IAuditService.cs",
+      "sha256": "C7DC74AC573332E14BACA99B4E906B1F38ADEF8B407E596D388232190C0D20F3"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Services/Interfaces/IAuthService.cs",
+      "sha256": "A5B04956B28040F91A1B42FD236BABDF463ADEDFA7FAF5906249A5F81C0355CF"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Services/Interfaces/ICheckInService.cs",
+      "sha256": "BCE513B186B785B9F2719C5423DC873F886286F386FDDE41244E2D53416FA643"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Services/Interfaces/IDemoAccountBootstrapService.cs",
+      "sha256": "E3786DE71C29A56FF43F60DEDC4D790AA1F783FE3435502ADD3ADFE49D83A924"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Services/Interfaces/IFacilityCatalogService.cs",
+      "sha256": "576C142F8D4516079361E2C0AC77C8A41FC77138F3C0FB24B9128C41A0585F20"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Services/Interfaces/IFacilityScopeService.cs",
+      "sha256": "3694D9EE240CB643C4270444A3920783AD5F0CBAE861650A8E4C26094D11C71C"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Services/Interfaces/IInvoiceService.cs",
+      "sha256": "DAB2273EEB332653EAFF0A71A3A8F11CBBFC2BBD242ACC0D889F80D34159C883"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Services/Interfaces/IJwtTokenGenerator.cs",
+      "sha256": "DC705E85F59BE29696088A3D16245274C01CDA882E3EDCC0F4855789F0F1E3B6"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Services/Interfaces/IPasswordHasher.cs",
+      "sha256": "1DF7BE37E8976EB3607BF8BC2FEEFF66A6347C67C3BDF869F9AEA8E277BA6952"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Services/Interfaces/IPaymentGateway.cs",
+      "sha256": "3BA09DBBEE6855B312E1021CD27EA3625E07672AFE0D0512769F1137921D1661"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Services/Interfaces/IPaymentService.cs",
+      "sha256": "52A705BB2AFC9AA92F317EBB1473A1A9F2DACCD8C42E2E032A9DD887F2C25169"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Services/Interfaces/IRentalAgreementService.cs",
+      "sha256": "3D05BAC8C04F0EA0750671D03E1E54F6774A02515A2F89BC34B2E59C140E4D79"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Services/Interfaces/IReservationService.cs",
+      "sha256": "57B9A6B39C87A9D6F5C22D031AC771508D2518AB8A450F9A8ED8C21520EC721F"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Services/Interfaces/IStorageUnitAdminService.cs",
+      "sha256": "5E64C3CB1288B760A5E6220BB17725AEA428895DC1CF227E958B462FD2581F6F"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.BusinessLogic/Services/Interfaces/IUserScopeChangedNotifier.cs",
+      "sha256": "61285F09EE7D72F0F6711055E8D5F557C5048052431099A15DA1461EC0CD528C"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/SelfStorageManagementSystem.DataAccess.csproj",
+      "sha256": "63ECB9010B057F0104344F80E0C48F58065BAB9EA5081811EFE7CE3C8EC0F705"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Common/CheckInHelpers.cs",
+      "sha256": "A00891B8CF808786195840A61756FCD2286AD37E7D32A207A117AF2D71CC85FE"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Context/SelfStorageDbContext.cs",
+      "sha256": "3E31FA050F735E1D6A3AD4EFD1153D77445AA9581A87898E672AB7A607AD4BF4"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/DependencyInjection/.gitkeep",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/DependencyInjection/ServiceCollectionExtensions.cs",
+      "sha256": "3BB1147A3D2EF6EBF57DFA44CE4544A9F3FB1DA8486A66B78704F242E0F27F39"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/access_credential.cs",
+      "sha256": "A7701BA095C6F35FEACA3208E6B2EE5B6E170814988AD235434D2D967C974017"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/access_event.cs",
+      "sha256": "698F85802E73F6F7971C8FAB5F68F884B52C95EAA60B73358947E3205886CDD4"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/access_point.cs",
+      "sha256": "7DE676A5DFE490ECAB1E2589468BB36183C8361296AF88C774FBDB9BFE22CBAA"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/appointment.cs",
+      "sha256": "DFACA2C940921C4F1292A65265AA8EBB7E2BCE70416BDE5CD753FE0E270B5C2E"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/audit_log.cs",
+      "sha256": "0D071222B0B0FD152BF6CB7859858A928130D9CBBFB865403CB418848D4BE581"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/authorized_access_member.cs",
+      "sha256": "2CE92D556D702D05430A22AA0F8D8627AF72E5F8D32CEF4200A3F867F9E1A884"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/customer_profile.cs",
+      "sha256": "5C5BDE1F374AF46862AED7D9AF87ECC95C7632CB94337A275A165E5D19EF6325"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/delinquency_action.cs",
+      "sha256": "23A0CE97FCA0B98FEBF08EBC73A968AF121068060DA31A46A7A11CA52ECF58A7"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/delinquency_case.cs",
+      "sha256": "47B42FAA9DB26DCCF743435077663F7613331332166E99482CEC60450C0CC219"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/employee_profile.cs",
+      "sha256": "33F6FB6914F5F506474A7D51C9B05BDB85ABFC85A52155F1955E2F6292C7D9E3"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/facility_area.cs",
+      "sha256": "92C03FDB97C112D548A2A9D5F97633AA493A1E404218EA6AC12D5A26151CA747"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/facility_rate.cs",
+      "sha256": "B7877289F35027FB696EFA18ADC4BC5AE4A84FE562A7B927E4A0AC9ED966545D"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/facility.cs",
+      "sha256": "26E86C40388CF933BEBDC6A811884E7379ADEAF0A64C2E1489C1FB7CB9CCB56C"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/fee_rule.cs",
+      "sha256": "D0A6C29FE301BD9DC93F5CBD623AC0ABB746E540D4C04F06E113F6F77FB47EC7"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/handover_record.cs",
+      "sha256": "8C499F29FD3F06BD682370041C3EA4C31C811A4A9F936A73A4DCE2890AB2F8CB"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/identity_verification.cs",
+      "sha256": "7A631A1D89EBBD182E0F44D2022AFAD8711CFD6A84FD58F96FB9A1E642E62984"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/inspection_item.cs",
+      "sha256": "BDFEDAC3823479E5E9BE6FF8B93BF298C2E061DE84DD33036593782A692B4190"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/inspection.cs",
+      "sha256": "AC2FE26418115314073ED72D3273B64BE09F05BDFEF18FE2DCF96D3DD64BBE8C"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/integration_event.cs",
+      "sha256": "2F82B43F59FCBB1C2E606585E5D037750416060FD570194274776D337DCD4340"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/invoice_line.cs",
+      "sha256": "F2D4CDD72DB265D17A9A06F04639CD64318D1E387F794B66525A03840BA9816C"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/invoice.cs",
+      "sha256": "5F85B9DEDABDA3A25C6AA8EF9F331A55F3291DCAA23A13CD5AEBB9D49E43C45C"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/login_history.cs",
+      "sha256": "073A4FC45596B6F15025A0E6E1391AC69E3CAE90224ABBF4B7D06180EA4D1224"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/maintenance_work_order.cs",
+      "sha256": "A055FE3A0A89157375E996ED2C3217E454242C9B50C21DFB157363CBF1167602"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/move_out_request.cs",
+      "sha256": "5CCF4328E20AD33B15E69766889B0526E6933F207BA208A1FABE1374B18FD390"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/notification.cs",
+      "sha256": "F2ABDBB8F58D23B82A6BC5BC7CA9BEA05250E71D0C0CE8EB427C9E5F15384EAF"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/payment_allocation.cs",
+      "sha256": "04D5A01C1C3ECBFE26769E4DFA9F41EC8EB77CBD4AF70EE24E40DF6E43782FA1"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/payment.cs",
+      "sha256": "62E6C6F80305320E9B1862B0E40DF50A3EE79FB54AFDFD407B3E6E4A2212FAF1"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/policy_version.cs",
+      "sha256": "16078D27AA9E64B32296DC933022A8B50CFE6679429A0C059443D0E42A4955F2"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/price_range.cs",
+      "sha256": "2956B12C9B217E6DCCE3A3A1310C36D252C6A849019F441880EFEE9736A71A6C"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/promotion_redemption.cs",
+      "sha256": "BAD5A76356E73DC731409C99E7D1EE0777800F740A5AD5BA1EA66DDF912887FD"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/promotion_rule.cs",
+      "sha256": "B391936EDA3806E4127848A2B1CD03FDAEDF97BA9205CD5D15BED21A1906203F"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/promotion.cs",
+      "sha256": "EA234D8A1D1F9848532F0005F6C5BECB615028177144FAA6DD310B1D793DD2E3"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/refund_approval.cs",
+      "sha256": "61B01344FD062F9459F2917C9D01264D68EFEC095B74DFEF70770FE5EB430EEB"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/refund.cs",
+      "sha256": "0CCC646C87C7E64950A70BD8290D59D89DCF8EC9D6CE83417B93A66CC2AB752D"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/rental_agreement.cs",
+      "sha256": "74CCDC4700FB2063460042A487A1F738AA907F6F6B25A7A66895DF6B94111FAB"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/rental_renewal.cs",
+      "sha256": "51A8AFD92C72829F43F2E3D6DF373D597A4AACB9AB772D4E2BFB324D293BAC93"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/reservation.cs",
+      "sha256": "A80F8BF451B2DFFE7D068FA78148FCD4CF040391148217AA93BE9A5B0B1E7842"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/role.cs",
+      "sha256": "A0F11BC9FF467D6C9B789260CBA71261BDCB5F54F3C1E9C7CAEDAAF5B403EF61"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/service_rating.cs",
+      "sha256": "03B09A1560FEEE1964C4C9D8889A73989072D7D9E6376DE6BA7E389CB8BAB7F1"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/shift_assignment.cs",
+      "sha256": "124B63E7B8867794374BD3573CA5DEF36DF2B3E024D547FB504C4317313D7CA7"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/staff_facility_assignment.cs",
+      "sha256": "3502278C8122D6940611431248989C372EF20D5847B22BEFFB793FF7D8C3520F"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/staff_shift.cs",
+      "sha256": "2B54609B1E47470A055C4D30F878445ACBDD1BDEF0A39680A136A13F9FBE9CE6"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/staff_task.cs",
+      "sha256": "30A49CB2F024B46D27737ED8C9FAFBA28D961E870B5A9148FBFFBCAE2E819894"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/storage_unit.cs",
+      "sha256": "2EB5AC47AA7B49A04F5CD407E76C2E28023C86533216FF4968EA09BDEDFF42EB"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/StorageUnitHaTDT.cs",
+      "sha256": "D860E55BD5EB8DA1368363E93787BF7D4D8DEBAFA0665E0901D2C74BC56A04E8"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/support_ticket.cs",
+      "sha256": "07FECED3B86838BB3F9105AC126C88285D75BAF64BCEBF5F4599B0B837773631"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/ticket_assignment.cs",
+      "sha256": "E3743BADA0C454009108A8557D2B2505C5CC8832B23D282F0D830BDD8C76DAE0"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/ticket_attachment.cs",
+      "sha256": "862E1E24A1D65276162768BBFB9E9DEB832E126A794D271F0D4215717463EE1C"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/ticket_charge_approval.cs",
+      "sha256": "8A175E36F5C3854DB63A9D9000095C221BDD1ABC2F13A49F4303E669FE78707E"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/ticket_charge_proposal.cs",
+      "sha256": "E765C0F2027FF06F413E1876EC464B5324CE7483721B79E74AEAE55AB4EC50B7"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/ticket_message.cs",
+      "sha256": "1B9B4FA40CC688AA8E6FBDC53D106E6A21B66048A5F95D6DEBADF9AA3D953660"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/unit_allocation.cs",
+      "sha256": "359E3F8176833D9152382CDBBCAA4D2CAF9EE2D6154E5CA088BECA07B5BD4C3D"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/unit_map_position.cs",
+      "sha256": "7CB5B5300351FD4626759571745306CDB3FE548A287FD181BC467F9558FFC1B1"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/unit_status_history.cs",
+      "sha256": "8560BC4273FB5B96A56B921F0591A87FAB313AFCBF62E5221E82E767A98CB725"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/unit_transfer_request.cs",
+      "sha256": "259B9D007D7B5342BC468DC8779A7ECAE7C6514AA3AF6399A65C6D5BAD719AD4"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/unit_type.cs",
+      "sha256": "8EEE043AEE51E7B48E19269D967C7F44DF4B5C77087221F8707341385011A2D7"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/UnitTypeHaTDT.cs",
+      "sha256": "23CEC50A85736ABBC02922A688C91A2397A58885EA7E50D3ABCC1D921171D4AA"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/user_role.cs",
+      "sha256": "03091B2A5D1AA5D9D75BBAF3EEF0D209B05E64A99A11090402F27F00C8065E51"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/user.cs",
+      "sha256": "267635616000E33679465C4F4A16A33DAE756E6D1F49518194707532ED0655C7"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Exceptions/StorageUnitExceptions.cs",
+      "sha256": "EBB633332B680A76E2199EF3C93298D7309FC59122E13FF9B39095F8F0863807"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Models/StorageUnitAdminModels.cs",
+      "sha256": "45D602EBFB3E046318DDFCAF8C04AC1FADF286B01F8B901195BFD28029D3AA12"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Models/UserIdentitySnapshot.cs",
+      "sha256": "8C4462CF004850AE2890AE7DB250E50ACCC83B2207EA1AE517DC1241F300CBC1"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Repositories/Implementations/CheckInRepository.cs",
+      "sha256": "1B5456D680A882BF42951D2965416E5D2540CBAF884097F885178B34A5490B85"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Repositories/Implementations/FacilityCatalogRepository.cs",
+      "sha256": "155CA0A0BA62424C350633FB75F4B73620B6D0D89AB96D4FB952F9868AC3F234"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Repositories/Implementations/GenericRepository.cs",
+      "sha256": "428AC2F6DC61035CD20322BB06728B39C9E4EA87CC3B7DF9B9CB5460370F1312"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Repositories/Implementations/PaymentRepository.cs",
+      "sha256": "67954CDEADC159A4C703F0D6EC6A04F9D3ECD6E33DFF7D5EFD75EB66F2C430D6"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Repositories/Implementations/ReservationRepository.cs",
+      "sha256": "55CE0AF41DD70FDB0CB55171E059447C14831BB73D65F6CAD376CDA15AB718A7"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Repositories/Implementations/StorageUnitAdminRepository.cs",
+      "sha256": "2B6AD1DBEE183D3E392D663DBAA156017297FD94BBD35BDDB2F26D6D55FC4697"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Repositories/Implementations/UserRepository.cs",
+      "sha256": "EFDB6E39E536A26012EBE01A227986B186C5ED2658550E9000CFA456A492EAED"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Repositories/Interfaces/ICheckInRepository.cs",
+      "sha256": "EA713830E2AC121989EC8A5F4D44A863A0E1C4D7ED9DE29E754E998DCDBDB835"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Repositories/Interfaces/IFacilityCatalogRepository.cs",
+      "sha256": "6DBD30F862F4C54F8BBE19130B65A21A571839B419A6D81386C54A26E3EE57D4"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Repositories/Interfaces/IPaymentRepository.cs",
+      "sha256": "2690769C1B750D1995801FFF3A373EE32677293D3FFFDDB75EE6F65A1A5FA111"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Repositories/Interfaces/IRepository.cs",
+      "sha256": "7DAD91B577E012951C43352713D667359529ACB79B0BB1A6B8A496A1C8FCEED6"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Repositories/Interfaces/IReservationRepository.cs",
+      "sha256": "FF890AA79BF0F15E541F857450742679024ABC33D3E3E331313796FE33863419"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Repositories/Interfaces/IStorageUnitAdminRepository.cs",
+      "sha256": "8627970D61EBC81538D8F4412B0D18D3EFFBBA969A1E22A1F0712BDDD47EA4AC"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.DataAccess/Repositories/Interfaces/IUserRepository.cs",
+      "sha256": "AC077CEE3D313AAA2A356DC8622CFFDA24DA112B224BB765CF0CAD87F935C355"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Presentation/Program.cs",
+      "sha256": "6F2D6A88977BAE44A73BE197B818A21E6D7AA4EC1F4A1CE656736C4734384FDC"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Presentation/SelfStorageManagementSystem.Presentation.csproj",
+      "sha256": "1B1946A3EF6C8435BD4BE472536A1B57710F60E9E14FE042CE98F27C613CA36A"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Presentation/Configuration/.gitkeep",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Presentation/Controllers/AdminAccountsController.cs",
+      "sha256": "1BE33F42FDAEDCE63AC215E9290818F78E5D87578AD477A997034B00D5F69445"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Presentation/Controllers/AuthController.cs",
+      "sha256": "AA14E3B5491DCF6A0E666CF5170B8F071262FC8395C3624666B1D1E713A577D1"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Presentation/Controllers/BaseController.cs",
+      "sha256": "9381D5C46DEABBD5CAB0506095355621648B882C67D67F100B6213A9587F6CCF"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Presentation/Controllers/CatalogController.cs",
+      "sha256": "EC21A2C9CDA5DA3AE828FB0D9875ADEDC62E636052D89F167E28A0D8B4E55675"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Presentation/Controllers/CheckInController.cs",
+      "sha256": "325BF4BA84AA8B4C9235A8DD39CF5AE126E5353D3011544DFA46FABB8E53EFA7"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Presentation/Controllers/InvoicesController.cs",
+      "sha256": "5529429CB0DA30B9B14252993CC44FBFE68FDCE0C9EEAA43BAF9E4C77768674F"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Presentation/Controllers/MeController.cs",
+      "sha256": "E247CD35E66A89B583662E8692DA895D048CE3996A76E984B66D4F0FBA557F97"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Presentation/Controllers/PaymentsController.cs",
+      "sha256": "E8539F377648446201BB2851C6750E1AC90A6B629C0AB9B9DA37232CD9ABC418"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Presentation/Controllers/RentalAgreementsController.cs",
+      "sha256": "8393D3C3744F320E863348A078C1EA83F5EA0563E92F4F3CDD5FE24E60877CFA"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Presentation/Controllers/ReservationsController.cs",
+      "sha256": "98F4EFCC2914FBA194525D9BAD2E30B6B322BBA9E346AE2B8D798458C6D53368"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Presentation/ExceptionHandling/GlobalExceptionHandler.cs",
+      "sha256": "00478FB2F26679AF2C56F38CB9991B31F99632B6F7563B6A447F189AC3FF2A8D"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Presentation/Properties/launchSettings.json",
+      "sha256": "971990F5AACC9B176C6B5CE3706B368AB09C0ACA7BE3B4B1987051247EDA5859"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Presentation/Workers/ReservationHoldExpirationWorker.cs",
+      "sha256": "DC7AEA16E1613EA5822134EECF2779B2290A9FA9E36482D8CEB7354BE772A7F4"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/appsettings.Development.json",
+      "sha256": "D72A865C8953829586CD46F6112B5A29CD4A893EC837EC6D7D265D2A0789F2BE"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/appsettings.json",
+      "sha256": "AF8E700D5692D078D35328A320AFBEADE0ABB824885DC6080D9286E2EF9B8D7F"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Program.cs",
+      "sha256": "185BDE6CA0B69BC9389BE2F93C79886BC4E0D52F8AF0B9369D1CD3A5A8BD7077"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/SelfStorageManagementSystem.Web.csproj",
+      "sha256": "9D25205E1E0E8CDDCEB966EFBBF8D2E0125613ECC62FA5D5F7C625B67CE3EAE5"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Controllers/AccountController.cs",
+      "sha256": "49A61506D048B49624177CBE50706F24E72EC884C71345264895B144325D6F03"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Controllers/HomeController.cs",
+      "sha256": "D6A5D08194B1F442705FCF926A34BAEE646F6B0389346C77FA557D6D3D5037CE"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Controllers/PaymentsApiController.cs",
+      "sha256": "26AFFFA6B6EC3008B76850B40192B247F4E3667EE7753487E6119C5F2DF5D51F"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Extensions/CookieAuthExtensions.cs",
+      "sha256": "DEEE83050D6A8675E606C8BD3098C7A5183E93E2B1363121596436D4DBCA1A3E"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Helpers/AppFormatters.cs",
+      "sha256": "63569D6A067EEE06061832EFCE61CF0A92345C631D26DB2E88933E5C277C520B"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Hubs/StorageUnitHub.cs",
+      "sha256": "2C944316AE69BFDC5C88F735CE4A416E49CF34635510E352B8C25F9317B07BF4"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Models/EmptyStateViewModel.cs",
+      "sha256": "427B89F63F6681D45EB1B583D57C5F4816AE7FC853363E4441B74860E1B1AD9B"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Models/LoginRequest.cs",
+      "sha256": "7DD761AE33E561776425C5D64BF3FD6664E57F99FB2AB5E0777887B6B5654831"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Models/RegisterViewModel.cs",
+      "sha256": "7C4475002F56BA73FF24925C8236EE23BBF23F0AAC63C62D96E322781008F8F5"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/_ViewImports.cshtml",
+      "sha256": "2493898DC3667A50663C2D2A22D61820A24BD4036B07C72FD35BE098482508E0"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/_ViewStart.cshtml",
+      "sha256": "62AFAEE3500962D2262CF59943E45AD8BE3D3E0D26698B4152A0C4B7705FC129"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/LayoutTest.cshtml",
+      "sha256": "1D291514175EAC8E73FEC740776F675740D3CC5517C95F36DA9735954472FA44"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/LayoutTest.cshtml.cs",
+      "sha256": "ACC6DCCD22AEBC7A69E28E28B84137881254D31A9F00B3D0A8B145D945C3C8A4"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Admin/Accounts/Create.cshtml",
+      "sha256": "536E77D838212DA070D1425DC0F4FE4ED9FC11FE06C5666BB6E96281D5CAE222"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Admin/Accounts/Create.cshtml.cs",
+      "sha256": "C9C0AAF95197BDDB7CEE69110F8F500353D9D6795CF87FC1D00E3BE4F404327C"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Admin/Accounts/Details.cshtml",
+      "sha256": "3F41EE255DC738388E06A8929CE495EAF4C6E73D04137758B79BC9145B11AA14"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Admin/Accounts/Details.cshtml.cs",
+      "sha256": "6B09555988318AC0388EC49346B2B36B7105D2FFC7EF360D519E08FECC49AB19"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Admin/Accounts/Index.cshtml",
+      "sha256": "E3AE9988B7336C9944C966506176E56AF51BC4097ED2F55A43EDEC87E75C6896"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Admin/Accounts/Index.cshtml.cs",
+      "sha256": "CA50728883B4013C9169C5533A1999C3985E9B89FE73629970A80C9A7C46C683"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Agreements/Details.cshtml",
+      "sha256": "A49F875AC20810322517DC0698D67DFBDE433013C663C4D984788675B695E716"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Agreements/Details.cshtml.cs",
+      "sha256": "DD7E6FC400477398C3C982DECB119A43B9BF9C2A8290A6F8FB6890A58C22047F"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Agreements/Index.cshtml",
+      "sha256": "CEB10EE63E350328BBBC2DBAD93953FD40DC7131ADAB79E60CFB5E628EDDA1D4"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Agreements/Index.cshtml.cs",
+      "sha256": "32E0B459A2F94983955C92A090060E578D291EED3C90EB8E2EC85255D134602D"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Catalog/Details.cshtml",
+      "sha256": "91C9F0C4E2BCFF52E51F8E92F11946C95B61F3F71ECE3313CE0DA262052BA803"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Catalog/Details.cshtml.cs",
+      "sha256": "051889BBDD599A31B45A12B21776C78B30FB7005F130658D8D5DFCBA7D8B7D39"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Catalog/Index.cshtml",
+      "sha256": "5D87846738876804ECA8D571AD9FE63BCDF5901A06A0B4C7D922C7BD2044F857"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Catalog/Index.cshtml.cs",
+      "sha256": "047EFD94E2D6BABF083596741F0A053EBAC24C7AA0BAA688E6C7BB15C83867FA"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Invoices/Details.cshtml",
+      "sha256": "98760846102460FCD6D6FACF42CD64C581F150197CC80E3CB901637683AE99F3"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Invoices/Details.cshtml.cs",
+      "sha256": "2AA860003251E5C22D9115BECD9017AF871ACF4FD9B56344B0A224170B6D9067"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Invoices/Index.cshtml",
+      "sha256": "1B3E5931900B146EEC51FDFAC0EB58FA62F5181EFC4B35FA40ED3FD21F4FE3DD"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Invoices/Index.cshtml.cs",
+      "sha256": "4544B8E5DE9899508FD3EF18B0AECFC46348FE25022734031F9D9F965B96B1BC"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/MyUnits/HandoverDetails.cshtml",
+      "sha256": "3558D53C1BD2696E28AA930E95F720E2F2979B8EAA93437B91FDA57C5A922EB7"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/MyUnits/HandoverDetails.cshtml.cs",
+      "sha256": "A044C81BF885A136F3835710CC76D2395496FA6579D8B7DC29D4E155A9A39D83"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/MyUnits/Index.cshtml",
+      "sha256": "EF405436BCF214CA990EA93C605156D1B5297D826D24EE71294C922F2EE95722"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/MyUnits/Index.cshtml.cs",
+      "sha256": "1C79891F8FF2691245BED8910FD0DFB09E39E435884E55728446F88B79ECA1D8"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Notifications/Index.cshtml",
+      "sha256": "7441067DCBC95ED99BC9D00E7D5FDF1205380B37EA43F619E4399EAB24C49948"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Notifications/Index.cshtml.cs",
+      "sha256": "8B3EE058D8D4AD577CD5D4B5408F54BBD72116EFE67E8ECD0CCDBECA5618BD9C"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Payments/Checkout.cshtml",
+      "sha256": "384E0EEEECFE77E3EE16D2242A3B27A9E57BD02DA8BCE6B76BB41B7136C86E8E"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Payments/Checkout.cshtml.cs",
+      "sha256": "FBA3DE00578DDE5D471D2E08494A7187D908B0A91AD529820038D553CAF0583E"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Payments/DemoSimulator.cshtml",
+      "sha256": "71376FFB5DA9EC243F7143D924D7C2D7061AC35B0BEBAC647334C08FC03FB140"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Payments/DemoSimulator.cshtml.cs",
+      "sha256": "D829E066A64FB33AB1CDA90E7F418C64245378D087F49577AC12848AD2DE3AD6"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Payments/Details.cshtml",
+      "sha256": "029F885DF4E04C1D59B8371C79B11A5804917F0A5209AEC32FB6132EE1547BED"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Payments/Details.cshtml.cs",
+      "sha256": "3436E7E4C135C96AE79FDC6AC792311EBDBFB91A880DF22C001F0CA27CC987F0"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Payments/Index.cshtml",
+      "sha256": "9F5B72EF203393A3EE8E1C3B216599FBC485BC53DEB222DDCF47C6B89E39784D"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Payments/Index.cshtml.cs",
+      "sha256": "D9E60FC70F1D26ECCAF3C9E482202B7F53E6858B2BA3FFFCCFD762BCC7DDB0E6"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Payments/Result.cshtml",
+      "sha256": "3EF305822D3DC3B7EAA71451A7BF6F25E80EB8D7976A14266F6A652C966A583A"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Payments/Result.cshtml.cs",
+      "sha256": "89FAF32D23CE4072896AD418323F50AF7A873532F8164EFA1FE68190C475DB83"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Reservations/Cancel.cshtml",
+      "sha256": "B632E7C456A65593EC7C018783B3C5561CBD0F5851FF7E6D7CA6FFE6B334CB2B"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Reservations/Cancel.cshtml.cs",
+      "sha256": "1D289BDB2A671E3004273B1201F327102807DFBD0A518EC2356B7B3A4E716C00"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Reservations/Create.cshtml",
+      "sha256": "7C699CE0721CD5F5EF7628F99A204DEDE723E0E0E5CC3F403E8D518B14DD409A"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Reservations/Create.cshtml.cs",
+      "sha256": "28BD0F9BF2ECF20763D86628FF8637E78D1B00B5825C51633F2708B48C14EB0C"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Reservations/Details.cshtml",
+      "sha256": "24CCE767C18C67D9A419324204326D6AEF8AC6A93E5C4B7D9C2970B5C6C71020"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Reservations/Details.cshtml.cs",
+      "sha256": "76F81D2AB97020654BB2C3AC234075EC59C36968A4A55317620AEB1DEF0E63AF"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Reservations/Index.cshtml",
+      "sha256": "FFF053F0E8C04863D584B09AF2E93453A45DD1E860100802FFA9453D49F6CF0D"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Reservations/Index.cshtml.cs",
+      "sha256": "79EFC40E07E2EE364E15F32B3E14F3DDB19808FB3BACEA34C8ED969BB8DD0752"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Reservations/MyReservations.cshtml",
+      "sha256": "61A11CD2B4AB11E76DB7ED0827A70DDFF3F91BD2FC6CC185F1BEA783808753C4"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Reservations/MyReservations.cshtml.cs",
+      "sha256": "C300C2C7288102887D2FBEB1233C0AE7C329AF33AB0C9EEA1A4E01CE7F7500E9"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Staff/CheckIn/CheckInViewModels.cs",
+      "sha256": "203E042E927F5C7251FDFD32337D6AAA162DB2D849EA9BA45ADEC4F2204E87CC"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Staff/CheckIn/Index.cshtml",
+      "sha256": "DA22C2066FA68A9A36B668A9BF8E911C2C28C8203F289FF29552B6C603E08FF2"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/Staff/CheckIn/Index.cshtml.cs",
+      "sha256": "7D3B4CE1644475208C1FA62C4EA08BA03D01E82E543E0B2FC05DDAB14AA8DFD2"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/StorageUnits/Create.cshtml",
+      "sha256": "A342C5A6FAE518A79D835247A63FCA84C6EEE427EAF424871F4F50FFDD91D89A"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/StorageUnits/Create.cshtml.cs",
+      "sha256": "5607BF17F949868A047BE549632083FC77418A6E98F39269A92F93A5E665F8CB"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/StorageUnits/Delete.cshtml",
+      "sha256": "434657BDE690477902C11C5EB7CBA934EE98E5ABF8BEB16DE5972B7EE7EC6123"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/StorageUnits/Delete.cshtml.cs",
+      "sha256": "1A91A4A1E8C9BA4F0187B7C89A9D0DCC22695985A7F424DC168BE294A4BA4B9D"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/StorageUnits/Details.cshtml",
+      "sha256": "BD193C859AB2625D195442F61A40CA829B915172F39F5F5D7AD07A5173D1CFAF"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/StorageUnits/Details.cshtml.cs",
+      "sha256": "458B67A74C64E814406676D99BD53BF40447191E8D4A0C3C4E04046E0D997466"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/StorageUnits/Edit.cshtml",
+      "sha256": "C3CF2F97CC8ED45EE67009797CDF44A7AE4DB5C91D57C0FD1BB168FF61DD1D5B"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/StorageUnits/Edit.cshtml.cs",
+      "sha256": "E2F42FAF7E53752900920898FCD7870DAB5A0C4CFBBA7E03B8DF564AAA15144F"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/StorageUnits/Index.cshtml",
+      "sha256": "5272C5E3AD2B1E17160A75116D7BB61F156D10F65A539BD09DA81D03886F638B"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Pages/StorageUnits/Index.cshtml.cs",
+      "sha256": "804B57D275BB3B347F60AA8EB64CD2E740F53941C9235C3AAFC59E80BEA29A8D"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Properties/launchSettings.json",
+      "sha256": "9129B7AF1271042F3F670924CDEB493729EE4841DA3FB502F89A98AC54D215D4"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Realtime/IStorageUnitHubConnectionTracker.cs",
+      "sha256": "B372E9B9A40D6B976ECD5332BEB8394B7815A5452B870858091B2CFBB7D418EF"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Realtime/IStorageUnitRealtimePublisher.cs",
+      "sha256": "C208CC0D129ACBD70CCCE3569CACF230049CE13F06704DFF7163D364F1F4051A"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Realtime/RealtimePublishDegradedException.cs",
+      "sha256": "3992E76ADC128023958883BD0675711568078B85DEEEC56FBD8FFA118B39FA32"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Realtime/RealtimeScopeRevocationException.cs",
+      "sha256": "F404619A40BCB0FDBC4BA763AE95E528ECAA6241842386353D29658016871D34"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Realtime/StorageUnitHubConnectionTracker.cs",
+      "sha256": "30AFA298D6D32B6F2F9B9A9D3BCB1FC56ECEF36590004E3A0CAE091E27E1E05E"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Realtime/StorageUnitHubScopeRevocationService.cs",
+      "sha256": "AD02BF842D8CCD4DA6978D81188F528118E444AADAC665303DA28D515B467F5F"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Realtime/StorageUnitHubUpdateRequest.cs",
+      "sha256": "9DD0594C6BD6F9AB6CA4C05CFFD6B25B8D5DFD6B598116691E5334D3B4E41844"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Realtime/StorageUnitRealtimeEventDto.cs",
+      "sha256": "CD106876C19411B9F7706688D9DB6C33D508C9EF9ED915E6C244538C39BBBC93"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Realtime/StorageUnitRealtimePublisher.cs",
+      "sha256": "98E2F2F04341EE71DB877ABDECCA1D13F2EE98E73B88F1A09D4038F8F88303EC"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Realtime/StorageUnitScopeSyncWorker.cs",
+      "sha256": "6F61E3FE086A22D30F689B389FD584A55813DE367E08E0C5BE001C597D77A6BE"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Views/_ViewImports.cshtml",
+      "sha256": "93EC6A4002553D811EDCE27D019DA739111F81F57C2407FA4807A09CB3608C90"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Views/_ViewStart.cshtml",
+      "sha256": "62AFAEE3500962D2262CF59943E45AD8BE3D3E0D26698B4152A0C4B7705FC129"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Views/Account/Forbidden.cshtml",
+      "sha256": "F16C81408D71F2A82C9061FE40F1338134AADCF9F205898A36C92FABF56D80BC"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Views/Account/Login.cshtml",
+      "sha256": "CE90A5C86B5AFF2A553A5EA845AF69781FD30F86C7CCDAEA85A729868F93DE8A"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Views/Account/Logout.cshtml",
+      "sha256": "37AEE862DBBDB4F02CA7492C37848CAD1EC0B50810BFEC89C0ED4E8C227748C6"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Views/Account/Profile.cshtml",
+      "sha256": "903604FEA6972913FD4AE8FB33568BD02C01C912EFCF59C131775AC133D8B399"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Views/Account/Register.cshtml",
+      "sha256": "17A125AD78B1E3FABF5CB9830044D33AB051679B2A35886597570584C5C822AD"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Views/Home/Error.cshtml",
+      "sha256": "36A65DCE173C9ED40F1DFF65712898B89DDC44FEA5DE0396C8CFBDDBB0C90BE1"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Views/Home/Index.cshtml",
+      "sha256": "091CCFBB24504EF82EEDC65E55C54DFDE90D9ADC2CE51DCA2A6CA58CF274C818"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Views/Home/StatusCode.cshtml",
+      "sha256": "71B8E318705FDA81E8E6A47E69C543F29CA0A696E274C5CAB48D60B5C6D5B10E"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Views/Shared/_AlertMessages.cshtml",
+      "sha256": "80FBA43E75DFF0CC4FDEE4EFB9C7C11C70A5409459BD61700520203ED8A4141D"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Views/Shared/_EmptyState.cshtml",
+      "sha256": "226ECDD350B06BBB8C2E7ED8D0D57384E7C09562BAD58FCF312C82A55F56BC3C"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Views/Shared/_Layout.cshtml",
+      "sha256": "A1EB89AB6730C32ED7AF61101F655FDEA66B7B0946177C7E71DFCA417FD0134F"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Views/Shared/_LoadingState.cshtml",
+      "sha256": "8527381D4D40083BD59F3F79838D52A1F9A3FE5A765E94F4C036EF42F1C62C54"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Views/Shared/_ValidationScriptsPartial.cshtml",
+      "sha256": "2351165FDFEFD5CF4879C4DA5EAAF8D040A1DA5E7EE030AE5E16E7D44F251BF1"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Views/Shared/_ValidationSummary.cshtml",
+      "sha256": "86336DD85152BD109CFA2A0B2745368828F5A90DFBBE8E4A7824B8CDB895BA46"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Workers/IReservationExpirationHook.cs",
+      "sha256": "6E2D602E00CA59C97B270DD825E5E33117A363CDB5B8CDF75CAD2263BE72C409"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/Workers/ReservationHoldExpirationWorker.cs",
+      "sha256": "9246D4B9007604E385E725C1868C9B5522EA4862EB878E0A25CFF0AB180FB06B"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/wwwroot/css/catalog.css",
+      "sha256": "E5AE69D5D55BAB3E90DEA18D6CEEB59F5355B70BD1C5FB5C87ABB2ED2AD44788"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/wwwroot/css/site.css",
+      "sha256": "0FCA2C8D088EEC83B017EE8181DDCF7B9F3B949750851B2655435D6D467A254E"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/wwwroot/css/staff-checkin.css",
+      "sha256": "0BCE9EC8CA6A761F7695CA43D2345391D6EE4165B0B5C279E456BCFC42CC8D1D"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/wwwroot/js/admin-accounts.js",
+      "sha256": "418E67BC765852351445D5DA2B9FD2CC4AE358688EFD04DEE331A47794059D6C"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/wwwroot/js/catalog.js",
+      "sha256": "5D389332ECF3C6D2FF1256DA72A2BDB300396770C9657F1056B3CC2631EA6259"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/wwwroot/js/my-units.js",
+      "sha256": "5A0314841C74176EEC9A20938DAABF89708A8FF56383071CBFAA900880356559"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/wwwroot/js/notifications.js",
+      "sha256": "EC9969F5E6ABA3175C9341A5245CABABDF4D3693FADAE64BA01E940CE2F814F6"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/wwwroot/js/reservation-countdown.js",
+      "sha256": "797FA4F6F2F744CD738B6A0C3D5868EE5A3848D06F2083AEC5C340A0C516E1B1"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/wwwroot/js/site.js",
+      "sha256": "818613724160D55C988543991994999D24FDFB39C2768FFFFAB9D9E2E620C7B7"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/wwwroot/js/staff-checkin.js",
+      "sha256": "ABC921402C0A19050D98755BE48B6D1F6DE778304C8B723B0033D5DEC224F700"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/wwwroot/js/storage-units-realtime.js",
+      "sha256": "08A839B0DFBB7C71A66FB32B164647EAD57E8E9DA296A89BE8B81F1B0B552999"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/wwwroot/lib/bootstrap/dist/css/bootstrap.min.css",
+      "sha256": "3C8F27E6009CCFD710A905E6DCF12D0EE3C6F2AC7DA05B0572D3E0D12E736FC8"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/wwwroot/lib/bootstrap/dist/js/bootstrap.bundle.min.js",
+      "sha256": "0833B2E9C3A26C258476C46266E6877FC75218625162E0460BE9A3A098A61C6C"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/wwwroot/lib/jquery/dist/jquery.min.js",
+      "sha256": "FC9A93DD241F6B045CBFF0481CF4E1901BECD0E12FB45166A8F17F95823F0B1A"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/wwwroot/lib/jquery-validation/dist/jquery.validate.min.js",
+      "sha256": "89CEA1C4D5820772010EC5EAD33E4AA4A1E67097356A79A7874C463A2D02E43C"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/wwwroot/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js",
+      "sha256": "44558558820FB230780EE711E23AB0C535B0D77666B48FACEAD551D8B2666579"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.Web/wwwroot/lib/microsoft/signalr/dist/browser/signalr.min.js",
+      "sha256": "E28A720A359B37CB015758D543F908730ED5BBE478DB09506BB6887F18313538"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.WpfClient/App.xaml",
+      "sha256": "58B267043139A65AF0E2CDC89618EDE69E6E3EF14565A7C80E0F52E7DE6093AD"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.WpfClient/App.xaml.cs",
+      "sha256": "D0408C6EB6163007E997C6A96ABF283C9843FBEC174F5BFF995D72862F0D638B"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.WpfClient/AssemblyInfo.cs",
+      "sha256": "3FAC2AF92385F676E9A941BEFD23FE38F0A5FA6167D4A3A88F07E730C5595CA3"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.WpfClient/SelfStorageManagementSystem.WpfClient.csproj",
+      "sha256": "D5D43FA74A4E02338991F7C27F735E7257FF8B61FDD4BB431F3FDAA420C0936F"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.WpfClient/Models/CatalogModels.cs",
+      "sha256": "B2BB9CE725690DE8F6E3A93DEABD4DC0B79B62A2625BC88A808338C8478F2CE8"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.WpfClient/Models/ClientModels.cs",
+      "sha256": "3816953474A98E3F264DA98EC3030F3444EE58E7F07D3F134BC00CBC27993CE3"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.WpfClient/Models/PaymentModels.cs",
+      "sha256": "69C78B3934E6ABC82FC670FD3F181F6A97FB4AD8AB0BD86F15ACE677789FED78"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.WpfClient/Models/ReservationModels.cs",
+      "sha256": "DBBA358D5E913C651724DA5B382F2FC1B303FFCA6041512B70F7BABDF40C9239"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.WpfClient/Services/ApiClient.cs",
+      "sha256": "C5D2B1F226171776FBF6A7501BB44752A1FCE4D26E1D396DFE3AF76EA14D9CA8"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.WpfClient/Services/SessionStore.cs",
+      "sha256": "F3D4EDF7D56024D119334856A377122D048F1F6F0406A8F5BEE5C1525F2E3929"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.WpfClient/Views/AdminAccountsWindow.xaml",
+      "sha256": "FF3C70CD72335D14F55D470596F2A936574B3255F595C42EF1D51EC113C7E9D3"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.WpfClient/Views/AdminAccountsWindow.xaml.cs",
+      "sha256": "6BF4B17198E3C53D40A3E48497ED2351674014AF2F7C7BADCFDB30E446FB0259"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.WpfClient/Views/AssignFacilityDialog.xaml",
+      "sha256": "ADEFAB8CFEC0F48718901E5BA38CAEFA77FE976EC0804E44388DA88B9C5E7C99"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.WpfClient/Views/AssignFacilityDialog.xaml.cs",
+      "sha256": "EB3D4ABAABD4D8E673EAEAC59FF2926AED58239FE53D79EB28FC36AF8A1474EE"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.WpfClient/Views/CheckoutWindow.xaml",
+      "sha256": "E5F7C8D1F312FAB69B5B5C9E9A46F17AA3F3B07D24EDD32AC14B41F6EE71AAC1"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.WpfClient/Views/CheckoutWindow.xaml.cs",
+      "sha256": "772DB4413984785375454A14645610DA651FDFCB918AADAA732BFE7CBBB62C36"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.WpfClient/Views/ConfirmReservationDialog.xaml",
+      "sha256": "07881701CE65B7CB96C7A8EFA9DA7BE40BA81B6DC8D9A1526B302EE921292999"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.WpfClient/Views/ConfirmReservationDialog.xaml.cs",
+      "sha256": "05153A2B54C9515AEE5718032F0800D59C815371DE1E20EA88C3D6235CA98F06"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.WpfClient/Views/CreateStaffDialog.xaml",
+      "sha256": "891507973E46378A6A28DFB11BE38D0C14A11CFCB1769068FC594F3ACD3C7142"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.WpfClient/Views/CreateStaffDialog.xaml.cs",
+      "sha256": "8F6679B68A4D2BB00B2FD2B7A113094847AEF0B035066508EA19A446B570C6CF"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.WpfClient/Views/FacilityCatalogWindow.xaml",
+      "sha256": "FA786E5E4311C4BB9C2B97E8F31C3CB0034101196112DA6557287292B9FE8F1E"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.WpfClient/Views/FacilityCatalogWindow.xaml.cs",
+      "sha256": "F98851185672BFEE7D02760683232788D311AAF087DAE3234FC1E204DA8F15D8"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.WpfClient/Views/LoginWindow.xaml",
+      "sha256": "725554404BF48AE4BE59F68C75EB8164C8867BFEAB1C9C4DDB56257F2DB95E46"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.WpfClient/Views/LoginWindow.xaml.cs",
+      "sha256": "FE289A25C83F1B707D935C5713A3383D5081A29681027D7E8C5F8722D0E7E5BD"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.WpfClient/Views/MainWindow.xaml",
+      "sha256": "B2AF430BC1156B2BC6AE904E6C5B9B716D91F2FA63259D395513D21EF63A1780"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.WpfClient/Views/MainWindow.xaml.cs",
+      "sha256": "A08F6BFEB1594775CA49796AD4B39F64EAEBAFBF40BB20DEA620E61FA491B727"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.WpfClient/Views/ManageRolesDialog.xaml",
+      "sha256": "2073A2CE68CAE2F5E3B3DCCEE4AE734261734F1079D85A354DB4CF32DE9FB7E2"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.WpfClient/Views/ManageRolesDialog.xaml.cs",
+      "sha256": "D5BF389749809E92836C0BBCF9E87173857D30B66DB73845169FA8CF3D6A37CC"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.WpfClient/Views/MyReservationsWindow.xaml",
+      "sha256": "F271C54BD3429AAFAE3BFB0053643A478C732D91258BB774C3D701E523841E62"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.WpfClient/Views/MyReservationsWindow.xaml.cs",
+      "sha256": "2AEA55DCA5E24BB4D429184E9258AC438815C48C77D39F91142C7437F169744B"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.WpfClient/Views/RegisterWindow.xaml",
+      "sha256": "A5CC28ED236F885793E1026420BED03B4E0EF6E03DB4478B9F1CCA11097EFD87"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.WpfClient/Views/RegisterWindow.xaml.cs",
+      "sha256": "E24F83F3E5DD440B39DC5B95F2306353C8EDFA31D09193A207896B0DF3434604"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.WpfClient/Views/ReservationDetailWindow.xaml",
+      "sha256": "F717CA6306E466290C2E2684CD9CC7714272B5E9D57689BEA3746E016A859258"
+    },
+    {
+      "path": "src/SelfStorageManagementSystem.WpfClient/Views/ReservationDetailWindow.xaml.cs",
+      "sha256": "B135CA8A6309B5484B5420462FAD48128E1171C94235441D25842E010EAE9844"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.Tests/AccountIdentityServiceTests.cs",
+      "sha256": "C45D2A5ABD6B80B42714E1B111E06A0C846191DB6FC978C5029A7D27B384EFFC"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.Tests/AdminAccountServiceTests.cs",
+      "sha256": "A95AADB6917FB55A893DE0F550E34466A1837648C6DF771E39F75220778833BF"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.Tests/ApiClientAuthorizationHeaderTests.cs",
+      "sha256": "A93347A81FB4A24DA9DA11B6FEA796E1438F8C135C5DB73F9BF94AB2D7E9418F"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.Tests/AuthAndAuthorizationIntegrationTests.cs",
+      "sha256": "0712C7C67697878AACDC82E65B784EA7496F230B4CE10CA7CDFF03E67834DB3A"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.Tests/AuthServiceTests.cs",
+      "sha256": "2A2213372679D0C8B2058785FCC8A2AE032C2465203EAC63B896F666DD1C849E"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.Tests/CatalogIntegrationTests.cs",
+      "sha256": "6320D7209847D53FAFCE8FD9CE1A2B1661F39CD1AAC408BA4C510A7BB9A41803"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.Tests/CheckInIntegrationTests.cs",
+      "sha256": "C427573F6360E1C6DB7132954C4B4D6D4165F52C8A717DBA88271C445C6399C9"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.Tests/CheckInServiceTests.cs",
+      "sha256": "8838E7CE6A2E437E04EB4683F9FB72DA89066BE8037E8AF20C363C4971861F1E"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.Tests/CheckInSqlServerConcurrencyTests.cs",
+      "sha256": "343E2C7DE3CDA6D5996E26E855A71BE95AED79B64D0E4BF30ED55AE84DF1B555"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.Tests/DemoAccountBootstrapServiceTests.cs",
+      "sha256": "3B3AB5D0522DA34D50142BC650FA613CB18CA0250363007CF00CB612A92FA79A"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.Tests/FacilityCatalogServiceTests.cs",
+      "sha256": "8D262E874D7736AD175770034F6C7D716172FEE6C5E482F0FBAA0B789BAEE1A0"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.Tests/FacilityScopeServiceTests.cs",
+      "sha256": "F952E43B54CA74A2900FE188B861E12E23CED988F5706A973D53D9AF3FA67DA2"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.Tests/JwtTokenGeneratorTests.cs",
+      "sha256": "2EE692B2FA477E140D3507A7279A7EE1D597E86DB6CC46ADA96C5BB2B1E0CE91"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.Tests/PasswordHasherTests.cs",
+      "sha256": "CA5A4DFECE362F10D47B30CFB8243E261E4AF7E65F420DAE75FF10B9E8746EE2"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.Tests/PaymentIntegrationTests.cs",
+      "sha256": "AC7D177C237C49E609BBBEB6F5E57EC7C98390069ACD1EA3AFE5CB1B960A7CCD"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.Tests/PaymentServiceTests.cs",
+      "sha256": "F476DC37CB385109A2B7C3C51A1D6E94DE3DFF3123CD2D15212675D37DED2930"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.Tests/PaymentSqlServerConcurrencyTests.cs",
+      "sha256": "F8FC994C13DEC8417F2E12E089585716A53607C552E741E6649D0B9261F3B606"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.Tests/ReservationIntegrationTests.cs",
+      "sha256": "B490B157CC1C2FCDBD67B68856D8E98D081E70CE603A66FE30AE4704EF9BF890"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.Tests/ReservationServiceTests.cs",
+      "sha256": "B5430A4BCAB8546EB6F7D4369944750E71D44518A57746A16B14CC1F70042D22"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.Tests/ReservationSqlServerConcurrencyTests.cs",
+      "sha256": "72BF76B9CFB5AB47F331CBC6394F8194368CC57A22CDB13DAA5EC36F0EDB7551"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.Tests/SelfStorageManagementSystem.Tests.csproj",
+      "sha256": "73757CC17004BE6E1F57C25EBDAA6BAD83A54BCE1CE0178E63B6006629E87F06"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.Tests/VnpayGatewayTests.cs",
+      "sha256": "6A932C012B8192CF7E0A1B1E8CE2B36CB5BE8A36F2F4F5ABA53C6A248A5F2E97"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.Tests/WpfCatalogFilterParsingTests.cs",
+      "sha256": "A51EBC7723424741B3ADCA4ACA8F4005A7E36B1F828145F149234550665302A5"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.WebTests/AccountCookieAuthTests.cs",
+      "sha256": "4A01C8D90F77A2D828107967B1A2661A0624F3D59D5CFE5E572F5E5906D9DA1F"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.WebTests/AccountIdentityAndZeroJwtTests.cs",
+      "sha256": "989EF92247EC3BC194F19DD7FBA940E97CB746B40FBBEDE0644EC4AF083376F0"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.WebTests/AdminAccountsAndCustomerPagesTests.cs",
+      "sha256": "1F7B008F09F7ED1DC8C93AECD8DF058C6A86F4BECBE01854B70C23C42B5700F5"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.WebTests/CatalogRazorPagesTests.cs",
+      "sha256": "31885DE585306C9B12BBF67EE606C699C396130FAE86E0AE81390366269F14EE"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.WebTests/FoundationIntegrationSmokeTests.cs",
+      "sha256": "692C60D40A97C8790DB769549949723AB0EA2B5CB6C862E8F08B449AB6CBF1B3"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.WebTests/LandingPageAndBootstrapTests.cs",
+      "sha256": "333093B0AB93F55D51A27DF011EE69715C42ADE19C751A9D44BF848B0395E04D"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.WebTests/LayoutAndSharedComponentsTests.cs",
+      "sha256": "B2C2982B24ABA346F4F9FCFE1D18FCFB6C8BF499DE904CBE31B856C5E038BBE8"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.WebTests/PaymentRazorPagesAndCallbackTests.cs",
+      "sha256": "8FC13A4EDF4C5B0C22E2CFFE2C757CFE0050567AB8B6360D75D3DF79C3FD7DD1"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.WebTests/ReservationRazorPagesAndWorkerTests.cs",
+      "sha256": "5322794F278730B01030AADB66622CB6580E7A3FB26CD6B39A098C0ECF2C696A"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.WebTests/SelfStorageManagementSystem.WebTests.csproj",
+      "sha256": "64EC6790D73944E532E82AD6B04C7C1A134B2304EB427B763930B733F26B93AA"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.WebTests/StaffCheckInPageTests.cs",
+      "sha256": "2C11A2E8C51C88D723A4C3B31F4F8905FA01A6F8574857D9F3095C175B4E0F36"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.WebTests/StorageUnitAdminRepositoryTests.cs",
+      "sha256": "0A60919E6681540643D6985D933847F7EC0177301B106E527D5D90C1F2CAD0B7"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.WebTests/StorageUnitAdminServiceTests.cs",
+      "sha256": "ACDBD7299ECF76BFB02807471D7F928B70E3F4B7558DD4A68011FA9BA0B7B58E"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.WebTests/StorageUnitRealtimeHubTests.cs",
+      "sha256": "F1D2A3EC993A8731E76D346EBF3E53C87E5354242AFF5DD60972D81F0DDE5F9F"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.WebTests/StorageUnitsBrowserRealtimeTests.cs",
+      "sha256": "BA2B1E49C46BE570FD2D06244C718CB17D9B99649687C45DBAB4293A3A674F5D"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.WebTests/StorageUnitsRazorPagesTests.cs",
+      "sha256": "E1AE392FFEA32A183D85E89E89DA5A4C4A281F19BA8843B4664AC885B763CC37"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.WebTests/BrowserTests/reservation-countdown-tests.html",
+      "sha256": "F01DDADCCBA17E99F12706C7538A36CFBF71CDE9756052E59A669378C85E8242"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.WebTests/BrowserTests/storage-units-realtime-tests.html",
+      "sha256": "0294636E99B446AAA5AB9CEA5A2F4446B9EBCF7589B8756603B68C090DE8F086"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.WebTests/Fixtures/CheckInWebTestFixture.cs",
+      "sha256": "277398DD9126EF8E427A8EF274AD9D446BCA448C47CF455AC01C65C3C8DE4F5D"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.WebTests/Fixtures/CookieAuthWebTestFixture.cs",
+      "sha256": "0A0C93881D844B860F718E05F665679D98A6F4EAC456BA20739B639B4BBDE27A"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.WebTests/Fixtures/PaymentWebTestFixture.cs",
+      "sha256": "657D864CC8B99D45129DA91DAB554AAFDAB1072F1C021E41BA4BAD01FB384A2F"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.WebTests/Fixtures/TestAuthHandler.cs",
+      "sha256": "877D945DDB511B13F367677CB1F8414E9ECABBFA4968ADC311333A71DF571F92"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.WebTests/Fixtures/WebTestFixture.cs",
+      "sha256": "ECD5AC64A3ACE752EF1532D8A22589F98116F53226CE994D225D01DE4C4B178A"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.WebTests/Infrastructure/HeadlessEdgeSession.cs",
+      "sha256": "8668D77538BA815FBDB1519399AFC18A2DF9DF77DB70A481E63485CC47658DA7"
+    },
+    {
+      "path": "tests/SelfStorageManagementSystem.WebTests/Infrastructure/KestrelRealtimeServer.cs",
+      "sha256": "E9650A56809F3E96D0ABB4DF72C7F793D57B975C104FBC1809F29026FE5EF14A"
+    }
+  ]
+}

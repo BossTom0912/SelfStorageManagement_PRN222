@@ -28,7 +28,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
-<body>
+<body data-is-authenticated="@(isAuthenticated ? "true" : "false")" data-user-id="@(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "")">
     <!-- Lớp phủ trạng thái xử lý toàn màn hình (Loading Overlay) -->
     <div id="globalLoadingOverlay">
         <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status">
@@ -204,6 +204,7 @@
     <div class="app-content container">
         <!-- Thông báo nhanh từ TempData -->
         <partial name="_AlertMessages" />
+        <div id="globalRealtimeAlertArea"></div>
 
         <main role="main" class="pb-4">
             @RenderBody()
@@ -227,6 +228,7 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/app-realtime.js" asp-append-version="true"></script>
     
     <!-- Điểm nạp mã script riêng của từng trang (Tránh tạo kết nối SignalR toàn cục bừa bãi) -->
     @await RenderSectionAsync("Scripts", required: false)

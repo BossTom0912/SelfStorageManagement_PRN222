@@ -600,7 +600,8 @@ public class CheckInService : ICheckInService
                 IsAlreadyCompleted = result.IsAlreadyCompleted,
                 Pin = result.Pin,
                 CredentialId = result.CredentialId,
-                CredentialExpiresAt = result.CredentialExpiresAt
+                CredentialExpiresAt = result.CredentialExpiresAt,
+                NotificationId = result.NotificationId
             };
         }
         catch (Exception ex)

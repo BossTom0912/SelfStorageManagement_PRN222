@@ -1,3 +1,5 @@
+using SelfStorageManagementSystem.BusinessLogic.DTOs.Responses.Reservations;
+
 namespace SelfStorageManagementSystem.Web.Workers;
 
 /// <summary>
@@ -12,6 +14,17 @@ public interface IReservationExpirationHook
     /// <param name="expiredCount">Số lượng đơn giữ chỗ đã được chuyển trạng thái sang expired.</param>
     /// <param name="cancellationToken">CancellationToken cho tác vụ.</param>
     Task OnHoldsExpiredAsync(int expiredCount, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Xử lý hậu kỳ với danh sách định danh chi tiết các đơn giữ chỗ đã giải phóng thành công (T15 R2 Fix F02).
+    /// Mặc định ủy nhiệm sang OnHoldsExpiredAsync để đảm bảo tương thích ngược hoàn toàn.
+    /// </summary>
+    Task OnHoldsExpiredWithDetailsAsync(
+        IReadOnlyList<ExpiredReservationHoldInfo> expiredHolds,
+        CancellationToken cancellationToken = default)
+    {
+        return OnHoldsExpiredAsync(expiredHolds.Count, cancellationToken);
+    }
 }
 
 /// <summary>
@@ -20,6 +33,13 @@ public interface IReservationExpirationHook
 public class NullReservationExpirationHook : IReservationExpirationHook
 {
     public Task OnHoldsExpiredAsync(int expiredCount, CancellationToken cancellationToken = default)
+    {
+        return Task.CompletedTask;
+    }
+
+    public Task OnHoldsExpiredWithDetailsAsync(
+        IReadOnlyList<ExpiredReservationHoldInfo> expiredHolds,
+        CancellationToken cancellationToken = default)
     {
         return Task.CompletedTask;
     }

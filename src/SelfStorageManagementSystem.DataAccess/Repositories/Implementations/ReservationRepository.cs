@@ -454,6 +454,14 @@ public class ReservationRepository : GenericRepository<reservation>, IReservatio
         DateTimeOffset nowUtc,
         CancellationToken cancellationToken = default)
     {
+        var list = await ExpireOverdueReservationHoldsDetailedAsync(nowUtc, cancellationToken);
+        return list.Count;
+    }
+
+    public async Task<IReadOnlyList<ExpiredReservationHoldInfo>> ExpireOverdueReservationHoldsDetailedAsync(
+        DateTimeOffset nowUtc,
+        CancellationToken cancellationToken = default)
+    {
         var isRelational = _context.Database.IsRelational();
         IDbContextTransaction? transaction = null;
         if (isRelational)
@@ -463,23 +471,24 @@ public class ReservationRepository : GenericRepository<reservation>, IReservatio
 
         try
         {
-            var candidateIds = await _context.reservations
+            var candidateHolds = await _context.reservations
                 .Where(r => (r.status == "pending" || r.status == "awaiting_deposit") && r.hold_until <= nowUtc)
-                .Select(r => r.id)
+                .Select(r => new { r.id, r.facility_id, r.customer_id })
                 .ToListAsync(cancellationToken);
 
-            if (candidateIds.Count == 0)
+            if (candidateHolds.Count == 0)
             {
                 if (transaction != null) await transaction.RollbackAsync(cancellationToken);
-                return 0;
+                return Array.Empty<ExpiredReservationHoldInfo>();
             }
 
+            var actuallyExpired = new List<ExpiredReservationHoldInfo>();
             var actuallyExpiredIds = new List<long>();
             if (isRelational)
             {
-                foreach (var id in candidateIds)
+                foreach (var hold in candidateHolds)
                 {
-                    var lockKey = $"SS_Reservation_{id}";
+                    var lockKey = $"SS_Reservation_{hold.id}";
                     var resultParam = new SqlParameter
                     {
                         ParameterName = "@Result",
@@ -500,7 +509,7 @@ public class ReservationRepository : GenericRepository<reservation>, IReservatio
                     }
 
                     var affected = await _context.reservations
-                        .Where(r => r.id == id &&
+                        .Where(r => r.id == hold.id &&
                                     (r.status == "pending" || r.status == "awaiting_deposit") &&
                                     r.hold_until <= nowUtc)
                         .ExecuteUpdateAsync(s => s
@@ -510,7 +519,8 @@ public class ReservationRepository : GenericRepository<reservation>, IReservatio
 
                     if (affected > 0)
                     {
-                        actuallyExpiredIds.Add(id);
+                        actuallyExpiredIds.Add(hold.id);
+                        actuallyExpired.Add(new ExpiredReservationHoldInfo(hold.id, hold.facility_id, hold.customer_id));
                     }
                 }
 
@@ -538,6 +548,7 @@ public class ReservationRepository : GenericRepository<reservation>, IReservatio
             }
             else
             {
+                var candidateIds = candidateHolds.Select(c => c.id).ToList();
                 var candidateEntities = await _context.reservations
                     .Where(r => candidateIds.Contains(r.id) &&
                                 (r.status == "pending" || r.status == "awaiting_deposit") &&
@@ -549,6 +560,7 @@ public class ReservationRepository : GenericRepository<reservation>, IReservatio
                     r.status = "expired";
                     r.updated_at = nowUtc;
                     actuallyExpiredIds.Add(r.id);
+                    actuallyExpired.Add(new ExpiredReservationHoldInfo(r.id, r.facility_id, r.customer_id));
                 }
 
                 if (actuallyExpiredIds.Count > 0)
@@ -583,7 +595,7 @@ public class ReservationRepository : GenericRepository<reservation>, IReservatio
             }
 
             if (transaction != null) await transaction.CommitAsync(cancellationToken);
-            return actuallyExpiredIds.Count;
+            return actuallyExpired;
         }
         catch
         {

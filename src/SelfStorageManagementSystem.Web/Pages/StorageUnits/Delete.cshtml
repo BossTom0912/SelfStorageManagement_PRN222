@@ -136,6 +136,7 @@
                 </a>
                 @if (Model.CanDelete && Model.CanManage)
                 {
+                    <input type="button" id="btnDeleteBySignalR" value="Delete by SignalR" class="btn btn-outline-danger px-4 fw-semibold" />
                     <button type="submit" id="btnSubmitDelete" class="btn btn-danger px-4 fw-semibold">
                         <span id="btnSubmitSpinner" class="spinner-border spinner-border-sm me-1 d-none" role="status" aria-hidden="true"></span>
                         <span id="btnSubmitText">Xác Nhận Xóa Ô Kho</span>
@@ -153,12 +154,77 @@
             const submitBtn = document.getElementById('btnSubmitDelete');
             const spinner = document.getElementById('btnSubmitSpinner');
             const submitText = document.getElementById('btnSubmitText');
+            const canManage = @(Model.CanManage ? "true" : "false");
+            const canDelete = @(Model.CanDelete ? "true" : "false");
 
             if (form && submitBtn) {
                 form.addEventListener('submit', function (e) {
                     submitBtn.disabled = true;
                     if (spinner) spinner.classList.remove('d-none');
                     if (submitText) submitText.textContent = 'Đang xóa...';
+                });
+            }
+
+            // =========================================================================
+            // SignalR Delete Integration (Theo mẫu TeacherCode 2.txt & 4.txt line 1)
+            // =========================================================================
+            const btnDeleteBySignalR = document.getElementById("btnDeleteBySignalR");
+            if (btnDeleteBySignalR && canManage && canDelete) {
+                // 1. Khởi tạo HubConnection theo mẫu TeacherCode
+                const connection = new signalR.HubConnectionBuilder()
+                    .withUrl("/storageUnitHub")
+                    .withAutomaticReconnect()
+                    .build();
+
+                // 2. Đăng ký listeners trước connection.start()
+                connection.on("Receiver_DeleteTransactionCashDepositSlip", function (id) {
+                    handleRealtimeDelete(id);
+                });
+
+                connection.on("Receiver_DeleteStorageUnit", function (id) {
+                    handleRealtimeDelete(id);
+                });
+
+                function handleRealtimeDelete(id) {
+                    if (String(id) === "@Model.Id") {
+                        console.log("Storage unit deleted externally:", id);
+                        btnDeleteBySignalR.disabled = true;
+                        if (submitBtn) submitBtn.disabled = true;
+                        window.location.href = "/StorageUnits";
+                    }
+                }
+
+                connection.start().then(function () {
+                    console.log("Connected to SignalR Hub on Delete page");
+                }).catch(function (err) {
+                    return console.error("SignalR start error on Delete page:", err.toString());
+                });
+
+                // 3. Sự kiện click: gọi invoke("HubDelete_StorageUnit", id, expectedUpdatedAt)
+                btnDeleteBySignalR.addEventListener("click", function (event) {
+                    event.preventDefault();
+
+                    const id = "@Model.Id";
+                    const expectedUpdatedAt = document.querySelector('input[name="ExpectedUpdatedAt"]')?.value;
+
+                    // Chống bấm đúp
+                    btnDeleteBySignalR.disabled = true;
+                    if (submitBtn) submitBtn.disabled = true;
+
+                    console.log("Invoking HubDelete_StorageUnit for id:", id);
+
+                    // Hỗ trợ cả HubDelete_TransactionCashDepositSlip và HubDelete_StorageUnit
+                    connection.invoke("HubDelete_StorageUnit", id, expectedUpdatedAt)
+                        .then(function (result) {
+                            console.log("HubDelete_StorageUnit success:", result);
+                            window.location.href = "/StorageUnits";
+                        })
+                        .catch(function (err) {
+                            console.error("HubDelete_StorageUnit failed:", err.toString());
+                            btnDeleteBySignalR.disabled = false;
+                            if (submitBtn) submitBtn.disabled = false;
+                            alert("Lỗi khi xóa ô kho qua SignalR: " + err.toString());
+                        });
                 });
             }
         });

@@ -205,36 +205,270 @@
             </table>
         </div>
 
-        <!-- Phân trang -->
-        @if (Model.StorageUnits.TotalPages > 1)
-        {
-            <div class="card-footer bg-white d-flex flex-wrap justify-content-between align-items-center py-3 border-top">
-                <div class="small text-muted mb-2 mb-md-0">
-                    Hiển thị <strong>@((Model.StorageUnits.PageNumber - 1) * Model.StorageUnits.PageSize + 1)</strong>
-                    đến <strong>@(Math.Min(Model.StorageUnits.PageNumber * Model.StorageUnits.PageSize, Model.StorageUnits.TotalCount))</strong>
-                    trong tổng số <strong>@Model.StorageUnits.TotalCount</strong> ô kho
-                </div>
-                <nav aria-label="Phân trang ô kho">
-                    <ul class="pagination pagination-sm mb-0">
-                        <li class="page-item @(Model.StorageUnits.HasPreviousPage ? "" : "disabled")">
-                            <a class="page-link" href="@(Model.StorageUnits.HasPreviousPage ? Model.GetPaginationUrl(Model.StorageUnits.PageNumber - 1) : "#")" aria-label="Trang trước">
-                                &laquo;
-                            </a>
-                        </li>
-                        @for (var p = 1; p <= Model.StorageUnits.TotalPages; p++)
-                        {
-                            <li class="page-item @(p == Model.StorageUnits.PageNumber ? "active" : "")">
-                                <a class="page-link" href="@Model.GetPaginationUrl(p)">@p</a>
+        <!-- Phân trang (T13-R3-F04: Vùng chứa footer ổn định chuyển đổi mượt giữa 1 và 2 trang) -->
+        <div id="storageUnitsFooterContainer">
+            @if (Model.StorageUnits.TotalPages > 1)
+            {
+                <div class="card-footer bg-white d-flex flex-wrap justify-content-between align-items-center py-3 border-top">
+                    <div class="small text-muted mb-2 mb-md-0" id="storageUnitsDisplayRange">
+                        Hiển thị <strong>@((Model.StorageUnits.PageNumber - 1) * Model.StorageUnits.PageSize + 1)</strong>
+                        đến <strong>@(Math.Min(Model.StorageUnits.PageNumber * Model.StorageUnits.PageSize, Model.StorageUnits.TotalCount))</strong>
+                        trong tổng số <strong id="storageUnitsTotalCount">@Model.StorageUnits.TotalCount</strong> ô kho
+                    </div>
+                    <nav aria-label="Phân trang ô kho" id="storageUnitsPaginationContainer">
+                        <ul class="pagination pagination-sm mb-0">
+                            <li class="page-item @(Model.StorageUnits.HasPreviousPage ? "" : "disabled")">
+                                <a class="page-link" href="@(Model.StorageUnits.HasPreviousPage ? Model.GetPaginationUrl(Model.StorageUnits.PageNumber - 1) : "#")" aria-label="Trang trước">
+                                    &laquo;
+                                </a>
                             </li>
-                        }
-                        <li class="page-item @(Model.StorageUnits.HasNextPage ? "" : "disabled")">
-                            <a class="page-link" href="@(Model.StorageUnits.HasNextPage ? Model.GetPaginationUrl(Model.StorageUnits.PageNumber + 1) : "#")" aria-label="Trang sau">
-                                &raquo;
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-        }
+                            @for (var p = 1; p <= Model.StorageUnits.TotalPages; p++)
+                            {
+                                <li class="page-item @(p == Model.StorageUnits.PageNumber ? "active" : "")">
+                                    <a class="page-link" href="@Model.GetPaginationUrl(p)">@p</a>
+                                </li>
+                            }
+                            <li class="page-item @(Model.StorageUnits.HasNextPage ? "" : "disabled")">
+                                <a class="page-link" href="@(Model.StorageUnits.HasNextPage ? Model.GetPaginationUrl(Model.StorageUnits.PageNumber + 1) : "#")" aria-label="Trang sau">
+                                    &raquo;
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            }
+            else if (Model.StorageUnits.TotalCount > 0)
+            {
+                <div class="card-footer bg-white d-flex flex-wrap justify-content-between align-items-center py-3 border-top">
+                    <div class="small text-muted mb-2 mb-md-0" id="storageUnitsDisplayRange">
+                        Hiển thị <strong>1</strong> đến <strong>@Model.StorageUnits.TotalCount</strong>
+                        trong tổng số <strong id="storageUnitsTotalCount">@Model.StorageUnits.TotalCount</strong> ô kho
+                    </div>
+                    <nav aria-label="Phân trang ô kho" id="storageUnitsPaginationContainer"></nav>
+                </div>
+            }
+            else
+            {
+                <div class="card-footer bg-white d-flex flex-wrap justify-content-between align-items-center py-3 border-top">
+                    <div class="small text-muted mb-2 mb-md-0" id="storageUnitsDisplayRange">
+                        Hiển thị <strong>0</strong> trong tổng số <strong id="storageUnitsTotalCount">0</strong> ô kho
+                    </div>
+                    <nav aria-label="Phân trang ô kho" id="storageUnitsPaginationContainer"></nav>
+                </div>
+            }
+        </div>
     </div>
 </div>
+
+<div id="storageUnitsPageConfig"
+     data-facility-id="@(Model.FacilityId.HasValue ? Model.FacilityId.Value.ToString() : "")"
+     data-unit-type-id="@(Model.UnitTypeId.HasValue ? Model.UnitTypeId.Value.ToString() : "")"
+     data-area-id="@(Model.AreaId.HasValue ? Model.AreaId.Value.ToString() : "")"
+     data-physical-status="@(string.IsNullOrWhiteSpace(Model.PhysicalStatus) ? "" : Model.PhysicalStatus.Trim())"
+     data-is-listed="@(Model.IsListed.HasValue ? Model.IsListed.Value.ToString().ToLowerInvariant() : "")"
+     data-search-term="@(string.IsNullOrWhiteSpace(Model.SearchTerm) ? "" : Model.SearchTerm.Trim())"
+     data-sort-by="@(string.IsNullOrWhiteSpace(Model.SortBy) ? "" : Model.SortBy.Trim())"
+     data-sort-descending="@(Model.SortDescending ? "true" : "false")"
+     data-page-number="@Model.StorageUnits.PageNumber"
+     data-page-size="@Model.StorageUnits.PageSize"
+     data-total-count="@Model.StorageUnits.TotalCount"
+     data-can-manage="@(Model.CanManageUnits ? "true" : "false")"
+     style="display:none;"></div>
+
+@section Scripts {
+    <script src="~/js/storage-units-realtime.js" asp-append-version="true"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const configEl = document.getElementById('storageUnitsPageConfig');
+            const canManage = configEl ? configEl.dataset.canManage === 'true' : false;
+            const tableBody = document.getElementById('storageUnitsTableBody');
+            const messageAreaId = 'storageUnitsMessageArea';
+
+            // T13-R2-F05: Đọc ngữ cảnh bộ lọc từ DOM dataset (browser tự decode an toàn, không bị Razor HTML-encode làm sai chuỗi trong script)
+            const currentFilter = {
+                facilityId: configEl ? (configEl.dataset.facilityId || '') : '',
+                unitTypeId: configEl ? (configEl.dataset.unitTypeId || '') : '',
+                areaId: configEl ? (configEl.dataset.areaId || '') : '',
+                physicalStatus: configEl ? (configEl.dataset.physicalStatus || '') : '',
+                isListed: configEl ? (configEl.dataset.isListed || '') : '',
+                searchTerm: configEl ? (configEl.dataset.searchTerm || '') : '',
+                sortBy: configEl ? (configEl.dataset.sortBy || '') : '',
+                sortDescending: configEl ? configEl.dataset.sortDescending === 'true' : false,
+                pageNumber: configEl ? parseInt(configEl.dataset.pageNumber || '1', 10) : 1,
+                pageSize: configEl ? parseInt(configEl.dataset.pageSize || '10', 10) : 10,
+                totalCount: configEl ? parseInt(configEl.dataset.totalCount || '0', 10) : 0
+            };
+
+            function updateTotalCount(delta) {
+                const el = document.getElementById('storageUnitsTotalCount');
+                if (el) {
+                    let count = parseInt(el.textContent, 10);
+                    if (!isNaN(count)) {
+                        count = Math.max(0, count + delta);
+                        el.textContent = count;
+                        currentFilter.totalCount = count;
+                    }
+                }
+            }
+
+            function renderEmptyTableIfNeeded() {
+                if (tableBody.querySelectorAll('tr[id^="unit-row-"]').length === 0) {
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="8" class="text-center py-5 text-muted">
+                                <div class="mb-2 fs-3">&#128230;</div>
+                                <div class="fw-semibold">Không còn ô kho nào trong danh sách.</div>
+                            </td>
+                        </tr>
+                    `;
+                }
+            }
+
+            // 1. Khởi tạo HubConnection theo mẫu TeacherCode với reconnect tự động
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("/storageUnitHub")
+                .withAutomaticReconnect([0, 2000, 5000, 10000])
+                .build();
+            window.connection = connection;
+
+            function showSyncPendingWarning() {
+                if (document.getElementById('realtimeSyncAlert')) return;
+                const alertDiv = document.createElement('div');
+                alertDiv.id = 'realtimeSyncAlert';
+                alertDiv.className = 'alert alert-warning alert-dismissible fade show shadow-sm mb-3';
+                alertDiv.setAttribute('role', 'alert');
+                alertDiv.innerHTML = `
+                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <div class="d-flex align-items-center">
+                            <span class="me-2 fs-5 text-warning fw-bold">&#9888;</span>
+                            <div>
+                                <strong>Đang chờ đồng bộ:</strong> Có thay đổi dữ liệu thời gian thực nhưng chưa thể cập nhật từ máy chủ. Bảng đang giữ trạng thái hiện tại.
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-warning btn-sm fw-semibold" id="btnRetrySync" onclick="window.StorageUnitsRealtime.retryRefetch()">
+                            &#8635; Thử lại
+                        </button>
+                    </div>
+                `;
+                const msgArea = document.getElementById(messageAreaId);
+                if (msgArea) msgArea.prepend(alertDiv);
+            }
+
+            // 2. Đăng ký TẤT CẢ listeners TRƯỚC KHI gọi connection.start()
+
+            // Listener: Receiver_CreateStorageUnit - Thêm dòng nổi bật hoặc refetch đồng bộ sắp xếp/phân trang
+            connection.on("Receiver_CreateStorageUnit", async function (item) {
+                console.log("Receiver_CreateStorageUnit received:", item);
+
+                // T13-F03 / T13-R3-F03: Kiểm tra khớp cơ sở/loại/khu vực/trạng thái cơ bản
+                if (!StorageUnitsRealtime.matchesFilter(item, currentFilter)) {
+                    StorageUnitsRealtime.showMessage(
+                        messageAreaId,
+                        'info',
+                        `Ô kho mới <strong>${StorageUnitsRealtime.escapeHtml(item.unitCode)}</strong> vừa được tạo (không thuộc bộ lọc hiện tại).`,
+                        4000
+                    );
+                    return;
+                }
+
+                // T13-R2-F03 / T13-R3-F03 / T13-R3-F05 / T13-R4-F04: Refetch từ server đảm bảo sắp xếp, phân trang và tìm kiếm (kể cả notes) chính xác 100%
+                const outcome = await StorageUnitsRealtime.refetchTable('storageUnitsTableBody', 'storageUnitsTotalCount', item.id, 'create');
+                if (outcome && outcome.status === 'applied') {
+                    const rowInDom = document.getElementById('unit-row-' + item.id);
+                    if (rowInDom) {
+                        StorageUnitsRealtime.showMessage(
+                            messageAreaId,
+                            'success',
+                            `Ô kho mới <strong>${StorageUnitsRealtime.escapeHtml(item.unitCode)}</strong> (#${item.id}) vừa được thêm thành công qua Realtime.`,
+                            5000
+                        );
+                    } else {
+                        // Thuộc bộ lọc nhưng ở trang khác hoặc thứ tự sắp xếp nằm ngoài trang hiện tại
+                        StorageUnitsRealtime.showMessage(
+                            messageAreaId,
+                            'info',
+                            `Có ô kho mới <strong>${StorageUnitsRealtime.escapeHtml(item.unitCode)}</strong> phù hợp bộ lọc vừa được tạo (nằm ngoài trang hoặc phạm vi hiển thị hiện tại). <a href="javascript:window.location.reload();" class="alert-link">Tải lại danh sách</a>`,
+                            6000
+                        );
+                    }
+                    return;
+                }
+
+                // T13-R3-F06 / T13-R4-F04: Chỉ hiển thị trạng thái chờ đồng bộ khi request mới nhất thất bại.
+                // Nếu outcome là 'superseded' do một event mới hơn đã đến, bỏ qua mà không hiện cảnh báo giả mạo.
+                if (outcome && outcome.status === 'failed') {
+                    showSyncPendingWarning();
+                }
+            });
+
+            // Listener: Receiver_UpdateStorageUnit - Cập nhật bảng ngay lập tức hoặc gỡ dòng nếu rời bộ lọc
+            connection.on("Receiver_UpdateStorageUnit", async function (item) {
+                console.log("Receiver_UpdateStorageUnit received:", item);
+
+                // T13-R2-F03 / T13-R3-F05 / T13-R4-F04: Refetch từ server để đồng bộ chính xác thứ tự và bộ lọc
+                const outcome = await StorageUnitsRealtime.refetchTable('storageUnitsTableBody', 'storageUnitsTotalCount', item.id, 'update');
+                if (outcome && outcome.status === 'applied') {
+                    const rowInDom = document.getElementById('unit-row-' + item.id);
+                    if (rowInDom) {
+                        StorageUnitsRealtime.showMessage(
+                            messageAreaId,
+                            'info',
+                            `Ô kho <strong>${StorageUnitsRealtime.escapeHtml(item.unitCode)}</strong> (#${item.id}) vừa được cập nhật.`,
+                            4000
+                        );
+                    } else {
+                        renderEmptyTableIfNeeded();
+                    }
+                    return;
+                }
+
+                // T13-R3-F06 / T13-R4-F04: Chỉ hiển thị cảnh báo nếu thất bại thật sự
+                if (outcome && outcome.status === 'failed') {
+                    showSyncPendingWarning();
+                }
+            });
+
+            // Listener: Receiver_DeleteStorageUnit - Bỏ dòng tương ứng khỏi bảng (theo mẫu TeacherCode)
+            connection.on("Receiver_DeleteStorageUnit", async function (id) {
+                console.log("Receiver_DeleteStorageUnit received for id:", id);
+
+                // T13-R2-F04 / T13-R3-F05 / T13-R4-F04: Refetch từ server để kéo dòng kế tiếp từ trang sau vào trang đầy và đồng bộ số tổng
+                const outcome = await StorageUnitsRealtime.refetchTable('storageUnitsTableBody', 'storageUnitsTotalCount', null, 'delete');
+                if (outcome && outcome.status === 'applied') {
+                    renderEmptyTableIfNeeded();
+                    StorageUnitsRealtime.showMessage(
+                        messageAreaId,
+                        'warning',
+                        `Ô kho mã số ID #${StorageUnitsRealtime.escapeHtml(id)} vừa bị xóa khỏi hệ thống.`,
+                        4500
+                    );
+                    return;
+                }
+
+                // T13-R3-F06 / T13-R4-F04: Chỉ hiển thị cảnh báo nếu thất bại thật sự
+                if (outcome && outcome.status === 'failed') {
+                    showSyncPendingWarning();
+                }
+            });
+
+            // Reconnection: Tự động tải lại dữ liệu mới nhất sau khi ngắt kết nối phục hồi
+            connection.onreconnected(function (connectionId) {
+                console.log("SignalR reconnected:", connectionId);
+                StorageUnitsRealtime.showMessage(
+                    messageAreaId,
+                    'success',
+                    'Kết nối Realtime đã phục hồi. Đang tải lại dữ liệu mới nhất...',
+                    3000
+                );
+                setTimeout(() => window.location.reload(), 1000);
+            });
+
+            // 3. Khởi chạy kết nối SAU KHI đã đăng ký đầy đủ listeners
+            connection.start().then(function () {
+                console.log("Connected to /storageUnitHub successfully.");
+            }).catch(function (err) {
+                console.error("SignalR Connection Error:", err.toString());
+            });
+        });
+    </script>
+}
