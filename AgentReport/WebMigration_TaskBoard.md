@@ -1,6 +1,6 @@
 # Bảng Theo Dõi Tiến Độ Chuyển Đổi Web (Web Migration Task Board)
 
-- **Cập nhật lần cuối**: 2026-10-18 (T20 review VERIFIED với một finding P1; T21 READY; T22 WAITING)
+- **Cập nhật lần cuối**: 2026-10-18 (T21 VERIFIED; T22 VERIFIED — Accepted, No findings)
 - **Đầu mối duy trì**: Gemini A (Foundation & Integration Lead)
 - **Không gian làm việc**: `D:\FPT\PRN222\Project\Final_Project_Web`
 - **Solution Web**: `SelfStorageManagementSystem.Web.sln`
@@ -55,10 +55,10 @@
                                           T20 [VERIFIED — Changes requested]
                                            │
                                            ▼
-                                          T21 [READY]
+                                          T21 [VERIFIED]
                                            │
                                            ▼
-                                          T22 [WAITING]
+                                          T22 [VERIFIED — Accepted]
                                           (Codex)
 ```
 
@@ -89,8 +89,8 @@
 | **T18** | Kiểm thử hai trình duyệt và luồng giao diện | 7 | Gemini C | **VERIFIED** | T15 | [`WebMigration_T18_R6_FindingFixes.md`](file:///D:/FPT/PRN222/Project/Final_Project_Web/AgentReport/WebMigration_T18_R6_FindingFixes.md) / [`WebMigration_T18_R6_CodexReview.md`](file:///D:/FPT/PRN222/Project/Final_Project_Web/AgentReport/WebMigration_T18_R6_CodexReview.md) | **Kết luận nghiệm thu độc lập từ Codex (Round R6): No findings.** Báo cáo R6 SHA-256 `18A2AA0D0462483FB3CE923D2A194E76279645EA701959BB2FE4077AE7BE7C29`, Codex review SHA-256 `631E6D7B0EE9EB60A49A20DB8A0E191F0EC46D4F8EC453D3AACA81A6D5297B75` (khớp hai workspace); kiểm thử T18 độc lập 7/7 PASS; hồi quy Web solution độc lập 449/449 PASS; 6 trigger nghiệp vụ đều có `is_disabled = 0`; 0 fixture T18 rác; bảo toàn contract Hub/Receiver T12–T15; đồng bộ 100% SHA-256 sang Final_Project. |
 | **T19** | Đóng gói bàn giao cho Codex | 8 | Gemini A | **VERIFIED** | T16, T17, T18 | [`WebMigration_FinalHandover.md`](file:///D:/FPT/PRN222/Project/Final_Project_Web/AgentReport/WebMigration_FinalHandover.md) / [`WebMigration_T19_R2_CodexReview.md`](file:///D:/FPT/PRN222/Project/Final_Project_Web/AgentReport/WebMigration_T19_R2_CodexReview.md) / [`WebMigration_T19_Memory.md`](file:///D:/FPT/PRN222/Project/Final_Project_Web/AgentReport/WebMigration_T19_Memory.md) | **Đã hoàn tất nghiệm thu bàn giao cuối cùng (Codex Review R2: No findings).** Báo cáo bàn giao đã nghiệm thu `WebMigration_FinalHandover.md` (SHA-256 `28BD72CAD791F62086F4944D7B013B186BF8F6A7E88FA0CAF36110827BF8DD19`); Kết luận review độc lập của Codex `WebMigration_T19_R2_CodexReview.md` (SHA-256 `68A748D6832D0E9CBAC751CD70B77F6552CE2D47424A70A4C4F649469777E301`); Báo cáo sửa finding R2 `WebMigration_T19_R2_FindingFixes.md` (SHA-256 `DCD558D284F4D8BB6BAE0D33353B72A8872AE673FC7C2D1FF73DC965E56071E5`); Ghi nhớ `WebMigration_T19_Memory.md`; Git SHA `821449030eebe1e38dc3bfda996f8bcb38474d10`; Web solution 449/449 PASS; Bảo toàn hợp đồng Hub/Receiver T12–T15; Đồng bộ 100% sang `Final_Project`; Giữ nguyên 3 tệp loại trừ; Giữ T20–T22 WAITING chờ Codex kiểm tra lại board trước khi khởi động T20. |
 | **T20** | Review độc lập sau bàn giao Gemini | 8 | Codex | **VERIFIED — Changes requested** | T19 | [`WebMigration_CodexReview.md`](file:///D:/FPT/PRN222/Project/Final_Project_Web/AgentReport/WebMigration_CodexReview.md) / [`WebMigration_T20_Memory.md`](file:///D:/FPT/PRN222/Project/Final_Project_Web/AgentReport/WebMigration_T20_Memory.md) | Một finding P1 về WebSocket còn hoạt động sau khi cookie 5 phút hết hạn. Review SHA-256 `AFEAA967448366992897C87A620FBED222EB873AF84F2942D50B89AAAB592127`; memory SHA-256 `D31F29829BE69DEA85F7174B3BE5C836B8CE504208A189DEB17DDEC250A47895`. Mở T21 để sửa đúng finding. |
-| **T21** | Sửa các finding Codex đã giao | 9 | Gemini A/B/C | **READY** | T20 | `WebMigration_FindingFixes.md` | Prompt cụ thể: [`WEBMIGRATION_T21_FIX_PROMPT.md`](file:///D:/FPT/PRN222/Project/Final_Project_Web/Agent/Gemini/WEBMIGRATION_T21_FIX_PROMPT.md), SHA-256 `C45D864638C488318F1903406D1B1D97C567B529D7BCB2F40A1C1C24414DF8B1`. T22 chờ fix và review độc lập. |
-| **T22** | Review lại và kết luận nghiệm thu | 9 | Codex | **WAITING** | T21 | `WebMigration_CodexFinalReview.md` | Kết luận Accepted/Changes Requested. |
+| **T21** | Sửa các finding Codex đã giao | 9 | Gemini A | **VERIFIED** | T20 | [`WebMigration_FindingFixes.md`](file:///D:/FPT/PRN222/Project/Final_Project_Web/AgentReport/WebMigration_FindingFixes.md) / [`WebMigration_T21_Memory.md`](file:///D:/FPT/PRN222/Project/Final_Project_Web/AgentReport/WebMigration_T21_Memory.md) | Codex nghiệm thu độc lập: No findings. `CloseOnAuthenticationExpiration = true` đóng WebSocket khi ticket hết hạn; test Kestrel thật 1/1 PASS; Web solution 450/450 PASS; giữ route, Hub/Receiver contract và Origin RFC 6454. |
+| **T22** | Review lại và kết luận nghiệm thu | 9 | Codex | **VERIFIED — Accepted** | T21 | [`WebMigration_CodexFinalReview.md`](file:///D:/FPT/PRN222/Project/Final_Project_Web/AgentReport/WebMigration_CodexFinalReview.md) / [`WebMigration_T22_Memory.md`](file:///D:/FPT/PRN222/Project/Final_Project_Web/AgentReport/WebMigration_T22_Memory.md) | No findings; test độc lập 1/1 live expiry, 40/40 security HTTP, 450/450 Web, 225 PASS/19 SKIP legacy; SHA-256 tệp phạm vi khớp hai workspace. |
 
 ---
 
@@ -244,3 +244,32 @@
 - **Prompt T21**: [`WEBMIGRATION_T21_FIX_PROMPT.md`](file:///D:/FPT/PRN222/Project/Final_Project_Web/Agent/Gemini/WEBMIGRATION_T21_FIX_PROMPT.md), SHA-256 `C45D864638C488318F1903406D1B1D97C567B529D7BCB2F40A1C1C24414DF8B1`.
 - **Tests**: Không chạy thêm trong T20; baseline Codex đã kiểm trước đó 449/449 Web, 225 PASS/19 SKIP legacy default, 19/19 SQL concurrency. Thiếu test WebSocket đang mở vượt qua hạn cookie.
 - **Hợp đồng T12–T15 và ba tệp ngoài commit**: Giữ nguyên. Git cycle đợi T21/T22 hoàn tất nghiệm thu độc lập.
+
+---
+
+## 15. Tiến Độ Sửa Finding Cho Task T21 (2026-10-18)
+
+- **Trạng thái**: T21 chuyển sang **IMPLEMENTED**, chờ Codex review độc lập (T22 **WAITING**).
+- **Finding đã fix**: [P1] `src/SelfStorageManagementSystem.Web/Program.cs:93` đã cấu hình `options.CloseOnAuthenticationExpiration = true` trên endpoint `MapHub<StorageUnitHub>("/storageUnitHub")`. Đồng bộ cấu hình tương ứng trên test server fixtures (`SecurityHttpServerFixture.cs` và `KestrelRealtimeServer.cs`).
+- **Báo cáo fix**: [`WebMigration_FindingFixes.md`](file:///D:/FPT/PRN222/Project/Final_Project_Web/AgentReport/WebMigration_FindingFixes.md).
+- **Ghi nhớ task**: [`WebMigration_T21_Memory.md`](file:///D:/FPT/PRN222/Project/Final_Project_Web/AgentReport/WebMigration_T21_Memory.md).
+- **Kiểm thử thực tế**:
+  - Test tập trung `OpenWebSocket_ClosesWhenAuthenticationTicketExpires_AndFreshTicketCanReconnect`: **1 passed, 0 failed, 0 skipped** (2 s). Kiểm chứng WebSocket TCP loopback thật đóng kết nối khi cookie hết hạn, chặn gọi method và chặn nhận event sau khi đóng, và cho phép cookie mới kết nối bình thường.
+  - Negative control: Kiểm chứng với `CloseOnAuthenticationExpiration = false` thất bại chính xác với lỗi không đóng kết nối sau timeout 6s.
+  - Toàn bộ `SecurityHttpLiveServerTests`: **40 passed, 0 failed, 0 skipped** (5 s).
+  - Toàn bộ Web Solution (`SelfStorageManagementSystem.WebTests.csproj`): **450 passed, 0 failed, 0 skipped** (4 m 36 s).
+  - Toàn bộ Legacy Solution (`SelfStorageManagementSystem.sln`): **225 passed, 0 failed, 19 skipped** (2 s).
+- **Bảo toàn**: Route `/storageUnitHub`, 3 Hub methods, 3 Receiver events, Origin RFC 6454, 3 tệp loại trừ và thời hạn cookie 5 phút giữ nguyên vẹn.
+- **Đồng bộ Workspace**: Đồng bộ 100% các tệp phạm vi T21 sang `Final_Project`. Chờ Codex tiến hành T22.
+
+---
+
+## 16. Nghiệm thu độc lập T21/T22 (2026-10-18)
+
+- **Trạng thái**: T21 **VERIFIED**; T22 **VERIFIED — Accepted, No findings** sau review độc lập của Codex.
+- **Báo cáo T21**: `AgentReport/WebMigration_FindingFixes.md`, SHA-256 `D8639969B1A4F8FED35F4F334E121B7E675C1721516D39B430BFC88C6DD93A17`.
+- **Review T22**: `AgentReport/WebMigration_CodexFinalReview.md`, SHA-256 `89278E8FC5DDB7F9EC4A2FF89623882128D6B2B01B405EA93BAC8FB410153EE3`.
+- **Ghi nhớ**: `AgentReport/WebMigration_T21_Memory.md` và `AgentReport/WebMigration_T22_Memory.md`.
+- **Kiểm thử Codex**: live WebSocket expiry 1/1 PASS; SecurityHttpLiveServerTests 40/40 PASS; Web solution 450/450 PASS; legacy default 225 PASS, 19 SKIP. Không chạy lại SQL concurrency vì T21 không đổi SQL; T17 đã xác minh 19/19.
+- **Bảo toàn**: `/storageUnitHub`, ba Hub methods, ba Receiver events, thời hạn cookie 5 phút và kiểm tra Origin RFC 6454. Test Web tạo lại 19 PNG T18; đã khôi phục từ evidence R6 đồng bộ, không còn diff.
+- **Đồng bộ**: Toàn bộ tệp T21/T22 và báo cáo/memory/TaskBoard khớp SHA-256 giữa `Final_Project_Web` và `Final_Project`. Git chỉ lấy các tệp T21/T22; ba tệp loại trừ và thay đổi line ending không liên quan ở ngoài commit.

@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.EntityFrameworkCore;
@@ -1382,6 +1383,113 @@ public class SecurityHttpLiveServerTests : IClassFixture<SecurityHttpServerFixtu
         Assert.Equal(createdDto.id.ToString(), receivedDeletedId);
 
         await hubConnection.StopAsync();
+    }
+
+    [Fact]
+    public async Task OpenWebSocket_ClosesWhenAuthenticationTicketExpires_AndFreshTicketCanReconnect()
+    {
+        // 1. Arrange: Seed active manager with facility assignment
+        var email = $"signalr_expiry_{Guid.NewGuid():N}@example.test";
+        var password = "SignalRExpiryPass123!";
+        var hierarchy = await _fixture.SeedFacilityHierarchyAsync("Hà Nội Expiry Hub");
+        var managerUser = await _fixture.SeedUserAsync(
+            email, password, RoleConstants.FacilityManager, UserStatusConstants.Active, "Expiry Hub Manager",
+            assignedFacilityId: hierarchy.Facility.id, assignedRole: RoleConstants.FacilityManager);
+
+        var claims = new[]
+        {
+            new Claim(ClaimTypes.NameIdentifier, managerUser.id.ToString()),
+            new Claim(ClaimTypes.Name, "Expiry Hub Manager"),
+            new Claim(ClaimTypes.Role, RoleConstants.FacilityManager),
+            new Claim("facility_scope", hierarchy.Facility.id.ToString())
+        };
+        var identity = new ClaimsIdentity(claims, CookieAuthExtensions.CookieScheme);
+        var principal = new ClaimsPrincipal(identity);
+
+        // Create short-lived ticket: valid for 2 seconds
+        var shortLivedProperties = new AuthenticationProperties
+        {
+            IssuedUtc = DateTimeOffset.UtcNow,
+            ExpiresUtc = DateTimeOffset.UtcNow.AddSeconds(2),
+            AllowRefresh = false
+        };
+        var shortLivedTicket = new AuthenticationTicket(principal, shortLivedProperties, CookieAuthExtensions.CookieScheme);
+
+        var dataProtectionProvider = _fixture.Services.GetRequiredService<IDataProtectionProvider>();
+        var protector = dataProtectionProvider.CreateProtector("Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationMiddleware", CookieAuthExtensions.CookieScheme, "v2");
+        var ticketDataFormat = new TicketDataFormat(protector);
+        var shortLivedCookie = ticketDataFormat.Protect(shortLivedTicket);
+
+        // 2. Establish WebSocket connection over loopback TCP with short-lived ticket
+        var closedTcs = new TaskCompletionSource<Exception?>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var hubConnection = new HubConnectionBuilder()
+            .WithUrl($"{_fixture.ServerUrl}/storageUnitHub", options =>
+            {
+                options.Transports = HttpTransportType.WebSockets;
+                options.Headers.Add("Cookie", $"{CookieAuthExtensions.CookieName}={shortLivedCookie}");
+                options.Cookies.Add(new Cookie(CookieAuthExtensions.CookieName, shortLivedCookie, "/", new Uri(_fixture.ServerUrl).Host));
+            })
+            .Build();
+
+        hubConnection.Closed += ex =>
+        {
+            closedTcs.TrySetResult(ex);
+            return Task.CompletedTask;
+        };
+
+        await hubConnection.StartAsync();
+        Assert.Equal(HubConnectionState.Connected, hubConnection.State);
+
+        // 3. Wait across expiry (ticket expires in 2s, wait up to 6s for server to close connection)
+        var closedTask = await Task.WhenAny(closedTcs.Task, Task.Delay(TimeSpan.FromSeconds(6)));
+        Assert.True(closedTask == closedTcs.Task, "WebSocket connection did not close after authentication ticket expired.");
+        Assert.Equal(HubConnectionState.Disconnected, hubConnection.State);
+
+        // 4. Inability to invoke hub method afterward
+        await Assert.ThrowsAnyAsync<Exception>(() =>
+            hubConnection.InvokeAsync<string>("HubDelete_StorageUnit", hierarchy.Unit.id.ToString(), (string?)null));
+
+        // 5. Inability to receive private events afterward (publish an event, verify disconnected connection never receives it)
+        var receivedEventAfterClose = false;
+        hubConnection.On<string>("Receiver_DeleteStorageUnit", _ =>
+        {
+            receivedEventAfterClose = true;
+        });
+        using (var scope = _fixture.Services.CreateScope())
+        {
+            var publisher = scope.ServiceProvider.GetRequiredService<IStorageUnitRealtimePublisher>();
+            await publisher.PublishDeletedAsync(99999, hierarchy.Facility.id);
+        }
+        await Task.Delay(500);
+        Assert.False(receivedEventAfterClose, "Disconnected connection received a private event after ticket expiry.");
+
+        // 6. Verify fresh valid ticket can reconnect normally
+        var freshProperties = new AuthenticationProperties
+        {
+            IssuedUtc = DateTimeOffset.UtcNow,
+            ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(5),
+            AllowRefresh = true
+        };
+        var freshTicket = new AuthenticationTicket(principal, freshProperties, CookieAuthExtensions.CookieScheme);
+        var freshCookie = ticketDataFormat.Protect(freshTicket);
+
+        var freshHubConnection = new HubConnectionBuilder()
+            .WithUrl($"{_fixture.ServerUrl}/storageUnitHub", options =>
+            {
+                options.Transports = HttpTransportType.WebSockets;
+                options.Headers.Add("Cookie", $"{CookieAuthExtensions.CookieName}={freshCookie}");
+                options.Cookies.Add(new Cookie(CookieAuthExtensions.CookieName, freshCookie, "/", new Uri(_fixture.ServerUrl).Host));
+            })
+            .Build();
+
+        await freshHubConnection.StartAsync();
+        Assert.Equal(HubConnectionState.Connected, freshHubConnection.State);
+
+        // Verify fresh connection can invoke hub method and receive response
+        var deleteResult = await freshHubConnection.InvokeAsync<string>("HubDelete_StorageUnit", hierarchy.Unit.id.ToString(), (string?)null);
+        Assert.Equal(hierarchy.Unit.id.ToString(), deleteResult);
+
+        await freshHubConnection.StopAsync();
     }
 
     #endregion

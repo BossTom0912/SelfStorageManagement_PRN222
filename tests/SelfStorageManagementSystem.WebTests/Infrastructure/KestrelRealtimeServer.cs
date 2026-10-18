@@ -146,7 +146,10 @@ public sealed class KestrelRealtimeServer : IAsyncDisposable
             return Results.Ok(new { success = true, role = userRole, userId = uid });
         });
 
-        app.MapHub<StorageUnitHub>("/storageUnitHub");
+        app.MapHub<StorageUnitHub>("/storageUnitHub", options =>
+        {
+            options.CloseOnAuthenticationExpiration = true;
+        });
         app.MapRazorPages();
         app.MapControllers();
 

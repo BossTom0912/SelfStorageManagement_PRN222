@@ -90,7 +90,10 @@ app.UseAuthorization();
 app.UseStorageUnitHubOriginRestriction();
 
 // Realtime SignalR Hub Endpoint
-app.MapHub<StorageUnitHub>("/storageUnitHub");
+app.MapHub<StorageUnitHub>("/storageUnitHub", options =>
+{
+    options.CloseOnAuthenticationExpiration = true;
+});
 
 // Default MVC Controller Route
 app.MapControllerRoute(
