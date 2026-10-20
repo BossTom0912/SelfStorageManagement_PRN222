@@ -6,6 +6,7 @@ public class PaymentDetailResponse
     public long CustomerId { get; set; }
     public long TargetInvoiceId { get; set; }
     public long? ReservationId { get; set; }
+    public long? FacilityId { get; set; }
     public string? ReservationCode { get; set; }
     public long? AgreementId { get; set; }
     public string? AgreementNo { get; set; }

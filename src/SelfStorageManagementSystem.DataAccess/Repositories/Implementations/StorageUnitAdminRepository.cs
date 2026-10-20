@@ -192,6 +192,7 @@ public class StorageUnitAdminRepository : GenericRepository<storage_unit>, IStor
             .Include(u => u.unit_status_histories)
             .Include(u => u.unit_allocations)
                 .ThenInclude(a => a.agreement)
+                    .ThenInclude(ag => ag.customer)
             .Include(u => u.maintenance_work_orders)
             .Include(u => u.inspections)
             .FirstOrDefaultAsync(u => u.id == unitId, cancellationToken);
@@ -1084,7 +1085,7 @@ public class StorageUnitAdminRepository : GenericRepository<storage_unit>, IStor
             51020 => new StorageUnitAreaScopeMismatchException("Unit area must belong to the same facility.", sqlEx),
             51050 => new StorageUnitInvalidStatusTransitionException("Invalid storage-unit status transition.", sqlEx),
             1205 or 1222 => new StorageUnitLockTimeoutException("CONCURRENCY_LOCK_TIMEOUT", sqlEx),
-            _ => new StorageUnitPersistenceException($"Unexpected SQL error ({sqlEx.Number}): {sqlEx.Message}", sqlEx)
+            _ => new StorageUnitPersistenceException("STORAGE_UNIT_PERSISTENCE_ERROR", sqlEx)
         };
     }
 }

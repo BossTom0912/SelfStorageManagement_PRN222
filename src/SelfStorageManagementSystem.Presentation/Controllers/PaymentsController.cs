@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SelfStorageManagementSystem.BusinessLogic.Common;
@@ -15,10 +16,17 @@ namespace SelfStorageManagementSystem.Presentation.Controllers;
 public class PaymentsController : BaseController
 {
     private readonly IPaymentService _paymentService;
+    private readonly IConfiguration? _configuration;
+    private readonly IWebHostEnvironment? _environment;
 
-    public PaymentsController(IPaymentService paymentService)
+    public PaymentsController(
+        IPaymentService paymentService,
+        IConfiguration? configuration = null,
+        IWebHostEnvironment? environment = null)
     {
         _paymentService = paymentService ?? throw new ArgumentNullException(nameof(paymentService));
+        _configuration = configuration;
+        _environment = environment;
     }
 
     /// <summary>
@@ -194,7 +202,7 @@ public class PaymentsController : BaseController
             </html>
             """;
 
-        return Content(html, "text/html");
+        return Content(html, "text/html; charset=utf-8");
     }
 
     /// <summary>
@@ -210,6 +218,11 @@ public class PaymentsController : BaseController
         [FromBody] DemoPaymentCompleteRequest request,
         CancellationToken cancellationToken)
     {
+        if (!IsDemoSimulatorAllowed())
+        {
+            throw new ForbiddenException("Demo simulator is disabled in production.");
+        }
+
         var userId = GetCurrentUserId();
         var roles = GetCurrentUserRoles();
 
@@ -227,6 +240,15 @@ public class PaymentsController : BaseController
         [FromQuery] decimal amount,
         [FromQuery] string? holdUntil)
     {
+        if (!IsDemoSimulatorAllowed())
+        {
+            return StatusCode(StatusCodes.Status403Forbidden, "Demo simulator is disabled in production.");
+        }
+
+        var safeHoldUntil = string.IsNullOrWhiteSpace(holdUntil)
+            ? "-"
+            : HtmlEncoder.Default.Encode(holdUntil);
+
         var html = $$"""
             <!DOCTYPE html>
             <html lang="vi">
@@ -251,7 +273,7 @@ public class PaymentsController : BaseController
                     <h2 style="margin: 8px 0;">Demo Payment Gateway</h2>
                     <p class="info">Môi trường giả lập đồ án PRN222<br>Mã giao dịch: <strong>{{id}}</strong></p>
                     <div class="amount">{{amount:N0}} đ</div>
-                    <p class="info">Hạn giữ chỗ đến: <strong>{{holdUntil ?? "-"}}</strong></p>
+                    <p class="info">Hạn giữ chỗ đến: <strong>{{safeHoldUntil}}</strong></p>
                     <div style="background: #0f2b48; border: 1px solid #38bdf8; border-radius: 8px; padding: 16px; margin-top: 20px; text-align: left; font-size: 13px; line-height: 1.6; color: #e0f2fe;">
                         <strong>📌 Hướng dẫn hoàn tất thanh toán demo:</strong><br>
                         Để bảo đảm an toàn xác thực phiên JWT của khách hàng, thao tác hoàn tất demo được thực hiện có xác thực trực tiếp trên ứng dụng máy tính <strong>SelfStorageManagementSystem (WPF Client)</strong>.<br><br>
@@ -262,7 +284,31 @@ public class PaymentsController : BaseController
             </html>
             """;
 
-        return Content(html, "text/html");
+        return Content(html, "text/html; charset=utf-8");
+    }
+
+    private bool IsDemoSimulatorAllowed()
+    {
+        if (_environment == null && _configuration == null)
+        {
+            return true;
+        }
+
+        var env = _environment?.EnvironmentName ??
+                  _configuration?["ASPNETCORE_ENVIRONMENT"] ??
+                  Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ??
+                  "Development";
+
+        var allowDemoStr = _configuration?["Payment:AllowDemoSimulator"];
+        var allowDemo = string.IsNullOrWhiteSpace(allowDemoStr) || (bool.TryParse(allowDemoStr, out var d) && d);
+
+        var isDevOrTest = env.Equals("Development", StringComparison.OrdinalIgnoreCase) ||
+                          env.Equals("Test", StringComparison.OrdinalIgnoreCase) ||
+                          env.Equals("Testing", StringComparison.OrdinalIgnoreCase);
+
+        var isProduction = env.Equals("Production", StringComparison.OrdinalIgnoreCase);
+
+        return isDevOrTest && allowDemo && !isProduction;
     }
 
     private long GetCurrentUserId()

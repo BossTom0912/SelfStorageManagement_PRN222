@@ -45,7 +45,7 @@ public class InvoiceService : IInvoiceService
                 var hasAccess = await _facilityScopeService.HasAccessToFacilityAsync(
                     currentUserId,
                     facilityId.Value,
-                    roles.First(),
+                    RoleConstants.FacilityStaff,
                     cancellationToken);
 
                 if (!hasAccess)

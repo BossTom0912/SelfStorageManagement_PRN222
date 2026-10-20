@@ -377,6 +377,7 @@ public class PaymentService : IPaymentService
             PaymentId = txResult.Payment.id,
             InvoiceId = txResult.Invoice.id,
             ReservationId = txResult.Reservation.id,
+            FacilityId = txResult.Reservation.facility_id,
             ReservationCode = txResult.Reservation.reservation_code,
             Amount = txResult.Payment.amount,
             Currency = "VND",
@@ -671,7 +672,9 @@ public class PaymentService : IPaymentService
         {
             await AssertReservationAccessAsync(currentUserId, roles, reservation, cancellationToken);
         }
-        else if (payment.customer_id != currentUserId && !RoleConstants.IsEmployeeRole(roles.FirstOrDefault() ?? string.Empty))
+        else if (payment.customer_id != currentUserId &&
+                 !roles.Any(RoleConstants.IsEmployeeRole) &&
+                 !roles.Contains(RoleConstants.SystemAdministrator))
         {
             throw new ForbiddenException("Bạn không có quyền xem thông tin giao dịch này.");
         }
@@ -1064,7 +1067,7 @@ public class PaymentService : IPaymentService
             var hasAccess = await _facilityScopeService.HasAccessToFacilityAsync(
                 currentUserId,
                 reservation.facility_id,
-                roles.First(),
+                RoleConstants.FacilityStaff,
                 cancellationToken);
 
             if (hasAccess) return;
@@ -1095,6 +1098,7 @@ public class PaymentService : IPaymentService
             CustomerId = p.customer_id,
             TargetInvoiceId = p.target_invoice_id,
             ReservationId = p.target_invoice?.reservation_id,
+            FacilityId = p.target_invoice?.reservation?.facility_id ?? p.target_invoice?.agreement?.facility_id,
             ReservationCode = p.target_invoice?.reservation?.reservation_code,
             AgreementId = p.target_invoice?.agreement_id,
             AgreementNo = p.target_invoice?.agreement?.agreement_no,

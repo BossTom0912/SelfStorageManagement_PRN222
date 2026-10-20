@@ -125,6 +125,27 @@ public class FacilityCatalogRepository : GenericRepository<facility>, IFacilityC
                 cancellationToken);
     }
 
+    public async Task<Dictionary<long, int>> CountTotalListedUnitsByTypeAsync(
+        long facilityId,
+        IReadOnlyCollection<long> unitTypeIds,
+        CancellationToken cancellationToken = default)
+    {
+        if (unitTypeIds.Count == 0)
+        {
+            return new Dictionary<long, int>();
+        }
+
+        return await _context.storage_units
+            .AsNoTracking()
+            .Where(u =>
+                u.facility_id == facilityId &&
+                unitTypeIds.Contains(u.unit_type_id) &&
+                u.is_listed)
+            .GroupBy(u => u.unit_type_id)
+            .Select(g => new { UnitTypeId = g.Key, Count = g.Count() })
+            .ToDictionaryAsync(x => x.UnitTypeId, x => x.Count, cancellationToken);
+    }
+
     public async Task<int> CountCandidateAvailableUnitsAsync(
         long facilityId,
         long unitTypeId,
@@ -151,6 +172,39 @@ public class FacilityCatalogRepository : GenericRepository<facility>, IFacilityC
             .CountAsync(cancellationToken);
     }
 
+    public async Task<Dictionary<long, int>> CountCandidateAvailableUnitsByTypeAsync(
+        long facilityId,
+        IReadOnlyCollection<long> unitTypeIds,
+        DateOnly startDate,
+        DateOnly endDate,
+        CancellationToken cancellationToken = default)
+    {
+        if (unitTypeIds.Count == 0)
+        {
+            return new Dictionary<long, int>();
+        }
+
+        return await _context.storage_units
+            .AsNoTracking()
+            .Where(u =>
+                u.facility_id == facilityId &&
+                unitTypeIds.Contains(u.unit_type_id) &&
+                u.unit_type.is_active &&
+                u.is_listed &&
+                u.physical_status == "available" &&
+                !u.maintenance_work_orders.Any(m =>
+                    m.blocks_booking &&
+                    m.status != "completed" &&
+                    m.status != "cancelled") &&
+                !u.unit_allocations.Any(a =>
+                    a.status == "active" &&
+                    a.allocation_start_date < endDate &&
+                    a.allocation_end_date > startDate))
+            .GroupBy(u => u.unit_type_id)
+            .Select(g => new { UnitTypeId = g.Key, Count = g.Count() })
+            .ToDictionaryAsync(x => x.UnitTypeId, x => x.Count, cancellationToken);
+    }
+
     public async Task<int> CountUnassignedActiveReservationsAsync(
         long facilityId,
         long unitTypeId,
@@ -171,6 +225,35 @@ public class FacilityCatalogRepository : GenericRepository<facility>, IFacilityC
                 !_context.unit_allocations.Any(ua => ua.status == "active" &&
                     (ua.reservation_id == r.id || (ua.agreement != null && ua.agreement.reservation_id == r.id))))
             .CountAsync(cancellationToken);
+    }
+
+    public async Task<Dictionary<long, int>> CountUnassignedActiveReservationsByTypeAsync(
+        long facilityId,
+        IReadOnlyCollection<long> unitTypeIds,
+        DateOnly startDate,
+        DateOnly endDate,
+        DateTimeOffset nowUtc,
+        CancellationToken cancellationToken = default)
+    {
+        if (unitTypeIds.Count == 0)
+        {
+            return new Dictionary<long, int>();
+        }
+
+        return await _context.reservations
+            .AsNoTracking()
+            .Where(r =>
+                r.facility_id == facilityId &&
+                unitTypeIds.Contains(r.unit_type_id) &&
+                r.start_date < endDate &&
+                r.end_date > startDate &&
+                (r.status == "confirmed" ||
+                 ((r.status == "pending" || r.status == "awaiting_deposit") && r.hold_until > nowUtc)) &&
+                !_context.unit_allocations.Any(ua => ua.status == "active" &&
+                    (ua.reservation_id == r.id || (ua.agreement != null && ua.agreement.reservation_id == r.id))))
+            .GroupBy(r => r.unit_type_id)
+            .Select(g => new { UnitTypeId = g.Key, Count = g.Count() })
+            .ToDictionaryAsync(x => x.UnitTypeId, x => x.Count, cancellationToken);
     }
 
     public async Task<(IReadOnlyList<storage_unit> Units, int TotalCount)> GetPagedAvailableUnitsAsync(

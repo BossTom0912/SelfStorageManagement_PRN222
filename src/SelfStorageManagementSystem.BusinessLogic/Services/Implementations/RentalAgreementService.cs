@@ -43,7 +43,7 @@ public class RentalAgreementService : IRentalAgreementService
                 var hasAccess = await _facilityScopeService.HasAccessToFacilityAsync(
                     currentUserId,
                     agreement.facility_id,
-                    roles.First(),
+                    RoleConstants.FacilityStaff,
                     cancellationToken);
 
                 if (!hasAccess)

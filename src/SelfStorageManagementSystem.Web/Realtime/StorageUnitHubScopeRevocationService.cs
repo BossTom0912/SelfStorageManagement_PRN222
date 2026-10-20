@@ -137,12 +137,14 @@ public class StorageUnitHubScopeRevocationService : IUserScopeChangedNotifier
             }
 
             var currentUser = await _accountIdentityService.GetCurrentUserAsync(userId, cancellationToken);
+            var isEmploymentInactive = !string.IsNullOrWhiteSpace(currentUser?.EmploymentStatus) &&
+                !string.Equals(currentUser.EmploymentStatus, EmploymentStatusConstants.Active, StringComparison.OrdinalIgnoreCase);
 
-            // Case 1: User does not exist, is inactive, or locked -> remove from ALL groups
-            if (currentUser == null || currentUser.Status != UserStatusConstants.Active)
+            // Case 1: User does not exist, is inactive/locked, or employment is not active -> remove from ALL groups
+            if (currentUser == null || currentUser.Status != UserStatusConstants.Active || isEmploymentInactive)
             {
-                _logger.LogInformation("User {UserId} status is {Status}. Revoking all realtime groups for {ConnCount} active connections.",
-                    userId, currentUser?.Status ?? "NotFound", connections.Count);
+                _logger.LogInformation("User {UserId} status is {Status} (EmploymentStatus={EmploymentStatus}). Revoking all realtime groups for {ConnCount} active connections.",
+                    userId, currentUser?.Status ?? "NotFound", currentUser?.EmploymentStatus ?? "N/A", connections.Count);
 
                 foreach (var connId in connections)
                 {
@@ -206,7 +208,7 @@ public class StorageUnitHubScopeRevocationService : IUserScopeChangedNotifier
                 }
             }
 
-            _logger.LogInformation("Reconciling realtime groups for user {UserId}. Allowed groups: [{AllowedGroups}], Active connections: {ConnCount}",
+            _logger.LogDebug("Reconciling realtime groups for user {UserId}. Allowed groups: [{AllowedGroups}], Active connections: {ConnCount}",
                 userId, string.Join(", ", allowedGroups), connections.Count);
 
             foreach (var connId in connections)

@@ -2,13 +2,12 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SelfStorageManagementSystem.BusinessLogic.Common;
+using SelfStorageManagementSystem.BusinessLogic.Common.Constants;
 using SelfStorageManagementSystem.BusinessLogic.DependencyInjection;
 using SelfStorageManagementSystem.BusinessLogic.Services.Interfaces;
-using SelfStorageManagementSystem.DataAccess.Context;
 using SelfStorageManagementSystem.DataAccess.DependencyInjection;
 using SelfStorageManagementSystem.Presentation.ExceptionHandling;
 using SelfStorageManagementSystem.Presentation.Workers;
@@ -111,16 +110,15 @@ builder.Services.AddAuthentication(options =>
                 return;
             }
 
-            var dbContext = context.HttpContext.RequestServices.GetRequiredService<SelfStorageDbContext>();
-            var user = await dbContext.users
-                .Include(u => u.user_roleusers)
-                    .ThenInclude(ur => ur.role)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(u => u.id == userId);
+            var accountIdentityService = context.HttpContext.RequestServices.GetRequiredService<IAccountIdentityService>();
+            var currentUser = await accountIdentityService.GetCurrentUserAsync(userId, context.HttpContext.RequestAborted);
 
-            if (user == null || user.status != "active")
+            var isEmploymentInactive = !string.IsNullOrWhiteSpace(currentUser?.EmploymentStatus) &&
+                !string.Equals(currentUser.EmploymentStatus, EmploymentStatusConstants.Active, StringComparison.OrdinalIgnoreCase);
+
+            if (currentUser == null || currentUser.Status != UserStatusConstants.Active || isEmploymentInactive)
             {
-                context.Fail("User is inactive or locked.");
+                context.Fail("User is inactive, locked, or employment is terminated.");
                 return;
             }
 
@@ -133,11 +131,11 @@ builder.Services.AddAuthentication(options =>
                     appIdentity.RemoveClaim(claim);
                 }
 
-                foreach (var ur in user.user_roleusers)
+                foreach (var roleCode in currentUser.Roles)
                 {
-                    if (!string.IsNullOrWhiteSpace(ur.role?.code))
+                    if (!string.IsNullOrWhiteSpace(roleCode))
                     {
-                        appIdentity.AddClaim(new Claim(ClaimTypes.Role, ur.role.code));
+                        appIdentity.AddClaim(new Claim(ClaimTypes.Role, roleCode));
                     }
                 }
             }

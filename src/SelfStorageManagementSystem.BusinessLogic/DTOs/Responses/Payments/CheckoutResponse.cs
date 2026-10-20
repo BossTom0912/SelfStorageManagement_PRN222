@@ -5,6 +5,7 @@ public class CheckoutResponse
     public long PaymentId { get; set; }
     public long InvoiceId { get; set; }
     public long ReservationId { get; set; }
+    public long FacilityId { get; set; }
     public string ReservationCode { get; set; } = string.Empty;
     public decimal Amount { get; set; }
     public string Currency { get; set; } = "VND";

@@ -224,6 +224,9 @@ public class CheckInRepository : GenericRepository<reservation>, ICheckInReposit
                 };
             }
 
+            var staffProfile = await _context.employee_profiles
+                .FirstOrDefaultAsync(e => e.user_id == staffUserId, cancellationToken);
+
             var verification = new identity_verification
             {
                 reservation_id = reservationId,
@@ -237,6 +240,8 @@ public class CheckInRepository : GenericRepository<reservation>, ICheckInReposit
 
             _context.identity_verifications.Add(verification);
             await _context.SaveChangesAsync(cancellationToken);
+
+            verification.verified_byNavigation = staffProfile;
 
             if (transaction != null)
             {

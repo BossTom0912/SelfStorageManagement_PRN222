@@ -147,10 +147,16 @@ public class IndexModel : PageModel
             await LoadCheckInDataAsync(input.Code, cancellationToken);
             return Page();
         }
+        catch (NotFoundException ex)
+        {
+            ErrorMessage = ex.Message;
+            await LoadCheckInDataAsync(input.Code, cancellationToken);
+            return Page();
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Lỗi xác minh giấy tờ cho đơn đặt chỗ {ReservationId}", input.ReservationId);
-            ErrorMessage = ex.Message;
+            ErrorMessage = "Đã xảy ra lỗi hệ thống khi xác minh giấy tờ. Vui lòng thử lại.";
             await LoadCheckInDataAsync(input.Code, cancellationToken);
             return Page();
         }
@@ -212,10 +218,16 @@ public class IndexModel : PageModel
             await LoadCheckInDataAsync(input.Code, cancellationToken);
             return Page();
         }
+        catch (NotFoundException ex)
+        {
+            ErrorMessage = ex.Message;
+            await LoadCheckInDataAsync(input.Code, cancellationToken);
+            return Page();
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Lỗi gán ô kho cho đơn đặt chỗ {ReservationId}", input.ReservationId);
-            ErrorMessage = ex.Message;
+            ErrorMessage = "Đã xảy ra lỗi hệ thống khi gán ô kho. Vui lòng thử lại.";
             await LoadCheckInDataAsync(input.Code, cancellationToken);
             return Page();
         }
@@ -288,10 +300,16 @@ public class IndexModel : PageModel
             await LoadCheckInDataAsync(input.Code, cancellationToken);
             return Page();
         }
+        catch (NotFoundException ex)
+        {
+            ErrorMessage = ex.Message;
+            await LoadCheckInDataAsync(input.Code, cancellationToken);
+            return Page();
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Lỗi giải phóng ô kho cho đơn đặt chỗ {ReservationId}", input.ReservationId);
-            ErrorMessage = ex.Message;
+            ErrorMessage = "Đã xảy ra lỗi hệ thống khi giải phóng ô kho. Vui lòng thử lại.";
             await LoadCheckInDataAsync(input.Code, cancellationToken);
             return Page();
         }
@@ -390,10 +408,16 @@ public class IndexModel : PageModel
             await LoadCheckInDataAsync(input.Code, cancellationToken);
             return Page();
         }
+        catch (NotFoundException ex)
+        {
+            ErrorMessage = ex.Message;
+            await LoadCheckInDataAsync(input.Code, cancellationToken);
+            return Page();
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Lỗi kiểm tra ô kho cho đơn đặt chỗ {ReservationId}", input.ReservationId);
-            ErrorMessage = ex.Message;
+            ErrorMessage = "Đã xảy ra lỗi hệ thống khi lưu biên bản kiểm tra ô kho. Vui lòng thử lại.";
             await LoadCheckInDataAsync(input.Code, cancellationToken);
             return Page();
         }
@@ -484,10 +508,16 @@ public class IndexModel : PageModel
             await LoadCheckInDataAsync(input.Code, cancellationToken);
             return Page();
         }
+        catch (NotFoundException ex)
+        {
+            ErrorMessage = ex.Message;
+            await LoadCheckInDataAsync(input.Code, cancellationToken);
+            return Page();
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Lỗi hoàn tất check-in đơn {ReservationId}", input.ReservationId);
-            ErrorMessage = ex.Message;
+            ErrorMessage = "Đã xảy ra lỗi hệ thống khi hoàn tất thủ tục check-in. Vui lòng thử lại.";
             await LoadCheckInDataAsync(input.Code, cancellationToken);
             return Page();
         }
@@ -548,10 +578,16 @@ public class IndexModel : PageModel
             await LoadCheckInDataAsync(input.Code, cancellationToken);
             return Page();
         }
+        catch (NotFoundException ex)
+        {
+            ErrorMessage = ex.Message;
+            await LoadCheckInDataAsync(input.Code, cancellationToken);
+            return Page();
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Lỗi cấp lại PIN cho đơn {ReservationId}", input.ReservationId);
-            ErrorMessage = ex.Message;
+            ErrorMessage = "Đã xảy ra lỗi hệ thống khi cấp lại mã PIN. Vui lòng thử lại.";
             await LoadCheckInDataAsync(input.Code, cancellationToken);
             return Page();
         }

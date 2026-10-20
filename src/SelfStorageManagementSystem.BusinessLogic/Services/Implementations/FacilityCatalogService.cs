@@ -85,17 +85,18 @@ public class FacilityCatalogService : IFacilityCatalogService
 
         var result = new List<FacilityUnitTypeCatalogDto>();
         var nowUtc = DateTimeOffset.UtcNow;
-        var unitTypeIds = rates.Select(r => r.unit_type_id).Distinct();
+        var unitTypeIds = rates.Select(r => r.unit_type_id).Distinct().ToList();
+        var totalListedMap = await _catalogRepository.CountTotalListedUnitsByTypeAsync(
+            facilityId,
+            unitTypeIds,
+            cancellationToken);
         var capacityMap = await ComputeUnitTypeCapacitiesAsync(facilityId, startDate, endDate, nowUtc, unitTypeIds, cancellationToken);
 
         foreach (var rate in rates)
         {
             var unitType = rate.unit_type;
 
-            var totalListed = await _catalogRepository.CountTotalListedUnitsAsync(
-                facilityId,
-                unitType.id,
-                cancellationToken);
+            var totalListed = totalListedMap.TryGetValue(unitType.id, out var listedCount) ? listedCount : 0;
 
             var estimatedAvailable = capacityMap.TryGetValue(unitType.id, out var cap) ? cap : 0;
 
@@ -473,23 +474,32 @@ public class FacilityCatalogService : IFacilityCatalogService
         IEnumerable<long> unitTypeIds,
         CancellationToken cancellationToken)
     {
+        var distinctTypeIds = unitTypeIds.Distinct().ToList();
         var capacityMap = new Dictionary<long, int>();
-        foreach (var unitTypeId in unitTypeIds)
+        if (distinctTypeIds.Count == 0)
         {
-            var candidateUnits = await _catalogRepository.CountCandidateAvailableUnitsAsync(
-                facilityId,
-                unitTypeId,
-                startDate,
-                endDate,
-                cancellationToken);
+            return capacityMap;
+        }
 
-            var unassignedReservations = await _catalogRepository.CountUnassignedActiveReservationsAsync(
-                facilityId,
-                unitTypeId,
-                startDate,
-                endDate,
-                nowUtc,
-                cancellationToken);
+        var candidateMap = await _catalogRepository.CountCandidateAvailableUnitsByTypeAsync(
+            facilityId,
+            distinctTypeIds,
+            startDate,
+            endDate,
+            cancellationToken);
+
+        var unassignedMap = await _catalogRepository.CountUnassignedActiveReservationsByTypeAsync(
+            facilityId,
+            distinctTypeIds,
+            startDate,
+            endDate,
+            nowUtc,
+            cancellationToken);
+
+        foreach (var unitTypeId in distinctTypeIds)
+        {
+            var candidateUnits = candidateMap.TryGetValue(unitTypeId, out var cCount) ? cCount : 0;
+            var unassignedReservations = unassignedMap.TryGetValue(unitTypeId, out var rCount) ? rCount : 0;
 
             capacityMap[unitTypeId] = Math.Max(0, candidateUnits - unassignedReservations);
         }

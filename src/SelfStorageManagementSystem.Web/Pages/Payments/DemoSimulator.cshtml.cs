@@ -121,14 +121,16 @@ public class DemoSimulatorModel : PageModel
             {
                 try
                 {
-                    await _realtimePublisher.PublishPaymentChangedAsync(result.PaymentId, result.ReservationId ?? 0, 0, userId, result.Status, cancellationToken);
+                    var facilityId = result.FacilityId ?? 0;
+                    var customerUserId = result.CustomerId > 0 ? result.CustomerId : userId;
+                    await _realtimePublisher.PublishPaymentChangedAsync(result.PaymentId, result.ReservationId ?? 0, facilityId, customerUserId, result.Status, cancellationToken);
                     if (result.Status == "completed")
                     {
                         if (result.ReservationId.HasValue && result.ReservationId.Value > 0)
                         {
-                            await _realtimePublisher.PublishReservationChangedAsync(result.ReservationId.Value, 0, userId, "confirmed", cancellationToken);
+                            await _realtimePublisher.PublishReservationChangedAsync(result.ReservationId.Value, facilityId, customerUserId, "confirmed", cancellationToken);
                         }
-                        await _realtimePublisher.PublishCatalogInvalidatedAsync(0, null, cancellationToken);
+                        await _realtimePublisher.PublishCatalogInvalidatedAsync(facilityId, null, cancellationToken);
                     }
                 }
                 catch (Exception ex)

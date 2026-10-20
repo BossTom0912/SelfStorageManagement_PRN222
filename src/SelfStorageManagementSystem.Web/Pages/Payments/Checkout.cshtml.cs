@@ -180,7 +180,7 @@ public class CheckoutModel : PageModel
             {
                 try
                 {
-                    await _realtimePublisher.PublishPaymentChangedAsync(checkoutResponse.PaymentId, ReservationId, 0, userId, "pending", cancellationToken);
+                    await _realtimePublisher.PublishPaymentChangedAsync(checkoutResponse.PaymentId, ReservationId, checkoutResponse.FacilityId, userId, "pending", cancellationToken);
                 }
                 catch (Exception ex)
                 {

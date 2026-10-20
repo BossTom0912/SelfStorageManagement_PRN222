@@ -321,7 +321,7 @@ public class CheckInService : ICheckInService
                 VerificationMethod = entity.verification_method,
                 Result = entity.result,
                 VerifiedBy = entity.verified_by,
-                VerifiedByName = staffProfile.FirstOrDefault()?.EmployeeId.ToString(),
+                VerifiedByName = entity.verified_byNavigation?.full_name ?? staffProfile.FirstOrDefault()?.EmployeeId.ToString(),
                 VerifiedAt = entity.verified_at,
                 MaskedIdentityNumber = IdentityNumberMasker.Mask(request.DocumentNumber ?? res.customer.identity_number),
                 Notes = entity.notes

@@ -30,6 +30,11 @@ public interface IFacilityCatalogRepository : IRepository<facility>
         long unitTypeId,
         CancellationToken cancellationToken = default);
 
+    Task<Dictionary<long, int>> CountTotalListedUnitsByTypeAsync(
+        long facilityId,
+        IReadOnlyCollection<long> unitTypeIds,
+        CancellationToken cancellationToken = default);
+
     Task<int> CountCandidateAvailableUnitsAsync(
         long facilityId,
         long unitTypeId,
@@ -37,9 +42,24 @@ public interface IFacilityCatalogRepository : IRepository<facility>
         DateOnly endDate,
         CancellationToken cancellationToken = default);
 
+    Task<Dictionary<long, int>> CountCandidateAvailableUnitsByTypeAsync(
+        long facilityId,
+        IReadOnlyCollection<long> unitTypeIds,
+        DateOnly startDate,
+        DateOnly endDate,
+        CancellationToken cancellationToken = default);
+
     Task<int> CountUnassignedActiveReservationsAsync(
         long facilityId,
         long unitTypeId,
+        DateOnly startDate,
+        DateOnly endDate,
+        DateTimeOffset nowUtc,
+        CancellationToken cancellationToken = default);
+
+    Task<Dictionary<long, int>> CountUnassignedActiveReservationsByTypeAsync(
+        long facilityId,
+        IReadOnlyCollection<long> unitTypeIds,
         DateOnly startDate,
         DateOnly endDate,
         DateTimeOffset nowUtc,
