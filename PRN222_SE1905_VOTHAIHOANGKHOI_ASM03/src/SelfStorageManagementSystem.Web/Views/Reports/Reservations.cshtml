@@ -1,0 +1,215 @@
+@model SelfStorageManagementSystem.Web.Models.ReservationReportViewModel
+@{
+    ViewData["Title"] = "Báo cáo Đặt chỗ Kho (Reservation Report) - MVC";
+}
+
+<div class="container-fluid py-4">
+    <div class="row align-items-center mb-4">
+        <div class="col-md-8">
+            <h1 class="h3 mb-1 text-primary fw-bold">
+                <i class="bi bi-graph-up-arrow me-2"></i>Báo cáo Đặt chỗ Kho (Reservation Report)
+            </h1>
+            <p class="text-muted mb-0">Thống kê lượt đặt và tổng báo giá theo ngày bắt đầu thuê (MVC View).</p>
+        </div>
+        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+            <span class="badge bg-secondary p-2">
+                <i class="bi bi-shield-lock me-1"></i>Khu vực Nhân viên &amp; Quản trị
+            </span>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>@Model.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Khung lọc báo cáo (Filter Panel) -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-white py-3">
+            <h5 class="card-title mb-0 fw-semibold text-secondary">
+                <i class="bi bi-funnel me-2"></i>Bộ lọc Thống kê
+            </h5>
+        </div>
+        <div class="card-body">
+            <form method="get" action="/Reports/Reservations" class="row g-3">
+                <div class="col-md-3">
+                    <label for="startDateInput" class="form-label fw-bold small text-muted">NGÀY BẮT ĐẦU THUÊ TỪ</label>
+                    <input type="date" id="startDateInput" name="startDate" class="form-control"
+                           value="@(Model.StartDate?.ToString("yyyy-MM-dd"))" />
+                </div>
+                <div class="col-md-3">
+                    <label for="endDateInput" class="form-label fw-bold small text-muted">NGÀY BẮT ĐẦU THUÊ ĐẾN</label>
+                    <input type="date" id="endDateInput" name="endDate" class="form-control"
+                           value="@(Model.EndDate?.ToString("yyyy-MM-dd"))" />
+                </div>
+                <div class="col-md-3">
+                    <label for="facilitySelect" class="form-label fw-bold small text-muted">CƠ SỞ KHO (FACILITY)</label>
+                    <select id="facilitySelect" name="facilityId" class="form-select">
+                        <option value="">-- Tất cả cơ sở phân công --</option>
+                        @if (Model.FacilityOptions != null)
+                        {
+                            foreach (var opt in Model.FacilityOptions)
+                            {
+                                <option value="@opt.Value" selected="@(opt.Selected ? "selected" : null)">@opt.Text</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="statusSelect" class="form-label fw-bold small text-muted">TRẠNG THÁI (STATUS)</label>
+                    <select id="statusSelect" name="status" class="form-select">
+                        <option value="">-- Tất cả trạng thái --</option>
+                        <option value="pending" selected="@(Model.Status == "pending" ? "selected" : null)">Chờ giữ chỗ (Pending)</option>
+                        <option value="awaiting_deposit" selected="@(Model.Status == "awaiting_deposit" ? "selected" : null)">Chờ đặt cọc (Awaiting Deposit)</option>
+                        <option value="confirmed" selected="@(Model.Status == "confirmed" ? "selected" : null)">Đã xác nhận (Confirmed)</option>
+                        <option value="cancelled" selected="@(Model.Status == "cancelled" ? "selected" : null)">Đã hủy (Cancelled)</option>
+                        <option value="expired" selected="@(Model.Status == "expired" ? "selected" : null)">Hết hạn (Expired)</option>
+                    </select>
+                </div>
+                <div class="col-12 text-end mt-3">
+                    <a href="/Reports/Reservations" class="btn btn-outline-secondary me-2">
+                        <i class="bi bi-arrow-counterclockwise me-1"></i>Đặt lại
+                    </a>
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="bi bi-filter me-1"></i>Xem Báo cáo
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Khối thẻ chỉ số thống kê (Summary Cards) -->
+    <div class="row g-3 mb-4">
+        <div class="col-xl-2 col-md-4 col-sm-6">
+            <div class="card border-0 shadow-sm bg-primary text-white h-100">
+                <div class="card-body p-3">
+                    <div class="text-white-50 small fw-bold text-uppercase mb-1">Tổng Lượt Đặt</div>
+                    <div class="h3 mb-0 fw-bold">@Model.Report.TotalReservationCount</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-2 col-md-4 col-sm-6">
+            <div class="card border-0 shadow-sm bg-info text-dark h-100">
+                <div class="card-body p-3">
+                    <div class="text-muted small fw-bold text-uppercase mb-1">Đang Giữ Chỗ</div>
+                    <div class="h3 mb-0 fw-bold">@Model.Report.ActiveHoldCount</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-2 col-md-4 col-sm-6">
+            <div class="card border-0 shadow-sm bg-success text-white h-100">
+                <div class="card-body p-3">
+                    <div class="text-white-50 small fw-bold text-uppercase mb-1">Đã Xác Nhận</div>
+                    <div class="h3 mb-0 fw-bold">@Model.Report.ConfirmedCount</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-2 col-md-4 col-sm-6">
+            <div class="card border-0 shadow-sm bg-danger text-white h-100">
+                <div class="card-body p-3">
+                    <div class="text-white-50 small fw-bold text-uppercase mb-1">Đã Hủy</div>
+                    <div class="h3 mb-0 fw-bold">@Model.Report.CancelledCount</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-2 col-md-4 col-sm-6">
+            <div class="card border-0 shadow-sm bg-secondary text-white h-100">
+                <div class="card-body p-3">
+                    <div class="text-white-50 small fw-bold text-uppercase mb-1">Hết Hạn</div>
+                    <div class="h3 mb-0 fw-bold">@Model.Report.ExpiredCount</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-2 col-md-4 col-sm-6">
+            <div class="card border-0 shadow-sm bg-warning text-dark h-100">
+                <div class="card-body p-3">
+                    <div class="text-muted small fw-bold text-uppercase mb-1">Tổng Tiền Báo Giá</div>
+                    <div class="h4 mb-0 fw-bold">@Model.Report.TotalQuotedAmount.ToString("N0") VNĐ</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bảng danh sách chi tiết (Table) -->
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0 fw-semibold">
+                <i class="bi bi-table me-2"></i>Chi Tiết Danh Sách Đặt Chỗ
+            </h5>
+            <span class="badge bg-light text-dark border">
+                @(Model.Report.Items?.Count ?? 0) bản ghi tìm thấy
+            </span>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-3">Mã Đặt Chỗ</th>
+                        <th>Cơ Sở Kho</th>
+                        <th>Loại Kho</th>
+                        <th>Khách Hàng</th>
+                        <th>Ngày Bắt Đầu</th>
+                        <th>Ngày Kết Thúc</th>
+                        <th class="text-end">Báo Giá</th>
+                        <th class="text-center">Trạng Thái</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Report.Items == null || !Model.Report.Items.Any())
+                    {
+                        <tr>
+                            <td colspan="8" class="text-center py-4 text-muted">
+                                <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+                                Không tìm thấy bản ghi đặt chỗ nào phù hợp với bộ lọc.
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        foreach (var item in Model.Report.Items)
+                        {
+                            <tr>
+                                <td class="ps-3 fw-bold">@item.ReservationCode</td>
+                                <td>@item.FacilityName</td>
+                                <td>@item.UnitTypeName</td>
+                                <td>
+                                    <div>@item.CustomerName</div>
+                                    <small class="text-muted">@item.CustomerEmail</small>
+                                </td>
+                                <td>@item.StartDate.ToString("dd/MM/yyyy")</td>
+                                <td>@item.EndDate.ToString("dd/MM/yyyy")</td>
+                                <td class="text-end fw-bold text-primary">@item.QuotedTotal.ToString("N0") VNĐ</td>
+                                <td class="text-center">
+                                    @{
+                                        var badgeClass = item.Status switch
+                                        {
+                                            "confirmed" => "bg-success",
+                                            "pending" => "bg-primary",
+                                            "awaiting_deposit" => "bg-info text-dark",
+                                            "cancelled" => "bg-danger",
+                                            "expired" => "bg-secondary",
+                                            _ => "bg-light text-dark"
+                                        };
+                                        var statusText = item.Status switch
+                                        {
+                                            "confirmed" => "Đã xác nhận",
+                                            "pending" => "Chờ giữ chỗ",
+                                            "awaiting_deposit" => "Chờ cọc",
+                                            "cancelled" => "Đã hủy",
+                                            "expired" => "Hết hạn",
+                                            _ => item.Status
+                                        };
+                                    }
+                                    <span class="badge @badgeClass">@statusText</span>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

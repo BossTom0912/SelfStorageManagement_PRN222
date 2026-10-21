@@ -1,0 +1,107 @@
+@model SelfStorageManagementSystem.BusinessLogic.Common.PagedResult<SelfStorageManagementSystem.BusinessLogic.DTOs.Responses.Reservations.ReservationListItemResponse>
+@{
+    ViewData["Title"] = "Quản lý Đơn đặt chỗ (Reservations) - MVC";
+    var currentStatus = ViewData["CurrentStatus"] as string;
+}
+
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-1 text-primary fw-bold">
+                <i class="bi bi-calendar2-check me-2"></i>Danh Sách Đơn Đặt Chỗ Kho (MVC)
+            </h1>
+            <p class="text-muted mb-0">Theo dõi trạng thái giữ kho và đặt cọc của bạn.</p>
+        </div>
+        <div>
+            <a href="/Catalog" class="btn btn-primary">
+                <i class="bi bi-search me-1"></i>Tìm Kho Thuê Mới
+            </a>
+        </div>
+    </div>
+
+    <!-- Bộ lọc trạng thái -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body py-2">
+            <div class="nav nav-pills">
+                <a class="nav-link @(string.IsNullOrEmpty(currentStatus) ? "active" : "")" href="/Reservations">Tất cả</a>
+                <a class="nav-link @(currentStatus == "pending" ? "active" : "")" href="/Reservations?status=pending">Chờ giữ chỗ</a>
+                <a class="nav-link @(currentStatus == "awaiting_deposit" ? "active" : "")" href="/Reservations?status=awaiting_deposit">Chờ cọc</a>
+                <a class="nav-link @(currentStatus == "confirmed" ? "active" : "")" href="/Reservations?status=confirmed">Đã xác nhận</a>
+                <a class="nav-link @(currentStatus == "cancelled" ? "active" : "")" href="/Reservations?status=cancelled">Đã hủy</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bảng danh sách đơn đặt chỗ -->
+    <div class="card shadow-sm border-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-3">Mã Đặt Chỗ</th>
+                        <th>Cơ Sở Kho</th>
+                        <th>Loại Kho</th>
+                        <th>Thời Gian Thuê</th>
+                        <th class="text-end">Báo Giá</th>
+                        <th class="text-center">Trạng Thái</th>
+                        <th class="text-end pe-3">Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Items == null || !Model.Items.Any())
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center py-4 text-muted">
+                                <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+                                Bạn chưa có đơn đặt chỗ nào trong trạng thái này.
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        foreach (var item in Model.Items)
+                        {
+                            <tr>
+                                <td class="ps-3 fw-bold">@item.ReservationCode</td>
+                                <td>@item.FacilityName</td>
+                                <td>@item.UnitTypeName</td>
+                                <td>
+                                    @item.StartDate.ToString("dd/MM/yyyy") - @item.EndDate.ToString("dd/MM/yyyy")
+                                </td>
+                                <td class="text-end fw-bold text-primary">@item.QuotedTotal.ToString("N0") VNĐ</td>
+                                <td class="text-center">
+                                    @{
+                                        var badgeClass = item.Status switch
+                                        {
+                                            "confirmed" => "bg-success",
+                                            "pending" => "bg-primary",
+                                            "awaiting_deposit" => "bg-info text-dark",
+                                            "cancelled" => "bg-danger",
+                                            "expired" => "bg-secondary",
+                                            _ => "bg-light text-dark"
+                                        };
+                                        var statusText = item.Status switch
+                                        {
+                                            "confirmed" => "Đã xác nhận",
+                                            "pending" => "Chờ giữ chỗ",
+                                            "awaiting_deposit" => "Chờ cọc",
+                                            "cancelled" => "Đã hủy",
+                                            "expired" => "Hết hạn",
+                                            _ => item.Status
+                                        };
+                                    }
+                                    <span class="badge @badgeClass">@statusText</span>
+                                </td>
+                                <td class="text-end pe-3">
+                                    <a href="/Reservations/Details/@item.Id" class="btn btn-sm btn-outline-secondary">
+                                        <i class="bi bi-eye me-1"></i>Chi tiết
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

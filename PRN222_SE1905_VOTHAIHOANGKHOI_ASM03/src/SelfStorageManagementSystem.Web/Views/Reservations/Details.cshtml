@@ -1,0 +1,46 @@
+@model SelfStorageManagementSystem.BusinessLogic.DTOs.Responses.Reservations.ReservationDetailResponse
+@{
+    ViewData["Title"] = $"Chi tiết Đơn đặt chỗ #{Model.ReservationCode} - MVC";
+}
+
+<div class="container py-4">
+    <div class="mb-4">
+        <a href="/Reservations" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i>Quay lại danh sách
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0 fw-bold text-primary">
+                <i class="bi bi-info-circle me-2"></i>Đơn đặt chỗ #@Model.ReservationCode
+            </h5>
+            <span class="badge bg-primary">@Model.Status</span>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label text-muted small fw-bold">CƠ SỞ KHO</label>
+                    <div class="fw-bold">@Model.FacilityName</div>
+                    <small class="text-muted">@Model.FacilityAddress</small>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label text-muted small fw-bold">LOẠI Ô KHO</label>
+                    <div class="fw-bold">@Model.UnitTypeName</div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label text-muted small fw-bold">NGÀY BẮT ĐẦU</label>
+                    <div>@Model.StartDate.ToString("dd/MM/yyyy")</div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label text-muted small fw-bold">NGÀY KẾT THÚC</label>
+                    <div>@Model.EndDate.ToString("dd/MM/yyyy")</div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label text-muted small fw-bold">TỔNG TIỀN BÁO GIÁ</label>
+                    <div class="h4 text-primary fw-bold">@Model.QuotedTotal.ToString("N0") VNĐ</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
