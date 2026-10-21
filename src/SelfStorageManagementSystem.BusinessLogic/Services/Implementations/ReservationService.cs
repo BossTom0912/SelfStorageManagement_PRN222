@@ -508,4 +508,94 @@ public class ReservationService : IReservationService
             return TimeZoneInfo.Utc;
         }
     }
+
+    public async Task<ReservationReportResponse> GetReservationReportAsync(
+        long actorUserId,
+        IReadOnlyList<string> actorRoles,
+        ReservationReportRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(actorRoles);
+        ArgumentNullException.ThrowIfNull(request);
+
+        // 1. Phân quyền: Chỉ cho phép nhân viên/quản trị viên (StaffOnly)
+        var isAuthorized = actorRoles.Any(r =>
+            r == RoleConstants.FacilityStaff ||
+            r == RoleConstants.FacilityManager ||
+            r == RoleConstants.BusinessOperationsManager ||
+            r == RoleConstants.SystemAdministrator);
+
+        if (!isAuthorized)
+        {
+            throw new ForbiddenException("Chỉ nhân viên hoặc quản trị viên mới có quyền xem báo cáo đặt chỗ.");
+        }
+
+        // 2. Validate khoảng thời gian StartDate & EndDate
+        if (request.StartDate.HasValue && request.EndDate.HasValue && request.StartDate.Value > request.EndDate.Value)
+        {
+            throw new BadRequestException("StartDate không thể lớn hơn EndDate.");
+        }
+
+        // 3. Giới hạn phạm vi cơ sở (Facility Scope)
+        var accessibleFacilityIds = await _facilityScopeService.GetAccessibleFacilityIdsAsync(actorUserId, cancellationToken);
+        IReadOnlyList<long> targetFacilityIds;
+
+        if (request.FacilityId.HasValue)
+        {
+            if (!accessibleFacilityIds.Contains(request.FacilityId.Value))
+            {
+                throw new ForbiddenException($"Người dùng không có quyền truy cập cơ sở ID {request.FacilityId.Value}.");
+            }
+
+            targetFacilityIds = new[] { request.FacilityId.Value };
+        }
+        else
+        {
+            targetFacilityIds = accessibleFacilityIds;
+        }
+
+        // 4. Lấy dữ liệu báo cáo từ Repository
+        var reservations = await _reservationRepository.GetReservationsReportAsync(
+            request.StartDate,
+            request.EndDate,
+            targetFacilityIds,
+            request.Status,
+            cancellationToken);
+
+        // 5. Tổng hợp số liệu thống kê (Reservation Counts & Quoted Total)
+        var items = reservations.Select(r => new ReservationReportItemResponse
+        {
+            ReservationId = r.id,
+            ReservationCode = r.reservation_code,
+            FacilityId = r.facility_id,
+            FacilityName = r.facility?.name ?? $"Facility #{r.facility_id}",
+            UnitTypeId = r.unit_type_id,
+            UnitTypeName = r.unit_type?.name ?? $"UnitType #{r.unit_type_id}",
+            CustomerId = r.customer_id,
+            CustomerName = r.customer?.full_name ?? string.Empty,
+            CustomerEmail = r.customer?.user?.email ?? string.Empty,
+            StartDate = r.start_date,
+            EndDate = r.end_date,
+            QuotedTotal = r.quoted_total,
+            Status = r.status,
+            CreatedAt = r.created_at
+        }).ToList();
+
+        var response = new ReservationReportResponse
+        {
+            FilterStartDate = request.StartDate,
+            FilterEndDate = request.EndDate,
+            FilterFacilityId = request.FacilityId,
+            FilterStatus = request.Status,
+            TotalReservationCount = items.Count,
+            ActiveHoldCount = items.Count(i => i.Status == "pending" || i.Status == "awaiting_deposit"),
+            ConfirmedCount = items.Count(i => i.Status == "confirmed"),
+            CancelledCount = items.Count(i => i.Status == "cancelled"),
+            ExpiredCount = items.Count(i => i.Status == "expired"),
+            TotalQuotedAmount = items.Sum(i => i.QuotedTotal),
+            Items = items
+        };
+
+        return response;
+    }
 }

@@ -758,4 +758,52 @@ public class ReservationRepository : GenericRepository<reservation>, IReservatio
                     (ua.reservation_id == r.id || (ua.agreement != null && ua.agreement.reservation_id == r.id))))
             .CountAsync(cancellationToken);
     }
+
+    public async Task<IReadOnlyList<reservation>> GetReservationsReportAsync(
+        DateOnly? startDate,
+        DateOnly? endDate,
+        IReadOnlyList<long>? facilityIds,
+        string? status,
+        CancellationToken cancellationToken = default)
+    {
+        var query = _context.reservations
+            .AsNoTracking()
+            .Include(r => r.facility)
+            .Include(r => r.unit_type)
+            .Include(r => r.customer)
+                .ThenInclude(c => c.user)
+            .AsQueryable();
+
+        if (startDate.HasValue)
+        {
+            query = query.Where(r => r.start_date >= startDate.Value);
+        }
+
+        if (endDate.HasValue)
+        {
+            query = query.Where(r => r.start_date <= endDate.Value);
+        }
+
+        if (facilityIds != null)
+        {
+            if (facilityIds.Count == 0)
+            {
+                // Fail-closed: User has no assigned facilities or filter explicitly selected empty list
+                return Array.Empty<reservation>();
+            }
+
+            query = query.Where(r => facilityIds.Contains(r.facility_id));
+        }
+
+        if (!string.IsNullOrWhiteSpace(status))
+        {
+            var normalizedStatus = status.Trim().ToLower();
+            query = query.Where(r => r.status.ToLower() == normalizedStatus);
+        }
+
+        return await query
+            .OrderByDescending(r => r.start_date)
+            .ThenByDescending(r => r.created_at)
+            .ToListAsync(cancellationToken);
+    }
 }
