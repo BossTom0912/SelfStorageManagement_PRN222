@@ -1,0 +1,214 @@
+@page "/Reservations"
+@model SelfStorageManagementSystem.Web.Pages.Reservations.IndexModel
+@using SelfStorageManagementSystem.Web.Helpers
+@using SelfStorageManagementSystem.Web.Models
+@{
+    ViewData["Title"] = "Đặt Chỗ Của Tôi";
+    var items = Model.Reservations?.Items ?? new List<SelfStorageManagementSystem.BusinessLogic.DTOs.Responses.Reservations.ReservationListItemResponse>();
+}
+
+<div class="container py-3">
+    <!-- Breadcrumb điều hướng -->
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Trang chủ</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Đặt chỗ của tôi</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+        <div>
+            <h1 class="h3 fw-bold mb-1">Đơn Đặt Giữ Chỗ Của Bạn</h1>
+            <p class="text-muted mb-0">Quản lý các đơn giữ chỗ sức chứa và đồng hồ đếm ngược 15 phút (BR-RSV-01).</p>
+        </div>
+        <div>
+            <a href="/Catalog" class="btn btn-primary fw-semibold">
+                + Đặt thêm kho mới
+            </a>
+        </div>
+    </div>
+
+    <partial name="_AlertMessages" />
+
+    <!-- Bộ lọc trạng thái (Status Filter Tabs) -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body p-2">
+            <ul class="nav nav-pills gap-1">
+                <li class="nav-item">
+                    <a class="nav-link @(string.IsNullOrEmpty(Model.CurrentStatus) ? "active" : "")"
+                       href="/Reservations">
+                        Tất cả (@(Model.Reservations?.TotalCount ?? 0))
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @(Model.CurrentStatus == "pending" ? "active" : "")"
+                       href="/Reservations?status=pending">
+                        Đang giữ chỗ
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @(Model.CurrentStatus == "confirmed" ? "active" : "")"
+                       href="/Reservations?status=confirmed">
+                        Đã xác nhận
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @(Model.CurrentStatus == "cancelled" ? "active" : "")"
+                       href="/Reservations?status=cancelled">
+                        Đã hủy
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @(Model.CurrentStatus == "expired" ? "active" : "")"
+                       href="/Reservations?status=expired">
+                        Hết hạn
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    @if (items.Count == 0)
+    {
+        <partial name="_EmptyState" model='new EmptyStateViewModel
+        {
+            Title = "Chưa có đơn đặt chỗ nào",
+            Message = string.IsNullOrEmpty(Model.CurrentStatus) 
+                ? "Bạn chưa có đơn đặt giữ chỗ kho nào trong hệ thống." 
+                : $"Không tìm thấy đơn đặt chỗ nào ở trạng thái \"{Model.CurrentStatus}\".",
+            ActionText = "Khám phá danh mục cơ sở kho ngay",
+            ActionUrl = "/Catalog"
+        }' />
+    }
+    else
+    {
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light text-muted small text-uppercase">
+                        <tr>
+                            <th scope="col" class="ps-3">Mã đơn</th>
+                            <th scope="col">Cơ sở & Loại kho</th>
+                            <th scope="col">Kỳ hạn thuê</th>
+                            <th scope="col">Tổng dự kiến</th>
+                            <th scope="col">Trạng thái</th>
+                            <th scope="col">Thời hạn giữ chỗ</th>
+                            <th scope="col" class="text-end pe-3">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var res in items)
+                        {
+                            var badgeClass = res.Status switch
+                            {
+                                "pending" => res.IsHoldActive ? "badge bg-warning text-dark" : "badge bg-danger",
+                                "awaiting_deposit" => "badge bg-warning text-dark",
+                                "confirmed" => "badge bg-success",
+                                "cancelled" => "badge bg-secondary",
+                                "expired" => "badge bg-danger",
+                                _ => "badge bg-info text-dark"
+                            };
+
+                            <tr data-reservation-row="@res.Id">
+                                <td class="ps-3">
+                                    <a href="/Reservations/Details?id=@res.Id" class="fw-bold font-monospace text-primary text-decoration-none">
+                                        @res.ReservationCode
+                                    </a>
+                                    <div class="small text-muted">@AppFormatters.FormatDateTime(res.CreatedAt)</div>
+                                </td>
+                                <td>
+                                    <div class="fw-semibold text-dark">@res.FacilityName</div>
+                                    <div class="small text-muted">@res.UnitTypeName</div>
+                                </td>
+                                <td>
+                                    <div class="small">@AppFormatters.FormatDate(res.StartDate) &rarr; @AppFormatters.FormatDate(res.EndDate)</div>
+                                </td>
+                                <td>
+                                    <span class="fw-bold font-monospace text-dark">@AppFormatters.FormatVnd(res.QuotedTotal)</span>
+                                </td>
+                                <td data-status-cell="@res.Id">
+                                    <span class="@badgeClass px-2 py-1" data-status-badge="@res.Id">@res.StatusDisplayName</span>
+                                </td>
+                                <td data-countdown-cell="@res.Id">
+                                    @if (res.IsHoldActive && (res.Status == "pending" || res.Status == "awaiting_deposit"))
+                                    {
+                                        <div class="d-inline-flex align-items-center gap-1 bg-warning-subtle px-2 py-1 rounded border border-warning-subtle"
+                                             data-reservation-countdown
+                                             data-hold-until="@res.HoldUntil.ToString("o")"
+                                             data-server-now="@res.ServerNow.ToString("o")"
+                                             data-reservation-id="@res.Id"
+                                             data-status="@res.Status">
+                                            <span class="text-warning fw-bold">&#9200;</span>
+                                            <span class="font-monospace fw-bold text-danger" data-countdown-display>
+                                                @{
+                                                    var mins = res.RemainingSeconds / 60;
+                                                    var secs = res.RemainingSeconds % 60;
+                                                    var formatted = $"{mins:D2}:{secs:D2}";
+                                                }
+                                                @formatted
+                                            </span>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted small">@AppFormatters.FormatDateTime(res.HoldUntil, res.FacilityTimezone)</span>
+                                    }
+                                </td>
+                                <td class="text-end pe-3">
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="/Reservations/Details?id=@res.Id" class="btn btn-outline-primary">
+                                            Chi tiết
+                                        </a>
+                                        @if (res.CanCancel)
+                                        {
+                                            <a href="/Reservations/Cancel?id=@res.Id" class="btn btn-outline-danger" data-cancel-action="@res.Id">
+                                                Hủy
+                                            </a>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Phân trang (Pagination) -->
+            @if (Model.Reservations != null && Model.Reservations.TotalPages > 1)
+            {
+                <div class="card-footer bg-white py-3 border-top d-flex justify-content-between align-items-center">
+                    <div class="small text-muted">
+                        Trang @Model.Reservations.PageNumber / @Model.Reservations.TotalPages 
+                        (Tổng cộng @Model.Reservations.TotalCount đơn đặt chỗ)
+                    </div>
+                    <nav aria-label="Phân trang đơn đặt chỗ">
+                        <ul class="pagination pagination-sm mb-0">
+                            <li class="page-item @(Model.Reservations.HasPreviousPage ? "" : "disabled")">
+                                <a class="page-link" href="/Reservations?status=@Model.CurrentStatus&pageNumber=@(Model.Reservations.PageNumber - 1)">
+                                    &laquo; Trước
+                                </a>
+                            </li>
+
+                            @for (var p = 1; p <= Model.Reservations.TotalPages; p++)
+                            {
+                                <li class="page-item @(p == Model.Reservations.PageNumber ? "active" : "")">
+                                    <a class="page-link" href="/Reservations?status=@Model.CurrentStatus&pageNumber=@p">@p</a>
+                                </li>
+                            }
+
+                            <li class="page-item @(Model.Reservations.HasNextPage ? "" : "disabled")">
+                                <a class="page-link" href="/Reservations?status=@Model.CurrentStatus&pageNumber=@(Model.Reservations.PageNumber + 1)">
+                                    Sau &raquo;
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="~/js/reservation-countdown.js" asp-append-version="true"></script>
+}

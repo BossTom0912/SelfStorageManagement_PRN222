@@ -1,0 +1,116 @@
+/* CSS dành riêng cho Quầy tiếp nhận & Bàn giao kho số hóa (Task T11) */
+
+.checkin-step-tracker {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    position: relative;
+    padding: 0;
+    list-style: none;
+}
+
+.checkin-step-tracker::before {
+    content: '';
+    position: absolute;
+    top: 24px;
+    left: 40px;
+    right: 40px;
+    height: 3px;
+    background-color: #dee2e6;
+    z-index: 1;
+}
+
+.checkin-step-item {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    flex: 1;
+}
+
+.checkin-step-circle {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    border: 3px solid #dee2e6;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.checkin-step-item.active .checkin-step-circle {
+    border-color: #0d6efd;
+    color: #0d6efd;
+    box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.2);
+}
+
+.checkin-step-item.completed .checkin-step-circle {
+    background-color: #198754;
+    border-color: #198754;
+    color: #ffffff;
+}
+
+.checkin-step-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #495057;
+}
+
+.checkin-pin-box {
+    background: #f8f9fa;
+    border: 2px dashed #198754;
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.checkin-pin-value {
+    font-size: 2.75rem;
+    font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-weight: 800;
+    letter-spacing: 0.35em;
+    color: #0d6efd;
+    background-color: #ffffff;
+    padding: 0.5rem 1.5rem;
+    border-radius: 6px;
+    border: 1px solid #ced4da;
+    display: inline-block;
+}
+
+.checkin-checklist-table th {
+    background-color: #f1f3f5;
+    font-weight: 600;
+}
+
+.checkin-condition-badge-good {
+    background-color: #d1e7dd;
+    color: #0f5132;
+    font-weight: 600;
+}
+
+.checkin-condition-badge-acceptable {
+    background-color: #cff4fc;
+    color: #055160;
+    font-weight: 600;
+}
+
+.checkin-condition-badge-damaged {
+    background-color: #f8d7da;
+    color: #842029;
+    font-weight: 600;
+}
+
+.checkin-condition-badge-missing {
+    background-color: #fff3cd;
+    color: #664d03;
+    font-weight: 600;
+}
+
+.checkin-masked-credential {
+    font-family: monospace;
+    letter-spacing: 0.2em;
+    font-weight: 700;
+}

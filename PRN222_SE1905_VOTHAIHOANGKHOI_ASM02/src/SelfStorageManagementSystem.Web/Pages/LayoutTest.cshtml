@@ -1,0 +1,115 @@
+@page "/layout-test"
+@model SelfStorageManagementSystem.Web.Pages.LayoutTestModel
+@{
+    ViewData["Title"] = "Kiểm Tra Layout Razor Page";
+}
+
+<div class="row">
+    <div class="col-12 mb-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Trang chủ</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Kiểm tra Layout Razor Page</li>
+            </ol>
+        </nav>
+        <h2 class="fw-bold text-dark">Kiểm Tra Khả Năng Tương Thích Layout Chung</h2>
+        <p class="text-muted">
+            Trang này được render hoàn toàn từ Razor Page (.NET 8), sử dụng chung tệp <code>_Layout.cshtml</code> với MVC View.
+        </p>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Cột trái: Form nhập liệu & Validation -->
+    <div class="col-lg-6">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-primary text-white py-3">
+                <h5 class="card-title mb-0 fw-semibold">&#9998; Thử Nghiệm Form & Validation</h5>
+            </div>
+            <div class="card-body p-4">
+                <partial name="_ValidationSummary" />
+
+                <form method="post" data-prevent-double-submit="true" class="needs-validation">
+                    <div class="mb-3">
+                        <label asp-for="SampleName" class="form-label fw-semibold">Họ và tên <span class="text-danger">*</span></label>
+                        <input asp-for="SampleName" class="form-control" placeholder="Ví dụ: Nguyễn Văn An" />
+                        <span asp-validation-for="SampleName" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="SampleEmail" class="form-label fw-semibold">Địa chỉ Email <span class="text-danger">*</span></label>
+                        <input asp-for="SampleEmail" class="form-control" placeholder="an.nguyen@example.com" />
+                        <span asp-validation-for="SampleEmail" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        <button type="submit" class="btn btn-primary px-4">
+                            Gửi dữ liệu mẫu
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" onclick="SelfStorage.showLoading('Đang tải dữ liệu mô phỏng...'); setTimeout(SelfStorage.hideLoading, 1500);">
+                            Thử nghiệm Loading
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cột phải: Chuẩn hóa hiển thị tiếng Việt, tiền tệ và ngày tháng -->
+    <div class="col-lg-6">
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-dark text-white py-3">
+                <h5 class="card-title mb-0 fw-semibold">&#128181; Chuẩn Hóa Dữ Liệu Việt Nam</h5>
+            </div>
+            <div class="card-body p-4">
+                <ul class="list-group list-group-flush mb-3">
+                    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                        <span>Giá thuê cơ sở (C# AppFormatters):</span>
+                        <strong class="text-vnd fs-5">@AppFormatters.FormatVnd(Model.SampleRentAmount)</strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                        <span>Giá thuê (JavaScript Client):</span>
+                        <strong id="jsVndDisplay" class="text-vnd fs-5">—</strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                        <span>Ngày bắt đầu thuê:</span>
+                        <span class="text-datetime fw-semibold">@AppFormatters.FormatDate(Model.SampleStartDate)</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                        <span>Thời điểm kết thúc hợp đồng:</span>
+                        <span class="text-datetime fw-semibold">@AppFormatters.FormatDateTime(Model.SampleEndDate)</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Thử nghiệm Empty State -->
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-light py-3">
+                <h5 class="card-title mb-0 fw-semibold text-secondary">&#128451; Mẫu Trạng Thái Rỗng (Empty State)</h5>
+            </div>
+            <div class="card-body p-3">
+                <partial name="_EmptyState" model='new SelfStorageManagementSystem.Web.Models.EmptyStateViewModel {
+                    Title = "Chưa Có Đơn Đặt Chỗ Nào",
+                    Message = "Bạn chưa thực hiện giữ chỗ ô kho nào trong hệ thống. Hãy duyệt danh mục kho để chọn ô phù hợp.",
+                    ActionText = "Xem danh mục kho",
+                    ActionUrl = "/Catalog"
+                }' />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Mã JavaScript riêng của trang: Chạy độc lập, không tạo kết nối SignalR toàn cục
+        document.addEventListener('DOMContentLoaded', function () {
+            // Kiểm chứng hàm chuẩn hóa VND phía JavaScript
+            const jsDisplay = document.getElementById('jsVndDisplay');
+            if (jsDisplay && window.SelfStorage) {
+                jsDisplay.textContent = SelfStorage.formatVnd(2750000);
+            }
+        });
+    </script>
+}

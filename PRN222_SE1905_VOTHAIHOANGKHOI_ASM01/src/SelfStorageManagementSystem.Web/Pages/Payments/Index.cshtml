@@ -1,0 +1,392 @@
+@page "/Payments"
+@model SelfStorageManagementSystem.Web.Pages.Payments.IndexModel
+@using SelfStorageManagementSystem.Web.Helpers
+@{
+    ViewData["Title"] = Model.IsEmployee ? "Đối Soát Thanh Toán & Hoàn Tiền" : "Thanh Toán & Hợp Đồng";
+}
+
+<div class="container py-3">
+    <!-- Breadcrumb điều hướng -->
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Trang chủ</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@(Model.IsEmployee ? "Đối soát & Hoàn tiền" : "Thanh toán")</li>
+        </ol>
+    </nav>
+
+    <!-- Thông báo TempData -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success shadow-sm mb-4 alert-dismissible fade show" role="alert">
+            <strong>&#10004;</strong> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
+        </div>
+    }
+
+    @if (TempData["WarningMessage"] != null)
+    {
+        <div class="alert alert-warning shadow-sm mb-4 alert-dismissible fade show" role="alert">
+            <strong>&#9888;</strong> @TempData["WarningMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger shadow-sm mb-4 alert-dismissible fade show" role="alert">
+            <strong>&#9888;</strong> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger shadow-sm mb-4" role="alert">
+            <strong>Lỗi:</strong> @Model.ErrorMessage
+        </div>
+    }
+
+    <!-- Khu vực hiển thị thông báo Realtime SignalR (T15 R3) -->
+    <div id="paymentsMessageArea"></div>
+
+    @if (!Model.IsEmployee)
+    {
+        <!-- Giao diện dành cho Khách hàng (storage_customer) -->
+        <div class="card shadow-sm border-0 mb-4 bg-white">
+            <div class="card-body p-4">
+                <div class="row align-items-center g-3">
+                    <div class="col-md-8">
+                        <h2 class="h4 fw-bold mb-1 text-dark">Trung Tâm Thanh Toán & Hóa Đơn</h2>
+                        <p class="text-muted mb-0">Theo dõi lịch sử giao dịch thanh toán, tra cứu hóa đơn và quản lý hợp đồng thuê kho.</p>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <a href="/Reservations" class="btn btn-primary fw-semibold">
+                            &#128197; Xem đơn đặt chỗ cần thanh toán
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <!-- Tra cứu nhanh theo mã -->
+            <div class="col-md-6">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-header bg-white py-3 border-bottom">
+                        <h5 class="card-title fw-bold mb-0 text-dark">🔍 Tra Cứu Giao Dịch Nhanh</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <form method="get" action="/Payments/Details" class="d-flex gap-2">
+                            <input type="number" class="form-control font-monospace" name="id" placeholder="Nhập mã giao dịch (Payment ID)" required min="1">
+                            <button type="submit" class="btn btn-outline-primary fw-semibold text-nowrap">
+                                Tra cứu &rarr;
+                            </button>
+                        </form>
+                        <div class="small text-muted mt-2">
+                            Mã giao dịch được cấp tại bước Checkout và ghi nhận trong biên lai thanh toán.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Điều hướng dịch vụ liên quan -->
+            <div class="col-md-6">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-header bg-white py-3 border-bottom">
+                        <h5 class="card-title fw-bold mb-0 text-dark">📑 Tài Liệu Kèm Theo</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="d-grid gap-2">
+                            <a href="/Invoices" class="btn btn-outline-secondary text-start py-2">
+                                <strong>🧾 Hóa Đơn / Biên Nhận</strong>
+                                <div class="small text-muted">Xem hóa đơn chi phí tiền thuê và tiền đặt cọc</div>
+                            </a>
+                            <a href="/Agreements" class="btn btn-outline-secondary text-start py-2">
+                                <strong>📄 Hợp Đồng Thuê Kho</strong>
+                                <div class="small text-muted">Xem hợp đồng thuê kho và tiến trình bàn giao</div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Giao diện dành cho Nhân viên / Quản lý / Vận hành / Admin -->
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+            <div>
+                <h1 class="h3 fw-bold mb-1">Đối Soát Thanh Toán & Phê Duyệt Hoàn Tiền</h1>
+                <p class="text-muted mb-0">Quản lý các khoản thanh toán cần đối soát (tiền đến trễ khi hold hết hạn) và duyệt yêu cầu hoàn tiền theo cơ sở được phân công.</p>
+            </div>
+        </div>
+
+        <!-- Tabs điều hướng -->
+        <ul class="nav nav-tabs mb-4" id="reconciliationTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link @(Model.Tab != "refunds" ? "active fw-bold" : "")" 
+                   href="/Payments?tab=reconciliation">
+                    🔍 Thanh Toán Cần Đối Soát
+                    <span class="badge bg-warning text-dark ms-1">@Model.ReconciliationPayments.Count</span>
+                </a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link @(Model.Tab == "refunds" ? "active fw-bold" : "")" 
+                   href="/Payments?tab=refunds">
+                    💰 Yêu Cầu Hoàn Tiền (Refunds)
+                    <span class="badge bg-primary ms-1">@Model.Refunds.Count</span>
+                </a>
+            </li>
+        </ul>
+
+        @if (Model.Tab != "refunds")
+        {
+            <!-- TAB 1: THANH TOÁN CẦN ĐỐI SOÁT -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="card-title fw-bold mb-0 text-dark">Danh Sách Thanh Toán Cần Đối Soát (Late Payments / Overdue Holds)</h5>
+                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="window.location.reload();">
+                        &#8635; Làm mới
+                    </button>
+                </div>
+                <div class="card-body p-0">
+                    @if (Model.ReconciliationPayments.Count == 0)
+                    {
+                        <div class="text-center py-5">
+                            <div class="display-6 text-muted mb-2">&#10004;</div>
+                            <h5 class="fw-bold text-dark">Không có giao dịch nào cần đối soát</h5>
+                            <p class="text-muted small mb-0">Tất cả các khoản thanh toán đều khớp với thời hạn giữ chỗ và không có tiền đến muộn.</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Mã GD</th>
+                                        <th>Đơn đặt chỗ</th>
+                                        <th>Số tiền</th>
+                                        <th>Phương thức</th>
+                                        <th>Trạng thái</th>
+                                        <th>Lý do đối soát</th>
+                                        <th>Thời điểm</th>
+                                        <th class="text-end">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.ReconciliationPayments)
+                                    {
+                                        <tr data-payment-id="@item.PaymentId" data-reservation-id="@item.ReservationId">
+                                            <td class="font-monospace fw-bold">#@item.PaymentId</td>
+                                            <td>
+                                                <a href="/Reservations/Details/@item.ReservationId" class="badge bg-secondary font-monospace text-decoration-none">
+                                                    @item.ReservationCode
+                                                </a>
+                                            </td>
+                                            <td class="font-monospace fw-semibold text-primary">
+                                                @AppFormatters.FormatVnd(item.Amount)
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-light text-dark border font-monospace">@item.Provider</span>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-warning text-dark" data-payment-status-badge>@item.Status</span>
+                                            </td>
+                                            <td class="small text-danger">
+                                                @(item.FailureReason ?? "LATE_PAYMENT_HOLD_EXPIRED")
+                                            </td>
+                                            <td class="small text-muted">
+                                                @AppFormatters.FormatDateTime(item.CreatedAt)
+                                            </td>
+                                            <td class="text-end">
+                                                <a href="/Payments/Details?id=@item.PaymentId" class="btn btn-sm btn-outline-primary">
+                                                    Chi tiết &rarr;
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+        else
+        {
+            <!-- TAB 2: YÊU CẦU HOÀN TIỀN (REFUNDS) -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-white py-3 border-bottom d-flex flex-wrap justify-content-between align-items-center gap-2">
+                    <h5 class="card-title fw-bold mb-0 text-dark">Danh Sách Yêu Cầu Hoàn Tiền (Refund Requests)</h5>
+
+                    <!-- Bộ lọc trạng thái refund -->
+                    <div class="btn-group btn-group-sm" role="group">
+                        <a href="/Payments?tab=refunds" class="btn @(string.IsNullOrEmpty(Model.RefundStatus) ? "btn-primary" : "btn-outline-secondary")">Tất cả</a>
+                        <a href="/Payments?tab=refunds&refundStatus=requested" class="btn @(Model.RefundStatus == "requested" ? "btn-primary" : "btn-outline-secondary")">Chờ duyệt</a>
+                        <a href="/Payments?tab=refunds&refundStatus=approved" class="btn @(Model.RefundStatus == "approved" ? "btn-primary" : "btn-outline-secondary")">Đã duyệt</a>
+                        <a href="/Payments?tab=refunds&refundStatus=rejected" class="btn @(Model.RefundStatus == "rejected" ? "btn-primary" : "btn-outline-secondary")">Đã từ chối</a>
+                        <a href="/Payments?tab=refunds&refundStatus=refunded" class="btn @(Model.RefundStatus == "refunded" ? "btn-primary" : "btn-outline-secondary")">Đã hoàn tiền</a>
+                    </div>
+                </div>
+
+                <div class="card-body p-0">
+                    @if (Model.Refunds.Count == 0)
+                    {
+                        <div class="text-center py-5">
+                            <div class="display-6 text-muted mb-2">&#128184;</div>
+                            <h5 class="fw-bold text-dark">Không có yêu cầu hoàn tiền nào</h5>
+                            <p class="text-muted small mb-0">Chưa có yêu cầu hoàn tiền nào thỏa mãn bộ lọc hiện tại.</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Mã Hoàn Tiền</th>
+                                        <th>Mã GD</th>
+                                        <th>Số tiền</th>
+                                        <th>Lý do</th>
+                                        <th>Cổng</th>
+                                        <th>Trạng thái</th>
+                                        <th>Thời điểm tạo</th>
+                                        <th>Quyết định</th>
+                                        <th class="text-end">Xét duyệt</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var refItem in Model.Refunds)
+                                    {
+                                        <tr data-payment-id="@refItem.PaymentId" data-refund-id="@refItem.Id">
+                                            <td class="font-monospace fw-bold">#@refItem.Id</td>
+                                            <td>
+                                                <a href="/Payments/Details?id=@refItem.PaymentId" class="font-monospace text-decoration-none">
+                                                    #@refItem.PaymentId
+                                                </a>
+                                            </td>
+                                            <td class="font-monospace fw-bold text-danger">
+                                                @AppFormatters.FormatVnd(refItem.Amount)
+                                            </td>
+                                            <td class="small text-muted" style="max-width: 200px;">
+                                                @refItem.Reason
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-light text-dark border font-monospace">@refItem.Provider</span>
+                                            </td>
+                                            <td>
+                                                @{
+                                                    var stClass = refItem.Status switch
+                                                    {
+                                                        "requested" => "badge bg-warning text-dark",
+                                                        "approved" => "badge bg-info text-dark",
+                                                        "rejected" => "badge bg-danger",
+                                                        "refunded" => "badge bg-success",
+                                                        _ => "badge bg-secondary"
+                                                    };
+                                                }
+                                                <span class="@stClass">@refItem.Status</span>
+                                            </td>
+                                            <td class="small text-muted">
+                                                @AppFormatters.FormatDateTime(refItem.CreatedAt)
+                                            </td>
+                                            <td class="small">
+                                                @if (!string.IsNullOrEmpty(refItem.Decision))
+                                                {
+                                                    <span class="badge bg-light text-dark border">@refItem.Decision</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">-</span>
+                                                }
+                                            </td>
+                                            <td class="text-end">
+                                                @if (refItem.Status == "requested")
+                                                {
+                                                    <div class="btn-group btn-group-sm">
+                                                        <!-- Nút mở modal duyệt hoàn tiền -->
+                                                        <button type="button" class="btn btn-outline-success btn-sm"
+                                                                data-bs-toggle="modal" data-bs-target="#reviewModal-@refItem.Id">
+                                                            Xét duyệt
+                                                        </button>
+                                                    </div>
+
+                                                    <!-- Modal Xét duyệt Hoàn tiền -->
+                                                    <div class="modal fade text-start" id="reviewModal-@refItem.Id" tabindex="-1" aria-labelledby="modalLabel-@refItem.Id" aria-hidden="true">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <form method="post" asp-page-handler="ReviewRefund">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title fw-bold" id="modalLabel-@refItem.Id">Xét Duyệt Hoàn Tiền #@refItem.Id</h5>
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <input type="hidden" name="RefundId" value="@refItem.Id" />
+                                                                        <input type="hidden" name="RefundStatus" value="@Model.RefundStatus" />
+
+                                                                        <div class="mb-3 bg-light p-3 rounded">
+                                                                            <div class="d-flex justify-content-between mb-1">
+                                                                                <span class="text-muted small">Mã hoàn tiền:</span>
+                                                                                <span class="font-monospace fw-bold">#@refItem.Id</span>
+                                                                            </div>
+                                                                            <div class="d-flex justify-content-between mb-1">
+                                                                                <span class="text-muted small">Số tiền yêu cầu:</span>
+                                                                                <span class="font-monospace fw-bold text-danger">@AppFormatters.FormatVnd(refItem.Amount)</span>
+                                                                            </div>
+                                                                            <div class="d-flex justify-content-between">
+                                                                                <span class="text-muted small">Lý do yêu cầu:</span>
+                                                                                <span class="small text-dark">@refItem.Reason</span>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="mb-3">
+                                                                            <label class="form-label fw-bold text-dark small">Quyết Định Của Quản Lý:</label>
+                                                                            <div class="form-check mb-2">
+                                                                                <input class="form-check-input" type="radio" name="Decision" id="decApprove-@refItem.Id" value="approved" checked>
+                                                                                <label class="form-check-label fw-semibold text-success" for="decApprove-@refItem.Id">
+                                                                                    &#10004; Phê duyệt hoàn tiền (Approved)
+                                                                                </label>
+                                                                            </div>
+                                                                            <div class="form-check">
+                                                                                <input class="form-check-input" type="radio" name="Decision" id="decReject-@refItem.Id" value="rejected">
+                                                                                <label class="form-check-label fw-semibold text-danger" for="decReject-@refItem.Id">
+                                                                                    &#10008; Từ chối hoàn tiền (Rejected)
+                                                                                </label>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="mb-3">
+                                                                            <label class="form-label fw-bold text-dark small" for="reviewReason-@refItem.Id">Ghi Chú / Lý Do Quyết Định:</label>
+                                                                            <textarea class="form-control form-control-sm" name="Reason" id="reviewReason-@refItem.Id" rows="2" placeholder="Nhập ghi chú phê duyệt hoặc lý do từ chối..."></textarea>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Đóng</button>
+                                                                        <button type="submit" class="btn btn-primary btn-sm fw-semibold">Xác nhận quyết định</button>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted small">Đã xử lý</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    }
+</div>
+
+@section Scripts {
+    <script src="~/js/payments.js" asp-append-version="true"></script>
+}

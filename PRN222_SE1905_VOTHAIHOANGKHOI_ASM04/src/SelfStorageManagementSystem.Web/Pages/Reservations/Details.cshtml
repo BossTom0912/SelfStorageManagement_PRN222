@@ -1,0 +1,353 @@
+@page "/Reservations/Details/{id:long?}"
+@model SelfStorageManagementSystem.Web.Pages.Reservations.DetailsModel
+@using SelfStorageManagementSystem.Web.Helpers
+@using SelfStorageManagementSystem.Web.Models
+@{
+    ViewData["Title"] = Model.Reservation != null 
+        ? $"Chi Tiết Đơn Đặt Chỗ {Model.Reservation.ReservationCode}" 
+        : "Chi Tiết Đơn Đặt Chỗ";
+
+    var res = Model.Reservation;
+}
+
+<div class="container py-3">
+    <!-- Breadcrumb điều hướng -->
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a href="/Reservations">Đặt chỗ của tôi</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@(res?.ReservationCode ?? "Chi tiết đơn")</li>
+        </ol>
+    </nav>
+
+    <partial name="_AlertMessages" />
+
+    @if (res == null)
+    {
+        <partial name="_EmptyState" model='new EmptyStateViewModel
+        {
+            Title = "Không tìm thấy đơn đặt chỗ",
+            Message = Model.ErrorMessage ?? "Đơn đặt chỗ không tồn tại hoặc bạn không có quyền truy cập.",
+            ActionText = "Quay lại danh sách đặt chỗ",
+            ActionUrl = "/Reservations"
+        }' />
+    }
+    else
+    {
+        <!-- Header thông tin chính -->
+        <div class="card shadow-sm border-0 mb-4 bg-white">
+            <div class="card-body p-4">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                    <div>
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <span class="badge bg-secondary font-monospace px-2 py-1 fs-6">@res.ReservationCode</span>
+                            
+                            @{
+                                var badgeClass = res.Status switch
+                                {
+                                    "pending" => res.IsHoldActive ? "badge bg-warning text-dark" : "badge bg-danger",
+                                    "awaiting_deposit" => "badge bg-warning text-dark",
+                                    "confirmed" => "badge bg-success",
+                                    "cancelled" => "badge bg-secondary",
+                                    "expired" => "badge bg-danger",
+                                    _ => "badge bg-info text-dark"
+                                };
+                            }
+                            <span id="reservationStatusBadge" class="@badgeClass px-3 py-1 fs-6">
+                                @res.StatusDisplayName
+                            </span>
+                        </div>
+                        <div class="text-muted small">
+                            Khách hàng: <strong>@res.CustomerName</strong> &bull;
+                            Thời điểm tạo: @AppFormatters.FormatDateTime(res.CreatedAt)
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="window.location.reload();">
+                            &#8635; Làm mới
+                        </button>
+                        <a href="/Reservations" class="btn btn-outline-primary btn-sm">
+                            &larr; Danh sách đặt chỗ
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Khối Đếm Ngược 15 Phút (Hold Countdown Panel) -->
+        @if (res.IsHoldActive && (res.Status == "pending" || res.Status == "awaiting_deposit"))
+        {
+            <div class="card shadow-sm border-warning border-2 mb-4 bg-warning-subtle" id="reservationCountdownPanel"
+                 data-reservation-countdown
+                 data-hold-until="@res.HoldUntil.ToString("o")"
+                 data-server-now="@res.ServerNow.ToString("o")"
+                 data-reservation-id="@res.Id"
+                 data-status="@res.Status">
+                <div class="card-body p-4">
+                    <div class="row align-items-center g-3">
+                        <div class="col-md-7">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <span class="badge bg-warning text-dark fw-bold">BR-RSV-01</span>
+                                <h5 class="fw-bold mb-0 text-dark">Thời Gian Tạm Giữ Sức Chứa</h5>
+                            </div>
+                            <p class="text-dark small mb-2" data-countdown-desc>
+                                Hệ thống đang tạm giữ sức chứa loại kho cho bạn. Vui lòng tiến hành thanh toán trước thời hạn để xác nhận đơn.
+                            </p>
+                            <div class="small text-muted">
+                                <strong>Hạn chót thanh toán:</strong> 
+                                <span class="font-monospace text-dark fw-semibold">
+                                    @AppFormatters.FormatDateTimeSeconds(res.HoldUntil, res.FacilityTimezone)
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-5 text-center text-md-end">
+                            <div class="display-5 fw-bold font-monospace text-primary mb-2" data-countdown-display>
+                                @{
+                                    var mins = res.RemainingSeconds / 60;
+                                    var secs = res.RemainingSeconds % 60;
+                                    var formatted = $"{mins:D2}:{secs:D2}";
+                                }
+                                @formatted
+                            </div>
+                            <div class="progress" style="height: 6px;">
+                                @{
+                                    var pct = Math.Min(100, Math.Max(0, (res.RemainingSeconds / 900.0) * 100));
+                                }
+                                <div class="progress-bar bg-primary" role="progressbar" 
+                                     style="width: @(pct)%;" 
+                                     data-countdown-progress 
+                                     aria-valuenow="@res.RemainingSeconds" 
+                                     aria-valuemin="0" 
+                                     aria-valuemax="900"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- Thông báo sự cố xác thực / phân quyền (HTTP 401 / 403) khi đồng bộ -->
+        <div class="alert alert-warning shadow-sm mb-4 d-none" id="reservationAuthAlert" role="alert">
+            <div class="d-flex align-items-center gap-3">
+                <span class="fs-2" id="reservationAuthAlertIcon">&#9888;</span>
+                <div>
+                    <h5 class="alert-heading fw-bold mb-1" id="reservationAuthAlertHeading">Phiên đăng nhập đã hết hạn</h5>
+                    <p class="mb-0 small" id="reservationAuthAlertBody">
+                        Phiên làm việc của bạn đã hết hạn sau 5 phút không hoạt động. Đơn đặt chỗ vẫn được bảo lưu thời hạn trên hệ thống.
+                        Vui lòng <a href="/Account/Login" class="alert-link fw-semibold" id="reservationAuthAlertLink">đăng nhập lại</a> để tiếp tục đồng bộ và thanh toán.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Thông báo hết hạn (Ẩn nếu còn hạn, chỉ hiện khi server khẳng định hết hạn) -->
+        <div class="alert alert-danger shadow-sm mb-4 @(res.Status == "expired" ? "" : "d-none")" id="reservationExpiredAlert" role="alert">
+            <div class="d-flex align-items-center gap-3">
+                <span class="fs-2 text-danger">&#10008;</span>
+                <div>
+                    <h5 class="alert-heading fw-bold mb-1">Đơn giữ chỗ đã hết thời hạn 15 phút</h5>
+                    <p class="mb-0 small" id="reservationExpiredAlertBody">
+                        Theo quy định <strong>BR-RSV-01</strong>, đơn đặt chỗ đã quá hạn thanh toán và sức chứa khả dụng đã được tự động giải phóng cho các khách hàng khác. 
+                        Vui lòng quay lại <a href="/Catalog" class="alert-link">Danh mục cơ sở</a> để tạo đơn mới.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Thông báo đơn đã bị hủy -->
+        @if (res.Status == "cancelled")
+        {
+            <div class="alert alert-secondary shadow-sm mb-4" role="alert">
+                <div class="d-flex align-items-center gap-3">
+                    <span class="fs-2 text-secondary">&#9940;</span>
+                    <div>
+                        <h5 class="alert-heading fw-bold mb-1">Đơn đặt chỗ đã được hủy</h5>
+                        <div class="small">
+                            Thời điểm hủy: <strong>@AppFormatters.FormatDateTime(res.CancelledAt)</strong>
+                        </div>
+                        @if (!string.IsNullOrWhiteSpace(res.CancellationReason))
+                        {
+                            <div class="small mt-1">
+                                Lý do hủy: <em>@res.CancellationReason</em>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div class="row g-4">
+            <!-- Cột trái: Thông tin cơ sở & Chi tiết kho thuê -->
+            <div class="col-lg-7">
+                <!-- Cơ sở lưu trữ & Loại kho -->
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-white py-3 border-bottom">
+                        <h5 class="card-title fw-bold mb-0 text-dark">Thông Tin Cơ Sở & Loại Kho</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row g-3 mb-3">
+                            <div class="col-sm-6">
+                                <small class="text-muted d-block">Tên cơ sở:</small>
+                                <strong class="text-dark">@res.FacilityName</strong>
+                                <div class="small text-muted font-monospace">@res.FacilityCode</div>
+                            </div>
+                            <div class="col-sm-6">
+                                <small class="text-muted d-block">Địa chỉ:</small>
+                                <div class="text-dark small">@res.FacilityAddress</div>
+                            </div>
+                        </div>
+
+                        <hr />
+
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <small class="text-muted d-block">Loại kho:</small>
+                                <strong class="text-dark">@res.UnitTypeName</strong>
+                                <div class="small text-muted font-monospace">@res.UnitTypeCode</div>
+                            </div>
+                            <div class="col-sm-6">
+                                <small class="text-muted d-block">Đặc điểm kho:</small>
+                                <div class="text-dark">
+                                    <span class="fw-semibold">@res.UnitTypeAreaM2.ToString("0.##") m²</span>
+                                    @if (res.ClimateControlled)
+                                    {
+                                        <span class="badge bg-info-subtle text-info border border-info-subtle ms-1">Có điều hòa</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Thời hạn thuê -->
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-white py-3 border-bottom">
+                        <h5 class="card-title fw-bold mb-0 text-dark">Thời Gian Thuê Kho</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row g-3">
+                            <div class="col-sm-4">
+                                <small class="text-muted d-block">Ngày bắt đầu:</small>
+                                <strong class="text-dark">@AppFormatters.FormatDate(res.StartDate)</strong>
+                            </div>
+                            <div class="col-sm-4">
+                                <small class="text-muted d-block">Ngày kết thúc:</small>
+                                <strong class="text-dark">@AppFormatters.FormatDate(res.EndDate)</strong>
+                            </div>
+                            <div class="col-sm-4">
+                                <small class="text-muted d-block">Tổng thời gian:</small>
+                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1">
+                                    @res.RentalMonths tháng
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-light border small mt-3 mb-0 text-muted">
+                            <strong class="text-dark">Chính sách giữ chỗ (BR-RSV-03):</strong> @res.PolicyNote
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cột phải: Tài chính & Thao tác hành động -->
+            <div class="col-lg-5">
+                <!-- Bảng tài chính kỳ đầu -->
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-white py-3 border-bottom">
+                        <h5 class="card-title fw-bold mb-0 text-dark">Bảng Chi Phí Kỳ Đầu</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <ul class="list-group list-group-flush mb-4">
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <span class="text-muted">Giá thuê tháng đầu</span>
+                                <span class="fw-semibold font-monospace">@AppFormatters.FormatVnd(res.MonthlyRateSnapshot)</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <div>
+                                    <span class="text-muted">Tiền đặt cọc</span>
+                                    <div class="small text-muted">100% tiền thuê 1 tháng (BR-FIN-01)</div>
+                                </div>
+                                <span class="fw-semibold font-monospace">@AppFormatters.FormatVnd(res.DepositSnapshot)</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <span class="text-muted">Phí đặt chỗ</span>
+                                <span class="fw-semibold font-monospace">
+                                    @(res.BookingFeeSnapshot > 0 ? AppFormatters.FormatVnd(res.BookingFeeSnapshot) : "0 ₫ (Miễn phí)")
+                                </span>
+                            </li>
+                            @if (res.DiscountSnapshot > 0)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center px-0 text-success">
+                                    <span>Ưu đãi giảm giá</span>
+                                    <span class="fw-semibold font-monospace">-@AppFormatters.FormatVnd(res.DiscountSnapshot)</span>
+                                </li>
+                            }
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0 pt-3 border-top border-2">
+                                <span class="h6 fw-bold mb-0">Tổng thanh toán kỳ đầu</span>
+                                <span class="h4 fw-bold text-primary font-monospace mb-0">@AppFormatters.FormatVnd(res.QuotedTotal)</span>
+                            </li>
+                        </ul>
+
+                        <!-- Các nút thao tác hành động -->
+                        <div class="d-grid gap-2">
+                            @if (res.IsHoldActive && (res.Status == "pending" || res.Status == "awaiting_deposit"))
+                            {
+                                <a href="/Payments?reservationId=@res.Id" 
+                                   class="btn btn-success fw-bold py-2 shadow-sm" id="btnProceedPayment">
+                                    &#128179; Tiến hành thanh toán ngay &rarr;
+                                </a>
+                            }
+
+                            @if (res.CanCancel)
+                            {
+                                <button type="button" class="btn btn-outline-danger" id="btnCancelReservation"
+                                        data-bs-toggle="modal" data-bs-target="#cancelReservationModal">
+                                    Hủy đơn đặt chỗ này
+                                </button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Modal Xác Nhận Hủy Đơn Đặt Chỗ -->
+@if (res != null && res.CanCancel)
+{
+    <div class="modal fade" id="cancelReservationModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="post" asp-page-handler="Cancel">
+                    <input type="hidden" name="id" value="@res.Id" />
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold text-danger" id="cancelModalLabel">Xác Nhận Hủy Đơn Giữ Chỗ</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="mb-3">
+                            Bạn có chắc chắn muốn hủy đơn đặt chỗ <strong>@res.ReservationCode</strong>?
+                            Sau khi hủy, sức chứa khả dụng sẽ được hoàn trả cho hệ thống và đơn sẽ không thể khôi phục.
+                        </p>
+                        <div class="mb-3">
+                            <label for="cancellationReasonInput" class="form-label small fw-semibold">Lý do hủy (tùy chọn, tối đa 255 ký tự):</label>
+                            <textarea name="reason" id="cancellationReasonInput" class="form-control" rows="3" maxlength="255"
+                                      placeholder="Ví dụ: Thay đổi kế hoạch chuyển đồ, chọn loại kho khác..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-danger fw-semibold">Xác nhận hủy đơn</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script src="~/js/reservation-countdown.js" asp-append-version="true"></script>
+}

@@ -1,0 +1,176 @@
+<Window x:Class="SelfStorageManagementSystem.WpfClient.Views.AdminAccountsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="System Administration - Accounts, Roles &amp; Facilities" Height="750" Width="1050"
+        WindowStartupLocation="CenterOwner" Background="#F8FAFC" FontFamily="Segoe UI">
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="240"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#0F766E" Padding="16,10" CornerRadius="6" Margin="0,0,0,12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="System Administration Console" FontSize="18" FontWeight="Bold" Foreground="#FFFFFF"/>
+                    <TextBlock Text="Manage user accounts, security roles, profiles, and staff facility assignments" FontSize="12" Foreground="#CCFBF1"/>
+                </StackPanel>
+                <Button Grid.Column="1" Content="+ Create Staff Account" Background="#14B8A6" Foreground="#FFFFFF" FontWeight="Bold" Padding="14,6" BorderThickness="0" Cursor="Hand" Click="BtnOpenCreateStaff_Click"/>
+            </Grid>
+        </Border>
+
+        <!-- Search & Filter Controls -->
+        <Border Grid.Row="1" Background="#FFFFFF" CornerRadius="6" Padding="12" BorderBrush="#E2E8F0" BorderThickness="1" Margin="0,0,0,12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Search (Email, Name, Phone, Emp Code):" FontSize="11" Foreground="#64748B" FontWeight="SemiBold"/>
+                    <TextBox x:Name="txtSearch" Padding="6" FontSize="12" Margin="0,4,0,0"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="Account Status:" FontSize="11" Foreground="#64748B" FontWeight="SemiBold"/>
+                    <ComboBox x:Name="cmbStatusFilter" SelectedIndex="0" Padding="6" Margin="0,4,0,0">
+                        <ComboBoxItem Content="All Statuses"/>
+                        <ComboBoxItem Content="active"/>
+                        <ComboBoxItem Content="locked"/>
+                        <ComboBoxItem Content="disabled"/>
+                    </ComboBox>
+                </StackPanel>
+
+                <StackPanel Grid.Column="4">
+                    <TextBlock Text="Role Filter:" FontSize="11" Foreground="#64748B" FontWeight="SemiBold"/>
+                    <ComboBox x:Name="cmbRoleFilter" SelectedIndex="0" Padding="6" Margin="0,4,0,0">
+                        <ComboBoxItem Content="All Roles"/>
+                        <ComboBoxItem Content="storage_customer"/>
+                        <ComboBoxItem Content="facility_staff"/>
+                        <ComboBoxItem Content="facility_manager"/>
+                        <ComboBoxItem Content="business_operations_manager"/>
+                        <ComboBoxItem Content="system_administrator"/>
+                    </ComboBox>
+                </StackPanel>
+
+                <StackPanel Grid.Column="6" Orientation="Horizontal" VerticalAlignment="Bottom">
+                    <Button Content="Filter" Padding="14,6" Background="#2563EB" Foreground="#FFFFFF" FontWeight="SemiBold" Margin="0,0,8,0" Cursor="Hand" Click="BtnFilter_Click"/>
+                    <Button Content="Reset" Padding="14,6" Background="#E2E8F0" Foreground="#334155" FontWeight="SemiBold" Cursor="Hand" Click="BtnReset_Click"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Accounts DataGrid -->
+        <Border Grid.Row="2" Background="#FFFFFF" CornerRadius="6" BorderBrush="#E2E8F0" BorderThickness="1">
+            <DataGrid x:Name="gridAccounts" AutoGenerateColumns="False" IsReadOnly="True"
+                      SelectionMode="Single" SelectionUnit="FullRow" HeadersVisibility="Column"
+                      GridLinesVisibility="Horizontal" SelectionChanged="GridAccounts_SelectionChanged">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
+                    <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="180"/>
+                    <DataGridTextColumn Header="Full Name" Binding="{Binding FullName}" Width="150"/>
+                    <DataGridTextColumn Header="Phone" Binding="{Binding PhoneNumber}" Width="100"/>
+                    <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="80"/>
+                    <DataGridTextColumn Header="Roles" Binding="{Binding RolesDisplay}" Width="180"/>
+                    <DataGridTextColumn Header="Emp Code" Binding="{Binding EmployeeCode}" Width="90"/>
+                    <DataGridTextColumn Header="Last Login" Binding="{Binding LastLoginAt, StringFormat=\{0:yyyy-MM-dd HH:mm\}}" Width="120"/>
+                    <DataGridTextColumn Header="Created At" Binding="{Binding CreatedAt, StringFormat=\{0:yyyy-MM-dd\}}" Width="*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+
+        <!-- Pagination Controls -->
+        <Grid Grid.Row="3" Margin="0,8,0,12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" x:Name="btnPrevPage" Content="&lt; Previous" Padding="12,4" Click="BtnPrevPage_Click"/>
+            <TextBlock Grid.Column="1" x:Name="lblPageInfo" Text="Page 1 of 1 (Total: 0)" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="#64748B"/>
+            <Button Grid.Column="2" x:Name="btnNextPage" Content="Next &gt;" Padding="12,4" Click="BtnNextPage_Click"/>
+        </Grid>
+
+        <!-- Action & Details Panel for Selected Account -->
+        <Border Grid.Row="4" Background="#FFFFFF" CornerRadius="6" Padding="14" BorderBrush="#CBD5E1" BorderThickness="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="320"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Left: Account Controls -->
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Manage Selected Account" FontSize="14" FontWeight="Bold" Foreground="#0F172A" Margin="0,0,0,6"/>
+                    <TextBlock x:Name="lblSelectedUser" Text="No account selected" FontSize="12" Foreground="#64748B" Margin="0,0,0,10" FontWeight="SemiBold"/>
+
+                    <!-- Status Change -->
+                    <TextBlock Text="Change Status:" FontSize="11" Foreground="#475569" FontWeight="SemiBold"/>
+                    <Grid Margin="0,4,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="8"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <ComboBox x:Name="cmbChangeStatus" Grid.Column="0">
+                            <ComboBoxItem Content="active"/>
+                            <ComboBoxItem Content="locked"/>
+                            <ComboBoxItem Content="disabled"/>
+                        </ComboBox>
+                        <Button Grid.Column="2" Content="Update Status" Padding="8,4" Background="#2563EB" Foreground="#FFFFFF" FontWeight="SemiBold" Click="BtnUpdateStatus_Click"/>
+                    </Grid>
+
+                    <!-- Roles Management Trigger -->
+                    <Button Content="Assign / Revoke Roles" Margin="0,0,0,8" Padding="10,6" Background="#475569" Foreground="#FFFFFF" FontWeight="SemiBold" Click="BtnOpenManageRoles_Click"/>
+
+                    <!-- Facility Assignment Trigger -->
+                    <Button Content="Assign Facility (Staff/Manager)" Padding="10,6" Background="#0D9488" Foreground="#FFFFFF" FontWeight="SemiBold" Click="BtnOpenAssignFacility_Click"/>
+                </StackPanel>
+
+                <!-- Right: Active Facility Assignments for Selected Employee -->
+                <Grid Grid.Column="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0" Margin="0,0,0,6">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Facility Assignments (for selected employee):" FontSize="13" FontWeight="Bold" Foreground="#0F172A" VerticalAlignment="Center"/>
+                        <Button Grid.Column="1" x:Name="btnTerminateAssignment" Content="Terminate Selected Assignment" Padding="8,4" Background="#EF4444" Foreground="#FFFFFF" FontWeight="SemiBold" Click="BtnTerminateAssignment_Click"/>
+                    </Grid>
+
+                    <DataGrid Grid.Row="1" x:Name="gridEmpAssignments" AutoGenerateColumns="False" IsReadOnly="True"
+                              SelectionMode="Single" SelectionUnit="FullRow" HeadersVisibility="Column"
+                              GridLinesVisibility="Horizontal">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="40"/>
+                            <DataGridTextColumn Header="Facility Code" Binding="{Binding FacilityCode}" Width="100"/>
+                            <DataGridTextColumn Header="Facility Name" Binding="{Binding FacilityName}" Width="180"/>
+                            <DataGridTextColumn Header="Role" Binding="{Binding AssignmentRole}" Width="110"/>
+                            <DataGridTextColumn Header="Period" Binding="{Binding DateRangeDisplay}" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

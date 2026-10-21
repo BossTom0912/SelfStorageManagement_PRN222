@@ -1,0 +1,113 @@
+@{
+    ViewData["Title"] = "Trang chủ - SelfStorage PRN222";
+}
+
+<div class="p-5 mb-4 bg-light rounded-3 shadow-sm border">
+    <div class="container-fluid py-3">
+        <h1 class="display-5 fw-bold text-primary">Hệ Thống Quản Lý Kho Tự Quản Self Storage</h1>
+        <p class="col-md-10 fs-5 text-secondary">
+            Nền tảng web hiện đại hóa trên nền .NET 8, kiến trúc 3 lớp phân tầng tách biệt (MvcWebApp &rarr; BusinessLogic &rarr; DataAccess &rarr; SQL Server).
+            Phục vụ quy trình thuê kho toàn diện từ tìm kiếm danh mục, giữ chỗ thông minh, thanh toán hợp đồng đến tiếp nhận quầy số hóa.
+        </p>
+        <div class="d-flex flex-wrap gap-2 mt-3">
+            <span class="badge bg-success p-2">.NET 8.0</span>
+            <span class="badge bg-primary p-2">ASP.NET Core MVC &amp; Razor Pages</span>
+            <span class="badge bg-info text-dark p-2">SignalR Realtime Hub</span>
+            <span class="badge bg-secondary p-2">Bootstrap 5.3.3 (Local)</span>
+            <span class="badge bg-dark p-2">jQuery 3.7.1 (Local)</span>
+            <span class="badge bg-warning text-dark p-2">HTTPS 7041 (No JWT Secret Needed)</span>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 py-2">
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0 status-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <span class="badge bg-primary fs-6 me-2">F1</span>
+                    <h5 class="card-title mb-0">Tài Khoản &amp; Định Danh</h5>
+                </div>
+                <p class="card-text text-muted">
+                    Hệ thống xác thực phiên dựa trên Cookie 5 phút, sliding expiration, hỗ trợ 5 vai trò hệ thống: Customer, Staff, Manager, Operations, Administrator.
+                </p>
+                <a href="/Account/Login" class="btn btn-sm btn-outline-primary mt-auto">Vào trang đăng nhập &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0 status-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <span class="badge bg-success fs-6 me-2">F2</span>
+                    <h5 class="card-title mb-0">Danh Mục &amp; Sơ Đồ Kho</h5>
+                </div>
+                <p class="card-text text-muted">
+                    Tra cứu cơ sở kho, kích thước, bảng giá, sức chứa khả dụng theo thời gian thực và quản trị danh mục ô kho theo phân tầng quản lý.
+                </p>
+                <a href="/Catalog" class="btn btn-sm btn-outline-success mt-auto">Xem danh mục &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0 status-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <span class="badge bg-warning text-dark fs-6 me-2">F3</span>
+                    <h5 class="card-title mb-0">Đặt Chỗ Trực Tuyến</h5>
+                </div>
+                <p class="card-text text-muted">
+                    Cơ chế giữ chỗ 15 phút với đếm ngược đồng bộ từ server, tự động giải phóng sức chứa khi hết hạn và xử lý tranh chấp an toàn.
+                </p>
+                <a href="/Reservations" class="btn btn-sm btn-outline-warning text-dark mt-auto">Quản lý đặt chỗ &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0 status-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <span class="badge bg-info text-dark fs-6 me-2">F4</span>
+                    <h5 class="card-title mb-0">Thanh Toán &amp; Hợp Đồng</h5>
+                </div>
+                <p class="card-text text-muted">
+                    Thanh toán hóa đơn qua cổng giả lập và VNPAY Sandbox, tạo hợp đồng thuê điện tử tự động với tính toán chu kỳ thanh toán chính xác.
+                </p>
+                <a href="/Payments" class="btn btn-sm btn-outline-info text-dark mt-auto">Cổng thanh toán &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0 status-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <span class="badge bg-danger fs-6 me-2">F5</span>
+                    <h5 class="card-title mb-0">Quầy Check-in &amp; Bàn Giao</h5>
+                </div>
+                <p class="card-text text-muted">
+                    Quy trình tiếp nhận tại quầy: xác thực giấy tờ tùy thân, chỉ định ô kho, biên bản kiểm tra và phát sinh mã PIN số hóa an toàn 1 lần.
+                </p>
+                <a href="/Staff/CheckIn" class="btn btn-sm btn-outline-danger mt-auto">Quầy tiếp nhận &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0 status-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <span class="badge bg-dark fs-6 me-2">Hub</span>
+                    <h5 class="card-title mb-0">Kênh Realtime SignalR</h5>
+                </div>
+                <p class="card-text text-muted">
+                    Endpoint <code>/storageUnitHub</code> hỗ trợ các sự kiện tạo, sửa, xóa ô kho, cập nhật sơ đồ và đồng bộ trạng thái ngay lập tức giữa nhiều phiên làm việc.
+                </p>
+                <span class="badge bg-light text-dark border">Endpoint: /storageUnitHub</span>
+            </div>
+        </div>
+    </div>
+</div>
