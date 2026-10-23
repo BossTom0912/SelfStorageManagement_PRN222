@@ -65,4 +65,11 @@ public interface IReservationRepository : IRepository<reservation>
         long reservationId,
         DateTimeOffset nowUtc,
         CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<reservation>> GetReservationsReportAsync(
+        DateOnly? startDate,
+        DateOnly? endDate,
+        IReadOnlyList<long>? facilityIds,
+        string? status,
+        CancellationToken cancellationToken = default);
 }

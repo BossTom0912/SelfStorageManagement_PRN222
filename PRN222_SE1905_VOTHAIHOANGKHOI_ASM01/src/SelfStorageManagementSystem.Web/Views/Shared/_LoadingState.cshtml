@@ -1,0 +1,18 @@
+@*
+    Partial hiển thị trạng thái đang xử lý (Loading / Processing State)
+    Bao gồm cả khung hiển thị inline cho từng khối giao diện và overlay toàn cục.
+*@
+
+@model string
+
+@{
+    var loadingMessage = !string.IsNullOrWhiteSpace(Model) ? Model : "Đang xử lý, vui lòng đợi...";
+}
+
+<!-- Inline Loading Spinner cho các khung dữ liệu -->
+<div class="loading-state-box text-center py-4 my-2 text-muted">
+    <div class="spinner-border text-primary mb-2" role="status" style="width: 2.2rem; height: 2.2rem;">
+        <span class="visually-hidden">Đang tải...</span>
+    </div>
+    <div class="small fw-semibold loading-text">@loadingMessage</div>
+</div>

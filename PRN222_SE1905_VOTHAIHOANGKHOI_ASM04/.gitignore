@@ -1,0 +1,29 @@
+# Visual Studio and build output
+.vs/
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+TestResults/
+
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+**/appsettings.Local.json
+**/appsettings.*.Local.json
+**/secrets.json
+*.pfx
+*.p12
+*.key
+
+# Local logs, backups, database files, and temporary files
+*.log
+*.tmp
+*.bak
+*.mdf
+*.ldf
+*.nupkg
+~$*

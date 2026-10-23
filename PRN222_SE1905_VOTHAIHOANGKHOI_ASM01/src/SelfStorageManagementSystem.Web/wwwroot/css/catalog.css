@@ -1,0 +1,324 @@
+/*
+ * SelfStorageManagementSystem.Web - Catalog & Floor Map Stylesheet
+ * Dành riêng cho phân hệ Danh mục kho & Sơ đồ mặt bằng ô kho (T07)
+ */
+
+/* === BỘ LỌC VÀ KHỐI ĐIỀU KHIỂN (Catalog Filters) === */
+.catalog-filter-card {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+.catalog-filter-card:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+}
+
+/* === THẺ CƠ SỞ KHO (Facility Cards) === */
+.facility-card {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.facility-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+    border-color: #cbd5e1;
+}
+
+.facility-card .card-header {
+    background-color: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 1rem 1.25rem;
+}
+
+.facility-card .card-body {
+    flex: 1 1 auto;
+    padding: 1.25rem;
+}
+
+.facility-card .card-footer {
+    background-color: #ffffff;
+    border-top: 1px solid #f1f5f9;
+    padding: 1rem 1.25rem;
+}
+
+/* === THẺ LOẠI KHO & BẢNG GIÁ (Unit Type Cards) === */
+.unit-type-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    transition: all 0.2s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.unit-type-card:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 8px 16px -4px rgba(59, 130, 246, 0.12);
+}
+
+.unit-type-card.out-of-capacity {
+    opacity: 0.85;
+    background-color: #f8fafc;
+    border-color: #e2e8f0;
+}
+
+.unit-type-price {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.unit-type-price-unit {
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: #64748b;
+}
+
+/* === SƠ ĐỒ MẶT BẰNG SVG (Floor Map Interactive Container) === */
+.floor-map-wrapper {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.floor-map-container {
+    background-color: #f8fafc;
+    background-image: 
+        linear-gradient(to right, rgba(226, 232, 240, 0.6) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(226, 232, 240, 0.6) 1px, transparent 1px);
+    background-size: 20px 20px;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.5rem;
+    min-height: 420px;
+    max-height: 650px;
+    position: relative;
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.floor-map-svg {
+    max-width: 100%;
+    height: auto;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.05));
+    user-select: none;
+}
+
+/* Kiểu dáng các ô kho trên sơ đồ theo Physical / Display Status */
+.unit-rect {
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+/* 1. Sẵn sàng / Khả dụng (Available) */
+.unit-rect.unit-status-available {
+    fill: #dcfce7;
+    stroke: #16a34a;
+    stroke-width: 1.5;
+}
+
+.unit-rect.unit-status-available:hover {
+    fill: #bbf7d0;
+    stroke: #15803d;
+    stroke-width: 2.5;
+    filter: drop-shadow(0 0 6px rgba(22, 163, 74, 0.4));
+}
+
+/* 2. Đang có hợp đồng thuê active (Occupied) */
+.unit-rect.unit-status-occupied {
+    fill: #f1f5f9;
+    stroke: #64748b;
+    stroke-width: 1.5;
+}
+
+.unit-rect.unit-status-occupied:hover {
+    fill: #e2e8f0;
+    stroke: #475569;
+    stroke-width: 2;
+}
+
+/* 3. Đang khóa trực tiếp vật lý (Reserved) */
+.unit-rect.unit-status-reserved {
+    fill: #ffedd5;
+    stroke: #ea580c;
+    stroke-width: 1.5;
+}
+
+.unit-rect.unit-status-reserved:hover {
+    fill: #fed7aa;
+    stroke: #c2410c;
+    stroke-width: 2;
+}
+
+/* 4. Đang bảo trì khóa đặt chỗ (Maintenance) */
+.unit-rect.unit-status-maintenance {
+    fill: #fef9c3;
+    stroke: #ca8a04;
+    stroke-width: 1.5;
+    stroke-dasharray: 4, 2;
+}
+
+.unit-rect.unit-status-maintenance:hover {
+    fill: #fef08a;
+    stroke: #a16207;
+    stroke-width: 2;
+}
+
+/* 5. Không khả dụng / Ngừng niêm yết (Unavailable) */
+.unit-rect.unit-status-unavailable {
+    fill: #f8fafc;
+    stroke: #cbd5e1;
+    stroke-width: 1.5;
+    stroke-dasharray: 2, 2;
+}
+
+/* Ô đang được chọn trên sơ đồ (Selected) */
+.unit-rect.selected {
+    stroke: #2563eb !important;
+    stroke-width: 3.5 !important;
+    filter: drop-shadow(0 0 8px rgba(37, 99, 235, 0.6)) !important;
+}
+
+/* Ô được highlight từ danh sách bảng ô */
+.unit-rect.highlight-flash {
+    animation: unitPulse 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes unitPulse {
+    0% {
+        stroke: #2563eb;
+        stroke-width: 2;
+    }
+    100% {
+        stroke: #1d4ed8;
+        stroke-width: 4;
+        filter: drop-shadow(0 0 10px rgba(37, 99, 235, 0.8));
+    }
+}
+
+/* Nhãn chữ tên ô trên sơ đồ */
+.unit-label {
+    fill: #0f172a;
+    font-family: inherit;
+    pointer-events: none;
+    user-select: none;
+}
+
+/* === BẢNG CHÚ GIẢI SƠ ĐỒ (Floor Map Legend) === */
+.floor-map-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+}
+
+.legend-item {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.85rem;
+    color: #475569;
+}
+
+.legend-color-box {
+    width: 18px;
+    height: 18px;
+    border-radius: 3px;
+    margin-right: 0.5rem;
+    display: inline-block;
+}
+
+.legend-box-available {
+    background-color: #dcfce7;
+    border: 1.5px solid #16a34a;
+}
+
+.legend-box-occupied {
+    background-color: #f1f5f9;
+    border: 1.5px solid #64748b;
+}
+
+.legend-box-reserved {
+    background-color: #ffedd5;
+    border: 1.5px solid #ea580c;
+}
+
+.legend-box-maintenance {
+    background-color: #fef9c3;
+    border: 1.5px dashed #ca8a04;
+}
+
+.legend-box-unavailable {
+    background-color: #f8fafc;
+    border: 1.5px dashed #cbd5e1;
+}
+
+/* === PANEL CHI TIẾT Ô TRÊN SƠ ĐỒ (Unit Detail Drawer / Card) === */
+.unit-detail-panel {
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.unit-detail-header {
+    background-color: #f8fafc;
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid #e2e8f0;
+    border-radius: 0.5rem 0.5rem 0 0;
+}
+
+/* === BẢNG DỮ LIỆU Ô ỨNG VIÊN (Candidate Units Table) === */
+.table-candidate-units th {
+    background-color: #f8fafc;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.table-candidate-units td {
+    vertical-align: middle;
+    font-size: 0.9rem;
+}
+
+.candidate-unit-row:hover {
+    background-color: #f8fafc;
+}
+
+.candidate-unit-row.selected-row {
+    background-color: #eff6ff !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .floor-map-container {
+        min-height: 320px;
+    }
+    
+    .floor-map-legend {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+}

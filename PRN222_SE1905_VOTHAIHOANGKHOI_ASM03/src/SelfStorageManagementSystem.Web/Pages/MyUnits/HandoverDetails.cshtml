@@ -1,0 +1,213 @@
+@page "/MyUnits/HandoverDetails"
+@model SelfStorageManagementSystem.Web.Pages.MyUnits.HandoverDetailsModel
+@using SelfStorageManagementSystem.Web.Helpers
+@{
+    ViewData["Title"] = $"Biên Bản Bàn Giao - {Model.Handover?.AgreementNo ?? "Hợp Đồng"}";
+    var h = Model.Handover;
+}
+
+<div class="container py-4">
+    <!-- Breadcrumb & Tiêu đề -->
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a asp-page="./Index">Ô kho của tôi</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Biên bản bàn giao @(h != null ? h.AgreementNo : "")</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+        <div>
+            <h1 class="h3 mb-1 text-primary fw-bold">Chi Tiết Bàn Giao Ô Kho</h1>
+            <p class="text-muted mb-0 small">Thông tin biên bản tiếp nhận, kiểm định an toàn và trạng thái mã truy cập số hóa</p>
+        </div>
+        <div>
+            <a asp-page="./Index" class="btn btn-outline-secondary">
+                &larr; Quay lại danh sách ô kho
+            </a>
+        </div>
+    </div>
+
+    @if (Model.IsNotFoundOrForbidden || h == null)
+    {
+        <div class="card border-0 shadow-sm text-center py-5">
+            <div class="card-body">
+                <div class="fs-1 text-danger mb-3">&#10008;</div>
+                <h5 class="fw-semibold text-secondary">Không Thể Truy Cập Biên Bản Bàn Giao</h5>
+                <p class="text-muted mb-4 small">
+                    @(Model.ErrorMessage ?? "Không tìm thấy thông tin bàn giao cho hợp đồng được yêu cầu hoặc hợp đồng không thuộc tài khoản của bạn.")
+                </p>
+                <a asp-page="./Index" class="btn btn-primary px-4 fw-semibold shadow-sm">
+                    Quay Lại Danh Sách Ô Kho
+                </a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            <!-- Cột trái: Thông tin hợp đồng, ô kho & kiểm định -->
+            <div class="col-lg-6">
+                <!-- Thẻ Thông tin hợp đồng & Ô kho -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0 fw-semibold text-secondary">
+                            Thông Tin Ô Kho &amp; Hợp Đồng
+                        </h5>
+                        @if (h.AgreementStatus == "active")
+                        {
+                            <span class="badge bg-success-subtle text-success border border-success px-2 py-1">Đang hoạt động</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary-subtle text-secondary border px-2 py-1">@h.AgreementStatus</span>
+                        }
+                    </div>
+                    <div class="card-body">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-5 text-muted small">Mã hợp đồng:</dt>
+                            <dd class="col-sm-7 fw-bold font-monospace text-primary">@h.AgreementNo</dd>
+
+                            <dt class="col-sm-5 text-muted small">Ô kho phân bổ:</dt>
+                            <dd class="col-sm-7 fw-bold fs-6">@(h.StorageUnitCode ?? "Chưa gán ô kho")</dd>
+
+                            <dt class="col-sm-5 text-muted small">Cơ sở lưu trữ:</dt>
+                            <dd class="col-sm-7 fw-semibold">@h.FacilityName</dd>
+
+                            <dt class="col-sm-5 text-muted small">Thời điểm check-in:</dt>
+                            <dd class="col-sm-7">@AppFormatters.FormatDateTime(h.CheckedInAt)</dd>
+                        </dl>
+                    </div>
+                </div>
+
+                <!-- Thẻ Biên bản kiểm định trước bàn giao -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white py-3 border-bottom">
+                        <h5 class="card-title mb-0 fw-semibold text-secondary">
+                            Kiểm Định Tình Trạng Ô Kho
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-5 text-muted small">Tình trạng tổng thể:</dt>
+                            <dd class="col-sm-7">
+                                @if (h.InspectionCondition == "good")
+                                {
+                                    <span class="badge bg-success">Tốt (good)</span>
+                                }
+                                else if (h.InspectionCondition == "acceptable")
+                                {
+                                    <span class="badge bg-info text-dark">Chấp nhận được (acceptable)</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">@(h.InspectionCondition ?? "Đã kiểm tra đạt yêu cầu")</span>
+                                }
+                            </dd>
+
+                            <dt class="col-sm-5 text-muted small">Tiêu chuẩn kiểm định:</dt>
+                            <dd class="col-sm-7 text-muted small">
+                                Đã nghiệm thu đầy đủ 4 hạng mục an toàn: Cửa kho, Khóa then cài, Đèn chiếu sáng và Vệ sinh sạch sẽ trước khi bàn giao.
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cột phải: Biên bản bàn giao & Trạng thái mã PIN truy cập -->
+            <div class="col-lg-6">
+                <!-- Thẻ Biên bản bàn giao -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white py-3 border-bottom">
+                        <h5 class="card-title mb-0 fw-semibold text-secondary">
+                            Biên Bản Bàn Giao
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-5 text-muted small">Mã biên bản:</dt>
+                            <dd class="col-sm-7 fw-semibold">#@h.HandoverRecordId</dd>
+
+                            <dt class="col-sm-5 text-muted small">Loại bàn giao:</dt>
+                            <dd class="col-sm-7">
+                                <span class="badge bg-light text-dark border">@h.HandoverType</span>
+                            </dd>
+
+                            <dt class="col-sm-5 text-muted small">Thời điểm bàn giao:</dt>
+                            <dd class="col-sm-7">@AppFormatters.FormatDateTime(h.HandedAt)</dd>
+
+                            <dt class="col-sm-5 text-muted small">Ghi chú bàn giao:</dt>
+                            <dd class="col-sm-7 text-muted">@(string.IsNullOrWhiteSpace(h.Notes) ? "Không có ghi chú thêm." : h.Notes)</dd>
+                        </dl>
+                    </div>
+                </div>
+
+                <!-- Thẻ Phương thức truy cập số hóa & Cảnh báo an toàn mã PIN -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white py-3 border-bottom">
+                        <h5 class="card-title mb-0 fw-semibold text-secondary">
+                            Phương Thức Truy Cập Số Hóa
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <dl class="row mb-3">
+                            <dt class="col-sm-5 text-muted small">Loại mã truy cập:</dt>
+                            <dd class="col-sm-7 fw-semibold">
+                                @(h.CredentialType == "pin_code" ? "Mã PIN điện tử số hóa" : (h.CredentialType ?? "Mã PIN điện tử"))
+                            </dd>
+
+                            <dt class="col-sm-5 text-muted small">Trạng thái mã:</dt>
+                            <dd class="col-sm-7">
+                                @if (h.CredentialStatus == "active")
+                                {
+                                    <span class="badge bg-success-subtle text-success border border-success px-2 py-1">Đang hoạt động</span>
+                                }
+                                else if (h.CredentialStatus == "revoked")
+                                {
+                                    <span class="badge bg-danger-subtle text-danger border border-danger px-2 py-1">Đã thu hồi</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">@(h.CredentialStatus ?? "Không xác định")</span>
+                                }
+                            </dd>
+
+                            <dt class="col-sm-5 text-muted small">Thời điểm cấp:</dt>
+                            <dd class="col-sm-7">@AppFormatters.FormatDateTime(h.CredentialIssuedAt)</dd>
+
+                            <dt class="col-sm-5 text-muted small">Thời hạn hiệu lực:</dt>
+                            <dd class="col-sm-7">
+                                @(h.CredentialExpiresAt.HasValue ? AppFormatters.FormatDateTime(h.CredentialExpiresAt.Value) : "Theo thời hạn hợp đồng")
+                            </dd>
+                        </dl>
+
+                        <!-- Khối lưu ý an toàn bảo mật mã PIN: Tuyệt đối KHÔNG có nút truy xuất plaintext PIN -->
+                        <div class="alert alert-warning border-warning shadow-sm mb-0 p-3" role="alert" id="pinSecurityNoticeBox">
+                            <div class="d-flex align-items-start">
+                                <span class="fs-4 me-3 text-warning">&#128274;</span>
+                                <div>
+                                    <div class="fw-bold mb-1">Chính sách bảo mật mã PIN mở khóa kho:</div>
+                                    <p class="small mb-2 text-dark">
+                                        Để bảo đảm an toàn tuyệt đối cho tài sản lưu kho của bạn, hệ thống tuân thủ nguyên tắc 
+                                        <strong>Bảo Mật Không Lưu Mã PIN (Zero-Persistence)</strong>:
+                                    </p>
+                                    <ul class="small mb-2 ps-3 text-dark">
+                                        <li>Mã PIN số hóa chỉ được hiển thị trực tiếp một lần duy nhất tại quầy tiếp nhận khi nhân viên bàn giao ô kho.</li>
+                                        <li>Hệ thống máy chủ không lưu trữ chuỗi số PIN ở dạng rõ và <strong>hoàn toàn không hỗ trợ tính năng xem lại mã PIN trực tuyến</strong>.</li>
+                                    </ul>
+                                    <div class="small fw-semibold text-danger">
+                                        &#9888; Nếu quên mã PIN: Quý khách vui lòng mang giấy tờ tùy thân (CCCD/Hộ chiếu) đến trực tiếp quầy tiếp nhận của cơ sở để được nhân viên xác minh và cấp lại mã PIN mới.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="~/js/my-units.js" asp-append-version="true"></script>
+}

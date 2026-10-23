@@ -34,4 +34,10 @@ public interface IReservationService
 
     Task<IReadOnlyList<ExpiredReservationHoldInfo>> ExpireOverdueHoldsDetailedAsync(
         CancellationToken cancellationToken = default);
+
+    Task<ReservationReportResponse> GetReservationReportAsync(
+        long actorUserId,
+        IReadOnlyList<string> actorRoles,
+        ReservationReportRequest request,
+        CancellationToken cancellationToken = default);
 }

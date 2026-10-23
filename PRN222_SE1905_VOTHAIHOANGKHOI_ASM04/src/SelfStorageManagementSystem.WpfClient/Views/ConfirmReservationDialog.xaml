@@ -1,0 +1,97 @@
+<Window x:Class="SelfStorageManagementSystem.WpfClient.Views.ConfirmReservationDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Xác nhận Đặt Chỗ - Giữ Chỗ Tạm Thời 15 Phút" Height="620" Width="650"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+        Background="#F8FAFC" FontFamily="Segoe UI">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#1E293B" CornerRadius="8" Padding="16" Margin="0,0,0,16">
+            <StackPanel>
+                <TextBlock Text="ĐẶT CHỖ &amp; KHÓA GIỮ SỨC CHỨA 15 PHÚT" Foreground="#FFFFFF" FontSize="16" FontWeight="Bold"/>
+                <TextBlock Text="Thực thi quy tắc BR-RSV-01 &amp; BR-RSV-03: Giữ chỗ theo Loại Kho tối đa 15 phút để chuẩn bị thanh toán." Foreground="#94A3B8" FontSize="12" Margin="0,4,0,0" TextWrapping="Wrap"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Content Area -->
+        <Border Grid.Row="1" Background="#FFFFFF" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="8" Padding="20">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <TextBlock Text="Thông tin đơn giữ chỗ" FontWeight="Bold" FontSize="14" Foreground="#0F172A" Margin="0,0,0,12"/>
+
+                    <!-- Grid Info -->
+                    <Grid Margin="0,0,0,16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Cơ sở kho:" Foreground="#64748B" Margin="0,4"/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" x:Name="txtFacilityName" Text="-" FontWeight="SemiBold" Foreground="#0F172A" Margin="0,4"/>
+
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Địa chỉ cơ sở:" Foreground="#64748B" Margin="0,4"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" x:Name="txtFacilityAddress" Text="-" Foreground="#334155" TextWrapping="Wrap" Margin="0,4"/>
+
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Loại kho đăng ký:" Foreground="#64748B" Margin="0,4"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" x:Name="txtUnitTypeName" Text="-" FontWeight="Bold" Foreground="#2563EB" Margin="0,4"/>
+
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Thời hạn thuê (BR-RSV-02):" Foreground="#64748B" Margin="0,4"/>
+                        <TextBlock Grid.Row="3" Grid.Column="1" x:Name="txtRentalDates" Text="-" FontWeight="SemiBold" Foreground="#0F172A" Margin="0,4"/>
+
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Giá thuê niêm yết:" Foreground="#64748B" Margin="0,4"/>
+                        <TextBlock Grid.Row="4" Grid.Column="1" x:Name="txtMonthlyRate" Text="-" FontWeight="SemiBold" Foreground="#0F172A" Margin="0,4"/>
+
+                        <TextBlock Grid.Row="5" Grid.Column="0" Text="Tiền đặt cọc (BR-FIN-01):" Foreground="#64748B" Margin="0,4"/>
+                        <TextBlock Grid.Row="5" Grid.Column="1" x:Name="txtDepositAmount" Text="-" FontWeight="SemiBold" Foreground="#0F172A" Margin="0,4"/>
+
+                        <TextBlock Grid.Row="6" Grid.Column="0" Text="Phí đặt chỗ ban đầu:" Foreground="#64748B" Margin="0,4"/>
+                        <TextBlock Grid.Row="6" Grid.Column="1" x:Name="txtBookingFee" Text="-" Foreground="#64748B" Margin="0,4"/>
+
+                        <TextBlock Grid.Row="7" Grid.Column="0" Text="Tổng tiền kỳ đầu (Quoted):" Foreground="#64748B" Margin="0,8,0,4"/>
+                        <TextBlock Grid.Row="7" Grid.Column="1" x:Name="txtQuotedTotal" Text="-" FontWeight="Bold" FontSize="16" Foreground="#059669" Margin="0,8,0,4"/>
+                    </Grid>
+
+                    <!-- Notice BR-RSV-03 -->
+                    <Border Background="#EFF6FF" BorderBrush="#BFDBFE" BorderThickness="1" CornerRadius="6" Padding="12" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="📌 Lưu ý về Phân bổ Ô kho (Quy tắc BR-RSV-03):" FontWeight="Bold" Foreground="#1E40AF" FontSize="12"/>
+                            <TextBlock Text="Bạn đang đặt chỗ theo Loại Kho. Sau khi hoàn tất giữ chỗ, sức chứa của loại kho sẽ được khóa giữ 15 phút. Mã ô kho cụ thể sẽ được Quản lý/Nhân viên bàn giao tại thời điểm Check-in (Chức năng 5)."
+                                       Foreground="#1E3A8A" FontSize="11" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+
+        <!-- Actions -->
+        <Grid Grid.Row="2" Margin="0,16,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock x:Name="lblProcessingStatus" Grid.Column="0" Text="" Foreground="#D97706" FontWeight="SemiBold" VerticalAlignment="Center"/>
+
+            <Button x:Name="btnCancel" Grid.Column="1" Content="Hủy bỏ" Padding="16,8" Background="#E2E8F0" Foreground="#334155" FontWeight="SemiBold" BorderThickness="0" Margin="0,0,12,0" Cursor="Hand" Click="BtnCancel_Click"/>
+            <Button x:Name="btnConfirm" Grid.Column="2" Content="Xác nhận Giữ Chỗ (15 phút)" Padding="20,8" Background="#2563EB" Foreground="#FFFFFF" FontWeight="Bold" BorderThickness="0" Cursor="Hand" Click="BtnConfirm_Click"/>
+        </Grid>
+    </Grid>
+</Window>

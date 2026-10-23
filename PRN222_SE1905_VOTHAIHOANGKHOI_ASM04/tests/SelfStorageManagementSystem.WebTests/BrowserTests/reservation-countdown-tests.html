@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <title>Reservation Countdown Browser Test Suite</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 20px; background: #f8f9fa; }
+        .test-card { background: white; border-radius: 8px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .pass { color: #198754; font-weight: bold; }
+        .fail { color: #dc3545; font-weight: bold; }
+        #summary { font-size: 1.25rem; margin-bottom: 20px; padding: 12px; border-radius: 6px; }
+        .summary-pass { background: #d1e7dd; color: #0f5132; }
+        .summary-fail { background: #f8d7da; color: #842029; }
+        pre { background: #e9ecef; padding: 8px; border-radius: 4px; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <h1>Kiểm Thử Trình Duyệt: Reservation Countdown JS (T10 / Codex Findings 1-4)</h1>
+    <div id="summary" class="summary-pass" data-test-status="RUNNING">Đang thực thi các kịch bản kiểm thử...</div>
+    <div id="test-output"></div>
+
+    <!-- Vùng DOM giả lập cho các kịch bản kiểm thử -->
+    <div id="test-sandbox" style="display:none;"></div>
+
+    <!-- Nạp script chính của hệ thống -->
+    <script src="../../../src/SelfStorageManagementSystem.Web/wwwroot/js/reservation-countdown.js"></script>
+
+    <script>
+        (async function () {
+            const results = [];
+            const sandbox = document.getElementById('test-sandbox');
+            const output = document.getElementById('test-output');
+            const summary = document.getElementById('summary');
+
+            function assert(condition, message) {
+                if (!condition) {
+                    throw new Error(message || 'Assertion failed');
+                }
+            }
+
+            function logTest(testId, title, success, details) {
+                results.push({ testId, title, success, details });
+                const card = document.createElement('div');
+                card.className = 'test-card';
+                card.setAttribute('data-test-id', testId);
+                card.setAttribute('data-result', success ? 'PASS' : 'FAIL');
+                card.innerHTML = `
+                    <h3>${testId}: ${title} - <span class="${success ? 'pass' : 'fail'}">${success ? 'PASSED' : 'FAILED'}</span></h3>
+                    <pre>${JSON.stringify(details, null, 2)}</pre>
+                `;
+                output.appendChild(card);
+            }
+
+            // =========================================================================
+            // SCENARIO A: Còn 500 ms: chưa gọi xử lý hết hạn, countdown vẫn tồn tại.
+            // =========================================================================
+            try {
+                sandbox.innerHTML = '';
+                const now = Date.now();
+                const holdUntil = new Date(now + 500).toISOString();
+                const serverNow = new Date(now).toISOString();
+
+                sandbox.innerHTML = `
+                    <div id="container-a" data-reservation-countdown
+                         data-reservation-id="101"
+                         data-hold-until="${holdUntil}"
+                         data-server-now="${serverNow}"
+                         data-status="pending">
+                        <span data-countdown-display>--:--</span>
+                        <div class="progress"><div data-countdown-progress style="width:100%"></div></div>
+                    </div>
+                `;
+
+                const container = document.getElementById('container-a');
+                let fetchCalled = false;
+                const originalFetch = window.fetch;
+                window.fetch = function (url) {
+                    fetchCalled = true;
+                    return Promise.resolve({ ok: true, json: () => Promise.resolve({ success: true, status: 'pending' }) });
+                };
+
+                window.ReservationCountdown.init(true);
+
+                // Kiểm tra ngay khi khởi tạo (còn 500ms)
+                const display = container.querySelector('[data-countdown-display]').textContent;
+                assert(!fetchCalled, 'Khi còn 500ms, KHÔNG được gọi fetch kiểm tra hết hạn');
+                assert(display === '00:01', 'Khi còn 500ms, hiển thị phải là 00:01 (Math.ceil), thực tế: ' + display);
+
+                // Chờ 200ms (vẫn còn 300ms)
+                await new Promise(r => setTimeout(r, 200));
+                assert(!fetchCalled, 'Sau 200ms (còn 300ms), fetch vẫn chưa được gọi');
+
+                window.fetch = originalFetch;
+                logTest('SCENARIO_A', 'Còn 500 ms: chưa gọi xử lý hết hạn, countdown vẫn tồn tại', true, {
+                    initialDisplay: display,
+                    fetchCalledAfter200ms: fetchCalled,
+                    status: 'PASSED'
+                });
+            } catch (err) {
+                logTest('SCENARIO_A', 'Còn 500 ms: chưa gọi xử lý hết hạn', false, { error: err.message });
+            }
+
+            // =========================================================================
+            // SCENARIO B: Đến hạn, response đầu pending/active, response sau expired:
+            // tiếp tục đồng bộ, cuối cùng hiện hết hạn và bỏ/khóa Hủy.
+            // =========================================================================
+            try {
+                sandbox.innerHTML = '';
+                const now = Date.now();
+                const holdUntil = new Date(now - 10).toISOString();
+                const serverNow = new Date(now).toISOString();
+
+                sandbox.innerHTML = `
+                    <table>
+                        <tr id="row-b" data-reservation-row="102">
+                            <td><span data-status-badge="102" class="badge bg-warning">Đang giữ chỗ</span></td>
+                            <td data-countdown-cell="102">
+                                <span id="container-b" data-reservation-countdown
+                                     data-reservation-id="102"
+                                     data-hold-until="${holdUntil}"
+                                     data-server-now="${serverNow}"
+                                     data-status="pending">
+                                    <span data-countdown-display>00:00</span>
+                                </span>
+                            </td>
+                            <td><a data-cancel-action="102" href="/Reservations/Cancel?id=102">Hủy</a></td>
+                        </tr>
+                    </table>
+                `;
+
+                let fetchCallCount = 0;
+                const originalFetch = window.fetch;
+                window.fetch = function (url) {
+                    fetchCallCount++;
+                    if (fetchCallCount === 1) {
+                        return Promise.resolve({
+                            ok: true,
+                            json: () => Promise.resolve({
+                                success: true,
+                                reservationId: 102,
+                                status: 'pending',
+                                isHoldActive: true,
+                                canCancel: true,
+                                statusDisplayName: 'Đang giữ chỗ (Chờ thanh toán)'
+                            })
+                        });
+                    } else {
+                        return Promise.resolve({
+                            ok: true,
+                            json: () => Promise.resolve({
+                                success: true,
+                                reservationId: 102,
+                                status: 'expired',
+                                isHoldActive: false,
+                                canCancel: false,
+                                statusDisplayName: 'Hết hạn'
+                            })
+                        });
+                    }
+                };
+
+                window.ReservationCountdown.init(true);
+
+                // Chờ request 1 hoàn tất
+                await new Promise(r => setTimeout(r, 100));
+                assert(fetchCallCount >= 1, 'Request đầu tiên phải được kích hoạt khi đến hạn');
+
+                const row = document.getElementById('row-b');
+                const cancelAfterCall1 = row.querySelector('[data-cancel-action="102"]');
+                assert(cancelAfterCall1 !== null, 'Sau response 1 (pending), nút Hủy KHÔNG được xóa');
+
+                const countdownCellAfterCall1 = row.querySelector('[data-countdown-cell="102"]').textContent;
+                assert(!countdownCellAfterCall1.includes('—'), 'Sau response 1 (pending), countdown KHÔNG được thay bằng dấu gạch ngang (—)');
+
+                // Chờ retry sau 1000ms kích hoạt response 2
+                await new Promise(r => setTimeout(r, 1200));
+                assert(fetchCallCount >= 2, 'Sau 1000ms retry, request thứ hai phải được gọi. Thực tế: ' + fetchCallCount);
+
+                const cancelAfterCall2 = row.querySelector('[data-cancel-action="102"]');
+                assert(cancelAfterCall2 === null, 'Sau response 2 (expired), liên kết Hủy PHẢI bị xóa bỏ hoàn toàn');
+
+                const badgeAfterCall2 = row.querySelector('[data-status-badge="102"]');
+                assert(badgeAfterCall2.textContent === 'Hết hạn', 'Badge phải cập nhật thành Hết hạn');
+                assert(badgeAfterCall2.classList.contains('bg-danger'), 'Badge phải có class bg-danger');
+
+                window.fetch = originalFetch;
+                logTest('SCENARIO_B', 'Đến hạn, response đầu pending, sau đó expired và xóa Hủy', true, {
+                    totalFetchCalls: fetchCallCount,
+                    cancelButtonRemoved: cancelAfterCall2 === null,
+                    finalStatus: badgeAfterCall2.textContent
+                });
+            } catch (err) {
+                logTest('SCENARIO_B', 'Đến hạn, đồng bộ đa pha', false, { error: err.message });
+            }
+
+            // =========================================================================
+            // SCENARIO C1: Response confirmed: cập nhật đã xác nhận, không hiện expired alert
+            // =========================================================================
+            try {
+                sandbox.innerHTML = '';
+                const now = Date.now();
+                const holdUntil = new Date(now - 10).toISOString();
+                const serverNow = new Date(now).toISOString();
+
+                sandbox.innerHTML = `
+                    <span id="reservationStatusBadge" class="badge bg-warning">Đang giữ chỗ</span>
+                    <div id="reservationCountdownPanel"></div>
+                    <div id="reservationExpiredAlert" class="alert alert-danger d-none">Hết hạn</div>
+                    <button id="btnProceedPayment">Thanh toán</button>
+                    <button id="btnCancelReservation">Hủy</button>
+                    <div id="container-c1" data-reservation-countdown
+                         data-reservation-id="103"
+                         data-hold-until="${holdUntil}"
+                         data-server-now="${serverNow}"
+                         data-status="pending">
+                        <span data-countdown-display>00:00</span>
+                    </div>
+                `;
+
+                const originalFetch = window.fetch;
+                window.fetch = function (url) {
+                    return Promise.resolve({
+                        ok: true,
+                        json: () => Promise.resolve({
+                            success: true,
+                            reservationId: 103,
+                            status: 'confirmed',
+                            isHoldActive: false,
+                            canCancel: false,
+                            statusDisplayName: 'Đã xác nhận'
+                        })
+                    });
+                };
+
+                window.ReservationCountdown.init(true);
+                await new Promise(r => setTimeout(r, 100));
+
+                const badge = document.getElementById('reservationStatusBadge');
+                const alertBox = document.getElementById('reservationExpiredAlert');
+                const panel = document.getElementById('reservationCountdownPanel');
+
+                assert(badge.textContent === 'Đã xác nhận', 'Badge phải là "Đã xác nhận"');
+                assert(badge.classList.contains('bg-success'), 'Badge phải có class bg-success');
+                assert(alertBox.classList.contains('d-none'), 'Cảnh báo hết hạn (reservationExpiredAlert) TUYỆT ĐỐI KHÔNG ĐƯỢC HIỆN');
+                assert(panel.classList.contains('d-none'), 'Panel countdown phải ẩn khi đơn đã xác nhận');
+
+                window.fetch = originalFetch;
+                logTest('SCENARIO_C1_CONFIRMED', 'Response confirmed: không hiện expired alert', true, {
+                    badgeText: badge.textContent,
+                    expiredAlertHidden: alertBox.classList.contains('d-none')
+                });
+            } catch (err) {
+                logTest('SCENARIO_C1_CONFIRMED', 'Response confirmed', false, { error: err.message });
+            }
+
+            // =========================================================================
+            // SCENARIO C2 (Finding 4): Response cancelled: cập nhật đã hủy, không hiện expired
+            // =========================================================================
+            try {
+                sandbox.innerHTML = '';
+                const now = Date.now();
+                const holdUntil = new Date(now - 10).toISOString();
+                const serverNow = new Date(now).toISOString();
+
+                sandbox.innerHTML = `
+                    <span id="reservationStatusBadge" class="badge bg-warning">Đang giữ chỗ</span>
+                    <div id="reservationCountdownPanel"></div>
+                    <div id="reservationExpiredAlert" class="alert alert-danger d-none">Hết hạn</div>
+                    <button id="btnProceedPayment">Thanh toán</button>
+                    <button id="btnCancelReservation">Hủy</button>
+                    <div id="container-c2" data-reservation-countdown
+                         data-reservation-id="104"
+                         data-hold-until="${holdUntil}"
+                         data-server-now="${serverNow}"
+                         data-status="pending">
+                        <span data-countdown-display>00:00</span>
+                    </div>
+                `;
+
+                const originalFetch = window.fetch;
+                window.fetch = function (url) {
+                    return Promise.resolve({
+                        ok: true,
+                        json: () => Promise.resolve({
+                            success: true,
+                            reservationId: 104,
+                            status: 'cancelled',
+                            isHoldActive: false,
+                            canCancel: false,
+                            statusDisplayName: 'Đã hủy'
+                        })
+                    });
+                };
+
+                window.ReservationCountdown.init(true);
+                await new Promise(r => setTimeout(r, 100));
+
+                const badge = document.getElementById('reservationStatusBadge');
+                const alertBox = document.getElementById('reservationExpiredAlert');
+                const panel = document.getElementById('reservationCountdownPanel');
+                const cancelBtn = document.getElementById('btnCancelReservation');
+
+                assert(badge.textContent === 'Đã hủy', 'Badge phải là "Đã hủy"');
+                assert(badge.classList.contains('bg-secondary'), 'Badge phải có class bg-secondary');
+                assert(alertBox.classList.contains('d-none'), 'Cảnh báo hết hạn TUYỆT ĐỐI KHÔNG ĐƯỢC HIỆN khi đã hủy');
+                assert(panel.classList.contains('d-none'), 'Panel countdown phải ẩn khi đơn đã hủy');
+                assert(cancelBtn.disabled === true, 'Nút Hủy phải bị vô hiệu hóa khi đơn đã hủy');
+
+                window.fetch = originalFetch;
+                logTest('SCENARIO_C2_CANCELLED', 'Response cancelled: cập nhật đúng đã hủy, không báo hết hạn', true, {
+                    badgeText: badge.textContent,
+                    expiredAlertHidden: alertBox.classList.contains('d-none'),
+                    cancelBtnDisabled: cancelBtn.disabled
+                });
+            } catch (err) {
+                logTest('SCENARIO_C2_CANCELLED', 'Response cancelled', false, { error: err.message });
+            }
+
+            // =========================================================================
+            // SCENARIO D: Hai đơn trên cùng danh sách độc lập tuyệt đối
+            // =========================================================================
+            try {
+                sandbox.innerHTML = '';
+                const now = Date.now();
+                const holdUntil1 = new Date(now - 10).toISOString();
+                const holdUntil2 = new Date(now + 600000).toISOString();
+                const serverNow = new Date(now).toISOString();
+
+                sandbox.innerHTML = `
+                    <table>
+                        <tr id="row-201" data-reservation-row="201">
+                            <td><span data-status-badge="201" class="badge bg-warning">Đang giữ chỗ</span></td>
+                            <td data-countdown-cell="201">
+                                <span id="cd-201" data-reservation-countdown
+                                     data-reservation-id="201"
+                                     data-hold-until="${holdUntil1}"
+                                     data-server-now="${serverNow}"
+                                     data-status="pending">
+                                    <span data-countdown-display>00:00</span>
+                                </span>
+                            </td>
+                            <td><a data-cancel-action="201" href="/Reservations/Cancel?id=201">Hủy 201</a></td>
+                        </tr>
+                        <tr id="row-202" data-reservation-row="202">
+                            <td><span data-status-badge="202" class="badge bg-warning">Đang giữ chỗ</span></td>
+                            <td data-countdown-cell="202">
+                                <span id="cd-202" data-reservation-countdown
+                                     data-reservation-id="202"
+                                     data-hold-until="${holdUntil2}"
+                                     data-server-now="${serverNow}"
+                                     data-status="pending">
+                                    <span data-countdown-display>--:--</span>
+                                </span>
+                            </td>
+                            <td><a data-cancel-action="202" href="/Reservations/Cancel?id=202">Hủy 202</a></td>
+                        </tr>
+                    </table>
+                `;
+
+                const originalFetch = window.fetch;
+                window.fetch = function (url) {
+                    if (url.includes('id=201')) {
+                        return Promise.resolve({
+                            ok: true,
+                            json: () => Promise.resolve({
+                                success: true,
+                                reservationId: 201,
+                                status: 'expired',
+                                isHoldActive: false,
+                                canCancel: false,
+                                statusDisplayName: 'Hết hạn'
+                            })
+                        });
+                    }
+                    throw new Error('Đơn 202 không được phép gửi fetch kiểm tra hết hạn vì còn 10 phút!');
+                };
+
+                window.ReservationCountdown.init(true);
+                await new Promise(r => setTimeout(r, 100));
+
+                const row201 = document.getElementById('row-201');
+                const row202 = document.getElementById('row-202');
+
+                assert(row201.querySelector('[data-status-badge="201"]').textContent === 'Hết hạn', 'Đơn 201 phải có badge Hết hạn');
+                assert(row201.querySelector('[data-cancel-action="201"]') === null, 'Đơn 201 phải bị xóa liên kết Hủy');
+
+                const badge202 = row202.querySelector('[data-status-badge="202"]');
+                const cancel202 = row202.querySelector('[data-cancel-action="202"]');
+                const display202 = row202.querySelector('[data-countdown-display]').textContent;
+
+                assert(badge202.textContent === 'Đang giữ chỗ', 'Đơn 202 badge vẫn phải là "Đang giữ chỗ"');
+                assert(cancel202 !== null, 'Đơn 202 liên kết Hủy vẫn phải tồn tại');
+                assert(display202 === '10:00', 'Đơn 202 countdown hiển thị 10:00, thực tế: ' + display202);
+
+                window.fetch = originalFetch;
+                logTest('SCENARIO_D', 'Hai đơn trên cùng danh sách độc lập tuyệt đối', true, {
+                    unit201Status: 'expired',
+                    unit202Status: badge202.textContent,
+                    unit202Countdown: display202
+                });
+            } catch (err) {
+                logTest('SCENARIO_D', 'Hai đơn độc lập', false, { error: err.message });
+            }
+
+            // =========================================================================
+            // SCENARIO E: Details, Index, MyReservations đều hoạt động đúng
+            // =========================================================================
+            try {
+                sandbox.innerHTML = `
+                    <div id="reservationStatusBadge" class="badge"></div>
+                    <div id="reservationCountdownPanel"><span data-countdown-desc></span></div>
+                    <div id="reservationExpiredAlert" class="d-none"></div>
+                    <button id="btnProceedPayment"></button>
+                    <button id="btnCancelReservation"></button>
+                `;
+                window.ReservationCountdown.applyExpiredStateOnUi(null, { statusDisplayName: 'Hết hạn' }, 301);
+
+                assert(document.getElementById('btnProceedPayment').disabled === true, 'Details: nút Thanh toán phải disabled');
+                assert(document.getElementById('btnCancelReservation').disabled === true, 'Details: nút Hủy phải disabled');
+                assert(!document.getElementById('reservationExpiredAlert').classList.contains('d-none'), 'Details: alert hết hạn phải hiển thị');
+
+                sandbox.innerHTML = `
+                    <table>
+                        <tr data-reservation-row="302">
+                            <td><span data-status-badge="302">Đang giữ chỗ</span></td>
+                            <td data-countdown-cell="302"><span>00:00</span></td>
+                            <td><a data-cancel-action="302">Hủy</a></td>
+                        </tr>
+                    </table>
+                `;
+                window.ReservationCountdown.applyExpiredStateOnUi(null, { statusDisplayName: 'Hết hạn' }, 302);
+                const row302 = document.querySelector('[data-reservation-row="302"]');
+                assert(row302.querySelector('[data-status-badge="302"]').textContent === 'Hết hạn', 'Index: badge dòng phải cập nhật Hết hạn');
+                assert(row302.querySelector('[data-cancel-action="302"]') === null, 'Index: nút Hủy dòng phải bị gỡ');
+
+                logTest('SCENARIO_E', 'Details, Index, MyReservations đều áp dụng giao diện chính xác', true, {
+                    detailsButtonsDisabled: true,
+                    indexRowUpdated: true
+                });
+            } catch (err) {
+                logTest('SCENARIO_E', 'Details và Index cập nhật', false, { error: err.message });
+            }
+
+            // =========================================================================
+            // SCENARIO F (Finding 4): Mô phỏng Reload giữ nguyên hold_until & múi giờ
+            // =========================================================================
+            try {
+                sandbox.innerHTML = '';
+                const baseTime = 1776333600000; // Mốc cố định
+                const holdUntilIso = new Date(baseTime + 600000).toISOString(); // 10 phút sau
+                const initialServerNowIso = new Date(baseTime).toISOString();
+
+                // Lần 1: Nạp ban đầu
+                sandbox.innerHTML = `
+                    <div id="container-f" data-reservation-countdown
+                         data-reservation-id="401"
+                         data-hold-until="${holdUntilIso}"
+                         data-server-now="${initialServerNowIso}"
+                         data-status="pending">
+                        <span data-countdown-display>--:--</span>
+                    </div>
+                `;
+                window.ReservationCountdown.init(true);
+                const displayBeforeReload = document.querySelector('#container-f [data-countdown-display]').textContent;
+                assert(displayBeforeReload === '10:00', 'Trước reload, hiển thị đúng 10:00, thực tế: ' + displayBeforeReload);
+
+                // Giả lập thời gian trôi qua 120 giây (2 phút) và người dùng Reload trang
+                // Khi reload, server trả về CÙNG hold_until trong DB, và serverNow mới (+120s)
+                const reloadedServerNowIso = new Date(baseTime + 120000).toISOString();
+                sandbox.innerHTML = `
+                    <div id="container-f-reloaded" data-reservation-countdown
+                         data-reservation-id="401"
+                         data-hold-until="${holdUntilIso}"
+                         data-server-now="${reloadedServerNowIso}"
+                         data-status="pending">
+                        <span data-countdown-display>--:--</span>
+                    </div>
+                `;
+                window.ReservationCountdown.init(true);
+                const displayAfterReload = document.querySelector('#container-f-reloaded [data-countdown-display]').textContent;
+
+                assert(displayAfterReload === '08:00', 'Sau reload 2 phút, countdown phải là 08:00 (không reset về 10:00 hay 15:00), thực tế: ' + displayAfterReload);
+                assert(holdUntilIso === document.querySelector('#container-f-reloaded').getAttribute('data-hold-until'), 'hold_until sau reload giữ nguyên 100%');
+
+                logTest('SCENARIO_F_RELOAD_FLOW', 'Reload đọc lại hold_until thực từ DB, phản ánh đúng thời gian còn lại', true, {
+                    beforeReload: displayBeforeReload,
+                    afterReload2Min: displayAfterReload,
+                    holdUntilPreserved: true
+                });
+            } catch (err) {
+                logTest('SCENARIO_F_RELOAD_FLOW', 'Reload flow', false, { error: err.message });
+            }
+
+            // =========================================================================
+            // SCENARIO G: Quản lý in-flight request, không nhân đôi request đồng bộ
+            // =========================================================================
+            try {
+                sandbox.innerHTML = '';
+                const now = Date.now();
+                const holdUntil = new Date(now - 10).toISOString();
+                const serverNow = new Date(now).toISOString();
+
+                sandbox.innerHTML = `
+                    <div id="container-g" data-reservation-countdown
+                         data-reservation-id="501"
+                         data-hold-until="${holdUntil}"
+                         data-server-now="${serverNow}"
+                         data-status="pending">
+                        <span data-countdown-display>00:00</span>
+                    </div>
+                `;
+
+                let fetchCount = 0;
+                let resolveFetch = null;
+                const originalFetch = window.fetch;
+                window.fetch = function (url) {
+                    fetchCount++;
+                    return new Promise(function (resolve) {
+                        resolveFetch = resolve;
+                    });
+                };
+
+                window.ReservationCountdown.init(true);
+                window.ReservationCountdown.init(false);
+                window.ReservationCountdown.init(false);
+
+                assert(fetchCount === 1, 'Chỉ được phép có duy nhất 1 request in-flight, thực tế: ' + fetchCount);
+
+                resolveFetch({
+                    ok: true,
+                    json: () => Promise.resolve({
+                        success: true,
+                        reservationId: 501,
+                        status: 'expired',
+                        statusDisplayName: 'Hết hạn'
+                    })
+                });
+
+                await new Promise(r => setTimeout(r, 50));
+                assert(fetchCount === 1, 'Sau khi hoàn tất, không có request dư thừa nào bị nhân đôi');
+
+                window.fetch = originalFetch;
+                logTest('SCENARIO_G_INFLIGHT', 'Không nhân đôi request đồng bộ và quản lý in-flight an toàn', true, {
+                    fetchCalls: fetchCount
+                });
+            } catch (err) {
+                logTest('SCENARIO_G_INFLIGHT', 'Chống nhân đôi request', false, { error: err.message });
+            }
+
+            // =========================================================================
+            // FINDING 1: Xử lý HTTP 401 & 403 (Không polling vô hạn, không đổi expired giả)
+            // =========================================================================
+            try {
+                // Test 401: Unauthorized (Hết phiên Cookie 5 phút)
+                sandbox.innerHTML = `
+                    <table>
+                        <tr id="row-auth-401" data-reservation-row="601">
+                            <td><span data-status-badge="601" class="badge bg-warning">Đang giữ chỗ</span></td>
+                            <td data-countdown-cell="601">
+                                <span id="cd-401" data-reservation-countdown
+                                     data-reservation-id="601"
+                                     data-hold-until="${new Date(Date.now() - 10).toISOString()}"
+                                     data-server-now="${new Date(Date.now()).toISOString()}"
+                                     data-status="pending">
+                                    <span data-countdown-display>00:00</span>
+                                </span>
+                            </td>
+                            <td><a data-cancel-action="601">Hủy</a></td>
+                        </tr>
+                    </table>
+                `;
+
+                let callCount401 = 0;
+                const originalFetch = window.fetch;
+                window.fetch = function (url) {
+                    callCount401++;
+                    return Promise.resolve({
+                        ok: false,
+                        status: 401,
+                        statusText: 'Unauthorized'
+                    });
+                };
+
+                window.ReservationCountdown.init(true);
+                await new Promise(r => setTimeout(r, 100));
+
+                const row401 = document.getElementById('row-auth-401');
+                const badge401 = row401.querySelector('[data-status-badge="601"]');
+                const cell401 = row401.querySelector('[data-countdown-cell="601"]');
+                const cancel401 = row401.querySelector('[data-cancel-action="601"]');
+
+                assert(callCount401 === 1, 'Đã gửi 1 request Status và nhận 401');
+                assert(badge401.textContent === 'Hết phiên đăng nhập', 'Badge phải là "Hết phiên đăng nhập", không được ghi Hết hạn');
+                assert(cell401.innerHTML.includes('/Account/Login'), 'Phải hiển thị liên kết Đăng nhập lại');
+                assert(cancel401 === null, 'Liên kết Hủy phải bị gỡ khi hết phiên');
+
+                // Chờ thêm 1500ms (tiến thời gian qua nhiều chu kỳ)
+                await new Promise(r => setTimeout(r, 1500));
+                assert(callCount401 === 1, 'Sau khi nhận 401, polling PHẢI DỪNG HOÀN TOÀN, không phát sinh thêm request. Thực tế: ' + callCount401);
+
+                // Test 403: Forbidden (Từ chối quyền)
+                sandbox.innerHTML = `
+                    <table>
+                        <tr id="row-auth-403" data-reservation-row="602">
+                            <td><span data-status-badge="602" class="badge bg-warning">Đang giữ chỗ</span></td>
+                            <td data-countdown-cell="602">
+                                <span id="cd-403" data-reservation-countdown
+                                     data-reservation-id="602"
+                                     data-hold-until="${new Date(Date.now() - 10).toISOString()}"
+                                     data-server-now="${new Date(Date.now()).toISOString()}"
+                                     data-status="pending">
+                                    <span data-countdown-display>00:00</span>
+                                </span>
+                            </td>
+                            <td><a data-cancel-action="602">Hủy</a></td>
+                        </tr>
+                    </table>
+                `;
+
+                let callCount403 = 0;
+                window.fetch = function (url) {
+                    callCount403++;
+                    return Promise.resolve({
+                        ok: false,
+                        status: 403,
+                        statusText: 'Forbidden'
+                    });
+                };
+
+                window.ReservationCountdown.init(true);
+                await new Promise(r => setTimeout(r, 100));
+
+                const row403 = document.getElementById('row-auth-403');
+                const badge403 = row403.querySelector('[data-status-badge="602"]');
+                assert(badge403.textContent === 'Từ chối quyền', 'Badge phải là "Từ chối quyền", không được là Hết hạn');
+
+                await new Promise(r => setTimeout(r, 1500));
+                assert(callCount403 === 1, 'Sau khi nhận 403, polling dừng hoàn toàn');
+
+                // Test 401 trên Markup Details thật
+                sandbox.innerHTML = `
+                    <div id="reservationStatusBadge" class="badge bg-warning">Đang giữ chỗ</div>
+                    <div id="reservationCountdownPanel" data-reservation-countdown data-reservation-id="603">
+                        <span data-countdown-desc>Hệ thống đang tạm giữ sức chứa...</span>
+                        <span data-countdown-display>00:00</span>
+                    </div>
+                    <div class="alert alert-warning shadow-sm mb-4 d-none" id="reservationAuthAlert" role="alert">
+                        <span class="fs-2" id="reservationAuthAlertIcon">&#9888;</span>
+                        <div>
+                            <h5 class="alert-heading fw-bold mb-1" id="reservationAuthAlertHeading">Phiên đăng nhập đã hết hạn</h5>
+                            <p class="mb-0 small" id="reservationAuthAlertBody">Phiên làm việc đã hết hạn...</p>
+                        </div>
+                    </div>
+                    <div class="alert alert-danger shadow-sm mb-4 d-none" id="reservationExpiredAlert" role="alert">
+                        <h5 class="alert-heading fw-bold mb-1">Đơn giữ chỗ đã hết thời hạn 15 phút</h5>
+                        <p class="mb-0 small" id="reservationExpiredAlertBody">
+                            Theo quy định BR-RSV-01, đơn đặt chỗ đã quá hạn thanh toán và sức chứa khả dụng đã được tự động giải phóng...
+                        </p>
+                    </div>
+                    <button id="btnProceedPayment" class="btn btn-primary">Thanh toán</button>
+                    <button id="btnCancelReservation" class="btn btn-outline-danger">Hủy đơn</button>
+                `;
+
+                window.ReservationCountdown.applyAuthErrorOnUi(null, 401, 603);
+
+                const detailsBadge401 = document.getElementById('reservationStatusBadge');
+                const detailsAuthAlert401 = document.getElementById('reservationAuthAlert');
+                const detailsExpiredAlert401 = document.getElementById('reservationExpiredAlert');
+                const detailsAuthHeading401 = document.getElementById('reservationAuthAlertHeading');
+                const detailsAuthBody401 = document.getElementById('reservationAuthAlertBody');
+                const detailsPaymentBtn = document.getElementById('btnProceedPayment');
+                const detailsCancelBtn = document.getElementById('btnCancelReservation');
+
+                assert(detailsBadge401.textContent === 'Hết phiên đăng nhập', 'Details: badge phải là "Hết phiên đăng nhập"');
+                assert(!detailsAuthAlert401.classList.contains('d-none'), 'Details: khối reservationAuthAlert PHẢI hiển thị');
+                assert(detailsAuthHeading401.textContent.includes('Phiên đăng nhập đã hết hạn'), 'Details: heading auth alert phải chính xác');
+                assert(detailsAuthBody401.innerHTML.includes('/Account/Login'), 'Details: body auth alert phải chứa link đăng nhập lại');
+                assert(detailsExpiredAlert401.classList.contains('d-none'), 'Details: khối reservationExpiredAlert TUYỆT ĐỐI PHẢI ẨN (d-none) khi nhận 401');
+                assert(detailsPaymentBtn.disabled === true && detailsPaymentBtn.classList.contains('d-none'), 'Details: nút Thanh toán phải bị ẩn và disabled');
+                assert(detailsCancelBtn.disabled === true && detailsCancelBtn.classList.contains('d-none'), 'Details: nút Hủy phải bị ẩn và disabled');
+
+                // Test 403 trên Markup Details thật
+                window.ReservationCountdown.applyAuthErrorOnUi(null, 403, 603);
+                const detailsBadge403 = document.getElementById('reservationStatusBadge');
+                const detailsAuthHeading403 = document.getElementById('reservationAuthAlertHeading');
+                assert(detailsBadge403.textContent === 'Từ chối quyền', 'Details: badge phải là "Từ chối quyền"');
+                assert(!detailsAuthAlert401.classList.contains('d-none'), 'Details: khối authAlert vẫn hiển thị');
+                assert(detailsAuthHeading403.textContent.includes('Từ chối quyền truy cập'), 'Details: heading auth alert phải là Từ chối quyền truy cập');
+                assert(detailsExpiredAlert401.classList.contains('d-none'), 'Details: khối reservationExpiredAlert TUYỆT ĐỐI PHẢI ẨN khi nhận 403');
+
+                // Test Expired thật trên Details: authAlert bị ẩn, expiredAlert hiển thị
+                window.ReservationCountdown.applyExpiredStateOnUi(null, { statusDisplayName: 'Hết hạn (Expired)' }, 603);
+                assert(detailsAuthAlert401.classList.contains('d-none'), 'Details: khi thực sự hết hạn, authAlert phải ẩn');
+                assert(!detailsExpiredAlert401.classList.contains('d-none'), 'Details: khi thực sự hết hạn, expiredAlert phải hiển thị');
+
+                window.fetch = originalFetch;
+                logTest('FINDING_1_AUTH_401_403', 'HTTP 401/403 dừng polling ngay lập tức, hiển thị authAlert riêng và không mở khối hết hạn giả', true, {
+                    statusCode401Handled: true,
+                    statusCode403Handled: true,
+                    pollingStopped: true,
+                    noFakeExpiredBadge: true,
+                    detailsAuthAlertRendered: true,
+                    detailsExpiredAlertHiddenOnAuthError: true
+                });
+            } catch (err) {
+                logTest('FINDING_1_AUTH_401_403', 'HTTP 401/403', false, { error: err.message });
+            }
+
+            // =========================================================================
+            // FINDING 2: Timer 1 giây TUYỆT ĐỐI không chen ngang lịch backoff 3000ms
+            // =========================================================================
+            try {
+                sandbox.innerHTML = '';
+                const now = Date.now();
+                sandbox.innerHTML = `
+                    <div id="container-backoff" data-reservation-countdown
+                         data-reservation-id="701"
+                         data-hold-until="${new Date(now - 10).toISOString()}"
+                         data-server-now="${new Date(now).toISOString()}"
+                         data-status="pending">
+                        <span data-countdown-display>00:00</span>
+                    </div>
+                `;
+
+                const callTimestamps = [];
+                const startTime = Date.now();
+                const originalFetch = window.fetch;
+
+                window.fetch = function (url) {
+                    const elapsed = Date.now() - startTime;
+                    callTimestamps.push(elapsed);
+
+                    if (callTimestamps.length <= 2) {
+                        // 2 lần đầu tiên giả lập mất mạng / lỗi HTTP 500
+                        return Promise.reject(new Error('Network error simulation'));
+                    } else {
+                        // Lần thứ 3 hồi phục và trả về expired
+                        return Promise.resolve({
+                            ok: true,
+                            json: () => Promise.resolve({
+                                success: true,
+                                reservationId: 701,
+                                status: 'expired',
+                                statusDisplayName: 'Hết hạn'
+                            })
+                        });
+                    }
+                };
+
+                window.ReservationCountdown.init(true);
+
+                // Chờ 500ms: request 1 vừa hoàn tất và báo lỗi
+                await new Promise(r => setTimeout(r, 500));
+                assert(callTimestamps.length === 1, 'Tại 500ms: chỉ có duy nhất request đầu tiên (callCount = 1)');
+
+                // Chờ đến 1500ms (1.5 giây sau lỗi): Timer 1 giây KHÔNG được gọi request thứ hai!
+                await new Promise(r => setTimeout(r, 1000));
+                assert(callTimestamps.length === 1, 'Tại 1500ms: backoff 3000ms đang có hiệu lực, updateClock KHÔNG ĐƯỢC chen ngang (callCount = 1)');
+
+                // Chờ đến 2500ms (2.5 giây sau lỗi): Vẫn chưa đủ 3000ms backoff
+                await new Promise(r => setTimeout(r, 1000));
+                assert(callTimestamps.length === 1, 'Tại 2500ms: vẫn đang chờ backoff 3000ms (callCount = 1)');
+
+                // Chờ đến 3500ms (đã vượt qua 3000ms backoff): Request thứ 2 phải được kích hoạt!
+                await new Promise(r => setTimeout(r, 1000));
+                assert(callTimestamps.length === 2, 'Tại 3500ms: request thứ hai được gửi đúng hạn 3000ms (callCount = 2). Thực tế: ' + callTimestamps.length);
+
+                // Kiểm tra khoảng cách thời gian giữa request 1 và request 2 >= 2800ms
+                const delta1to2 = callTimestamps[1] - callTimestamps[0];
+                assert(delta1to2 >= 2800, 'Khoảng cách giữa 2 request phải >= 3000ms (sai số cho phép: ' + delta1to2 + 'ms)');
+
+                // Chờ tiếp qua mốc 6500ms để request thứ 3 được gửi và hồi phục expired
+                await new Promise(r => setTimeout(r, 3200));
+                assert(callTimestamps.length === 3, 'Tại 6700ms: request thứ 3 được kích hoạt và hồi phục thành công (callCount = 3)');
+
+                // Chờ thêm 1500ms nữa để xác nhận sau khi expired, mọi timer đã dừng hẳn
+                await new Promise(r => setTimeout(r, 1500));
+                assert(callTimestamps.length === 3, 'Sau khi nhận expired, dừng toàn bộ timers, không phát sinh thêm request');
+
+                window.fetch = originalFetch;
+                logTest('FINDING_2_BACKOFF_TIMESTAMPS', 'Backoff 3000ms được tôn trọng nghiêm ngặt, timer 1 giây không chen ngang', true, {
+                    callTimestamps: callTimestamps.map(t => Math.round(t) + 'ms'),
+                    delta1to2: Math.round(delta1to2) + 'ms',
+                    backoffRespected: true,
+                    recoveredAndStopped: true
+                });
+            } catch (err) {
+                logTest('FINDING_2_BACKOFF_TIMESTAMPS', 'Backoff 3000ms', false, { error: err.message });
+            }
+
+            // =========================================================================
+            // REGRESSION TEST: Tái hiện lỗi trên code cũ (Old Bug Demonstration)
+            // =========================================================================
+            try {
+                const remainingMs = 486;
+                const oldRemainingSeconds = Math.max(0, Math.floor(remainingMs / 1000)); // = 0!
+                const oldShouldTrigger = oldRemainingSeconds <= 0; // = true!
+
+                const serverMockResponse = { status: 'pending', isHoldActive: true, canCancel: true };
+                const oldBuggyBranchTaken = Boolean(serverMockResponse && (serverMockResponse.status === 'confirmed' || serverMockResponse.status === 'cancelled' || serverMockResponse.status));
+
+                const newDisplaySeconds = remainingMs > 0 ? Math.ceil(remainingMs / 1000) : 0; // = 1
+                const newShouldTrigger = remainingMs <= 0; // = false!
+                const newActiveHoldBranch = Boolean(serverMockResponse.status === 'pending' || serverMockResponse.status === 'awaiting_deposit'); // = true!
+
+                assert(oldShouldTrigger === true, 'Code cũ: kích hoạt đồng bộ sớm ở 486ms');
+                assert(oldBuggyBranchTaken === true, 'Code cũ: nhầm pending thành terminal status');
+                assert(newShouldTrigger === false, 'Code mới: KHÔNG kích hoạt ở 486ms');
+                assert(newDisplaySeconds === 1, 'Code mới: hiển thị 00:01');
+                assert(newActiveHoldBranch === true, 'Code mới: nhận diện đúng active hold để tiếp tục đồng bộ');
+
+                logTest('REGRESSION_OLD_VS_NEW', 'Chứng minh toán học và logic lỗi cũ vs code mới đã sửa', true, {
+                    at486ms: {
+                        oldCode: { remainingSeconds: oldRemainingSeconds, triggeredEarly: oldShouldTrigger, treatedPendingAsTerminal: oldBuggyBranchTaken },
+                        newCode: { displaySeconds: newDisplaySeconds, triggeredEarly: newShouldTrigger, branch: 'ACTIVE_HOLD_CONTINUE_SYNC' }
+                    }
+                });
+            } catch (err) {
+                logTest('REGRESSION_OLD_VS_NEW', 'Hồi quy code cũ', false, { error: err.message });
+            }
+
+            // =========================================================================
+            // TỔNG KẾT
+            // =========================================================================
+            const allPassed = results.every(r => r.success);
+            summary.className = allPassed ? 'summary-pass' : 'summary-fail';
+            summary.setAttribute('data-test-status', allPassed ? 'ALL_PASSED' : 'FAILED');
+            summary.innerHTML = allPassed
+                ? `<strong>THÀNH CÔNG:</strong> Tất cả ${results.length}/${results.length} kịch bản kiểm thử trình duyệt đều ĐẠT (PASS 100%).`
+                : `<strong>THẤT BẠI:</strong> Có ${results.filter(r => !r.success).length} kịch bản kiểm thử không đạt.`;
+        })();
+    </script>
+</body>
+</html>

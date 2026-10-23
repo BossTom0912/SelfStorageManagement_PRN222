@@ -1,0 +1,3 @@
+@echo off
+echo [PRN222] Starting ASM01 Web Application...
+dotnet run --project src/SelfStorageManagementSystem.Web
