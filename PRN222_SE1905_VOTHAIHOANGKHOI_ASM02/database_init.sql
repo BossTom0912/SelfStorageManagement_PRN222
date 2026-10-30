@@ -1820,6 +1820,64 @@ SET IDENTITY_INSERT [dbo].[System.UserAccount] OFF
 GO
 
 
+/* ===== Rich Demo Data for PRN222 Presentation ===== */
+SET QUOTED_IDENTIFIER ON;
+SET ANSI_NULLS ON;
+
+-- Unit types: 1 = S, 2 = M, 3 = M-CC
+IF NOT EXISTS (SELECT 1 FROM core.storage_units WHERE unit_code = 'A-103' AND facility_id = 1)
+    INSERT INTO core.storage_units (facility_id, unit_type_id, area_id, unit_code, floor_label, zone_label, physical_status, is_listed, notes)
+    VALUES (1, 1, 3, 'A-103', '1', 'A', 'available', 1, N'Kho tiêu chuẩn, sạch sẽ');
+
+IF NOT EXISTS (SELECT 1 FROM core.storage_units WHERE unit_code = 'A-104' AND facility_id = 1)
+    INSERT INTO core.storage_units (facility_id, unit_type_id, area_id, unit_code, floor_label, zone_label, physical_status, is_listed, notes)
+    VALUES (1, 2, 3, 'A-104', '1', 'A', 'reserved', 1, N'Đã có khách đặt chỗ');
+
+IF NOT EXISTS (SELECT 1 FROM core.storage_units WHERE unit_code = 'A-106' AND facility_id = 1)
+    INSERT INTO core.storage_units (facility_id, unit_type_id, area_id, unit_code, floor_label, zone_label, physical_status, is_listed, notes)
+    VALUES (1, 2, 3, 'A-106', '1', 'A', 'occupied', 1, N'Đang cho thuê');
+
+IF NOT EXISTS (SELECT 1 FROM core.storage_units WHERE unit_code = 'A-107' AND facility_id = 1)
+    INSERT INTO core.storage_units (facility_id, unit_type_id, area_id, unit_code, floor_label, zone_label, physical_status, is_listed, notes)
+    VALUES (1, 3, 3, 'A-107', '1', 'A', 'occupied', 1, N'Kho máy lạnh đang cho thuê');
+
+IF NOT EXISTS (SELECT 1 FROM core.storage_units WHERE unit_code = 'A-109' AND facility_id = 1)
+    INSERT INTO core.storage_units (facility_id, unit_type_id, area_id, unit_code, floor_label, zone_label, physical_status, is_listed, notes)
+    VALUES (1, 1, 3, 'A-109', '1', 'A', 'maintenance', 1, N'Bảo trì ổ khóa định kỳ');
+
+IF NOT EXISTS (SELECT 1 FROM core.storage_units WHERE unit_code = 'A-110' AND facility_id = 1)
+    INSERT INTO core.storage_units (facility_id, unit_type_id, area_id, unit_code, floor_label, zone_label, physical_status, is_listed, notes)
+    VALUES (1, 2, 3, 'A-110', '1', 'A', 'pending_inspection', 1, N'Chờ kiểm định sau trả kho');
+
+IF NOT EXISTS (SELECT 1 FROM core.storage_units WHERE unit_code = 'A-201' AND facility_id = 1)
+    INSERT INTO core.storage_units (facility_id, unit_type_id, area_id, unit_code, floor_label, zone_label, physical_status, is_listed, notes)
+    VALUES (1, 1, 3, 'A-201', '2', 'B', 'available', 1, N'Tầng 2 gần thang máy');
+
+IF NOT EXISTS (SELECT 1 FROM core.storage_units WHERE unit_code = 'A-202' AND facility_id = 1)
+    INSERT INTO core.storage_units (facility_id, unit_type_id, area_id, unit_code, floor_label, zone_label, physical_status, is_listed, notes)
+    VALUES (1, 2, 3, 'A-202', '2', 'B', 'available', 1, N'Tầng 2 ô rộng');
+
+IF NOT EXISTS (SELECT 1 FROM core.storage_units WHERE unit_code = 'A-203' AND facility_id = 1)
+    INSERT INTO core.storage_units (facility_id, unit_type_id, area_id, unit_code, floor_label, zone_label, physical_status, is_listed, notes)
+    VALUES (1, 3, 3, 'A-203', '2', 'B', 'occupied', 1, N'Tầng 2 kho máy lạnh');
+
+IF NOT EXISTS (SELECT 1 FROM core.storage_units WHERE unit_code = 'A-204' AND facility_id = 1)
+    INSERT INTO core.storage_units (facility_id, unit_type_id, area_id, unit_code, floor_label, zone_label, physical_status, is_listed, notes)
+    VALUES (1, 1, 3, 'A-204', '2', 'B', 'available', 1, N'Tầng 2 ô tiêu chuẩn');
+
+IF NOT EXISTS (SELECT 1 FROM core.storage_units WHERE unit_code = 'HN-102' AND facility_id = 2)
+    INSERT INTO core.storage_units (facility_id, unit_type_id, area_id, unit_code, floor_label, zone_label, physical_status, is_listed, notes)
+    VALUES (2, 1, 5, 'HN-102', '1', 'A', 'occupied', 1, N'Hà Nội đang thuê');
+
+IF NOT EXISTS (SELECT 1 FROM core.storage_units WHERE unit_code = 'HN-103' AND facility_id = 2)
+    INSERT INTO core.storage_units (facility_id, unit_type_id, area_id, unit_code, floor_label, zone_label, physical_status, is_listed, notes)
+    VALUES (2, 2, 5, 'HN-103', '1', 'A', 'maintenance', 1, N'Hà Nội sửa đèn');
+
+IF NOT EXISTS (SELECT 1 FROM core.storage_units WHERE unit_code = 'HN-104' AND facility_id = 2)
+    INSERT INTO core.storage_units (facility_id, unit_type_id, area_id, unit_code, floor_label, zone_label, physical_status, is_listed, notes)
+    VALUES (2, 3, 5, 'HN-104', '1', 'A', 'available', 1, N'Hà Nội kho máy lạnh');
+
+GO
 /* ===== Demo Accounts for PRN222 Grading ===== */
 SET QUOTED_IDENTIFIER ON;
 SET ANSI_NULLS ON;
