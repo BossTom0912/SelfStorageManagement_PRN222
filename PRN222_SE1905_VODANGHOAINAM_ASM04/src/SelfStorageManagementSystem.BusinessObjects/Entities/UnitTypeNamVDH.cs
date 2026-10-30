@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace SelfStorageManagementSystem.DataAccess.Entities;
 
-public partial class UnitTypeHaTDT
+public partial class UnitTypeNamVDH
 {
-    public long UnitTypeHaTDTId { get; set; }
+    public long UnitTypeNamVDHId { get; set; }
 
     public string code { get; set; } = null!;
 
