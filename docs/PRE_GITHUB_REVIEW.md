@@ -1,4 +1,4 @@
-# Pre-GitHub Review
+﻿# Pre-GitHub Review
 
 Review date: 2026-09-25. Scope: feature-neutral infrastructure, source organization,
 Database First integrity, setup, and readiness for an initial GitHub upload.
@@ -79,7 +79,7 @@ Read-only SQL catalog queries and the EF model verified:
 
 All 57 primary-key column orders were compared with SQL Server. The three
 composite keys are `(payment_id, invoice_id)`, `(shift_id, employee_id)`, and
-`(user_id, role_id)`. `UnitTypeHaTDT` and `StorageUnitHaTDT` remain `HasNoKey`
+`(user_id, role_id)`. `UnitTypeKhoiVTH` and `StorageUnitKhoiVTH` remain `HasNoKey`
 and `ToView` mappings in `core`.
 
 The live database has 178 check constraints, 47 bigint identity columns, and one

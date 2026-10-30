@@ -1751,28 +1751,28 @@ SET IDENTITY_INSERT [core].[access_points] OFF;
 /*
   The PostgreSQL project renamed these two base tables in migration 070 and
   retained old names as compatibility views. Here the normalized table names
-  remain the SQL Server base tables; these views expose the required HaTDT
+  remain the SQL Server base tables; these views expose the required KhoiVTH
   contract without breaking all foreign keys and business-rule triggers.
 */
 USE [SelfStoragePRN222];
 GO
 
-CREATE OR ALTER VIEW [core].[UnitTypeHaTDT]
+CREATE OR ALTER VIEW [core].[UnitTypeKhoiVTH]
 AS
 SELECT
-    id AS UnitTypeHaTDTId,
+    id AS UnitTypeKhoiVTHId,
     code, name, width_m, length_m, height_m, area_m2, volume_m3,
     climate_controlled, max_weight_kg, description, is_active,
     created_at, updated_at
 FROM [core].[unit_types];
 GO
 
-CREATE OR ALTER VIEW [core].[StorageUnitHaTDT]
+CREATE OR ALTER VIEW [core].[StorageUnitKhoiVTH]
 AS
 SELECT
-    id AS StorageUnitHaTDTId,
+    id AS StorageUnitKhoiVTHId,
     facility_id,
-    unit_type_id AS UnitTypeHaTDTId,
+    unit_type_id AS UnitTypeKhoiVTHId,
     area_id, unit_code, floor_label, zone_label, physical_status,
     is_listed, notes, created_at, updated_at
 FROM [core].[storage_units];

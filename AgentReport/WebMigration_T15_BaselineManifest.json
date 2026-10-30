@@ -656,7 +656,7 @@
       "sha256": "2EB5AC47AA7B49A04F5CD407E76C2E28023C86533216FF4968EA09BDEDFF42EB"
     },
     {
-      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/StorageUnitHaTDT.cs",
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/StorageUnitKhoiVTH.cs",
       "sha256": "D860E55BD5EB8DA1368363E93787BF7D4D8DEBAFA0665E0901D2C74BC56A04E8"
     },
     {
@@ -704,7 +704,7 @@
       "sha256": "8EEE043AEE51E7B48E19269D967C7F44DF4B5C77087221F8707341385011A2D7"
     },
     {
-      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/UnitTypeHaTDT.cs",
+      "path": "src/SelfStorageManagementSystem.DataAccess/Entities/UnitTypeKhoiVTH.cs",
       "sha256": "23CEC50A85736ABBC02922A688C91A2397A58885EA7E50D3ABCC1D921171D4AA"
     },
     {

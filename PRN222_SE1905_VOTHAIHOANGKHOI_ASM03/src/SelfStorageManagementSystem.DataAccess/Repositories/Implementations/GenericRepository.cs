@@ -1,4 +1,4 @@
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using SelfStorageManagementSystem.DataAccess.Context;
 using SelfStorageManagementSystem.DataAccess.Repositories.Interfaces;
@@ -8,7 +8,7 @@ namespace SelfStorageManagementSystem.DataAccess.Repositories.Implementations;
 /// <summary>
 /// Generic repository implementation providing persistence operations via EF Core.
 /// Designed to support entities with single PKs as well as composite PKs via object[] keyValues.
-/// Keyless views (e.g. UnitTypeHaTDT, StorageUnitHaTDT) do not support GetByIdAsync, Update, or Delete.
+/// Keyless views (e.g. UnitTypeKhoiVTH, StorageUnitKhoiVTH) do not support GetByIdAsync, Update, or Delete.
 /// </summary>
 /// <typeparam name="T">Entity class type</typeparam>
 public class GenericRepository<T> : IRepository<T> where T : class

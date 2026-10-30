@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace SelfStorageManagementSystem.DataAccess.Entities;
 
-public partial class StorageUnitHaTDT
+public partial class StorageUnitKhoiVTH
 {
-    public long StorageUnitHaTDTId { get; set; }
+    public long StorageUnitKhoiVTHId { get; set; }
 
     public long facility_id { get; set; }
 
-    public long UnitTypeHaTDTId { get; set; }
+    public long UnitTypeKhoiVTHId { get; set; }
 
     public long? area_id { get; set; }
 

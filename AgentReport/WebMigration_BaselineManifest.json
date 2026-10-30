@@ -1,4 +1,4 @@
-﻿{
+{
     "manifestVersion":  "1.0",
     "createdUtc":  "2026-10-15T08:21:36Z",
     "createdLocal":  "2026-10-15 15:21:36 +07:00",
@@ -1295,7 +1295,7 @@
                       "verifiedMatch":  true
                   },
                   {
-                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/StorageUnitHaTDT.cs",
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/StorageUnitKhoiVTH.cs",
                       "sizeBytes":  750,
                       "sha256":  "d860e55bd5eb8da1368363e93787bf7d4d8debafa0665e0901d2c74bc56a04e8",
                       "verifiedMatch":  true
@@ -1343,7 +1343,7 @@
                       "verifiedMatch":  true
                   },
                   {
-                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/UnitTypeHaTDT.cs",
+                      "relativePath":  "src/SelfStorageManagementSystem.DataAccess/Entities/UnitTypeKhoiVTH.cs",
                       "sizeBytes":  832,
                       "sha256":  "23cec50a85736abbc02922a688c91a2397a58885ea7e50d3abcc1d921171d4aa",
                       "verifiedMatch":  true
