@@ -1,4 +1,4 @@
-@using System.Security.Claims
+﻿@using System.Security.Claims
 @using SelfStorageManagementSystem.BusinessLogic.Common.Constants
 @using SelfStorageManagementSystem.Web.Helpers
 
@@ -63,7 +63,7 @@
                             <a class="nav-link" href="/Catalog">Danh mục kho</a>
                         </li>
 
-                        <!-- 2. Menu dành cho Khách hàng (storage_customer) -->
+                                                <!-- 2. Menu dành cho Khách hàng (storage_customer) -->
                         @if (isCustomer)
                         {
                             <li class="nav-item">
@@ -71,6 +71,9 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="/MyUnits">Ô kho của tôi</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/Reports/Reservations">Báo cáo đặt chỗ</a>
                             </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="customerFinancialMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -91,16 +94,20 @@
                         @if (isStaff || isManager)
                         {
                             <li class="nav-item">
+                                <a class="nav-link" href="/StorageUnits">Quản trị ô kho</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link" href="/Staff/CheckIn">Quầy tiếp nhận</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="/StorageUnits">Quản trị ô kho</a>
+                                <a class="nav-link" href="/Reports/Reservations">Báo cáo đặt chỗ</a>
                             </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="staffOperationsMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     Nghiệp vụ cơ sở
                                 </a>
                                 <ul class="dropdown-menu shadow-sm" aria-labelledby="staffOperationsMenu">
+                                    <li><a class="dropdown-item" href="/Reports/Reservations"><i class="bi bi-graph-up-arrow me-1"></i>Báo cáo đặt chỗ</a></li>
                                     <li><a class="dropdown-item" href="/Invoices">Tra cứu hóa đơn</a></li>
                                     <li><a class="dropdown-item" href="/Agreements">Tra cứu hợp đồng</a></li>
                                     @if (isManager)
@@ -118,6 +125,12 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="/StorageUnits">Quản trị ô kho</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/Staff/CheckIn">Quầy tiếp nhận</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/Reports/Reservations">Báo cáo đặt chỗ</a>
+                            </li>
                             @if (isAdmin)
                             {
                                 <li class="nav-item">
@@ -134,11 +147,10 @@
                                         <li><a class="dropdown-item" href="/Admin/Accounts">Tài khoản & Phân quyền</a></li>
                                     }
                                     <li><a class="dropdown-item" href="/Staff/CheckIn">Quầy tiếp nhận</a></li>
+                                    <li><a class="dropdown-item" href="/Reports/Reservations">Báo cáo đặt chỗ</a></li>
                                     <li><a class="dropdown-item" href="/Invoices">Hóa đơn hệ thống</a></li>
                                     <li><a class="dropdown-item" href="/Payments">Thanh toán & Hoàn tiền</a></li>
                                     <li><a class="dropdown-item" href="/Agreements">Hợp đồng thuê kho</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="/Reports/Reservations"><i class="bi bi-graph-up-arrow me-1"></i>Báo cáo đặt chỗ</a></li>
                                 </ul>
                             </li>
                         }
