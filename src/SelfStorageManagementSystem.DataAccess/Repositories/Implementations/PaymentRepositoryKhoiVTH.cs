@@ -1,4 +1,4 @@
-using System.Data;
+﻿using System.Data;
 using System.Security.Cryptography;
 using System.Text.Json;
 using Microsoft.Data.SqlClient;
@@ -10,12 +10,12 @@ using SelfStorageManagementSystem.DataAccess.Repositories.Interfaces;
 
 namespace SelfStorageManagementSystem.DataAccess.Repositories.Implementations;
 
-public class PaymentRepository : IPaymentRepository
+public class PaymentRepositoryKhoiVTH : IPaymentRepository
 {
     private readonly SelfStorageDbContext _context;
     internal static readonly System.Collections.Concurrent.ConcurrentDictionary<string, SemaphoreSlim> InMemorySemaphores = new();
 
-    public PaymentRepository(SelfStorageDbContext context)
+    public PaymentRepositoryKhoiVTH(SelfStorageDbContext context)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
     }

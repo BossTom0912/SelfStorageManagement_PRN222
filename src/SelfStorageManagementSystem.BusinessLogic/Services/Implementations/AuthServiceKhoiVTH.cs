@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using SelfStorageManagementSystem.BusinessLogic.DTOs.Requests.Auth;
 using SelfStorageManagementSystem.BusinessLogic.DTOs.Responses.Auth;
@@ -15,12 +15,12 @@ namespace SelfStorageManagementSystem.BusinessLogic.Services.Implementations;
 /// account status check, last_login_at updating, and login history recording once,
 /// then issues JWT tokens via IJwtTokenGenerator without recording duplicate history.
 /// </summary>
-public class AuthService : IAuthService
+public class AuthServiceKhoiVTH : IAuthService
 {
     private readonly IAccountIdentityService _accountIdentityService;
     private readonly IJwtTokenGenerator _jwtTokenGenerator;
 
-    public AuthService(
+    public AuthServiceKhoiVTH(
         IAccountIdentityService accountIdentityService,
         IJwtTokenGenerator jwtTokenGenerator)
     {

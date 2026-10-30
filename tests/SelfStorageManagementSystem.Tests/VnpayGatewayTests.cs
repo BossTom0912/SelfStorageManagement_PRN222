@@ -1,4 +1,4 @@
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -10,7 +10,7 @@ namespace SelfStorageManagementSystem.Tests;
 
 public class VnpayGatewayTests
 {
-    private readonly VnpayGateway _gateway;
+    private readonly VnpayGatewayKhoiVTH _gateway;
     private const string TmnCode = "DEMOTMN01";
     private const string HashSecret = "SECRETTESTKEY1234567890ABCDEF12";
 
@@ -24,7 +24,7 @@ public class VnpayGatewayTests
             ["VnPay:ReturnUrl"] = "http://localhost:5000/api/payments/vnpay/return"
         };
         var config = new ConfigurationBuilder().AddInMemoryCollection(configInMemory).Build();
-        _gateway = new VnpayGateway(config, NullLogger<VnpayGateway>.Instance);
+        _gateway = new VnpayGatewayKhoiVTH(config, NullLogger<VnpayGatewayKhoiVTH>.Instance);
     }
 
     [Fact]
@@ -76,7 +76,7 @@ public class VnpayGatewayTests
     public async Task CreateCheckoutUrlAsync_MissingCredentials_ThrowsInvalidOperationException()
     {
         var emptyConfig = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>()).Build();
-        var gateway = new VnpayGateway(emptyConfig, NullLogger<VnpayGateway>.Instance);
+        var gateway = new VnpayGatewayKhoiVTH(emptyConfig, NullLogger<VnpayGatewayKhoiVTH>.Instance);
 
         var order = new PaymentGatewayOrder
         {
@@ -114,7 +114,7 @@ public class VnpayGatewayTests
             if (hashDataBuilder.Length > 0) hashDataBuilder.Append('&');
             hashDataBuilder.Append(System.Net.WebUtility.UrlEncode(key)).Append('=').Append(System.Net.WebUtility.UrlEncode(value));
         }
-        var validHash = VnpayGateway.ComputeHmacSha512(HashSecret, hashDataBuilder.ToString());
+        var validHash = VnpayGatewayKhoiVTH.ComputeHmacSha512(HashSecret, hashDataBuilder.ToString());
 
         var callbackParams = new Dictionary<string, string>(rawParams)
         {

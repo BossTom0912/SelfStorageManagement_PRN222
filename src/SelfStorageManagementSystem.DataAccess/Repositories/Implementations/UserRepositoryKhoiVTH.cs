@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using SelfStorageManagementSystem.DataAccess.Context;
 using SelfStorageManagementSystem.DataAccess.Entities;
@@ -7,9 +7,9 @@ using SelfStorageManagementSystem.DataAccess.Repositories.Interfaces;
 
 namespace SelfStorageManagementSystem.DataAccess.Repositories.Implementations;
 
-public class UserRepository : GenericRepository<user>, IUserRepository
+public class UserRepositoryKhoiVTH : GenericRepositoryKhoiVTH<user>, IUserRepository
 {
-    public UserRepository(SelfStorageDbContext context) : base(context)
+    public UserRepositoryKhoiVTH(SelfStorageDbContext context) : base(context)
     {
     }
 
@@ -71,7 +71,7 @@ public class UserRepository : GenericRepository<user>, IUserRepository
             .FirstOrDefaultAsync(u => u.id == id, cancellationToken);
     }
 
-    public async Task<UserIdentitySnapshot?> GetIdentitySnapshotByIdAsync(
+    public async Task<UserIdentitySnapshotKhoiVTH?> GetIdentitySnapshotByIdAsync(
         long id,
         DateTimeOffset? asOfUtc = null,
         CancellationToken cancellationToken = default)
@@ -81,7 +81,7 @@ public class UserRepository : GenericRepository<user>, IUserRepository
         return await _dbSet
             .AsNoTracking()
             .Where(u => u.id == id)
-            .Select(u => new UserIdentitySnapshot
+            .Select(u => new UserIdentitySnapshotKhoiVTH
             {
                 UserId = u.id,
                 Email = u.email,
@@ -105,7 +105,7 @@ public class UserRepository : GenericRepository<user>, IUserRepository
                                     (a.ends_at == null || a.ends_at > now) &&
                                     ((a.assignment_role == "facility_manager" && u.user_roleusers.Any(ur => ur.role.code == "facility_manager")) ||
                                      (a.assignment_role == "facility_staff")))
-                        .Select(a => new StaffAssignmentSnapshot
+                        .Select(a => new StaffAssignmentSnapshotKhoiVTH
                         {
                             Id = a.id,
                             EmployeeId = a.employee_id,
@@ -117,12 +117,12 @@ public class UserRepository : GenericRepository<user>, IUserRepository
                             EndsAt = a.ends_at,
                             CreatedAt = a.created_at
                         }).ToList()
-                    : new List<StaffAssignmentSnapshot>()
+                    : new List<StaffAssignmentSnapshotKhoiVTH>()
             })
             .FirstOrDefaultAsync(cancellationToken);
     }
 
-    public async Task<UserIdentitySnapshot?> GetIdentitySnapshotByEmailAsync(
+    public async Task<UserIdentitySnapshotKhoiVTH?> GetIdentitySnapshotByEmailAsync(
         string normalizedEmail,
         DateTimeOffset? asOfUtc = null,
         CancellationToken cancellationToken = default)
@@ -132,7 +132,7 @@ public class UserRepository : GenericRepository<user>, IUserRepository
         return await _dbSet
             .AsNoTracking()
             .Where(u => u.email == normalizedEmail)
-            .Select(u => new UserIdentitySnapshot
+            .Select(u => new UserIdentitySnapshotKhoiVTH
             {
                 UserId = u.id,
                 Email = u.email,
@@ -156,7 +156,7 @@ public class UserRepository : GenericRepository<user>, IUserRepository
                                     (a.ends_at == null || a.ends_at > now) &&
                                     ((a.assignment_role == "facility_manager" && u.user_roleusers.Any(ur => ur.role.code == "facility_manager")) ||
                                      (a.assignment_role == "facility_staff")))
-                        .Select(a => new StaffAssignmentSnapshot
+                        .Select(a => new StaffAssignmentSnapshotKhoiVTH
                         {
                             Id = a.id,
                             EmployeeId = a.employee_id,
@@ -168,7 +168,7 @@ public class UserRepository : GenericRepository<user>, IUserRepository
                             EndsAt = a.ends_at,
                             CreatedAt = a.created_at
                         }).ToList()
-                    : new List<StaffAssignmentSnapshot>()
+                    : new List<StaffAssignmentSnapshotKhoiVTH>()
             })
             .FirstOrDefaultAsync(cancellationToken);
     }

@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using SelfStorageManagementSystem.BusinessLogic.Common;
@@ -112,7 +112,7 @@ public class DetailsModel : PageModel
             return SetNotFoundAndReturnPage("Cơ sở lưu trữ không tồn tại hoặc hiện không mở cửa hoạt động.");
         }
 
-        var todayInTz = FacilityCatalogService.GetCurrentDateInFacilityTimezone(Facility.Timezone);
+        var todayInTz = FacilityCatalogServiceKhoiVTH.GetCurrentDateInFacilityTimezone(Facility.Timezone);
 
         if (!RentalStartDate.HasValue)
         {

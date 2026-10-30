@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SelfStorageManagementSystem.BusinessLogic.Services.Interfaces;
 
@@ -8,14 +8,14 @@ namespace SelfStorageManagementSystem.BusinessLogic.Services.Implementations;
 /// Simulated payment gateway for Development / Test environments.
 /// Generates demo hosted payment URLs and handles test outcomes.
 /// </summary>
-public class DemoGateway : IPaymentGateway
+public class DemoGatewayKhoiVTH : IPaymentGateway
 {
     private readonly IConfiguration _configuration;
-    private readonly ILogger<DemoGateway> _logger;
+    private readonly ILogger<DemoGatewayKhoiVTH> _logger;
 
     public string ProviderName => "demo";
 
-    public DemoGateway(IConfiguration configuration, ILogger<DemoGateway> logger)
+    public DemoGatewayKhoiVTH(IConfiguration configuration, ILogger<DemoGatewayKhoiVTH> logger)
     {
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));

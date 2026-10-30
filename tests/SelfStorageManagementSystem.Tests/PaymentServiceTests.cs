@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
 using SelfStorageManagementSystem.BusinessLogic.Common.Constants;
@@ -25,12 +25,12 @@ public class PaymentServiceTests
         return new SelfStorageDbContext(options);
     }
 
-    private (PaymentService Service, SelfStorageDbContext Context, DemoGateway DemoGw, VnpayGateway VnpayGw) SetupService(string dbName, Dictionary<string, string?>? customConfig = null)
+    private (PaymentServiceKhoiVTH Service, SelfStorageDbContext Context, DemoGatewayKhoiVTH DemoGw, VnpayGatewayKhoiVTH VnpayGw) SetupService(string dbName, Dictionary<string, string?>? customConfig = null)
     {
         var context = CreateInMemoryContext(dbName);
-        var paymentRepo = new PaymentRepository(context);
-        var userRepo = new UserRepository(context);
-        var scopeService = new FacilityScopeService(context, userRepo);
+        var paymentRepo = new PaymentRepositoryKhoiVTH(context);
+        var userRepo = new UserRepositoryKhoiVTH(context);
+        var scopeService = new FacilityScopeServiceKhoiVTH(context, userRepo);
 
         var configInMemory = new Dictionary<string, string?>
         {
@@ -50,16 +50,16 @@ public class PaymentServiceTests
         }
         var config = new ConfigurationBuilder().AddInMemoryCollection(configInMemory).Build();
 
-        var demoGateway = new DemoGateway(config, NullLogger<DemoGateway>.Instance);
-        var vnpayGateway = new VnpayGateway(config, NullLogger<VnpayGateway>.Instance);
+        var demoGateway = new DemoGatewayKhoiVTH(config, NullLogger<DemoGatewayKhoiVTH>.Instance);
+        var vnpayGateway = new VnpayGatewayKhoiVTH(config, NullLogger<VnpayGatewayKhoiVTH>.Instance);
 
-        var service = new PaymentService(
+        var service = new PaymentServiceKhoiVTH(
             paymentRepo,
             scopeService,
             demoGateway,
             vnpayGateway,
             config,
-            NullLogger<PaymentService>.Instance);
+            NullLogger<PaymentServiceKhoiVTH>.Instance);
 
         return (service, context, demoGateway, vnpayGateway);
     }
@@ -1448,7 +1448,7 @@ public class PaymentServiceTests
         Assert.Equal(1_850_000m, resp1.Amount);
 
         // Attempt 1 fails/cancels (e.g., user cancels on portal), allowing retry
-        var repo = new PaymentRepository(context);
+        var repo = new PaymentRepositoryKhoiVTH(context);
         await repo.ExecuteFinalizeFailedPaymentTransactionAsync(new FinalizeFailedPaymentParams
         {
             PaymentId = resp1.PaymentId,
@@ -1515,7 +1515,7 @@ public class PaymentServiceTests
         var invoice1Id = resp1.InvoiceId;
 
         // Attempt 1 fails/cancels so user retries with a voucher
-        var repo = new PaymentRepository(context);
+        var repo = new PaymentRepositoryKhoiVTH(context);
         await repo.ExecuteFinalizeFailedPaymentTransactionAsync(new FinalizeFailedPaymentParams
         {
             PaymentId = resp1.PaymentId,
@@ -1545,7 +1545,7 @@ public class PaymentServiceTests
         Assert.Equal("open", inv2.status);
 
         // If Attempt 1 finishes now (payment arrives pointing to voided Invoice 1):
-        repo = new PaymentRepository(context);
+        repo = new PaymentRepositoryKhoiVTH(context);
         var finParams = new FinalizePaymentParams
         {
             PaymentId = resp1.PaymentId,
@@ -1589,7 +1589,7 @@ public class PaymentServiceTests
         var resp = await service.CheckoutAsync(customer.id, customerRoles, req, "KEY-PARTIAL", "127.0.0.1");
 
         // Simulate payment that only pays 1.0M instead of full 2.05M
-        var repo = new PaymentRepository(context);
+        var repo = new PaymentRepositoryKhoiVTH(context);
         var finParams = new FinalizePaymentParams
         {
             PaymentId = resp.PaymentId,
@@ -1669,7 +1669,7 @@ public class PaymentServiceTests
         Assert.NotNull(resp1);
 
         // Request 2 tries with SAME key directly into repository under lock with different policy or method
-        var repo = new PaymentRepository(context);
+        var repo = new PaymentRepositoryKhoiVTH(context);
         var txParamsDifferentPolicy = new CheckoutTransactionParams
         {
             ReservationId = reservation.id,
@@ -1737,7 +1737,7 @@ public class PaymentServiceTests
         Assert.NotNull(resp1);
 
         // Mark payment as failed (e.g. gateway failed or cancelled)
-        var repo = new PaymentRepository(context);
+        var repo = new PaymentRepositoryKhoiVTH(context);
         await repo.ExecuteFinalizeFailedPaymentTransactionAsync(new FinalizeFailedPaymentParams
         {
             PaymentId = resp1.PaymentId,
@@ -1861,7 +1861,7 @@ public class PaymentServiceTests
             hashData.Append(System.Net.WebUtility.UrlEncode(k)).Append('=').Append(System.Net.WebUtility.UrlEncode(v));
         }
 
-        var secureHash = VnpayGateway.ComputeHmacSha512(hashSecret, hashData.ToString());
+        var secureHash = VnpayGatewayKhoiVTH.ComputeHmacSha512(hashSecret, hashData.ToString());
         var dict = new Dictionary<string, string>(rawParams)
         {
             ["vnp_SecureHash"] = secureHash

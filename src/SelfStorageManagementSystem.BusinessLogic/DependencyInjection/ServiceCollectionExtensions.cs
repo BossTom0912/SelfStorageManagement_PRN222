@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SelfStorageManagementSystem.BusinessLogic.Services.Implementations;
 using SelfStorageManagementSystem.BusinessLogic.Services.Interfaces;
@@ -14,23 +14,23 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddBusinessLogicCore(this IServiceCollection services)
     {
         services.AddSingleton(TimeProvider.System);
-        services.AddSingleton<IPasswordHasher, PasswordHasher>();
-        services.AddScoped<IAuditService, AuditService>();
-        services.AddScoped<IFacilityScopeService, FacilityScopeService>();
-        services.AddScoped<IAdminAccountService, AdminAccountService>();
-        services.AddScoped<IDemoAccountBootstrapService, DemoAccountBootstrapService>();
-        services.AddScoped<IFacilityCatalogService, FacilityCatalogService>();
-        services.AddScoped<IReservationService, ReservationService>();
-        services.AddScoped<DemoGateway>();
-        services.AddScoped<VnpayGateway>();
-        services.AddScoped<IPaymentService, PaymentService>();
-        services.AddScoped<IInvoiceService, InvoiceService>();
-        services.AddScoped<IRentalAgreementService, RentalAgreementService>();
-        services.AddScoped<ICheckInService, CheckInService>();
-        services.AddScoped<IAccountIdentityService, AccountIdentityService>();
-        services.AddScoped<IStorageUnitKhoiVTHService, StorageUnitKhoiVTHService>();
+        services.AddSingleton<IPasswordHasher, PasswordHasherKhoiVTH>();
+        services.AddScoped<IAuditService, AuditServiceKhoiVTH>();
+        services.AddScoped<IFacilityScopeService, FacilityScopeServiceKhoiVTH>();
+        services.AddScoped<IAdminAccountService, AdminAccountServiceKhoiVTH>();
+        services.AddScoped<IDemoAccountBootstrapService, DemoAccountBootstrapServiceKhoiVTH>();
+        services.AddScoped<IFacilityCatalogService, FacilityCatalogServiceKhoiVTH>();
+        services.AddScoped<IReservationService, ReservationServiceKhoiVTH>();
+        services.AddScoped<DemoGatewayKhoiVTH>();
+        services.AddScoped<VnpayGatewayKhoiVTH>();
+        services.AddScoped<IPaymentService, PaymentServiceKhoiVTH>();
+        services.AddScoped<IInvoiceService, InvoiceServiceKhoiVTH>();
+        services.AddScoped<IRentalAgreementService, RentalAgreementServiceKhoiVTH>();
+        services.AddScoped<ICheckInService, CheckInServiceKhoiVTH>();
+        services.AddScoped<IAccountIdentityService, AccountIdentityServiceKhoiVTH>();
+        services.AddScoped<IStorageUnitKhoiVTHService, StorageUnitServiceKhoiVTH>();
         services.AddScoped<IStorageUnitAdminService>(sp => sp.GetRequiredService<IStorageUnitKhoiVTHService>());
-        services.AddScoped<IUserScopeChangedNotifier, NullUserScopeChangedNotifier>();
+        services.AddScoped<IUserScopeChangedNotifier, NullUserScopeChangedNotifierKhoiVTH>();
 
         return services;
     }
@@ -41,8 +41,8 @@ public static class ServiceCollectionExtensions
     /// </summary>
     public static IServiceCollection AddBusinessLogicJwt(this IServiceCollection services)
     {
-        services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
-        services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IJwtTokenGenerator, JwtTokenGeneratorKhoiVTH>();
+        services.AddScoped<IAuthService, AuthServiceKhoiVTH>();
         return services;
     }
 

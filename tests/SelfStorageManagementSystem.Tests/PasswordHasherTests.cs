@@ -1,11 +1,11 @@
-using SelfStorageManagementSystem.BusinessLogic.Services.Implementations;
+﻿using SelfStorageManagementSystem.BusinessLogic.Services.Implementations;
 using Xunit;
 
 namespace SelfStorageManagementSystem.Tests;
 
 public class PasswordHasherTests
 {
-    private readonly PasswordHasher _hasher = new();
+    private readonly PasswordHasherKhoiVTH _hasher = new();
 
     [Fact]
     public void HashPassword_ShouldGenerateValidPBKDF2Format()

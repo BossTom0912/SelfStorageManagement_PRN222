@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SelfStorageManagementSystem.BusinessLogic.Common.Constants;
 using SelfStorageManagementSystem.BusinessLogic.DTOs.Responses.Admin;
 using SelfStorageManagementSystem.BusinessLogic.Services.Interfaces;
@@ -8,13 +8,13 @@ using SelfStorageManagementSystem.DataAccess.Repositories.Interfaces;
 
 namespace SelfStorageManagementSystem.BusinessLogic.Services.Implementations;
 
-public class FacilityScopeService : IFacilityScopeService
+public class FacilityScopeServiceKhoiVTH : IFacilityScopeService
 {
     private readonly SelfStorageDbContext _context;
     private readonly IUserRepository _userRepository;
     private readonly TimeProvider _timeProvider;
 
-    public FacilityScopeService(
+    public FacilityScopeServiceKhoiVTH(
         SelfStorageDbContext context,
         IUserRepository userRepository,
         TimeProvider? timeProvider = null)

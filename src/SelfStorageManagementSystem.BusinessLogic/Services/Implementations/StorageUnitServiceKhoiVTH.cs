@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,13 +10,13 @@ namespace SelfStorageManagementSystem.BusinessLogic.Services.Implementations;
 
 /// <summary>
 /// Concrete service implementation for KhoiVTH (Võ Thái Hoàng Khôi - PRN222) storage unit business logic.
-/// Inherits from StorageUnitAdminService to execute all storage unit operations with KhoiVTH anti-plagiarism identity.
+/// Inherits from StorageUnitAdminServiceKhoiVTH to execute all storage unit operations with KhoiVTH anti-plagiarism identity.
 /// </summary>
-public class StorageUnitKhoiVTHService : StorageUnitAdminService, IStorageUnitKhoiVTHService
+public class StorageUnitServiceKhoiVTH : StorageUnitAdminServiceKhoiVTH, IStorageUnitKhoiVTHService
 {
     private readonly IStorageUnitAdminRepository _repository;
 
-    public StorageUnitKhoiVTHService(
+    public StorageUnitServiceKhoiVTH(
         IStorageUnitAdminRepository storageUnitAdminRepository,
         IUserRepository userRepository,
         IFacilityScopeService facilityScopeService,

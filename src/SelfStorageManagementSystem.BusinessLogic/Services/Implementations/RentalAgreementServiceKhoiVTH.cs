@@ -1,4 +1,4 @@
-using SelfStorageManagementSystem.BusinessLogic.Common.Constants;
+﻿using SelfStorageManagementSystem.BusinessLogic.Common.Constants;
 using SelfStorageManagementSystem.BusinessLogic.DTOs.Responses.Agreements;
 using SelfStorageManagementSystem.BusinessLogic.Exceptions;
 using SelfStorageManagementSystem.BusinessLogic.Services.Interfaces;
@@ -6,12 +6,12 @@ using SelfStorageManagementSystem.DataAccess.Repositories.Interfaces;
 
 namespace SelfStorageManagementSystem.BusinessLogic.Services.Implementations;
 
-public class RentalAgreementService : IRentalAgreementService
+public class RentalAgreementServiceKhoiVTH : IRentalAgreementService
 {
     private readonly IPaymentRepository _paymentRepository;
     private readonly IFacilityScopeService _facilityScopeService;
 
-    public RentalAgreementService(
+    public RentalAgreementServiceKhoiVTH(
         IPaymentRepository paymentRepository,
         IFacilityScopeService facilityScopeService)
     {

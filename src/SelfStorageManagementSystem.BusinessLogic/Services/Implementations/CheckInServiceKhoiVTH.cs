@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using SelfStorageManagementSystem.BusinessLogic.Common;
 using SelfStorageManagementSystem.BusinessLogic.Common.Constants;
 using SelfStorageManagementSystem.BusinessLogic.DTOs.Requests.CheckIn;
@@ -11,13 +11,13 @@ using SelfStorageManagementSystem.DataAccess.Repositories.Interfaces;
 
 namespace SelfStorageManagementSystem.BusinessLogic.Services.Implementations;
 
-public class CheckInService : ICheckInService
+public class CheckInServiceKhoiVTH : ICheckInService
 {
     private readonly ICheckInRepository _checkInRepository;
     private readonly IFacilityScopeService _facilityScopeService;
     private readonly IConfiguration _configuration;
 
-    public CheckInService(
+    public CheckInServiceKhoiVTH(
         ICheckInRepository checkInRepository,
         IFacilityScopeService facilityScopeService,
         IConfiguration configuration)

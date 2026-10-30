@@ -1,4 +1,4 @@
-using SelfStorageManagementSystem.BusinessLogic.Common.Constants;
+﻿using SelfStorageManagementSystem.BusinessLogic.Common.Constants;
 using SelfStorageManagementSystem.BusinessLogic.DTOs.Responses.Invoices;
 using SelfStorageManagementSystem.BusinessLogic.Exceptions;
 using SelfStorageManagementSystem.BusinessLogic.Services.Interfaces;
@@ -6,12 +6,12 @@ using SelfStorageManagementSystem.DataAccess.Repositories.Interfaces;
 
 namespace SelfStorageManagementSystem.BusinessLogic.Services.Implementations;
 
-public class InvoiceService : IInvoiceService
+public class InvoiceServiceKhoiVTH : IInvoiceService
 {
     private readonly IPaymentRepository _paymentRepository;
     private readonly IFacilityScopeService _facilityScopeService;
 
-    public InvoiceService(
+    public InvoiceServiceKhoiVTH(
         IPaymentRepository paymentRepository,
         IFacilityScopeService facilityScopeService)
     {

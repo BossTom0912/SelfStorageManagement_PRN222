@@ -1,4 +1,4 @@
-using System.Net;
+﻿using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Configuration;
@@ -12,14 +12,14 @@ namespace SelfStorageManagementSystem.BusinessLogic.Services.Implementations;
 /// Implements HMAC-SHA512 signing, URL generation, IPN verification,
 /// and prepared helpers for QueryDR and Refund.
 /// </summary>
-public class VnpayGateway : IPaymentGateway
+public class VnpayGatewayKhoiVTH : IPaymentGateway
 {
     private readonly IConfiguration _configuration;
-    private readonly ILogger<VnpayGateway> _logger;
+    private readonly ILogger<VnpayGatewayKhoiVTH> _logger;
 
     public string ProviderName => "vnpay";
 
-    public VnpayGateway(IConfiguration configuration, ILogger<VnpayGateway> logger)
+    public VnpayGatewayKhoiVTH(IConfiguration configuration, ILogger<VnpayGatewayKhoiVTH> logger)
     {
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));

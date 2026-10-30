@@ -1,4 +1,4 @@
-using System.Data;
+﻿using System.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using SelfStorageManagementSystem.BusinessLogic.Common.Constants;
@@ -361,7 +361,7 @@ public class CheckInSqlServerConcurrencyTests
             var task1 = Task.Run(async () =>
             {
                 await using var db = CreateDbContext(connectionString);
-                var repo = new CheckInRepository(db);
+                var repo = new CheckInRepositoryKhoiVTH(db);
                 barrier.SignalAndWait();
                 try
                 {
@@ -377,7 +377,7 @@ public class CheckInSqlServerConcurrencyTests
             var task2 = Task.Run(async () =>
             {
                 await using var db = CreateDbContext(connectionString);
-                var repo = new CheckInRepository(db);
+                var repo = new CheckInRepositoryKhoiVTH(db);
                 barrier.SignalAndWait();
                 try
                 {
@@ -744,7 +744,7 @@ public class CheckInSqlServerConcurrencyTests
             var task1 = Task.Run(async () =>
             {
                 await using var db = CreateDbContext(connectionString);
-                var repo = new CheckInRepository(db);
+                var repo = new CheckInRepositoryKhoiVTH(db);
                 barrier.SignalAndWait();
                 try
                 {
@@ -761,7 +761,7 @@ public class CheckInSqlServerConcurrencyTests
             var task2 = Task.Run(async () =>
             {
                 await using var db = CreateDbContext(connectionString);
-                var repo = new CheckInRepository(db);
+                var repo = new CheckInRepositoryKhoiVTH(db);
                 barrier.SignalAndWait();
                 try
                 {
@@ -1126,7 +1126,7 @@ public class CheckInSqlServerConcurrencyTests
 
             // Fault injection: trigger failure during PIN generation with invalid short secret (< 16 bytes)
             await using var db = CreateDbContext(connectionString);
-            var repo = new CheckInRepository(db);
+            var repo = new CheckInRepositoryKhoiVTH(db);
 
             await Assert.ThrowsAsync<InvalidOperationException>(() =>
                 repo.CompleteCheckInWithLockAsync(
@@ -1478,7 +1478,7 @@ public class CheckInSqlServerConcurrencyTests
             // Step 1: Complete check-in successfully
             await using (var db = CreateDbContext(connectionString))
             {
-                var repo = new CheckInRepository(db);
+                var repo = new CheckInRepositoryKhoiVTH(db);
                 var complete = await repo.CompleteCheckInWithLockAsync(
                     resId, allocId, inspId, true, "Initial complete", staffUserId, pinSecret);
                 Assert.NotNull(complete.CredentialId);
@@ -1489,7 +1489,7 @@ public class CheckInSqlServerConcurrencyTests
             long newCredId;
             await using (var db = CreateDbContext(connectionString))
             {
-                var repo = new CheckInRepository(db);
+                var repo = new CheckInRepositoryKhoiVTH(db);
                 var reissue = await repo.ReissuePinWithLockAsync(
                     resId, initialCredId, docNumber, true, "Customer forgot PIN", staffUserId, pinSecret);
 

@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore.Storage;
+﻿using Microsoft.EntityFrameworkCore.Storage;
 using SelfStorageManagementSystem.DataAccess.Entities;
 
 namespace SelfStorageManagementSystem.DataAccess.Repositories.Interfaces;
@@ -21,12 +21,12 @@ public interface IUserRepository : IRepository<user>
         long id,
         CancellationToken cancellationToken = default);
 
-    Task<SelfStorageManagementSystem.DataAccess.Models.UserIdentitySnapshot?> GetIdentitySnapshotByIdAsync(
+    Task<SelfStorageManagementSystem.DataAccess.Models.UserIdentitySnapshotKhoiVTH?> GetIdentitySnapshotByIdAsync(
         long id,
         DateTimeOffset? asOfUtc = null,
         CancellationToken cancellationToken = default);
 
-    Task<SelfStorageManagementSystem.DataAccess.Models.UserIdentitySnapshot?> GetIdentitySnapshotByEmailAsync(
+    Task<SelfStorageManagementSystem.DataAccess.Models.UserIdentitySnapshotKhoiVTH?> GetIdentitySnapshotByEmailAsync(
         string normalizedEmail,
         DateTimeOffset? asOfUtc = null,
         CancellationToken cancellationToken = default);

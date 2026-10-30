@@ -11,12 +11,12 @@ namespace SelfStorageManagementSystem.DataAccess.Repositories.Implementations;
 /// Keyless views (e.g. UnitTypeKhoiVTH, StorageUnitKhoiVTH) do not support GetByIdAsync, Update, or Delete.
 /// </summary>
 /// <typeparam name="T">Entity class type</typeparam>
-public class GenericRepository<T> : IRepository<T> where T : class
+public class GenericRepositoryKhoiVTH<T> : IRepository<T> where T : class
 {
     protected readonly SelfStorageDbContext _context;
     protected readonly DbSet<T> _dbSet;
 
-    public GenericRepository(SelfStorageDbContext context)
+    public GenericRepositoryKhoiVTH(SelfStorageDbContext context)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _dbSet = context.Set<T>();

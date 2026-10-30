@@ -1,4 +1,4 @@
-using System.Data;
+﻿using System.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -196,7 +196,7 @@ public class PaymentSqlServerConcurrencyTests
             var task1 = Task.Run(async () =>
             {
                 await using var db = CreateDbContext(connectionString);
-                var repo = new PaymentRepository(db);
+                var repo = new PaymentRepositoryKhoiVTH(db);
                 try
                 {
                     var result = await repo.ExecuteCheckoutTransactionAsync(new CheckoutTransactionParams
@@ -228,7 +228,7 @@ public class PaymentSqlServerConcurrencyTests
             var task2 = Task.Run(async () =>
             {
                 await using var db = CreateDbContext(connectionString);
-                var repo = new PaymentRepository(db);
+                var repo = new PaymentRepositoryKhoiVTH(db);
                 try
                 {
                     var result = await repo.ExecuteCheckoutTransactionAsync(new CheckoutTransactionParams
@@ -424,7 +424,7 @@ public class PaymentSqlServerConcurrencyTests
                 reservationId = res.id;
                 cleanUpReservationIds.Add(reservationId);
 
-                var repo = new PaymentRepository(seedDb);
+                var repo = new PaymentRepositoryKhoiVTH(seedDb);
                 var checkout1 = await repo.ExecuteCheckoutTransactionAsync(new CheckoutTransactionParams
                 {
                     ReservationId = reservationId,
@@ -462,7 +462,7 @@ public class PaymentSqlServerConcurrencyTests
 
             // Task B: Late IPN on payment 1 arrives concurrently/subsequently
             await using var dbB = CreateDbContext(connectionString);
-            var repoB = new PaymentRepository(dbB);
+            var repoB = new PaymentRepositoryKhoiVTH(dbB);
             var finalizeResult = await repoB.ExecuteFinalizePaymentTransactionAsync(new FinalizePaymentParams
             {
                 PaymentId = payment1Id,
@@ -725,7 +725,7 @@ public class PaymentSqlServerConcurrencyTests
             var task1 = Task.Run(async () =>
             {
                 await using var db1 = CreateDbContext(connectionString);
-                var repo1 = new PaymentRepository(db1);
+                var repo1 = new PaymentRepositoryKhoiVTH(db1);
                 try
                 {
                     var result = await repo1.ReviewRefundAsync(
@@ -745,7 +745,7 @@ public class PaymentSqlServerConcurrencyTests
             var task2 = Task.Run(async () =>
             {
                 await using var db2 = CreateDbContext(connectionString);
-                var repo2 = new PaymentRepository(db2);
+                var repo2 = new PaymentRepositoryKhoiVTH(db2);
                 try
                 {
                     var result = await repo2.ReviewRefundAsync(
@@ -819,7 +819,7 @@ public class PaymentSqlServerConcurrencyTests
             // Step 1: Decline callback arrives first (Gateway declines the payment)
             await using (var declineDb = CreateDbContext(connectionString))
             {
-                var declineRepo = new PaymentRepository(declineDb);
+                var declineRepo = new PaymentRepositoryKhoiVTH(declineDb);
                 var failedResult = await declineRepo.ExecuteFinalizeFailedPaymentTransactionAsync(new FinalizeFailedPaymentParams
                 {
                     PaymentId = paymentId,
@@ -849,7 +849,7 @@ public class PaymentSqlServerConcurrencyTests
             FinalizePaymentResult lateSuccessResult;
             await using (var successDb = CreateDbContext(connectionString))
             {
-                var successRepo = new PaymentRepository(successDb);
+                var successRepo = new PaymentRepositoryKhoiVTH(successDb);
                 lateSuccessResult = await successRepo.ExecuteFinalizePaymentTransactionAsync(new FinalizePaymentParams
                 {
                     PaymentId = paymentId,
@@ -902,7 +902,7 @@ public class PaymentSqlServerConcurrencyTests
             FinalizePaymentResult retryResult;
             await using (var retryDb = CreateDbContext(connectionString))
             {
-                var retryRepo = new PaymentRepository(retryDb);
+                var retryRepo = new PaymentRepositoryKhoiVTH(retryDb);
                 retryResult = await retryRepo.ExecuteFinalizePaymentTransactionAsync(new FinalizePaymentParams
                 {
                     PaymentId = paymentId,
@@ -970,7 +970,7 @@ public class PaymentSqlServerConcurrencyTests
             var paidAtUtc = DateTimeOffset.UtcNow;
             await using (var finalizeDb = CreateDbContext(connectionString))
             {
-                var repo = new PaymentRepository(finalizeDb);
+                var repo = new PaymentRepositoryKhoiVTH(finalizeDb);
                 result = await repo.ExecuteFinalizePaymentTransactionAsync(new FinalizePaymentParams
                 {
                     PaymentId = paymentId,
@@ -1074,7 +1074,7 @@ public class PaymentSqlServerConcurrencyTests
             var task1 = Task.Run(async () =>
             {
                 await using var db1 = CreateDbContext(connectionString);
-                var repo1 = new PaymentRepository(db1);
+                var repo1 = new PaymentRepositoryKhoiVTH(db1);
                 barrier.SignalAndWait();
                 return await repo1.ExecuteFinalizePaymentTransactionAsync(new FinalizePaymentParams
                 {
@@ -1091,7 +1091,7 @@ public class PaymentSqlServerConcurrencyTests
             var task2 = Task.Run(async () =>
             {
                 await using var db2 = CreateDbContext(connectionString);
-                var repo2 = new PaymentRepository(db2);
+                var repo2 = new PaymentRepositoryKhoiVTH(db2);
                 barrier.SignalAndWait();
                 return await repo2.ExecuteFinalizePaymentTransactionAsync(new FinalizePaymentParams
                 {
@@ -1169,7 +1169,7 @@ public class PaymentSqlServerConcurrencyTests
                 reservationId = fixture.ReservationId;
 
                 // Step 1: Finalize payment successfully via ExecuteFinalizePaymentTransactionAsync
-                var seedRepo = new PaymentRepository(seedDb);
+                var seedRepo = new PaymentRepositoryKhoiVTH(seedDb);
                 var successResult = await seedRepo.ExecuteFinalizePaymentTransactionAsync(new FinalizePaymentParams
                 {
                     PaymentId = paymentId,
@@ -1188,7 +1188,7 @@ public class PaymentSqlServerConcurrencyTests
             FinalizeFailedPaymentResult lateDeclineResult;
             await using (var declineDb = CreateDbContext(connectionString))
             {
-                var declineRepo = new PaymentRepository(declineDb);
+                var declineRepo = new PaymentRepositoryKhoiVTH(declineDb);
                 lateDeclineResult = await declineRepo.ExecuteFinalizeFailedPaymentTransactionAsync(new FinalizeFailedPaymentParams
                 {
                     PaymentId = paymentId,
@@ -1262,7 +1262,7 @@ public class PaymentSqlServerConcurrencyTests
             var task1 = Task.Run(async () =>
             {
                 await using var db1 = CreateDbContext(connectionString);
-                var repo1 = new PaymentRepository(db1);
+                var repo1 = new PaymentRepositoryKhoiVTH(db1);
                 barrier.SignalAndWait();
                 return await repo1.ExecuteFinalizePaymentTransactionAsync(new FinalizePaymentParams
                 {
@@ -1279,7 +1279,7 @@ public class PaymentSqlServerConcurrencyTests
             var task2 = Task.Run(async () =>
             {
                 await using var db2 = CreateDbContext(connectionString);
-                var repo2 = new PaymentRepository(db2);
+                var repo2 = new PaymentRepositoryKhoiVTH(db2);
                 barrier.SignalAndWait();
                 return await repo2.ExecuteFinalizePaymentTransactionAsync(new FinalizePaymentParams
                 {
@@ -1356,7 +1356,7 @@ public class PaymentSqlServerConcurrencyTests
             var task1 = Task.Run(async () =>
             {
                 await using var db1 = CreateDbContext(connectionString);
-                var repo1 = new PaymentRepository(db1);
+                var repo1 = new PaymentRepositoryKhoiVTH(db1);
                 barrier.SignalAndWait();
                 return await repo1.ExecuteFinalizeFailedPaymentTransactionAsync(new FinalizeFailedPaymentParams
                 {
@@ -1372,7 +1372,7 @@ public class PaymentSqlServerConcurrencyTests
             var task2 = Task.Run(async () =>
             {
                 await using var db2 = CreateDbContext(connectionString);
-                var repo2 = new PaymentRepository(db2);
+                var repo2 = new PaymentRepositoryKhoiVTH(db2);
                 barrier.SignalAndWait();
                 return await repo2.ExecuteFinalizeFailedPaymentTransactionAsync(new FinalizeFailedPaymentParams
                 {
@@ -1623,7 +1623,7 @@ public class PaymentSqlServerConcurrencyTests
             for (int i = 0; i < 3; i++)
             {
                 await using var db = CreateDbContext(connectionString);
-                var repo = new PaymentRepository(db);
+                var repo = new PaymentRepositoryKhoiVTH(db);
                 var result = await repo.ExecuteFinalizePaymentTransactionAsync(new FinalizePaymentParams
                 {
                     PaymentId = paymentId,
@@ -1924,7 +1924,7 @@ public class PaymentSqlServerConcurrencyTests
         seedDb.reservations.Add(res);
         await seedDb.SaveChangesAsync();
 
-        var repo = new PaymentRepository(seedDb);
+        var repo = new PaymentRepositoryKhoiVTH(seedDb);
         var checkout = await repo.ExecuteCheckoutTransactionAsync(new CheckoutTransactionParams
         {
             ReservationId = res.id,

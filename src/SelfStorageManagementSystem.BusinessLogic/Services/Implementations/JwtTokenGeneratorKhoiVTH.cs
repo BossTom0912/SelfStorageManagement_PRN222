@@ -1,4 +1,4 @@
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
@@ -9,11 +9,11 @@ using SelfStorageManagementSystem.DataAccess.Entities;
 
 namespace SelfStorageManagementSystem.BusinessLogic.Services.Implementations;
 
-public class JwtTokenGenerator : IJwtTokenGenerator
+public class JwtTokenGeneratorKhoiVTH : IJwtTokenGenerator
 {
     private readonly JwtOptions _options;
 
-    public JwtTokenGenerator(IOptions<JwtOptions> options)
+    public JwtTokenGeneratorKhoiVTH(IOptions<JwtOptions> options)
     {
         ArgumentNullException.ThrowIfNull(options);
         _options = options.Value ?? throw new ArgumentNullException(nameof(options), "JwtOptions cannot be null.");

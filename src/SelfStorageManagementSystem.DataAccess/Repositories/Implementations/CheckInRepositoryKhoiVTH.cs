@@ -1,4 +1,4 @@
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Data;
 using System.Security.Cryptography;
 using System.Text;
@@ -13,11 +13,11 @@ using SelfStorageManagementSystem.DataAccess.Repositories.Interfaces;
 
 namespace SelfStorageManagementSystem.DataAccess.Repositories.Implementations;
 
-public class CheckInRepository : GenericRepository<reservation>, ICheckInRepository
+public class CheckInRepositoryKhoiVTH : GenericRepositoryKhoiVTH<reservation>, ICheckInRepository
 {
     private static readonly ConcurrentDictionary<string, SemaphoreSlim> InMemorySemaphores = new();
 
-    public CheckInRepository(SelfStorageDbContext context) : base(context)
+    public CheckInRepositoryKhoiVTH(SelfStorageDbContext context) : base(context)
     {
     }
 

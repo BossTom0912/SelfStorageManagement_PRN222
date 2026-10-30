@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
 using SelfStorageManagementSystem.BusinessLogic.DTOs.Requests.Catalog;
 using SelfStorageManagementSystem.BusinessLogic.Exceptions;
@@ -62,8 +62,8 @@ public class FacilityCatalogServiceTests
         context.facilities.AddRange(activeHcm, activeHn, closedFacility);
         await context.SaveChangesAsync();
 
-        var repo = new FacilityCatalogRepository(context);
-        var service = new FacilityCatalogService(repo, NullLogger<FacilityCatalogService>.Instance);
+        var repo = new FacilityCatalogRepositoryKhoiVTH(context);
+        var service = new FacilityCatalogServiceKhoiVTH(repo, NullLogger<FacilityCatalogServiceKhoiVTH>.Instance);
 
         // Act 1: Get all active
         var allActive = await service.GetFacilitiesAsync(new GetFacilitiesCatalogRequest { PageNumber = 1, PageSize = 10 });
@@ -90,7 +90,7 @@ public class FacilityCatalogServiceTests
         var typeActive = new unit_type { id = 10, code = "UT-10", name = "Kho Nhỏ", width_m = 2, length_m = 2, height_m = 2.5m, is_active = true };
         var typeInactive = new unit_type { id = 20, code = "UT-20", name = "Kho Cũ", width_m = 3, length_m = 3, height_m = 2.5m, is_active = false };
 
-        var today = FacilityCatalogService.GetCurrentDateInFacilityTimezone("Asia/Ho_Chi_Minh");
+        var today = FacilityCatalogServiceKhoiVTH.GetCurrentDateInFacilityTimezone("Asia/Ho_Chi_Minh");
 
         // Valid rate for typeActive
         var validRate = new facility_rate
@@ -134,8 +134,8 @@ public class FacilityCatalogServiceTests
         context.facility_rates.AddRange(validRate, expiredRate, inactiveTypeRate);
         await context.SaveChangesAsync();
 
-        var repo = new FacilityCatalogRepository(context);
-        var service = new FacilityCatalogService(repo, NullLogger<FacilityCatalogService>.Instance);
+        var repo = new FacilityCatalogRepositoryKhoiVTH(context);
+        var service = new FacilityCatalogServiceKhoiVTH(repo, NullLogger<FacilityCatalogServiceKhoiVTH>.Instance);
 
         var result = await service.GetFacilityUnitTypesAsync(1, new GetFacilityUnitTypesRequest
         {
@@ -156,10 +156,10 @@ public class FacilityCatalogServiceTests
         context.facilities.Add(fac);
         await context.SaveChangesAsync();
 
-        var repo = new FacilityCatalogRepository(context);
-        var service = new FacilityCatalogService(repo, NullLogger<FacilityCatalogService>.Instance);
+        var repo = new FacilityCatalogRepositoryKhoiVTH(context);
+        var service = new FacilityCatalogServiceKhoiVTH(repo, NullLogger<FacilityCatalogServiceKhoiVTH>.Instance);
 
-        var today = FacilityCatalogService.GetCurrentDateInFacilityTimezone("Asia/Ho_Chi_Minh");
+        var today = FacilityCatalogServiceKhoiVTH.GetCurrentDateInFacilityTimezone("Asia/Ho_Chi_Minh");
 
         // Start date in past
         await Assert.ThrowsAsync<BadRequestException>(() =>
@@ -198,7 +198,7 @@ public class FacilityCatalogServiceTests
     public async Task GetFacilityUnitTypes_ShouldDeductUnassignedActiveReservationsFromEstimatedAvailable()
     {
         using var context = CreateInMemoryContext(Guid.NewGuid().ToString());
-        var today = FacilityCatalogService.GetCurrentDateInFacilityTimezone("Asia/Ho_Chi_Minh");
+        var today = FacilityCatalogServiceKhoiVTH.GetCurrentDateInFacilityTimezone("Asia/Ho_Chi_Minh");
 
         var fac = new facility { id = 1, code = "F1", name = "Facility 1", address_line = "A", city = "HCM", status = "active", timezone = "Asia/Ho_Chi_Minh" };
         var uType = new unit_type { id = 10, code = "UT-10", name = "Kho Vừa", width_m = 2, length_m = 3, height_m = 3, is_active = true };
@@ -244,8 +244,8 @@ public class FacilityCatalogServiceTests
         context.reservations.AddRange(r1, rExpired);
         await context.SaveChangesAsync();
 
-        var repo = new FacilityCatalogRepository(context);
-        var service = new FacilityCatalogService(repo, NullLogger<FacilityCatalogService>.Instance);
+        var repo = new FacilityCatalogRepositoryKhoiVTH(context);
+        var service = new FacilityCatalogServiceKhoiVTH(repo, NullLogger<FacilityCatalogServiceKhoiVTH>.Instance);
 
         var result = await service.GetFacilityUnitTypesAsync(1, new GetFacilityUnitTypesRequest
         {
@@ -265,7 +265,7 @@ public class FacilityCatalogServiceTests
     public async Task GetAvailableUnits_ShouldFilterStrictlyAccordingTo_BR_OPS_02()
     {
         using var context = CreateInMemoryContext(Guid.NewGuid().ToString());
-        var today = FacilityCatalogService.GetCurrentDateInFacilityTimezone("Asia/Ho_Chi_Minh");
+        var today = FacilityCatalogServiceKhoiVTH.GetCurrentDateInFacilityTimezone("Asia/Ho_Chi_Minh");
         var startDate = today.AddDays(1);
         var endDate = startDate.AddMonths(1);
 
@@ -340,8 +340,8 @@ public class FacilityCatalogServiceTests
         context.unit_allocations.Add(alloc);
         await context.SaveChangesAsync();
 
-        var repo = new FacilityCatalogRepository(context);
-        var service = new FacilityCatalogService(repo, NullLogger<FacilityCatalogService>.Instance);
+        var repo = new FacilityCatalogRepositoryKhoiVTH(context);
+        var service = new FacilityCatalogServiceKhoiVTH(repo, NullLogger<FacilityCatalogServiceKhoiVTH>.Instance);
 
         var response = await service.GetAvailableUnitsAsync(1, new GetAvailableUnitsRequest
         {
@@ -361,7 +361,7 @@ public class FacilityCatalogServiceTests
     public async Task GetFacilityFloorMap_ShouldReflectSimplifiedVisualStatus_WithoutLeakingTenantInfo()
     {
         using var context = CreateInMemoryContext(Guid.NewGuid().ToString());
-        var today = FacilityCatalogService.GetCurrentDateInFacilityTimezone("Asia/Ho_Chi_Minh");
+        var today = FacilityCatalogServiceKhoiVTH.GetCurrentDateInFacilityTimezone("Asia/Ho_Chi_Minh");
         var startDate = today.AddDays(1);
         var endDate = startDate.AddMonths(1);
 
@@ -399,8 +399,8 @@ public class FacilityCatalogServiceTests
         context.unit_map_positions.AddRange(pos1, pos2, pos3);
         await context.SaveChangesAsync();
 
-        var repo = new FacilityCatalogRepository(context);
-        var service = new FacilityCatalogService(repo, NullLogger<FacilityCatalogService>.Instance);
+        var repo = new FacilityCatalogRepositoryKhoiVTH(context);
+        var service = new FacilityCatalogServiceKhoiVTH(repo, NullLogger<FacilityCatalogServiceKhoiVTH>.Instance);
 
         var floorMap = await service.GetFacilityFloorMapAsync(1, new GetFacilityFloorMapRequest
         {
@@ -429,7 +429,7 @@ public class FacilityCatalogServiceTests
     public async Task GetAvailableUnits_ShouldExcludeUnits_WhenUnitTypeIsInactive_OrNoValidRate()
     {
         using var context = CreateInMemoryContext(Guid.NewGuid().ToString());
-        var today = FacilityCatalogService.GetCurrentDateInFacilityTimezone("Asia/Ho_Chi_Minh");
+        var today = FacilityCatalogServiceKhoiVTH.GetCurrentDateInFacilityTimezone("Asia/Ho_Chi_Minh");
         var startDate = today.AddDays(1);
         var endDate = startDate.AddMonths(1);
 
@@ -469,8 +469,8 @@ public class FacilityCatalogServiceTests
         context.storage_units.AddRange(u1, u2, u3);
         await context.SaveChangesAsync();
 
-        var repo = new FacilityCatalogRepository(context);
-        var service = new FacilityCatalogService(repo, NullLogger<FacilityCatalogService>.Instance);
+        var repo = new FacilityCatalogRepositoryKhoiVTH(context);
+        var service = new FacilityCatalogServiceKhoiVTH(repo, NullLogger<FacilityCatalogServiceKhoiVTH>.Instance);
 
         var result = await service.GetAvailableUnitsAsync(1, new GetAvailableUnitsRequest
         {
@@ -486,7 +486,7 @@ public class FacilityCatalogServiceTests
     public async Task GetFacilityFloorMap_ShouldSetCanSelectToProceedFalse_WhenUnitTypeBookingCapacityIsZero()
     {
         using var context = CreateInMemoryContext(Guid.NewGuid().ToString());
-        var today = FacilityCatalogService.GetCurrentDateInFacilityTimezone("Asia/Ho_Chi_Minh");
+        var today = FacilityCatalogServiceKhoiVTH.GetCurrentDateInFacilityTimezone("Asia/Ho_Chi_Minh");
         var startDate = today.AddDays(1);
         var endDate = startDate.AddMonths(1);
 
@@ -522,8 +522,8 @@ public class FacilityCatalogServiceTests
         context.reservations.Add(res);
         await context.SaveChangesAsync();
 
-        var repo = new FacilityCatalogRepository(context);
-        var service = new FacilityCatalogService(repo, NullLogger<FacilityCatalogService>.Instance);
+        var repo = new FacilityCatalogRepositoryKhoiVTH(context);
+        var service = new FacilityCatalogServiceKhoiVTH(repo, NullLogger<FacilityCatalogServiceKhoiVTH>.Instance);
 
         var map = await service.GetFacilityFloorMapAsync(1, new GetFacilityFloorMapRequest
         {
@@ -541,7 +541,7 @@ public class FacilityCatalogServiceTests
     public async Task GetFacilityUnitTypes_ShouldFilterAndValidateArea_Correctly()
     {
         using var context = CreateInMemoryContext(Guid.NewGuid().ToString());
-        var today = FacilityCatalogService.GetCurrentDateInFacilityTimezone("Asia/Ho_Chi_Minh");
+        var today = FacilityCatalogServiceKhoiVTH.GetCurrentDateInFacilityTimezone("Asia/Ho_Chi_Minh");
         var startDate = today.AddDays(1);
         var endDate = startDate.AddMonths(1);
 
@@ -557,8 +557,8 @@ public class FacilityCatalogServiceTests
         context.facility_rates.AddRange(rateSmall, rateLarge);
         await context.SaveChangesAsync();
 
-        var repo = new FacilityCatalogRepository(context);
-        var service = new FacilityCatalogService(repo, NullLogger<FacilityCatalogService>.Instance);
+        var repo = new FacilityCatalogRepositoryKhoiVTH(context);
+        var service = new FacilityCatalogServiceKhoiVTH(repo, NullLogger<FacilityCatalogServiceKhoiVTH>.Instance);
 
         // Validation test: minArea > maxArea
         await Assert.ThrowsAsync<BadRequestException>(() => service.GetFacilityUnitTypesAsync(1, new GetFacilityUnitTypesRequest
@@ -585,7 +585,7 @@ public class FacilityCatalogServiceTests
     public async Task GetAvailableUnits_WhenCapacityIsZeroDueToActiveUnassignedReservation_ShouldExcludeUnits()
     {
         using var context = CreateInMemoryContext(Guid.NewGuid().ToString());
-        var today = FacilityCatalogService.GetCurrentDateInFacilityTimezone("Asia/Ho_Chi_Minh");
+        var today = FacilityCatalogServiceKhoiVTH.GetCurrentDateInFacilityTimezone("Asia/Ho_Chi_Minh");
         var startDate = today.AddDays(1);
         var endDate = startDate.AddMonths(1);
 
@@ -635,8 +635,8 @@ public class FacilityCatalogServiceTests
         context.reservations.Add(res);
         await context.SaveChangesAsync();
 
-        var repo = new FacilityCatalogRepository(context);
-        var service = new FacilityCatalogService(repo, NullLogger<FacilityCatalogService>.Instance);
+        var repo = new FacilityCatalogRepositoryKhoiVTH(context);
+        var service = new FacilityCatalogServiceKhoiVTH(repo, NullLogger<FacilityCatalogServiceKhoiVTH>.Instance);
 
         var result = await service.GetAvailableUnitsAsync(1, new GetAvailableUnitsRequest
         {
@@ -655,7 +655,7 @@ public class FacilityCatalogServiceTests
     public async Task GetAvailableUnits_WithCandidateUnitsAndUnassignedReservations_ShouldReturnCandidatesWhileCapacityReflectsRemainingSlots()
     {
         using var context = CreateInMemoryContext(Guid.NewGuid().ToString());
-        var today = FacilityCatalogService.GetCurrentDateInFacilityTimezone("Asia/Ho_Chi_Minh");
+        var today = FacilityCatalogServiceKhoiVTH.GetCurrentDateInFacilityTimezone("Asia/Ho_Chi_Minh");
         var startDate = today.AddDays(1);
         var endDate = startDate.AddMonths(1);
 
@@ -711,8 +711,8 @@ public class FacilityCatalogServiceTests
         context.reservations.AddRange(res1, res2);
         await context.SaveChangesAsync();
 
-        var repo = new FacilityCatalogRepository(context);
-        var service = new FacilityCatalogService(repo, NullLogger<FacilityCatalogService>.Instance);
+        var repo = new FacilityCatalogRepositoryKhoiVTH(context);
+        var service = new FacilityCatalogServiceKhoiVTH(repo, NullLogger<FacilityCatalogServiceKhoiVTH>.Instance);
 
         // 1. Check Unit Type Booking Capacity
         var unitTypes = await service.GetFacilityUnitTypesAsync(1, new GetFacilityUnitTypesRequest

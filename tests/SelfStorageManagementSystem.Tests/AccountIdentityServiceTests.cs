@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
@@ -27,11 +27,11 @@ public class AccountIdentityServiceTests
     private readonly Mock<IFacilityScopeService> _facilityScopeMock = new();
     private readonly Mock<IAuditService> _auditMock = new();
 
-    private readonly AccountIdentityService _identityService;
+    private readonly AccountIdentityServiceKhoiVTH _identityService;
 
     public AccountIdentityServiceTests()
     {
-        _identityService = new AccountIdentityService(
+        _identityService = new AccountIdentityServiceKhoiVTH(
             _userRepoMock.Object,
             _roleRepoMock.Object,
             _userRoleRepoMock.Object,
@@ -40,7 +40,7 @@ public class AccountIdentityServiceTests
             _passwordHasherMock.Object,
             _facilityScopeMock.Object,
             _auditMock.Object,
-            NullLogger<AccountIdentityService>.Instance);
+            NullLogger<AccountIdentityServiceKhoiVTH>.Instance);
     }
 
     [Fact]
@@ -62,7 +62,7 @@ public class AccountIdentityServiceTests
         user.user_roleusers.Add(new user_role { user_id = 101, role_id = 1, role = role });
 
         _userRepoMock.Setup(r => r.GetIdentitySnapshotByEmailAsync(email, It.IsAny<DateTimeOffset?>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((UserIdentitySnapshot?)null); // tests fallback or entity lookup
+            .ReturnsAsync((UserIdentitySnapshotKhoiVTH?)null); // tests fallback or entity lookup
         _userRepoMock.Setup(r => r.GetByEmailWithRolesAndProfilesAsNoTrackingAsync(email, It.IsAny<CancellationToken>()))
             .ReturnsAsync(user);
 
@@ -98,7 +98,7 @@ public class AccountIdentityServiceTests
         // Arrange
         var email = "nonexistent@example.test";
         _userRepoMock.Setup(r => r.GetIdentitySnapshotByEmailAsync(email, It.IsAny<DateTimeOffset?>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((UserIdentitySnapshot?)null);
+            .ReturnsAsync((UserIdentitySnapshotKhoiVTH?)null);
         _userRepoMock.Setup(r => r.GetByEmailWithRolesAndProfilesAsNoTrackingAsync(email, It.IsAny<CancellationToken>()))
             .ReturnsAsync((user?)null);
 
@@ -118,7 +118,7 @@ public class AccountIdentityServiceTests
     {
         // Arrange
         var email = "user@example.test";
-        var snapshot = new UserIdentitySnapshot
+        var snapshot = new UserIdentitySnapshotKhoiVTH
         {
             UserId = 200,
             Email = email,
@@ -148,7 +148,7 @@ public class AccountIdentityServiceTests
     {
         // Arrange
         var email = "locked@example.test";
-        var snapshot = new UserIdentitySnapshot
+        var snapshot = new UserIdentitySnapshotKhoiVTH
         {
             UserId = 201,
             Email = email,
@@ -176,7 +176,7 @@ public class AccountIdentityServiceTests
     {
         // Arrange
         var email = "disabled@example.test";
-        var snapshot = new UserIdentitySnapshot
+        var snapshot = new UserIdentitySnapshotKhoiVTH
         {
             UserId = 202,
             Email = email,
@@ -206,7 +206,7 @@ public class AccountIdentityServiceTests
     {
         // Arrange
         var email = "inactive_emp_login@example.test";
-        var snapshot = new UserIdentitySnapshot
+        var snapshot = new UserIdentitySnapshotKhoiVTH
         {
             UserId = 205,
             Email = email,
@@ -237,7 +237,7 @@ public class AccountIdentityServiceTests
         // Arrange
         var email = "staff@example.test";
         var password = "StaffPassword123";
-        var snapshot = new UserIdentitySnapshot
+        var snapshot = new UserIdentitySnapshotKhoiVTH
         {
             UserId = 300,
             Email = email,
@@ -257,7 +257,7 @@ public class AccountIdentityServiceTests
         jwtMock.Setup(j => j.GenerateToken(300, email, It.IsAny<IEnumerable<string>>()))
             .Returns(("jwt_sample_token", DateTimeOffset.UtcNow.AddMinutes(60)));
 
-        var authService = new AuthService(_identityService, jwtMock.Object);
+        var authService = new AuthServiceKhoiVTH(_identityService, jwtMock.Object);
 
         // Act
         var loginResponse = await authService.LoginAsync(new LoginRequest { Email = email, Password = password });
@@ -279,7 +279,7 @@ public class AccountIdentityServiceTests
     {
         // Arrange
         _userRepoMock.Setup(r => r.GetIdentitySnapshotByIdAsync(999, It.IsAny<DateTimeOffset?>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((UserIdentitySnapshot?)null);
+            .ReturnsAsync((UserIdentitySnapshotKhoiVTH?)null);
         _userRepoMock.Setup(r => r.GetByIdWithRolesAndProfilesAsNoTrackingAsync(999, It.IsAny<CancellationToken>()))
             .ReturnsAsync((user?)null);
 
@@ -294,7 +294,7 @@ public class AccountIdentityServiceTests
     public async Task GetCurrentUserAsync_WithActiveUser_ShouldReturnCurrentUserResponseWithActiveAssignments()
     {
         // Arrange
-        var snapshot = new UserIdentitySnapshot
+        var snapshot = new UserIdentitySnapshotKhoiVTH
         {
             UserId = 400,
             Email = "manager@example.test",
@@ -304,7 +304,7 @@ public class AccountIdentityServiceTests
             EmployeeCode = "EMP001",
             EmploymentStatus = "active",
             Roles = new List<string> { RoleConstants.FacilityManager },
-            ActiveAssignments = new List<StaffAssignmentSnapshot>
+            ActiveAssignments = new List<StaffAssignmentSnapshotKhoiVTH>
             {
                 new()
                 {
@@ -340,7 +340,7 @@ public class AccountIdentityServiceTests
     [Fact]
     public async Task SnapshotQuery_ReflectsFreshDbChanges_WithoutRelyingOnTrackedEntity()
     {
-        // Verify real EF Core UserRepository behavior with In-Memory DbContext
+        // Verify real EF Core UserRepositoryKhoiVTH behavior with In-Memory DbContext
         var dbOptions = new DbContextOptionsBuilder<SelfStorageDbContext>()
             .UseInMemoryDatabase("IdentitySnapshotFreshnessTest_" + Guid.NewGuid().ToString("N"))
             .Options;
@@ -367,7 +367,7 @@ public class AccountIdentityServiceTests
         db.employee_profiles.Add(new employee_profile { user_id = 500, employee_code = "E500", full_name = "Snapshot User", employment_status = "active", created_at = DateTimeOffset.UtcNow, updated_at = DateTimeOffset.UtcNow });
         await db.SaveChangesAsync();
 
-        var repo = new UserRepository(db);
+        var repo = new UserRepositoryKhoiVTH(db);
 
         // Step 1: Read initial snapshot
         var initialSnapshot = await repo.GetIdentitySnapshotByIdAsync(500);
@@ -407,7 +407,7 @@ public class AccountIdentityServiceTests
     public async Task GetCurrentUserAsync_ActiveManager_ReceivesBothManagerAndStaffAssignments()
     {
         // Arrange
-        var snapshot = new UserIdentitySnapshot
+        var snapshot = new UserIdentitySnapshotKhoiVTH
         {
             UserId = 401,
             Email = "manager@example.test",
@@ -416,7 +416,7 @@ public class AccountIdentityServiceTests
             EmployeeCode = "EMP001",
             EmploymentStatus = EmploymentStatusConstants.Active,
             Roles = new List<string> { RoleConstants.FacilityManager },
-            ActiveAssignments = new List<StaffAssignmentSnapshot>
+            ActiveAssignments = new List<StaffAssignmentSnapshotKhoiVTH>
             {
                 new()
                 {
@@ -458,7 +458,7 @@ public class AccountIdentityServiceTests
     public async Task GetCurrentUserAsync_ActiveStaff_DoesNotReceiveManagerAssignments()
     {
         // Arrange
-        var snapshot = new UserIdentitySnapshot
+        var snapshot = new UserIdentitySnapshotKhoiVTH
         {
             UserId = 402,
             Email = "staff@example.test",
@@ -467,7 +467,7 @@ public class AccountIdentityServiceTests
             EmployeeCode = "EMP002",
             EmploymentStatus = EmploymentStatusConstants.Active,
             Roles = new List<string> { RoleConstants.FacilityStaff },
-            ActiveAssignments = new List<StaffAssignmentSnapshot>
+            ActiveAssignments = new List<StaffAssignmentSnapshotKhoiVTH>
             {
                 new()
                 {
@@ -511,7 +511,7 @@ public class AccountIdentityServiceTests
     public async Task GetCurrentUserAsync_EmploymentStatusLeaveOrTerminated_ReturnsNull(string employmentStatus)
     {
         // Arrange
-        var snapshot = new UserIdentitySnapshot
+        var snapshot = new UserIdentitySnapshotKhoiVTH
         {
             UserId = 403,
             Email = "inactive_emp@example.test",
@@ -520,7 +520,7 @@ public class AccountIdentityServiceTests
             EmployeeCode = "EMP003",
             EmploymentStatus = employmentStatus,
             Roles = new List<string> { RoleConstants.FacilityManager },
-            ActiveAssignments = new List<StaffAssignmentSnapshot>
+            ActiveAssignments = new List<StaffAssignmentSnapshotKhoiVTH>
             {
                 new()
                 {
@@ -549,7 +549,7 @@ public class AccountIdentityServiceTests
     public async Task GetCurrentUserAsync_RevokedStaffOrManagerRole_ReturnsEmptyAssignments()
     {
         // Arrange: User has active employee profile and assignment in DB, but roles contain neither manager nor staff
-        var snapshot = new UserIdentitySnapshot
+        var snapshot = new UserIdentitySnapshotKhoiVTH
         {
             UserId = 404,
             Email = "customer_now@example.test",
@@ -558,7 +558,7 @@ public class AccountIdentityServiceTests
             EmployeeCode = "EMP004",
             EmploymentStatus = EmploymentStatusConstants.Active,
             Roles = new List<string> { RoleConstants.StorageCustomer }, // Roles revoked!
-            ActiveAssignments = new List<StaffAssignmentSnapshot>
+            ActiveAssignments = new List<StaffAssignmentSnapshotKhoiVTH>
             {
                 new()
                 {
@@ -638,7 +638,7 @@ public class AccountIdentityServiceTests
 
         await db.SaveChangesAsync();
 
-        var repo = new UserRepository(db);
+        var repo = new UserRepositoryKhoiVTH(db);
 
         // Verify User A: Active Manager receives both assignments
         var snapA = await repo.GetIdentitySnapshotByIdAsync(601);

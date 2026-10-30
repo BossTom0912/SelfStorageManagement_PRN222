@@ -1,4 +1,4 @@
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -9,11 +9,11 @@ using SelfStorageManagementSystem.DataAccess.Repositories.Interfaces;
 
 namespace SelfStorageManagementSystem.DataAccess.Repositories.Implementations;
 
-public class ReservationRepository : GenericRepository<reservation>, IReservationRepository
+public class ReservationRepositoryKhoiVTH : GenericRepositoryKhoiVTH<reservation>, IReservationRepository
 {
     private static readonly ConcurrentDictionary<string, SemaphoreSlim> InMemorySemaphores = new();
 
-    public ReservationRepository(SelfStorageDbContext context) : base(context)
+    public ReservationRepositoryKhoiVTH(SelfStorageDbContext context) : base(context)
     {
     }
 

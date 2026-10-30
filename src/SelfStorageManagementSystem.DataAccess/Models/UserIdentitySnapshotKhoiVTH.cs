@@ -1,6 +1,6 @@
-namespace SelfStorageManagementSystem.DataAccess.Models;
+﻿namespace SelfStorageManagementSystem.DataAccess.Models;
 
-public class StaffAssignmentSnapshot
+public class StaffAssignmentSnapshotKhoiVTH
 {
     public long Id { get; set; }
     public long EmployeeId { get; set; }
@@ -13,7 +13,7 @@ public class StaffAssignmentSnapshot
     public DateTimeOffset CreatedAt { get; set; }
 }
 
-public class UserIdentitySnapshot
+public class UserIdentitySnapshotKhoiVTH
 {
     public long UserId { get; set; }
     public string Email { get; set; } = string.Empty;
@@ -32,7 +32,7 @@ public class UserIdentitySnapshot
     public string? EmploymentStatus { get; set; }
 
     public List<string> Roles { get; set; } = new();
-    public List<StaffAssignmentSnapshot> ActiveAssignments { get; set; } = new();
+    public List<StaffAssignmentSnapshotKhoiVTH> ActiveAssignments { get; set; } = new();
 
     public string DisplayName => CustomerFullName
                                   ?? EmployeeFullName

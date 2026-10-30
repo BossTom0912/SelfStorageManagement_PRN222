@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -23,14 +23,14 @@ namespace SelfStorageManagementSystem.BusinessLogic.Services.Implementations;
 /// referential integrity checks, and capacity commitment protection under transactional capacity locks.
 /// Operates strictly within BLL using typed domain exceptions; does not reference ASP.NET Core or SignalR.
 /// </summary>
-public class StorageUnitAdminService : IStorageUnitAdminService
+public class StorageUnitAdminServiceKhoiVTH : IStorageUnitAdminService
 {
     private readonly IStorageUnitAdminRepository _storageUnitAdminRepository;
     private readonly IUserRepository _userRepository;
     private readonly IFacilityScopeService _facilityScopeService;
     private readonly TimeProvider _timeProvider;
 
-    public StorageUnitAdminService(
+    public StorageUnitAdminServiceKhoiVTH(
         IStorageUnitAdminRepository storageUnitAdminRepository,
         IUserRepository userRepository,
         IFacilityScopeService facilityScopeService,
@@ -50,7 +50,7 @@ public class StorageUnitAdminService : IStorageUnitAdminService
         ArgumentNullException.ThrowIfNull(request);
         var (_, isSysOrOps, _, _) = await ValidateActorAndRolesAsync(actorUserId, cancellationToken);
 
-        var queryParams = new StorageUnitAdminQueryParameters
+        var queryParams = new StorageUnitAdminQueryParametersKhoiVTH
         {
             UnitTypeId = request.UnitTypeId,
             AreaId = request.AreaId,
@@ -431,7 +431,7 @@ public class StorageUnitAdminService : IStorageUnitAdminService
         }
 
         // Define policy delegate executed atomically under the capacity lock
-        Func<StorageUnitDeleteEvaluationContext, Task<bool>> evaluatePolicy = ctx =>
+        Func<StorageUnitDeleteEvaluationContextKhoiVTH, Task<bool>> evaluatePolicy = ctx =>
         {
             // 1. Verify physical status under lock
             if (ctx.Unit.physical_status != "available")
@@ -518,7 +518,7 @@ public class StorageUnitAdminService : IStorageUnitAdminService
     // Helpers & Mappers
     // =========================================================================
 
-    private async Task<(UserIdentitySnapshot Actor, bool IsAdminOrOps, bool IsManager, bool IsStaff)> ValidateActorAndRolesAsync(
+    private async Task<(UserIdentitySnapshotKhoiVTH Actor, bool IsAdminOrOps, bool IsManager, bool IsStaff)> ValidateActorAndRolesAsync(
         long actorUserId,
         CancellationToken cancellationToken)
     {
@@ -630,7 +630,7 @@ public class StorageUnitAdminService : IStorageUnitAdminService
         };
     }
 
-    private StorageUnitAdminDetailDto MapToDetailDto(storage_unit unit, StorageUnitReferenceSummary refSummary)
+    private StorageUnitAdminDetailDto MapToDetailDto(storage_unit unit, StorageUnitReferenceSummaryKhoiVTH refSummary)
     {
         var activeAlloc = unit.unit_allocations.FirstOrDefault(a => a.status == "active");
 

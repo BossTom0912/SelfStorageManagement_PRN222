@@ -1,13 +1,13 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SelfStorageManagementSystem.DataAccess.Context;
 using SelfStorageManagementSystem.DataAccess.Entities;
 using SelfStorageManagementSystem.DataAccess.Repositories.Interfaces;
 
 namespace SelfStorageManagementSystem.DataAccess.Repositories.Implementations;
 
-public class FacilityCatalogRepository : GenericRepository<facility>, IFacilityCatalogRepository
+public class FacilityCatalogRepositoryKhoiVTH : GenericRepositoryKhoiVTH<facility>, IFacilityCatalogRepository
 {
-    public FacilityCatalogRepository(SelfStorageDbContext context) : base(context)
+    public FacilityCatalogRepositoryKhoiVTH(SelfStorageDbContext context) : base(context)
     {
     }
 

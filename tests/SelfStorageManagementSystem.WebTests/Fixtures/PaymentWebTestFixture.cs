@@ -1,4 +1,4 @@
-using System.Net;
+﻿using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -435,7 +435,7 @@ public class PaymentWebTestFixture : WebApplicationFactory<Program>
             hashBuilder.Append(WebUtility.UrlEncode(k)).Append('=').Append(WebUtility.UrlEncode(v));
         }
 
-        var signature = VnpayGateway.ComputeHmacSha512(hashSecret, hashBuilder.ToString());
+        var signature = VnpayGatewayKhoiVTH.ComputeHmacSha512(hashSecret, hashBuilder.ToString());
         if (tamperSignature)
         {
             signature = signature.Replace('A', 'B').Replace('0', '1');

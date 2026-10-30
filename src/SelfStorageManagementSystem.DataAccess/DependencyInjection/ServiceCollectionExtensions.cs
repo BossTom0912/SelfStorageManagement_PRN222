@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SelfStorageManagementSystem.DataAccess.Context;
@@ -27,13 +27,13 @@ public static class ServiceCollectionExtensions
             options.UseSqlServer(connectionString);
         });
 
-        services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
-        services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<IFacilityCatalogRepository, FacilityCatalogRepository>();
-        services.AddScoped<IReservationRepository, ReservationRepository>();
-        services.AddScoped<IPaymentRepository, PaymentRepository>();
-        services.AddScoped<ICheckInRepository, CheckInRepository>();
-        services.AddScoped<IStorageUnitKhoiVTHRepository, StorageUnitKhoiVTHRepository>();
+        services.AddScoped(typeof(IRepository<>), typeof(GenericRepositoryKhoiVTH<>));
+        services.AddScoped<IUserRepository, UserRepositoryKhoiVTH>();
+        services.AddScoped<IFacilityCatalogRepository, FacilityCatalogRepositoryKhoiVTH>();
+        services.AddScoped<IReservationRepository, ReservationRepositoryKhoiVTH>();
+        services.AddScoped<IPaymentRepository, PaymentRepositoryKhoiVTH>();
+        services.AddScoped<ICheckInRepository, CheckInRepositoryKhoiVTH>();
+        services.AddScoped<IStorageUnitKhoiVTHRepository, StorageUnitRepositoryKhoiVTH>();
         services.AddScoped<IStorageUnitAdminRepository>(sp => sp.GetRequiredService<IStorageUnitKhoiVTHRepository>());
 
         return services;

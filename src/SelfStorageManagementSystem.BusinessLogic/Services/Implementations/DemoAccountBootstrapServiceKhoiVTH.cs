@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SelfStorageManagementSystem.BusinessLogic.Common.Constants;
@@ -8,21 +8,21 @@ using SelfStorageManagementSystem.DataAccess.Entities;
 
 namespace SelfStorageManagementSystem.BusinessLogic.Services.Implementations;
 
-public class DemoAccountBootstrapService : IDemoAccountBootstrapService
+public class DemoAccountBootstrapServiceKhoiVTH : IDemoAccountBootstrapService
 {
     private readonly SelfStorageDbContext _context;
     private readonly IPasswordHasher _passwordHasher;
     private readonly IConfiguration _configuration;
-    private readonly ILogger<DemoAccountBootstrapService> _logger;
+    private readonly ILogger<DemoAccountBootstrapServiceKhoiVTH> _logger;
 
     private const string PlaceholderHash = "external-auth-demo-only";
     private const string LegacyPlaceholderPrefix = "PH:v1:";
 
-    public DemoAccountBootstrapService(
+    public DemoAccountBootstrapServiceKhoiVTH(
         SelfStorageDbContext context,
         IPasswordHasher passwordHasher,
         IConfiguration configuration,
-        ILogger<DemoAccountBootstrapService> logger)
+        ILogger<DemoAccountBootstrapServiceKhoiVTH> logger)
     {
         _context = context;
         _passwordHasher = passwordHasher;

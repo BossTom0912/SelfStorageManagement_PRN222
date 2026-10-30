@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -1653,18 +1653,18 @@ public class StorageUnitRealtimeHubTests : IClassFixture<CookieAuthWebTestFixtur
             .AddInterceptors(new CancelOnSavedChangesInterceptor(cts));
         var db = new SelfStorageDbContext(optionsBuilder.Options);
 
-        var userRepo = new SelfStorageManagementSystem.DataAccess.Repositories.Implementations.UserRepository(db);
-        var roleRepo = new SelfStorageManagementSystem.DataAccess.Repositories.Implementations.GenericRepository<role>(db);
-        var userRoleRepo = new SelfStorageManagementSystem.DataAccess.Repositories.Implementations.GenericRepository<user_role>(db);
-        var empProfileRepo = new SelfStorageManagementSystem.DataAccess.Repositories.Implementations.GenericRepository<employee_profile>(db);
-        var assignmentRepo = new SelfStorageManagementSystem.DataAccess.Repositories.Implementations.GenericRepository<staff_facility_assignment>(db);
-        var facilityRepo = new SelfStorageManagementSystem.DataAccess.Repositories.Implementations.GenericRepository<facility>(db);
+        var userRepo = new SelfStorageManagementSystem.DataAccess.Repositories.Implementations.UserRepositoryKhoiVTH(db);
+        var roleRepo = new SelfStorageManagementSystem.DataAccess.Repositories.Implementations.GenericRepositoryKhoiVTH<role>(db);
+        var userRoleRepo = new SelfStorageManagementSystem.DataAccess.Repositories.Implementations.GenericRepositoryKhoiVTH<user_role>(db);
+        var empProfileRepo = new SelfStorageManagementSystem.DataAccess.Repositories.Implementations.GenericRepositoryKhoiVTH<employee_profile>(db);
+        var assignmentRepo = new SelfStorageManagementSystem.DataAccess.Repositories.Implementations.GenericRepositoryKhoiVTH<staff_facility_assignment>(db);
+        var facilityRepo = new SelfStorageManagementSystem.DataAccess.Repositories.Implementations.GenericRepositoryKhoiVTH<facility>(db);
         var passwordHasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher>();
         var auditService = scope.ServiceProvider.GetRequiredService<IAuditService>();
-        var logger = scope.ServiceProvider.GetRequiredService<Microsoft.Extensions.Logging.ILogger<SelfStorageManagementSystem.BusinessLogic.Services.Implementations.AdminAccountService>>();
+        var logger = scope.ServiceProvider.GetRequiredService<Microsoft.Extensions.Logging.ILogger<SelfStorageManagementSystem.BusinessLogic.Services.Implementations.AdminAccountServiceKhoiVTH>>();
         var notifier = scope.ServiceProvider.GetRequiredService<IUserScopeChangedNotifier>();
 
-        var svc = new SelfStorageManagementSystem.BusinessLogic.Services.Implementations.AdminAccountService(
+        var svc = new SelfStorageManagementSystem.BusinessLogic.Services.Implementations.AdminAccountServiceKhoiVTH(
             db, userRepo, roleRepo, userRoleRepo, empProfileRepo, assignmentRepo, facilityRepo,
             passwordHasher, auditService, logger, notifier);
         return (svc, db);
@@ -1999,7 +1999,7 @@ public class StorageUnitRealtimeHubTests : IClassFixture<CookieAuthWebTestFixtur
         {
             // Setup publisher with controllable SettableTimeProvider
             using var f02Scope = _factory.Services.CreateScope();
-            var facilityScopeService = ActivatorUtilities.CreateInstance<SelfStorageManagementSystem.BusinessLogic.Services.Implementations.FacilityScopeService>(f02Scope.ServiceProvider, (TimeProvider)timeProvider);
+            var facilityScopeService = ActivatorUtilities.CreateInstance<SelfStorageManagementSystem.BusinessLogic.Services.Implementations.FacilityScopeServiceKhoiVTH>(f02Scope.ServiceProvider, (TimeProvider)timeProvider);
             var accountIdentityService = f02Scope.ServiceProvider.GetRequiredService<IAccountIdentityService>();
             var revocationLogger = f02Scope.ServiceProvider.GetRequiredService<Microsoft.Extensions.Logging.ILogger<StorageUnitHubScopeRevocationService>>();
             var revocationService = new StorageUnitHubScopeRevocationService(hubContext, connectionTracker, facilityScopeService, accountIdentityService, revocationLogger, timeProvider);
@@ -2452,7 +2452,7 @@ public class StorageUnitRealtimeHubTests : IClassFixture<CookieAuthWebTestFixtur
             timeProvider.SetUtcNow(t0.AddMinutes(10));
 
             using var scope = _factory.Services.CreateScope();
-            var facilityScopeService = ActivatorUtilities.CreateInstance<SelfStorageManagementSystem.BusinessLogic.Services.Implementations.FacilityScopeService>(scope.ServiceProvider, (TimeProvider)timeProvider);
+            var facilityScopeService = ActivatorUtilities.CreateInstance<SelfStorageManagementSystem.BusinessLogic.Services.Implementations.FacilityScopeServiceKhoiVTH>(scope.ServiceProvider, (TimeProvider)timeProvider);
             var accountIdentityService = scope.ServiceProvider.GetRequiredService<IAccountIdentityService>();
             var revocationLogger = scope.ServiceProvider.GetRequiredService<Microsoft.Extensions.Logging.ILogger<StorageUnitHubScopeRevocationService>>();
             var revocationService = new StorageUnitHubScopeRevocationService(hubContext, connectionTracker, facilityScopeService, accountIdentityService, revocationLogger, timeProvider);

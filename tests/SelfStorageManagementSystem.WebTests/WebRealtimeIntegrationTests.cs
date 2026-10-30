@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -1525,7 +1525,7 @@ public class WebRealtimeIntegrationTests : IClassFixture<CookieAuthWebTestFixtur
         Assert.Equal(typeof(SelfStorageManagementSystem.BusinessLogic.DTOs.Responses.Reservations.ExpiredReservationHoldInfo), itemType);
     }
 
-    #region R4 Concurrency Tests (Real PaymentService & PaymentRepository across distinct DbContexts)
+    #region R4 Concurrency Tests (Real PaymentServiceKhoiVTH & PaymentRepositoryKhoiVTH across distinct DbContexts)
 
     private async Task<(facility Facility, user Customer, string CookieHeader, reservation Reservation, invoice Invoice, payment Payment)> SeedPaymentAttemptAsync(
         string codePrefix,
@@ -1614,7 +1614,7 @@ public class WebRealtimeIntegrationTests : IClassFixture<CookieAuthWebTestFixtur
     public async Task R4_Concurrency_TwoSimultaneousDeclines_CommitOnce_AndEmitExactlyOneRealtimeEvent()
     {
         // Codex R3 P1 (1): Hai callback decline đồng thời dùng hai DbContext, DB chỉ chuyển một lần, đúng một realtime PaymentChanged.
-        // Thực thi trực tiếp PaymentService và PaymentRepository thật, không mock kết quả cuối.
+        // Thực thi trực tiếp PaymentServiceKhoiVTH và PaymentRepositoryKhoiVTH thật, không mock kết quả cuối.
         var (fac, customer, cookieCust, res, inv, payment) = await SeedPaymentAttemptAsync("r4_2dec", 1_000_000m, "pending");
 
         // Connect customer to SignalR hub to listen for PaymentChanged events
@@ -1722,7 +1722,7 @@ public class WebRealtimeIntegrationTests : IClassFixture<CookieAuthWebTestFixtur
     public async Task R4_Concurrency_SuccessRacingDecline_MaintainsConsistentDatabaseState_AndZeroFalseEvents()
     {
         // Codex R3 P1 (2): Success đua decline, trạng thái payment, reservation, invoice, agreement cuối nhất quán, không có realtime giả hoặc lặp.
-        // Thực thi trực tiếp PaymentService và PaymentRepository thật qua 2 DbContexts riêng biệt.
+        // Thực thi trực tiếp PaymentServiceKhoiVTH và PaymentRepositoryKhoiVTH thật qua 2 DbContexts riêng biệt.
         var (fac, customer, cookieCust, res, inv, payment) = await SeedPaymentAttemptAsync("r4_race", 1_000_000m, "pending");
 
         await using var connCust = BuildHubConnection(cookieCust);
@@ -2212,8 +2212,8 @@ public class WebRealtimeIntegrationTests : IClassFixture<CookieAuthWebTestFixtur
         var paymentLockKey1 = $"SS_Payment_{payment1.id}";
         var reservationLockKey1 = $"SS_Reservation_{res1.id}";
 
-        var paySem1 = PaymentRepository.InMemorySemaphores.GetOrAdd(paymentLockKey1, _ => new SemaphoreSlim(1, 1));
-        var resSem1 = PaymentRepository.InMemorySemaphores.GetOrAdd(reservationLockKey1, _ => new SemaphoreSlim(1, 1));
+        var paySem1 = PaymentRepositoryKhoiVTH.InMemorySemaphores.GetOrAdd(paymentLockKey1, _ => new SemaphoreSlim(1, 1));
+        var resSem1 = PaymentRepositoryKhoiVTH.InMemorySemaphores.GetOrAdd(reservationLockKey1, _ => new SemaphoreSlim(1, 1));
 
         // Request A holds payment lock
         await paySem1.WaitAsync();
@@ -2283,8 +2283,8 @@ public class WebRealtimeIntegrationTests : IClassFixture<CookieAuthWebTestFixtur
         var paymentLockKey2 = $"SS_Payment_{payment2.id}";
         var reservationLockKey2 = $"SS_Reservation_{res2.id}";
 
-        var paySem2 = PaymentRepository.InMemorySemaphores.GetOrAdd(paymentLockKey2, _ => new SemaphoreSlim(1, 1));
-        var resSem2 = PaymentRepository.InMemorySemaphores.GetOrAdd(reservationLockKey2, _ => new SemaphoreSlim(1, 1));
+        var paySem2 = PaymentRepositoryKhoiVTH.InMemorySemaphores.GetOrAdd(paymentLockKey2, _ => new SemaphoreSlim(1, 1));
+        var resSem2 = PaymentRepositoryKhoiVTH.InMemorySemaphores.GetOrAdd(reservationLockKey2, _ => new SemaphoreSlim(1, 1));
 
         // Request A2 holds payment lock
         await paySem2.WaitAsync();

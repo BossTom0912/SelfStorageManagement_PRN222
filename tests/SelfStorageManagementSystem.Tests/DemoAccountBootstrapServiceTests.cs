@@ -14,7 +14,7 @@ namespace SelfStorageManagementSystem.Tests;
 public class DemoAccountBootstrapServiceTests
 {
     private readonly Mock<IPasswordHasher> _passwordHasherMock = new();
-    private readonly Mock<ILogger<DemoAccountBootstrapService>> _loggerMock = new();
+    private readonly Mock<ILogger<DemoAccountBootstrapServiceKhoiVTH>> _loggerMock = new();
 
     private SelfStorageDbContext CreateInMemoryContext(string dbName)
     {
@@ -74,7 +74,7 @@ public class DemoAccountBootstrapServiceTests
         };
         var configuration = new ConfigurationBuilder().AddInMemoryCollection(inMemoryConfig).Build();
 
-        var service = new DemoAccountBootstrapService(
+        var service = new DemoAccountBootstrapServiceKhoiVTH(
             context,
             _passwordHasherMock.Object,
             configuration,
@@ -99,7 +99,7 @@ public class DemoAccountBootstrapServiceTests
         };
         var configuration = new ConfigurationBuilder().AddInMemoryCollection(inMemoryConfig).Build();
 
-        var service = new DemoAccountBootstrapService(
+        var service = new DemoAccountBootstrapServiceKhoiVTH(
             context,
             _passwordHasherMock.Object,
             configuration,
@@ -124,7 +124,7 @@ public class DemoAccountBootstrapServiceTests
         };
         var configuration = new ConfigurationBuilder().AddInMemoryCollection(inMemoryConfig).Build();
 
-        var service = new DemoAccountBootstrapService(
+        var service = new DemoAccountBootstrapServiceKhoiVTH(
             context,
             _passwordHasherMock.Object,
             configuration,
@@ -166,7 +166,7 @@ public class DemoAccountBootstrapServiceTests
         };
         var configuration = new ConfigurationBuilder().AddInMemoryCollection(inMemoryConfig).Build();
 
-        var service = new DemoAccountBootstrapService(
+        var service = new DemoAccountBootstrapServiceKhoiVTH(
             context,
             _passwordHasherMock.Object,
             configuration,
@@ -225,7 +225,7 @@ public class DemoAccountBootstrapServiceTests
         };
         var configuration = new ConfigurationBuilder().AddInMemoryCollection(inMemoryConfig).Build();
 
-        var service = new DemoAccountBootstrapService(
+        var service = new DemoAccountBootstrapServiceKhoiVTH(
             context,
             _passwordHasherMock.Object,
             configuration,

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using SelfStorageManagementSystem.DataAccess.Entities;
 
@@ -8,7 +8,7 @@ namespace SelfStorageManagementSystem.DataAccess.Models;
 /// Query criteria for searching and paginating storage units in admin repository.
 /// Translates directly to SQL OFFSET/FETCH pagination without in-memory dataset buffering.
 /// </summary>
-public class StorageUnitAdminQueryParameters
+public class StorageUnitAdminQueryParametersKhoiVTH
 {
     public long? FacilityId { get; set; }
     public IReadOnlyList<long>? FacilityIds { get; set; }
@@ -27,7 +27,7 @@ public class StorageUnitAdminQueryParameters
 /// Summary of all inbound foreign key references to a storage_unit.
 /// Used to verify referential integrity prior to delete operations.
 /// </summary>
-public class StorageUnitReferenceSummary
+public class StorageUnitReferenceSummaryKhoiVTH
 {
     public long StorageUnitId { get; set; }
     public string UnitCode { get; set; } = string.Empty;
@@ -112,7 +112,7 @@ public class StorageUnitReferenceSummary
 /// Capacity insights evaluated atomically under the facility+unit_type capacity lock.
 /// Tracks candidate available units against unassigned holds and confirmed reservations.
 /// </summary>
-public class StorageUnitCapacityImpact
+public class StorageUnitCapacityImpactKhoiVTH
 {
     public long FacilityId { get; set; }
     public long UnitTypeId { get; set; }
@@ -177,7 +177,7 @@ public class StorageUnitCapacityImpact
 /// Scope validation checking facility, unit_type, and area consistency.
 /// Prevents trigger 51020 violations (Unit area must belong to the same facility).
 /// </summary>
-public class StorageUnitScopeValidationResult
+public class StorageUnitScopeValidationResultKhoiVTH
 {
     public bool FacilityExists { get; set; }
     public bool FacilityIsActive { get; set; }
@@ -201,22 +201,22 @@ public class StorageUnitScopeValidationResult
 /// <summary>
 /// Evaluation context passed to BLL policy delegate during atomic deletion under capacity lock.
 /// </summary>
-public class StorageUnitDeleteEvaluationContext
+public class StorageUnitDeleteEvaluationContextKhoiVTH
 {
     public storage_unit Unit { get; set; } = null!;
-    public StorageUnitReferenceSummary ReferenceSummary { get; set; } = null!;
-    public StorageUnitCapacityImpact CapacityImpact { get; set; } = null!;
+    public StorageUnitReferenceSummaryKhoiVTH ReferenceSummary { get; set; } = null!;
+    public StorageUnitCapacityImpactKhoiVTH CapacityImpact { get; set; } = null!;
 }
 
 /// <summary>
 /// Result of an atomic storage unit deletion operation.
 /// </summary>
-public class StorageUnitDeleteResult
+public class StorageUnitDeleteResultKhoiVTH
 {
     public long UnitId { get; set; }
     public string UnitCode { get; set; } = string.Empty;
     public bool Success { get; set; }
     public string Message { get; set; } = string.Empty;
-    public StorageUnitReferenceSummary? ReferenceSummary { get; set; }
-    public StorageUnitCapacityImpact? CapacityImpact { get; set; }
+    public StorageUnitReferenceSummaryKhoiVTH? ReferenceSummary { get; set; }
+    public StorageUnitCapacityImpactKhoiVTH? CapacityImpact { get; set; }
 }

@@ -1,4 +1,4 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using SelfStorageManagementSystem.BusinessLogic.Services.Interfaces;
 using SelfStorageManagementSystem.DataAccess.Entities;
@@ -6,14 +6,14 @@ using SelfStorageManagementSystem.DataAccess.Repositories.Interfaces;
 
 namespace SelfStorageManagementSystem.BusinessLogic.Services.Implementations;
 
-public class AuditService : IAuditService
+public class AuditServiceKhoiVTH : IAuditService
 {
     private readonly IRepository<audit_log> _auditLogRepository;
-    private readonly ILogger<AuditService> _logger;
+    private readonly ILogger<AuditServiceKhoiVTH> _logger;
 
-    public AuditService(
+    public AuditServiceKhoiVTH(
         IRepository<audit_log> auditLogRepository,
-        ILogger<AuditService> logger)
+        ILogger<AuditServiceKhoiVTH> logger)
     {
         _auditLogRepository = auditLogRepository;
         _logger = logger;

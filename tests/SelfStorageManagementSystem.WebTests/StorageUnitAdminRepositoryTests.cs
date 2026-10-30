@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -149,10 +149,10 @@ public class StorageUnitAdminRepositoryTests
         }
         await context.SaveChangesAsync();
 
-        var repo = new StorageUnitAdminRepository(context);
+        var repo = new StorageUnitAdminRepositoryKhoiVTH(context);
 
         // Page 1 with pageSize 5
-        var paged1 = await repo.GetPagedStorageUnitsAsync(new StorageUnitAdminQueryParameters
+        var paged1 = await repo.GetPagedStorageUnitsAsync(new StorageUnitAdminQueryParametersKhoiVTH
         {
             FacilityId = 10,
             PageNumber = 1,
@@ -164,7 +164,7 @@ public class StorageUnitAdminRepositoryTests
         Assert.Equal("U-001", paged1.Items[0].unit_code);
 
         // Page 2 with pageSize 5
-        var paged2 = await repo.GetPagedStorageUnitsAsync(new StorageUnitAdminQueryParameters
+        var paged2 = await repo.GetPagedStorageUnitsAsync(new StorageUnitAdminQueryParametersKhoiVTH
         {
             FacilityId = 10,
             PageNumber = 2,
@@ -176,7 +176,7 @@ public class StorageUnitAdminRepositoryTests
         Assert.Equal("U-006", paged2.Items[0].unit_code);
 
         // Filter by physical_status = 'available'
-        var availableOnly = await repo.GetPagedStorageUnitsAsync(new StorageUnitAdminQueryParameters
+        var availableOnly = await repo.GetPagedStorageUnitsAsync(new StorageUnitAdminQueryParametersKhoiVTH
         {
             FacilityId = 10,
             PhysicalStatus = "available",
@@ -188,7 +188,7 @@ public class StorageUnitAdminRepositoryTests
         Assert.All(availableOnly.Items, u => Assert.Equal("available", u.physical_status));
 
         // Filter by searchTerm matching notes
-        var searchNotes = await repo.GetPagedStorageUnitsAsync(new StorageUnitAdminQueryParameters
+        var searchNotes = await repo.GetPagedStorageUnitsAsync(new StorageUnitAdminQueryParametersKhoiVTH
         {
             FacilityId = 10,
             SearchTerm = "thoát hiểm"
@@ -222,7 +222,7 @@ public class StorageUnitAdminRepositoryTests
         });
         await context.SaveChangesAsync();
 
-        var repo = new StorageUnitAdminRepository(context);
+        var repo = new StorageUnitAdminRepositoryKhoiVTH(context);
 
         // Exists in facility 10
         Assert.True(await repo.UnitCodeExistsInFacilityAsync(10, "A-101"));
@@ -242,7 +242,7 @@ public class StorageUnitAdminRepositoryTests
         using var context = CreateInMemoryContext(dbName);
         await SeedBasicFacilityAndTypeAsync(context);
 
-        var repo = new StorageUnitAdminRepository(context);
+        var repo = new StorageUnitAdminRepositoryKhoiVTH(context);
 
         // 1. Valid scope (Facility 10, Type 100, Area 1000)
         var valid = await repo.ValidateScopeReferencesAsync(10, 100, 1000);
@@ -333,7 +333,7 @@ public class StorageUnitAdminRepositoryTests
 
         await context.SaveChangesAsync();
 
-        var repo = new StorageUnitAdminRepository(context);
+        var repo = new StorageUnitAdminRepositoryKhoiVTH(context);
         var summary = await repo.GetStorageUnitReferenceSummaryAsync(1);
 
         Assert.Equal(1, summary.AllocationsCount);
@@ -418,7 +418,7 @@ public class StorageUnitAdminRepositoryTests
 
         await context.SaveChangesAsync();
 
-        var repo = new StorageUnitAdminRepository(context);
+        var repo = new StorageUnitAdminRepositoryKhoiVTH(context);
         var impact = await repo.GetCapacityImpactAsync(10, 100, targetUnitId: 1, nowUtc: now);
 
         Assert.Equal(3, impact.TotalUnitsCount);
@@ -445,7 +445,7 @@ public class StorageUnitAdminRepositoryTests
         using var context = CreateInMemoryContext(dbName);
         await SeedBasicFacilityAndTypeAsync(context);
 
-        var repo = new StorageUnitAdminRepository(context);
+        var repo = new StorageUnitAdminRepositoryKhoiVTH(context);
 
         var newUnit = new storage_unit
         {
@@ -500,7 +500,7 @@ public class StorageUnitAdminRepositoryTests
         context.storage_units.Add(unit);
         await context.SaveChangesAsync();
 
-        var repo = new StorageUnitAdminRepository(context);
+        var repo = new StorageUnitAdminRepositoryKhoiVTH(context);
 
         // 1. Stale concurrency token must throw StorageUnitConcurrencyException
         var staleTimestamp = initialTime.AddSeconds(-30);
@@ -541,7 +541,7 @@ public class StorageUnitAdminRepositoryTests
         context.storage_units.Add(unit);
         await context.SaveChangesAsync();
 
-        var repo = new StorageUnitAdminRepository(context);
+        var repo = new StorageUnitAdminRepositoryKhoiVTH(context);
 
         // 1. Policy rejects deletion
         var policyRejected = await repo.DeleteStorageUnitWithLockAsync(
@@ -615,7 +615,7 @@ public class StorageUnitAdminRepositoryTests
         });
         await context.SaveChangesAsync();
 
-        var repo = new StorageUnitAdminRepository(context);
+        var repo = new StorageUnitAdminRepositoryKhoiVTH(context);
 
         // 1. Facility 10: only Type 100 has rate -> returns exactly [Type 100], excludes Type 200 and inactive Type 300
         var fac10Types = await repo.GetLookupUnitTypesAsync(10);
@@ -661,10 +661,10 @@ public class StorageUnitAdminRepositoryTests
         }
         await context.SaveChangesAsync();
 
-        var repo = new StorageUnitAdminRepository(context);
+        var repo = new StorageUnitAdminRepositoryKhoiVTH(context);
 
         // Query 3 pages of size 4 sorted by created_at desc (which are all tied)
-        var p1 = await repo.GetPagedStorageUnitsAsync(new StorageUnitAdminQueryParameters
+        var p1 = await repo.GetPagedStorageUnitsAsync(new StorageUnitAdminQueryParametersKhoiVTH
         {
             FacilityId = 10,
             SortBy = "created_at",
@@ -673,7 +673,7 @@ public class StorageUnitAdminRepositoryTests
             PageSize = 4
         });
 
-        var p2 = await repo.GetPagedStorageUnitsAsync(new StorageUnitAdminQueryParameters
+        var p2 = await repo.GetPagedStorageUnitsAsync(new StorageUnitAdminQueryParametersKhoiVTH
         {
             FacilityId = 10,
             SortBy = "created_at",
@@ -682,7 +682,7 @@ public class StorageUnitAdminRepositoryTests
             PageSize = 4
         });
 
-        var p3 = await repo.GetPagedStorageUnitsAsync(new StorageUnitAdminQueryParameters
+        var p3 = await repo.GetPagedStorageUnitsAsync(new StorageUnitAdminQueryParametersKhoiVTH
         {
             FacilityId = 10,
             SortBy = "created_at",
@@ -736,8 +736,8 @@ public class StorageUnitAdminRepositoryTests
         using var context1 = CreateInMemoryContext(dbName);
         using var context2 = CreateInMemoryContext(dbName);
 
-        var repo1 = new StorageUnitAdminRepository(context1);
-        var repo2 = new StorageUnitAdminRepository(context2);
+        var repo1 = new StorageUnitAdminRepositoryKhoiVTH(context1);
+        var repo2 = new StorageUnitAdminRepositoryKhoiVTH(context2);
 
         // Context 1 tracks unit 55 in its ChangeTracker
         var trackedIn1 = await context1.storage_units.FindAsync(55L);
@@ -818,8 +818,8 @@ public class StorageUnitAdminRepositoryTests
         using var context1 = CreateInMemoryContext(dbName);
         using var context2 = CreateInMemoryContext(dbName);
 
-        var repo1 = new StorageUnitAdminRepository(context1);
-        var repo2 = new StorageUnitAdminRepository(context2);
+        var repo1 = new StorageUnitAdminRepositoryKhoiVTH(context1);
+        var repo2 = new StorageUnitAdminRepositoryKhoiVTH(context2);
 
         // Task 1 transfers Unit 71 from Type 100 to Type 200 (Source lock: Fac10/Type100, Target lock: Fac10/Type200)
         var task1 = repo1.UpdateStorageUnitWithLockAsync(
@@ -859,10 +859,10 @@ public class StorageUnitAdminRepositoryTests
     [Fact]
     public void CapacityLockKey_MatchesReservationConvention()
     {
-        var key = StorageUnitAdminRepository.GetCapacityLockKey(10, 100);
+        var key = StorageUnitAdminRepositoryKhoiVTH.GetCapacityLockKey(10, 100);
         Assert.Equal("SS_Facility_10_UnitType_100_Capacity", key);
 
-        var key2 = StorageUnitAdminRepository.GetCapacityLockKey(20, 200);
+        var key2 = StorageUnitAdminRepositoryKhoiVTH.GetCapacityLockKey(20, 200);
         Assert.Equal("SS_Facility_20_UnitType_200_Capacity", key2);
     }
 
@@ -895,7 +895,7 @@ public class StorageUnitAdminRepositoryTests
         }
 
         using var context = CreateInMemoryContext(dbName);
-        var repo = new StorageUnitAdminRepository(context);
+        var repo = new StorageUnitAdminRepositoryKhoiVTH(context);
 
         int applyUpdatesInvocationCount = 0;
         var result = await repo.UpdateStorageUnitWithLockAsync(81, time, u =>
@@ -940,7 +940,7 @@ public class StorageUnitAdminRepositoryTests
         }
 
         using var context = CreateInMemoryContext(dbName);
-        var repo = new StorageUnitAdminRepository(context);
+        var repo = new StorageUnitAdminRepositoryKhoiVTH(context);
 
         int runCounter = 0;
         var result = await repo.UpdateStorageUnitWithLockAsync(82, time, u =>
@@ -986,7 +986,7 @@ public class StorageUnitAdminRepositoryTests
         }
 
         using var context = CreateInMemoryContext(dbName);
-        var repo = new StorageUnitAdminRepository(context);
+        var repo = new StorageUnitAdminRepositoryKhoiVTH(context);
 
         // 1. TargetUnitTypeId mismatch: callback mutates to 200, caller claims target is 300
         var exType = await Assert.ThrowsAsync<ArgumentException>(() =>
@@ -1032,30 +1032,30 @@ public class StorageUnitAdminRepositoryTests
     public void MutationPlan_ComputesDeterministicLocks_CoveringSourceAndTarget()
     {
         // 1. Changing Facility: Fac 10 -> Fac 20, Type 100 -> Type 100
-        var facChangeKeys = StorageUnitAdminRepository.DetermineCapacityLockKeys(10, 100, 20, 100);
+        var facChangeKeys = StorageUnitAdminRepositoryKhoiVTH.DetermineCapacityLockKeys(10, 100, 20, 100);
         Assert.Equal(2, facChangeKeys.Count);
         Assert.Equal("SS_Facility_10_UnitType_100_Capacity", facChangeKeys[0]);
         Assert.Equal("SS_Facility_20_UnitType_100_Capacity", facChangeKeys[1]);
 
         // 2. Changing UnitType: Fac 10 -> Fac 10, Type 100 -> Type 200
-        var typeChangeKeys = StorageUnitAdminRepository.DetermineCapacityLockKeys(10, 100, 10, 200);
+        var typeChangeKeys = StorageUnitAdminRepositoryKhoiVTH.DetermineCapacityLockKeys(10, 100, 10, 200);
         Assert.Equal(2, typeChangeKeys.Count);
         Assert.Equal("SS_Facility_10_UnitType_100_Capacity", typeChangeKeys[0]);
         Assert.Equal("SS_Facility_10_UnitType_200_Capacity", typeChangeKeys[1]);
 
         // 3. Changing Both Facility and UnitType: Fac 10/Type 100 -> Fac 20/Type 200
-        var bothChangeKeys = StorageUnitAdminRepository.DetermineCapacityLockKeys(10, 100, 20, 200);
+        var bothChangeKeys = StorageUnitAdminRepositoryKhoiVTH.DetermineCapacityLockKeys(10, 100, 20, 200);
         Assert.Equal(2, bothChangeKeys.Count);
         Assert.Equal("SS_Facility_10_UnitType_100_Capacity", bothChangeKeys[0]);
         Assert.Equal("SS_Facility_20_UnitType_200_Capacity", bothChangeKeys[1]);
 
         // 4. Same Facility and UnitType (No move): Fac 10/Type 100 -> Fac 10/Type 100
-        var sameKeys = StorageUnitAdminRepository.DetermineCapacityLockKeys(10, 100, 10, 100);
+        var sameKeys = StorageUnitAdminRepositoryKhoiVTH.DetermineCapacityLockKeys(10, 100, 10, 100);
         Assert.Single(sameKeys);
         Assert.Equal("SS_Facility_10_UnitType_100_Capacity", sameKeys[0]);
 
         // 5. Verify Ordinal sorting regardless of source/target order
-        var reversedKeys = StorageUnitAdminRepository.DetermineCapacityLockKeys(20, 200, 10, 100);
+        var reversedKeys = StorageUnitAdminRepositoryKhoiVTH.DetermineCapacityLockKeys(20, 200, 10, 100);
         Assert.Equal(2, reversedKeys.Count);
         Assert.Equal("SS_Facility_10_UnitType_100_Capacity", reversedKeys[0]);
         Assert.Equal("SS_Facility_20_UnitType_200_Capacity", reversedKeys[1]);
@@ -1102,19 +1102,19 @@ public class StorageUnitAdminRepositoryTests
             await seedContext.SaveChangesAsync();
         }
 
-        var sourceLockKey = StorageUnitAdminRepository.GetCapacityLockKey(998, 901);
-        var targetLockKey = StorageUnitAdminRepository.GetCapacityLockKey(998, 902);
+        var sourceLockKey = StorageUnitAdminRepositoryKhoiVTH.GetCapacityLockKey(998, 901);
+        var targetLockKey = StorageUnitAdminRepositoryKhoiVTH.GetCapacityLockKey(998, 902);
 
         // Pre-acquire the target lock (Key 2) so that any transfer to Type 902 blocks waiting on Key 2
-        var semTarget = StorageUnitAdminRepository.GetInMemorySemaphore(targetLockKey);
+        var semTarget = StorageUnitAdminRepositoryKhoiVTH.GetInMemorySemaphore(targetLockKey);
         await semTarget.WaitAsync(); // Holds Target lock
 
-        var semSource = StorageUnitAdminRepository.GetInMemorySemaphore(sourceLockKey);
+        var semSource = StorageUnitAdminRepositoryKhoiVTH.GetInMemorySemaphore(sourceLockKey);
         Assert.Equal(1, semSource.CurrentCount);
 
         using var cts = new CancellationTokenSource();
         using var context = CreateInMemoryContext(dbName);
-        var repo = new StorageUnitAdminRepository(context);
+        var repo = new StorageUnitAdminRepositoryKhoiVTH(context);
 
         // Start background update attempting to transfer Unit 85 from Type 901 to Type 902
         // Keys to lock in order: 1) sourceLockKey (998/901), 2) targetLockKey (998/902)
@@ -1140,7 +1140,7 @@ public class StorageUnitAdminRepositoryTests
 
         // A new operation requiring Key 1 MUST succeed without timing out
         using var freshContext = CreateInMemoryContext(dbName);
-        var freshRepo = new StorageUnitAdminRepository(freshContext);
+        var freshRepo = new StorageUnitAdminRepositoryKhoiVTH(freshContext);
         var followUpUpdate = await freshRepo.UpdateStorageUnitWithLockAsync(
             85,
             time,

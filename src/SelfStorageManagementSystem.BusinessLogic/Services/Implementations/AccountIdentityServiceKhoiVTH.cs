@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using SelfStorageManagementSystem.BusinessLogic.Common.Constants;
 using SelfStorageManagementSystem.BusinessLogic.DTOs.Requests.Auth;
 using SelfStorageManagementSystem.BusinessLogic.DTOs.Responses.Admin;
@@ -15,7 +15,7 @@ namespace SelfStorageManagementSystem.BusinessLogic.Services.Implementations;
 /// Completely decoupled from JWT token generation so web cookie authentication
 /// does not require a JWT secret.
 /// </summary>
-public class AccountIdentityService : IAccountIdentityService
+public class AccountIdentityServiceKhoiVTH : IAccountIdentityService
 {
     private readonly IUserRepository _userRepository;
     private readonly IRepository<role> _roleRepository;
@@ -25,9 +25,9 @@ public class AccountIdentityService : IAccountIdentityService
     private readonly IPasswordHasher _passwordHasher;
     private readonly IFacilityScopeService _facilityScopeService;
     private readonly IAuditService _auditService;
-    private readonly ILogger<AccountIdentityService> _logger;
+    private readonly ILogger<AccountIdentityServiceKhoiVTH> _logger;
 
-    public AccountIdentityService(
+    public AccountIdentityServiceKhoiVTH(
         IUserRepository userRepository,
         IRepository<role> roleRepository,
         IRepository<user_role> userRoleRepository,
@@ -36,7 +36,7 @@ public class AccountIdentityService : IAccountIdentityService
         IPasswordHasher passwordHasher,
         IFacilityScopeService facilityScopeService,
         IAuditService auditService,
-        ILogger<AccountIdentityService> logger)
+        ILogger<AccountIdentityServiceKhoiVTH> logger)
     {
         _userRepository = userRepository;
         _roleRepository = roleRepository;

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,7 +15,7 @@ using Xunit;
 namespace SelfStorageManagementSystem.WebTests;
 
 /// <summary>
-/// Unit tests for StorageUnitAdminService enforcing:
+/// Unit tests for StorageUnitAdminServiceKhoiVTH enforcing:
 /// 1. Actor authentication & server-side role/scope verification (Admin, Ops, Manager, Staff, Customer).
 /// 2. Role-based read/write access (Staff read-only, Manager write restricted to assigned facility).
 /// 3. Creation rules (Server enforces available and is_listed=true, unique code, area in facility).
@@ -295,15 +295,15 @@ public class StorageUnitAdminServiceTests
         public override DateTimeOffset GetUtcNow() => _utcNow;
     }
 
-    private static (StorageUnitAdminService Service, SelfStorageDbContext Context) CreateTestService(
+    private static (StorageUnitAdminServiceKhoiVTH Service, SelfStorageDbContext Context) CreateTestService(
         string dbName,
         TimeProvider? timeProvider = null)
     {
         var context = CreateInMemoryContext(dbName);
-        var unitRepo = new StorageUnitAdminRepository(context);
-        var userRepo = new UserRepository(context);
-        var scopeService = new FacilityScopeService(context, userRepo);
-        var service = new StorageUnitAdminService(unitRepo, userRepo, scopeService, timeProvider);
+        var unitRepo = new StorageUnitAdminRepositoryKhoiVTH(context);
+        var userRepo = new UserRepositoryKhoiVTH(context);
+        var scopeService = new FacilityScopeServiceKhoiVTH(context, userRepo);
+        var service = new StorageUnitAdminServiceKhoiVTH(unitRepo, userRepo, scopeService, timeProvider);
         return (service, context);
     }
 

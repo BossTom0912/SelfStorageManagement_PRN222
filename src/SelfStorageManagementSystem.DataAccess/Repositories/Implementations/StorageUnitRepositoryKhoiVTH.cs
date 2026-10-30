@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,13 +11,13 @@ namespace SelfStorageManagementSystem.DataAccess.Repositories.Implementations;
 
 /// <summary>
 /// Concrete repository implementation for KhoiVTH (Võ Thái Hoàng Khôi - PRN222) storage unit data access.
-/// Extends StorageUnitAdminRepository to provide both standard administrative operations and KhoiVTH compatibility views.
+/// Extends StorageUnitAdminRepositoryKhoiVTH to provide both standard administrative operations and KhoiVTH compatibility views.
 /// </summary>
-public class StorageUnitKhoiVTHRepository : StorageUnitAdminRepository, IStorageUnitKhoiVTHRepository
+public class StorageUnitRepositoryKhoiVTH : StorageUnitAdminRepositoryKhoiVTH, IStorageUnitKhoiVTHRepository
 {
     private readonly SelfStorageDbContext _dbContext;
 
-    public StorageUnitKhoiVTHRepository(SelfStorageDbContext context) : base(context)
+    public StorageUnitRepositoryKhoiVTH(SelfStorageDbContext context) : base(context)
     {
         _dbContext = context;
     }

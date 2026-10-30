@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
@@ -23,11 +23,11 @@ namespace SelfStorageManagementSystem.DataAccess.Repositories.Implementations;
 /// (SS_Facility_{facilityId}_UnitType_{unitTypeId}_Capacity) with strict deadlock-free lock ordering.
 /// Does not contain HTTP authorization or presentation logic.
 /// </summary>
-public class StorageUnitAdminRepository : GenericRepository<storage_unit>, IStorageUnitAdminRepository
+public class StorageUnitAdminRepositoryKhoiVTH : GenericRepositoryKhoiVTH<storage_unit>, IStorageUnitAdminRepository
 {
     private static readonly ConcurrentDictionary<string, SemaphoreSlim> InMemorySemaphores = new();
 
-    public StorageUnitAdminRepository(SelfStorageDbContext context) : base(context)
+    public StorageUnitAdminRepositoryKhoiVTH(SelfStorageDbContext context) : base(context)
     {
     }
 
@@ -81,7 +81,7 @@ public class StorageUnitAdminRepository : GenericRepository<storage_unit>, IStor
     // =========================================================================
 
     public async Task<(IReadOnlyList<storage_unit> Items, int TotalCount)> GetPagedStorageUnitsAsync(
-        StorageUnitAdminQueryParameters queryParams,
+        StorageUnitAdminQueryParametersKhoiVTH queryParams,
         CancellationToken cancellationToken = default)
     {
         var query = _context.storage_units
@@ -277,7 +277,7 @@ public class StorageUnitAdminRepository : GenericRepository<storage_unit>, IStor
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<StorageUnitScopeValidationResult> ValidateScopeReferencesAsync(
+    public async Task<StorageUnitScopeValidationResultKhoiVTH> ValidateScopeReferencesAsync(
         long facilityId,
         long unitTypeId,
         long? areaId,
@@ -299,7 +299,7 @@ public class StorageUnitAdminRepository : GenericRepository<storage_unit>, IStor
                 .FirstOrDefaultAsync(a => a.id == areaId.Value, cancellationToken);
         }
 
-        var result = new StorageUnitScopeValidationResult
+        var result = new StorageUnitScopeValidationResultKhoiVTH
         {
             FacilityExists = facility != null,
             FacilityIsActive = facility != null && facility.status == "active",
@@ -347,7 +347,7 @@ public class StorageUnitAdminRepository : GenericRepository<storage_unit>, IStor
     // Reference Inspection & Capacity Impact
     // =========================================================================
 
-    public async Task<StorageUnitReferenceSummary> GetStorageUnitReferenceSummaryAsync(
+    public async Task<StorageUnitReferenceSummaryKhoiVTH> GetStorageUnitReferenceSummaryAsync(
         long unitId,
         CancellationToken cancellationToken = default)
     {
@@ -379,7 +379,7 @@ public class StorageUnitAdminRepository : GenericRepository<storage_unit>, IStor
             throw new KeyNotFoundException($"Storage unit with ID {unitId} was not found.");
         }
 
-        return new StorageUnitReferenceSummary
+        return new StorageUnitReferenceSummaryKhoiVTH
         {
             StorageUnitId = unitInfo.id,
             UnitCode = unitInfo.unit_code,
@@ -398,7 +398,7 @@ public class StorageUnitAdminRepository : GenericRepository<storage_unit>, IStor
         };
     }
 
-    public async Task<StorageUnitCapacityImpact> GetCapacityImpactAsync(
+    public async Task<StorageUnitCapacityImpactKhoiVTH> GetCapacityImpactAsync(
         long facilityId,
         long unitTypeId,
         long? targetUnitId = null,
@@ -479,7 +479,7 @@ public class StorageUnitAdminRepository : GenericRepository<storage_unit>, IStor
                 .AnyAsync(cancellationToken);
         }
 
-        return new StorageUnitCapacityImpact
+        return new StorageUnitCapacityImpactKhoiVTH
         {
             FacilityId = facilityId,
             UnitTypeId = unitTypeId,
@@ -839,10 +839,10 @@ public class StorageUnitAdminRepository : GenericRepository<storage_unit>, IStor
     /// - Fresh Optimistic Concurrency: Reads actual DB record via AsNoTracking after acquiring lock,
     ///   reloads any tracked entity in ChangeTracker, and strictly verifies expectedUpdatedAt before deletion.
     /// </summary>
-    public async Task<StorageUnitDeleteResult> DeleteStorageUnitWithLockAsync(
+    public async Task<StorageUnitDeleteResultKhoiVTH> DeleteStorageUnitWithLockAsync(
         long unitId,
         DateTimeOffset expectedUpdatedAt,
-        Func<StorageUnitDeleteEvaluationContext, Task<bool>>? evaluatePolicy = null,
+        Func<StorageUnitDeleteEvaluationContextKhoiVTH, Task<bool>>? evaluatePolicy = null,
         CancellationToken cancellationToken = default)
     {
         var preCheck = await _context.storage_units
@@ -932,7 +932,7 @@ public class StorageUnitAdminRepository : GenericRepository<storage_unit>, IStor
             var refSummary = await GetStorageUnitReferenceSummaryAsync(unitId, cancellationToken);
             var capacityImpact = await GetCapacityImpactAsync(unit.facility_id, unit.unit_type_id, unit.id, DateTimeOffset.UtcNow, cancellationToken);
 
-            var evalContext = new StorageUnitDeleteEvaluationContext
+            var evalContext = new StorageUnitDeleteEvaluationContextKhoiVTH
             {
                 Unit = unit,
                 ReferenceSummary = refSummary,
@@ -950,7 +950,7 @@ public class StorageUnitAdminRepository : GenericRepository<storage_unit>, IStor
                         await transaction.RollbackAsync(cancellationToken);
                     }
 
-                    return new StorageUnitDeleteResult
+                    return new StorageUnitDeleteResultKhoiVTH
                     {
                         UnitId = unitId,
                         UnitCode = unit.unit_code,
@@ -970,7 +970,7 @@ public class StorageUnitAdminRepository : GenericRepository<storage_unit>, IStor
                     await transaction.RollbackAsync(cancellationToken);
                 }
 
-                return new StorageUnitDeleteResult
+                return new StorageUnitDeleteResultKhoiVTH
                 {
                     UnitId = unitId,
                     UnitCode = unit.unit_code,
@@ -995,7 +995,7 @@ public class StorageUnitAdminRepository : GenericRepository<storage_unit>, IStor
                 await transaction.CommitAsync(cancellationToken);
             }
 
-            return new StorageUnitDeleteResult
+            return new StorageUnitDeleteResultKhoiVTH
             {
                 UnitId = unitId,
                 UnitCode = unit.unit_code,

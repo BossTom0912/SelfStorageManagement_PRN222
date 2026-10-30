@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SelfStorageManagementSystem.BusinessLogic.Common;
 using SelfStorageManagementSystem.BusinessLogic.Common.Constants;
@@ -12,7 +12,7 @@ using SelfStorageManagementSystem.DataAccess.Repositories.Interfaces;
 
 namespace SelfStorageManagementSystem.BusinessLogic.Services.Implementations;
 
-public class AdminAccountService : IAdminAccountService
+public class AdminAccountServiceKhoiVTH : IAdminAccountService
 {
     private readonly SelfStorageDbContext _context;
     private readonly IUserRepository _userRepository;
@@ -23,10 +23,10 @@ public class AdminAccountService : IAdminAccountService
     private readonly IRepository<facility> _facilityRepository;
     private readonly IPasswordHasher _passwordHasher;
     private readonly IAuditService _auditService;
-    private readonly ILogger<AdminAccountService> _logger;
+    private readonly ILogger<AdminAccountServiceKhoiVTH> _logger;
     private readonly IUserScopeChangedNotifier? _scopeChangedNotifier;
 
-    public AdminAccountService(
+    public AdminAccountServiceKhoiVTH(
         SelfStorageDbContext context,
         IUserRepository userRepository,
         IRepository<role> roleRepository,
@@ -36,7 +36,7 @@ public class AdminAccountService : IAdminAccountService
         IRepository<facility> facilityRepository,
         IPasswordHasher passwordHasher,
         IAuditService auditService,
-        ILogger<AdminAccountService> logger,
+        ILogger<AdminAccountServiceKhoiVTH> logger,
         IUserScopeChangedNotifier? scopeChangedNotifier = null)
     {
         _context = context;

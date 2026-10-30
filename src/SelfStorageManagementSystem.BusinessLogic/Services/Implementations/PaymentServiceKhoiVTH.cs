@@ -1,4 +1,4 @@
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -13,22 +13,22 @@ using SelfStorageManagementSystem.DataAccess.Repositories.Interfaces;
 
 namespace SelfStorageManagementSystem.BusinessLogic.Services.Implementations;
 
-public class PaymentService : IPaymentService
+public class PaymentServiceKhoiVTH : IPaymentService
 {
     private readonly IPaymentRepository _paymentRepository;
     private readonly IFacilityScopeService _facilityScopeService;
-    private readonly DemoGateway _demoGateway;
-    private readonly VnpayGateway _vnpayGateway;
+    private readonly DemoGatewayKhoiVTH _demoGateway;
+    private readonly VnpayGatewayKhoiVTH _vnpayGateway;
     private readonly IConfiguration _configuration;
-    private readonly ILogger<PaymentService> _logger;
+    private readonly ILogger<PaymentServiceKhoiVTH> _logger;
 
-    public PaymentService(
+    public PaymentServiceKhoiVTH(
         IPaymentRepository paymentRepository,
         IFacilityScopeService facilityScopeService,
-        DemoGateway demoGateway,
-        VnpayGateway vnpayGateway,
+        DemoGatewayKhoiVTH demoGateway,
+        VnpayGatewayKhoiVTH vnpayGateway,
         IConfiguration configuration,
-        ILogger<PaymentService> logger)
+        ILogger<PaymentServiceKhoiVTH> logger)
     {
         _paymentRepository = paymentRepository ?? throw new ArgumentNullException(nameof(paymentRepository));
         _facilityScopeService = facilityScopeService ?? throw new ArgumentNullException(nameof(facilityScopeService));

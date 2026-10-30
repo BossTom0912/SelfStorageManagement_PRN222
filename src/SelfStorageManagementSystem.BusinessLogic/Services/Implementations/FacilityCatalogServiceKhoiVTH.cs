@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using SelfStorageManagementSystem.BusinessLogic.Common;
 using SelfStorageManagementSystem.BusinessLogic.DTOs.Requests.Catalog;
 using SelfStorageManagementSystem.BusinessLogic.DTOs.Responses.Catalog;
@@ -9,14 +9,14 @@ using SelfStorageManagementSystem.DataAccess.Repositories.Interfaces;
 
 namespace SelfStorageManagementSystem.BusinessLogic.Services.Implementations;
 
-public class FacilityCatalogService : IFacilityCatalogService
+public class FacilityCatalogServiceKhoiVTH : IFacilityCatalogService
 {
     private readonly IFacilityCatalogRepository _catalogRepository;
-    private readonly ILogger<FacilityCatalogService> _logger;
+    private readonly ILogger<FacilityCatalogServiceKhoiVTH> _logger;
 
-    public FacilityCatalogService(
+    public FacilityCatalogServiceKhoiVTH(
         IFacilityCatalogRepository catalogRepository,
-        ILogger<FacilityCatalogService> logger)
+        ILogger<FacilityCatalogServiceKhoiVTH> logger)
     {
         _catalogRepository = catalogRepository;
         _logger = logger;

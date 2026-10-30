@@ -1,4 +1,4 @@
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using SelfStorageManagementSystem.BusinessLogic.Services.Interfaces;
 
@@ -8,7 +8,7 @@ namespace SelfStorageManagementSystem.BusinessLogic.Services.Implementations;
 /// Default no-op implementation of IUserScopeChangedNotifier.
 /// Used when no presentation-layer connection manager is registered.
 /// </summary>
-public class NullUserScopeChangedNotifier : IUserScopeChangedNotifier
+public class NullUserScopeChangedNotifierKhoiVTH : IUserScopeChangedNotifier
 {
     public Task NotifyUserScopeChangedAsync(long userId, CancellationToken cancellationToken = default)
     {

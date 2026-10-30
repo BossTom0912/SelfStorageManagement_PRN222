@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -991,11 +991,11 @@ public record T18WebSocketFrameRecord(string Direction, string Payload, DateTime
 /// T18 Finding 1: Custom test password hasher for E2E tests.
 /// Authenticates the standard E2E password "TestPass123!" against "external-auth-demo-only" (seed database value)
 /// without executing any UPDATE mutations against core.users in the dedicated E2E database.
-/// Delegates all other password operations to standard PBKDF2 PasswordHasher.
+/// Delegates all other password operations to standard PBKDF2 PasswordHasherKhoiVTH.
 /// </summary>
 internal sealed class T18TestPasswordHasher : IPasswordHasher
 {
-    private readonly PasswordHasher _inner = new();
+    private readonly PasswordHasherKhoiVTH _inner = new();
 
     public string HashPassword(string password) => _inner.HashPassword(password);
 

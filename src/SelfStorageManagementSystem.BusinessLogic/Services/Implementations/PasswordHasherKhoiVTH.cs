@@ -1,9 +1,9 @@
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using SelfStorageManagementSystem.BusinessLogic.Services.Interfaces;
 
 namespace SelfStorageManagementSystem.BusinessLogic.Services.Implementations;
 
-public class PasswordHasher : IPasswordHasher
+public class PasswordHasherKhoiVTH : IPasswordHasher
 {
     private const int SaltSize = 16; // 128-bit
     private const int KeySize = 32;  // 256-bit

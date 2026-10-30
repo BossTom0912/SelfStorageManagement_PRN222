@@ -1,4 +1,4 @@
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using Microsoft.Extensions.Logging;
 using SelfStorageManagementSystem.BusinessLogic.Common;
 using SelfStorageManagementSystem.BusinessLogic.Common.Constants;
@@ -12,16 +12,16 @@ using ExpiredReservationHoldInfo = SelfStorageManagementSystem.BusinessLogic.DTO
 
 namespace SelfStorageManagementSystem.BusinessLogic.Services.Implementations;
 
-public class ReservationService : IReservationService
+public class ReservationServiceKhoiVTH : IReservationService
 {
     private readonly IReservationRepository _reservationRepository;
     private readonly IFacilityScopeService _facilityScopeService;
-    private readonly ILogger<ReservationService> _logger;
+    private readonly ILogger<ReservationServiceKhoiVTH> _logger;
 
-    public ReservationService(
+    public ReservationServiceKhoiVTH(
         IReservationRepository reservationRepository,
         IFacilityScopeService facilityScopeService,
-        ILogger<ReservationService> logger)
+        ILogger<ReservationServiceKhoiVTH> logger)
     {
         _reservationRepository = reservationRepository ?? throw new ArgumentNullException(nameof(reservationRepository));
         _facilityScopeService = facilityScopeService ?? throw new ArgumentNullException(nameof(facilityScopeService));
