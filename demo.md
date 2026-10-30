@@ -17,7 +17,25 @@
 
 ---
 
-## 🚀 II. HƯỚNG DẪN KHỞI CHẠY NHANH CÁC DỰ ÁN
+## 📊 II. BỘ DỮ LIỆU MẪU (DATA SEED) ĐÃ SẴN SÀNG HIỂN THỊ
+
+Hệ thống đã nạp đầy đủ dữ liệu phong phú vào Database (áp dụng cho cả `SelfStoragePRN222` và `SelfStoragePRN222_WebDemo`):
+
+1. **Tổng cộng 19 ô kho (Storage Units)** trải đều trên 2 cơ sở (HCM & Hà Nội), phân bổ theo Tầng 1, Tầng 2, Khu A, Khu B:
+   - **11 ô Trống (`Available`):** `A-101`, `A-102`, `A-103`, `A-105`, `A-201`, `A-202`, `A-204`, `HN-101`, `HN-104`, `HN-105`, `HN-107`.
+   - **4 ô Đang thuê (`Occupied`):** `A-106`, `A-107`, `A-203`, `HN-102`.
+   - **1 ô Đã đặt trước (`Reserved`):** `A-104`.
+   - **2 ô Bảo trì (`Maintenance`):** `A-108`, `A-109`, `HN-103`.
+   - **1 ô Chờ kiểm tra (`Pending Inspection`):** `A-110`.
+   *(Đủ số lượng để kích hoạt thanh Phân trang Pagination 2 trang, và lọc dropdown ra đầy đủ mọi trạng thái).*
+
+2. **2 Đơn đặt chỗ mẫu (Reservations) sẵn sàng cho nghiệp vụ tiếp nhận quầy (`/Staff/CheckIn`):**
+   - **`RES-DEMO-001`**: Đơn đã xác nhận (`confirmed`), khách hàng `customer1@example.com`, giá thuê 1.000.000 đ/tháng.
+   - **`RES-DEMO-002`**: Đơn chờ đặt cọc (`awaiting_deposit`), giá thuê 1.800.000 đ/tháng.
+
+---
+
+## 🚀 III. HƯỚNG DẪN KHỞI CHẠY NHANH CÁC DỰ ÁN
 
 | Bài | Thư mục thực thi | Lệnh khởi chạy Web / Console | Cổng truy cập mặc định |
 | :--- | :--- | :--- | :--- |
