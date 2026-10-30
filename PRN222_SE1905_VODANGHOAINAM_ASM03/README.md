@@ -1,6 +1,6 @@
-﻿# PRN222_SE1905_VODANGHOAINAM_ASM03 — Blazor Server
+# PRN222_SE1905_VODANGHOAINAM_ASM03 — Blazor Server
 
-Sinh viên: Võ Thái Hoàng Khôi. Cập nhật 30/10/2026.
+Sinh viên: Võ Đặng Hoài Nam. Cập nhật 30/10/2026.
 
 Màn hình chính: `/Blazor/StorageUnits`, được liên kết từ thanh điều hướng quản trị.
 

@@ -1,6 +1,6 @@
-﻿# PRN222_SE1905_VODANGHOAINAM_ASM02 — Razor Pages
+# PRN222_SE1905_VODANGHOAINAM_ASM02 — Razor Pages
 
-Sinh viên: Võ Thái Hoàng Khôi. Cập nhật 30/10/2026.
+Sinh viên: Võ Đặng Hoài Nam. Cập nhật 30/10/2026.
 
 Module quản trị ô kho `/StorageUnits` dùng Razor Pages tại `src/SelfStorageManagementSystem.Web/Pages/StorageUnits/`: CRUD, tìm kiếm, validation, phân quyền và phạm vi cơ sở. Có SignalR `/storageUnitHub` đồng bộ thay đổi trên trình duyệt khác và báo cáo đặt chỗ theo khoảng ngày. MVC vẫn phục vụ các trang đăng nhập/trang chủ dùng chung.
 

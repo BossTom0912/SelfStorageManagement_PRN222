@@ -1,6 +1,6 @@
-﻿# PRN222_SE1905_VODANGHOAINAM_ASM04 — Console / Windows Service
+# PRN222_SE1905_VODANGHOAINAM_ASM04 — Console / Windows Service
 
-Sinh viên: Võ Thái Hoàng Khôi. Cập nhật 30/10/2026.
+Sinh viên: Võ Đặng Hoài Nam. Cập nhật 30/10/2026.
 
 Project mới `src/SelfStorageManagementSystem.Worker` (.NET 8) có trong solution ASM04 và solution API/WPF. Dùng Generic Host, BackgroundService, ILogger và Microsoft.Extensions.Hosting.WindowsServices. Các phần Web/Razor/MVC/SignalR, API JWT, WPF, nghiệp vụ đặt chỗ/thanh toán/bàn giao và concurrency được giữ nguyên.
 

@@ -1,6 +1,6 @@
-﻿# PRN222_SE1905_VODANGHOAINAM_ASM01 — MVC + SignalR
+# PRN222_SE1905_VODANGHOAINAM_ASM01 — MVC + SignalR
 
-Sinh viên: Võ Thái Hoàng Khôi. Cập nhật 30/10/2026.
+Sinh viên: Võ Đặng Hoài Nam. Cập nhật 30/10/2026.
 
 Module quản trị ô kho tại `/StorageUnits` sử dụng ASP.NET Core MVC: `Controllers/StorageUnitsController.cs`, `Models/StorageUnitViewModels.cs`, `Views/StorageUnits/`. Có CRUD, tìm kiếm, phân trang, DataAnnotations, kiểm tra quyền/phạm vi cơ sở qua service và chống CSRF trên POST. Nhân viên chỉ đọc; quản lý/quản trị viên ghi dữ liệu theo quyền hiện tại trong DB.
 
