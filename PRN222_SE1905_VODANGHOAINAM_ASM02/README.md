@@ -1,4 +1,4 @@
-# PRN222_SE1905_VOTHAIHOANGKHOI_ASM02 — Razor Pages
+﻿# PRN222_SE1905_VODANGHOAINAM_ASM02 — Razor Pages
 
 Sinh viên: Võ Thái Hoàng Khôi. Cập nhật 30/10/2026.
 
@@ -9,8 +9,8 @@ UI gọi BLL/service; repository/DAO ở DAL; DbContext và entity ánh xạ SQL
 ```powershell
 .\run.ps1
 # Hoặc .\run.bat
-dotnet build .\PRN222_SE1905_VOTHAIHOANGKHOI_ASM02.sln
-dotnet test .\PRN222_SE1905_VOTHAIHOANGKHOI_ASM02.sln
+dotnet build .\PRN222_SE1905_VODANGHOAINAM_ASM02.sln
+dotnet test .\PRN222_SE1905_VODANGHOAINAM_ASM02.sln
 ```
 
 Kết quả: 192/192 test (37 nghiệp vụ + 155 web), không skip; bộ web có E2E hai trình duyệt. Đã kiểm tra form tìm kiếm Razor Pages bằng Edge, không có lỗi console. Xem `../SUBMISSION_GUIDE.md` để cấu hình kết nối/tài khoản và xem vị trí log.

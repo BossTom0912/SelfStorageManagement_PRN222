@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 
 namespace SelfStorageManagementSystem.Worker;
 
@@ -17,7 +17,7 @@ public sealed class HeartbeatWorker(
             do
             {
                 cycle++;
-                logger.LogInformation("ASM04 VOTHAIHOANGKHOI heartbeat {Cycle}; interval {IntervalSeconds}s", cycle, settings.IntervalSeconds);
+                logger.LogInformation("ASM04 VODANGHOAINAM heartbeat {Cycle}; interval {IntervalSeconds}s", cycle, settings.IntervalSeconds);
                 if (settings.MaxCycles > 0 && cycle >= settings.MaxCycles)
                 {
                     lifetime.StopApplication();

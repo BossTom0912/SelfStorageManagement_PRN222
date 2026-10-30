@@ -1,8 +1,8 @@
-namespace SelfStorageManagementSystem.Worker;
+﻿namespace SelfStorageManagementSystem.Worker;
 
 public sealed class WorkerOptions
 {
-    public const string ServiceName = "PRN222_VOTHAIHOANGKHOI_ASM04";
+    public const string ServiceName = "PRN222_VODANGHOAINAM_ASM04";
 
     public int IntervalSeconds { get; set; } = 5;
 
