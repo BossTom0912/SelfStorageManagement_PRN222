@@ -1,4 +1,4 @@
-/**
+﻿/**
  * app-realtime.js
  * Quản lý kết nối SignalR toàn hệ thống (Task T15)
  * Tích hợp 5 luồng hợp đồng (Contract Streams):
@@ -24,7 +24,6 @@
 
     // 1. Kiểm tra trạng thái xác thực: Khách vãng lai (Anonymous) KHÔNG tạo kết nối SignalR
     if (!isAuthenticated) {
-        console.info('[Realtime] Anonymous session detected. SignalR connection skipped.');
         window.AppRealtime = {
             isAuthenticated: false,
             connection: null,
@@ -35,13 +34,12 @@
     }
 
     if (typeof signalR === 'undefined') {
-        console.warn('[Realtime] SignalR client library is not loaded.');
         return;
     }
 
     // 2. Khởi tạo HubConnection với chính sách kết nối lại hữu hạn [0, 2000, 5000, 10000]
     const connection = new signalR.HubConnectionBuilder()
-        .withUrl('/storageUnitHub')
+        .withUrl('/storageUnitHub').configureLogging(signalR.LogLevel.None)
         .withAutomaticReconnect([0, 2000, 5000, 10000])
         .build();
 
@@ -108,13 +106,11 @@
 
     // 3.1. CatalogInvalidated
     connection.on('CatalogInvalidated', function (data) {
-        console.log('[Realtime] CatalogInvalidated received:', data);
         document.dispatchEvent(new CustomEvent('app:catalog-invalidated', { detail: data }));
     });
 
     // 3.2. ReservationChanged
     connection.on('ReservationChanged', function (data) {
-        console.log('[Realtime] ReservationChanged received:', data);
         document.dispatchEvent(new CustomEvent('app:reservation-changed', { detail: data }));
 
         if (window.ReservationCountdown && typeof window.ReservationCountdown.applyStatusUpdateOnUi === 'function') {
@@ -129,7 +125,6 @@
 
     // 3.3. PaymentChanged
     connection.on('PaymentChanged', function (data) {
-        console.log('[Realtime] PaymentChanged received:', data);
         document.dispatchEvent(new CustomEvent('app:payment-changed', { detail: data }));
 
         if (window.ReservationCountdown && typeof window.ReservationCountdown.applyStatusUpdateOnUi === 'function') {
@@ -144,13 +139,11 @@
 
     // 3.4. CheckInChanged
     connection.on('CheckInChanged', function (data) {
-        console.log('[Realtime] CheckInChanged received:', data);
         document.dispatchEvent(new CustomEvent('app:checkin-changed', { detail: data }));
     });
 
     // 3.5. NotificationsChanged
     connection.on('NotificationsChanged', function (data) {
-        console.log('[Realtime] NotificationsChanged received:', data);
         document.dispatchEvent(new CustomEvent('app:notifications-changed', { detail: data }));
 
         showToastAlert('Thông báo mới', 'Bạn có thông báo mới từ hệ thống.', 'info');
@@ -158,19 +151,16 @@
 
     // 3.6. AccountChanged
     connection.on('AccountChanged', function (data) {
-        console.log('[Realtime] AccountChanged received:', data);
         document.dispatchEvent(new CustomEvent('app:account-changed', { detail: data }));
     });
 
     // 4. Quản lý vòng đời kết nối (Connection Lifecycle)
     connection.onreconnecting(function (error) {
         isReconnecting = true;
-        console.warn('[Realtime] Mất kết nối SignalR. Đang thử kết nối lại...', error);
     });
 
     connection.onreconnected(function (connectionId) {
         isReconnecting = false;
-        console.log('[Realtime] Phục hồi kết nối SignalR thành công. ConnectionId:', connectionId);
         document.dispatchEvent(new CustomEvent('app:realtime-reconnected', { detail: { connectionId: connectionId } }));
 
         // Refetch / đồng bộ lại dữ liệu sau khi reconnect
@@ -182,7 +172,6 @@
 
     connection.onclose(function (error) {
         isReconnecting = false;
-        console.warn('[Realtime] Kết nối SignalR đã đóng.', error);
         if (error) {
             showToastAlert('Mất kết nối thời gian thực', 'Không thể kết nối đến máy chủ thời gian thực. Bấm F5 để làm mới trang.', 'warning');
         }
@@ -191,10 +180,8 @@
     // 5. Khởi chạy kết nối sau khi DOMContentLoaded và listeners đã sẵn sàng
     function startRealtime() {
         connection.start().then(function () {
-            console.log('[Realtime] Đã kết nối /storageUnitHub thành công.');
             document.dispatchEvent(new CustomEvent('app:realtime-connected', { detail: { connection: connection } }));
         }).catch(function (err) {
-            console.warn('[Realtime] Lỗi khởi chạy kết nối SignalR:', err ? err.toString() : err);
         });
     }
 

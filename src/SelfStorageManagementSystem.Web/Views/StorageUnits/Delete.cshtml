@@ -1,4 +1,4 @@
-@model SelfStorageManagementSystem.Web.Models.StorageUnitDeleteViewModel
+﻿@model SelfStorageManagementSystem.Web.Models.StorageUnitDeleteViewModel
 @{
     ViewData["Title"] = Model.StorageUnit != null ? $"Xóa ô kho {Model.StorageUnit.UnitCode}" : "Xác nhận xóa ô kho";
 }
@@ -155,7 +155,7 @@
 
             if (typeof signalR !== 'undefined') {
                 const connection = new signalR.HubConnectionBuilder()
-                    .withUrl("/storageUnitHub")
+                    .withUrl("/storageUnitHub").configureLogging(signalR.LogLevel.None)
                     .withAutomaticReconnect()
                     .build();
 
@@ -173,7 +173,7 @@
                     }
                 });
 
-                connection.start().catch(err => console.error("SignalR Connection Error:", err.toString()));
+                connection.start().catch(function () {});
             }
         });
     </script>

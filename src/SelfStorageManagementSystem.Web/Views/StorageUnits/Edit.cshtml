@@ -1,4 +1,4 @@
-@model SelfStorageManagementSystem.Web.Models.StorageUnitEditViewModel
+﻿@model SelfStorageManagementSystem.Web.Models.StorageUnitEditViewModel
 @{
     ViewData["Title"] = $"Chỉnh sửa ô kho {Model.Input.UnitCode}";
 }
@@ -224,13 +224,12 @@
             // Kết nối SignalR để phát hiện xung đột dữ liệu đồng thời theo thời gian thực
             if (typeof signalR !== 'undefined') {
                 const connection = new signalR.HubConnectionBuilder()
-                    .withUrl("/storageUnitHub")
+                    .withUrl("/storageUnitHub").configureLogging(signalR.LogLevel.None)
                     .withAutomaticReconnect()
                     .build();
 
                 connection.on("Receiver_UpdateStorageUnit", function (item) {
                     if (item && item.id === currentUnitId) {
-                        console.warn("Realtime: Ô kho hiện tại vừa được cập nhật bởi một client khác:", item);
 
                         const staleWarning = document.getElementById('realtimeStaleWarning');
                         const staleTime = document.getElementById('staleRemoteUpdatedAt');
@@ -256,7 +255,7 @@
                     }
                 });
 
-                connection.start().catch(err => console.error("SignalR Connection Error:", err.toString()));
+                connection.start().catch(function () {});
             }
         });
     </script>

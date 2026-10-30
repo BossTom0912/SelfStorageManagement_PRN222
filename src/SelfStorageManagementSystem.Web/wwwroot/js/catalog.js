@@ -1,4 +1,4 @@
-/**
+﻿/**
  * SelfStorageManagementSystem.Web - Catalog & Floor Map Interactive Script
  * Quản lý tương tác sơ đồ mặt bằng SVG, chọn ô ứng viên, và chuyển hướng đặt chỗ (T07)
  */
@@ -286,7 +286,6 @@
 
         // F07: Reconnect sync
         document.addEventListener('app:realtime-reconnected', function () {
-            console.log('[Catalog] Phục hồi kết nối realtime. Refetching trạng thái chuẩn từ server...');
             const currentFacId = getCurrentFacilityId();
             if (currentFacId) {
                 fetch(window.location.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })

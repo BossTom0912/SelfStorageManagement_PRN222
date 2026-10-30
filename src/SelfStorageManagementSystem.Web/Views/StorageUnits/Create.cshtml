@@ -1,4 +1,4 @@
-@model SelfStorageManagementSystem.Web.Models.StorageUnitCreateViewModel
+﻿@model SelfStorageManagementSystem.Web.Models.StorageUnitCreateViewModel
 @{
     ViewData["Title"] = "Thêm ô kho mới";
 }
@@ -221,7 +221,6 @@
                             }
                         }
                     } catch (e) {
-                        console.error("Lỗi khi tải lookups động cho cơ sở:", e);
                     }
                 });
             }

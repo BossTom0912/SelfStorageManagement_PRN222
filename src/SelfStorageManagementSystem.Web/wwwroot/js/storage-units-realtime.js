@@ -1,4 +1,4 @@
-/**
+﻿/**
  * SelfStorageManagementSystem.Web - Storage Units Realtime CRUD Script (Task T13)
  * Implements SignalR real-time CRUD operations adhering to TeacherCode pattern.
  * Safely encodes HTML to prevent XSS, upserts rows by ID to prevent duplicates,
@@ -252,10 +252,8 @@
             if (!response.ok) {
                 // T13-R4-F04: Only mark failed if this request is still the latest scheduled generation
                 if (generation < latestScheduledGeneration) {
-                    console.warn(`[Realtime] Superseded fetch failed with status ${response.status} (generation ${generation} < latest ${latestScheduledGeneration})`);
                     return { status: 'superseded', generation: generation, success: false, applied: false };
                 }
-                console.warn(`[Realtime] Latest refetch failed with status ${response.status} (generation ${generation})`);
                 return { status: 'failed', generation: generation, statusHttp: response.status, success: false, applied: false };
             }
 
@@ -264,7 +262,6 @@
             // T13-R4-F04: Out-of-order and superseded check.
             // If a newer generation was scheduled OR has already applied to DOM, discard this stale snapshot.
             if (generation < latestScheduledGeneration || generation < latestAppliedGeneration) {
-                console.warn(`[Realtime] Discarding superseded refetch response generation ${generation} (latest scheduled: ${latestScheduledGeneration}, latest applied: ${latestAppliedGeneration})`);
                 return { status: 'superseded', generation: generation, success: false, applied: false };
             }
 
@@ -277,7 +274,6 @@
             const newTotalCount = doc.getElementById(totalCountId || 'storageUnitsTotalCount');
 
             if (!newTable || (!newFooter && !newTotalCount)) {
-                console.warn(`[Realtime] Refetch returned HTTP 200 but HTML lacks required table body or footer elements (newTable: ${!!newTable}, newFooter: ${!!newFooter}, newTotalCount: ${!!newTotalCount}).`);
                 RealtimeUtils.showSyncPendingWarning();
                 return { status: 'failed', generation: generation, reason: 'missing_table_elements', success: false, applied: false };
             }
@@ -342,7 +338,6 @@
 
             return { status: 'applied', generation: generation, success: true, applied: true };
         } catch (e) {
-            console.warn("[Realtime] Table refetch failed:", e);
             if (generation < latestScheduledGeneration) {
                 return { status: 'superseded', generation: generation, success: false, applied: false };
             }

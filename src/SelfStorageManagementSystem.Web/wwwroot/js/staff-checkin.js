@@ -1,4 +1,4 @@
-/**
+﻿/**
  * JavaScript dành riêng cho Quầy tiếp nhận & Bàn giao kho số hóa (Task T11)
  * Tuân thủ nghiêm ngặt quy tắc bảo mật:
  * - TUYỆT ĐỐI KHÔNG lưu mã PIN vào URL, cookie, log, localStorage hay sessionStorage.
@@ -143,18 +143,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // 5. T15 R2 Fix (F07): Xử lý khôi phục kết nối (app:realtime-reconnected)
     document.addEventListener('app:realtime-reconnected', function () {
-        console.log('[StaffCheckIn] Phục hồi kết nối realtime SignalR.');
 
         // Bảo vệ nghiêm ngặt: Tuyệt đối không làm mất mã PIN một lần đang hiển thị
         if (document.getElementById('securityPinSection')) {
-            console.log('[StaffCheckIn] Đang hiển thị mã PIN một lần. Bỏ qua reload tự động để bảo toàn PIN.');
             return;
         }
 
         // Không làm gián đoạn form đang nhập dở
         const active = document.activeElement;
         if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.tagName === 'SELECT')) {
-            console.log('[StaffCheckIn] Nhân viên đang thao tác form. Không gián đoạn nhập liệu.');
             return;
         }
 

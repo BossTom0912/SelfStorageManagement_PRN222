@@ -1,4 +1,4 @@
-@model SelfStorageManagementSystem.Web.Models.StorageUnitsIndexViewModel
+﻿@model SelfStorageManagementSystem.Web.Models.StorageUnitsIndexViewModel
 @{
     ViewData["Title"] = "Quản trị danh mục ô kho";
 }
@@ -325,7 +325,7 @@
 
             // Khởi tạo HubConnection theo mẫu TeacherCode với reconnect tự động
             const connection = new signalR.HubConnectionBuilder()
-                .withUrl("/storageUnitHub")
+                .withUrl("/storageUnitHub").configureLogging(signalR.LogLevel.None)
                 .withAutomaticReconnect([0, 2000, 5000, 10000])
                 .build();
             window.connection = connection;
@@ -355,7 +355,6 @@
 
             // Đăng ký listeners TRƯỚC KHI connection.start()
             connection.on("Receiver_CreateStorageUnit", async function (item) {
-                console.log("Receiver_CreateStorageUnit received:", item);
 
                 if (!StorageUnitsRealtime.matchesFilter(item, currentFilter)) {
                     StorageUnitsRealtime.showMessage(
@@ -394,7 +393,6 @@
             });
 
             connection.on("Receiver_UpdateStorageUnit", async function (item) {
-                console.log("Receiver_UpdateStorageUnit received:", item);
 
                 const outcome = await StorageUnitsRealtime.refetchTable('storageUnitsTableBody', 'storageUnitsTotalCount', item.id, 'update');
                 if (outcome && outcome.status === 'applied') {
@@ -418,7 +416,6 @@
             });
 
             connection.on("Receiver_DeleteStorageUnit", async function (id) {
-                console.log("Receiver_DeleteStorageUnit received for id:", id);
 
                 const outcome = await StorageUnitsRealtime.refetchTable('storageUnitsTableBody', 'storageUnitsTotalCount', null, 'delete');
                 if (outcome && outcome.status === 'applied') {
@@ -438,7 +435,6 @@
             });
 
             connection.onreconnected(function (connectionId) {
-                console.log("SignalR reconnected:", connectionId);
                 StorageUnitsRealtime.showMessage(
                     messageAreaId,
                     'success',
@@ -449,9 +445,7 @@
             });
 
             connection.start().then(function () {
-                console.log("Connected to /storageUnitHub successfully.");
             }).catch(function (err) {
-                console.error("SignalR Connection Error:", err.toString());
             });
         });
     </script>

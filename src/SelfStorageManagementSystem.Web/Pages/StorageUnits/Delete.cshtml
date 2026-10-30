@@ -1,4 +1,4 @@
-@page
+﻿@page
 @model SelfStorageManagementSystem.Web.Pages.StorageUnits.DeleteModel
 @{
     ViewData["Title"] = Model.StorageUnit != null ? $"Xóa ô kho {Model.StorageUnit.UnitCode}" : "Xác nhận xóa ô kho";
@@ -172,7 +172,7 @@
             if (btnDeleteBySignalR && canManage && canDelete) {
                 // 1. Khởi tạo HubConnection theo mẫu TeacherCode
                 const connection = new signalR.HubConnectionBuilder()
-                    .withUrl("/storageUnitHub")
+                    .withUrl("/storageUnitHub").configureLogging(signalR.LogLevel.None)
                     .withAutomaticReconnect()
                     .build();
 
@@ -187,7 +187,6 @@
 
                 function handleRealtimeDelete(id) {
                     if (String(id) === "@Model.Id") {
-                        console.log("Storage unit deleted externally:", id);
                         btnDeleteBySignalR.disabled = true;
                         if (submitBtn) submitBtn.disabled = true;
                         window.location.href = "/StorageUnits";
@@ -195,9 +194,8 @@
                 }
 
                 connection.start().then(function () {
-                    console.log("Connected to SignalR Hub on Delete page");
                 }).catch(function (err) {
-                    return console.error("SignalR start error on Delete page:", err.toString());
+                    return;
                 });
 
                 // 3. Sự kiện click: gọi invoke("HubDelete_StorageUnit", id, expectedUpdatedAt)
@@ -211,16 +209,13 @@
                     btnDeleteBySignalR.disabled = true;
                     if (submitBtn) submitBtn.disabled = true;
 
-                    console.log("Invoking HubDelete_StorageUnit for id:", id);
 
                     // Hỗ trợ cả HubDelete_TransactionCashDepositSlip và HubDelete_StorageUnit
                     connection.invoke("HubDelete_StorageUnit", id, expectedUpdatedAt)
                         .then(function (result) {
-                            console.log("HubDelete_StorageUnit success:", result);
                             window.location.href = "/StorageUnits";
                         })
                         .catch(function (err) {
-                            console.error("HubDelete_StorageUnit failed:", err.toString());
                             btnDeleteBySignalR.disabled = false;
                             if (submitBtn) submitBtn.disabled = false;
                             alert("Lỗi khi xóa ô kho qua SignalR: " + err.toString());

@@ -1,4 +1,4 @@
-@page
+﻿@page
 @model SelfStorageManagementSystem.Web.Pages.StorageUnits.IndexModel
 @{
     ViewData["Title"] = "Quản trị danh mục ô kho";
@@ -326,7 +326,7 @@
 
             // 1. Khởi tạo HubConnection theo mẫu TeacherCode với reconnect tự động
             const connection = new signalR.HubConnectionBuilder()
-                .withUrl("/storageUnitHub")
+                .withUrl("/storageUnitHub").configureLogging(signalR.LogLevel.None)
                 .withAutomaticReconnect([0, 2000, 5000, 10000])
                 .build();
             window.connection = connection;
@@ -358,7 +358,6 @@
 
             // Listener: Receiver_CreateStorageUnit - Thêm dòng nổi bật hoặc refetch đồng bộ sắp xếp/phân trang
             connection.on("Receiver_CreateStorageUnit", async function (item) {
-                console.log("Receiver_CreateStorageUnit received:", item);
 
                 // T13-F03 / T13-R3-F03: Kiểm tra khớp cơ sở/loại/khu vực/trạng thái cơ bản
                 if (!StorageUnitsRealtime.matchesFilter(item, currentFilter)) {
@@ -403,7 +402,6 @@
 
             // Listener: Receiver_UpdateStorageUnit - Cập nhật bảng ngay lập tức hoặc gỡ dòng nếu rời bộ lọc
             connection.on("Receiver_UpdateStorageUnit", async function (item) {
-                console.log("Receiver_UpdateStorageUnit received:", item);
 
                 // T13-R2-F03 / T13-R3-F05 / T13-R4-F04: Refetch từ server để đồng bộ chính xác thứ tự và bộ lọc
                 const outcome = await StorageUnitsRealtime.refetchTable('storageUnitsTableBody', 'storageUnitsTotalCount', item.id, 'update');
@@ -430,7 +428,6 @@
 
             // Listener: Receiver_DeleteStorageUnit - Bỏ dòng tương ứng khỏi bảng (theo mẫu TeacherCode)
             connection.on("Receiver_DeleteStorageUnit", async function (id) {
-                console.log("Receiver_DeleteStorageUnit received for id:", id);
 
                 // T13-R2-F04 / T13-R3-F05 / T13-R4-F04: Refetch từ server để kéo dòng kế tiếp từ trang sau vào trang đầy và đồng bộ số tổng
                 const outcome = await StorageUnitsRealtime.refetchTable('storageUnitsTableBody', 'storageUnitsTotalCount', null, 'delete');
@@ -453,7 +450,6 @@
 
             // Reconnection: Tự động tải lại dữ liệu mới nhất sau khi ngắt kết nối phục hồi
             connection.onreconnected(function (connectionId) {
-                console.log("SignalR reconnected:", connectionId);
                 StorageUnitsRealtime.showMessage(
                     messageAreaId,
                     'success',
@@ -465,9 +461,7 @@
 
             // 3. Khởi chạy kết nối SAU KHI đã đăng ký đầy đủ listeners
             connection.start().then(function () {
-                console.log("Connected to /storageUnitHub successfully.");
             }).catch(function (err) {
-                console.error("SignalR Connection Error:", err.toString());
             });
         });
     </script>

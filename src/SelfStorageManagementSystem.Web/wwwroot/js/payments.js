@@ -1,4 +1,4 @@
-/**
+﻿/**
  * payments.js
  * Client-side Realtime listener cho mô-đun Thanh Toán (Payments Index & Details - Task T15 R3 Fix R2-F03).
  * Lắng nghe app:payment-changed và app:realtime-reconnected từ SignalR Hub.
@@ -79,7 +79,6 @@ document.addEventListener('DOMContentLoaded', function () {
     document.addEventListener('app:payment-changed', function (e) {
         const data = e.detail;
         if (!data) return;
-        console.log('[Payments] Realtime PaymentChanged received:', data);
 
         // A. Xử lý trên trang Chi Tiết (Payments/Details)
         if (detailsContainer) {
@@ -132,7 +131,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // 2. Lắng nghe phục hồi kết nối Realtime (app:realtime-reconnected)
     document.addEventListener('app:realtime-reconnected', function () {
-        console.log('[Payments] Realtime connection restored. Prompting canonical refresh...');
         if (detailsMsgArea) {
             showNotice(detailsMsgArea, 'Kết nối mạng realtime đã được khôi phục. Bấm vào đây để cập nhật trạng thái thanh toán mới nhất.', true);
         } else if (indexMsgArea) {

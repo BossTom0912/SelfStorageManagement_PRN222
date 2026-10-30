@@ -1,4 +1,4 @@
-/**
+﻿/**
  * reservation-countdown.js
  * Quản lý đồng hồ đếm ngược giữ chỗ 15 phút (BR-RSV-01) cho hệ thống SelfStorage.
  * 
@@ -180,7 +180,6 @@
                     }
                 })
                 .catch(function (error) {
-                    console.warn('Lỗi kiểm tra trạng thái đơn ' + reservationId + ':', error);
                     // Finding 2: Lỗi mạng có kiểm soát: lùi lịch 3000ms (backoff),
                     // cập nhật nextSyncAtMs để updateClock() không chen ngang gửi request sớm
                     if (!isTerminated) {
@@ -570,7 +569,6 @@
 
     // T15 R3 Fix (R2-F04): Lắng nghe phục hồi kết nối SignalR để refetch canonical state ngay lập tức
     function resyncAllActiveReservations() {
-        console.log('[ReservationCountdown] Realtime reconnected. Resyncing canonical reservation states...');
         const candidateContainers = document.querySelectorAll('[data-reservation-countdown], [data-reservation-id], #reservationCountdownPanel');
         const processedIds = new Set();
 
@@ -610,7 +608,6 @@
                 }
             })
             .catch(function (err) {
-                console.warn('[ReservationCountdown] Reconnect status fetch error for reservation ' + resId + ':', err);
             });
         });
     }
