@@ -1,4 +1,4 @@
-/* ===== 00_CreateDatabase.sql ===== */
+﻿/* ===== 00_CreateDatabase.sql ===== */
 /*
   Self Storage PRN222 - SQL Server bootstrap
   Run this file in SQL Server Management Studio with SQLCMD mode enabled,
@@ -1827,36 +1827,109 @@ SET ANSI_NULLS ON;
 IF NOT EXISTS (SELECT 1 FROM core.users WHERE email = 'admin@selfstorage.local')
 BEGIN
     INSERT INTO core.users (email, password_hash, status, created_at, updated_at)
-    VALUES ('admin@selfstorage.local', 'PH:v1:100000:32:00000000000000000000000000000000:0000000000000000000000000000000000000000000000000000000000000000', 'active', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
+    VALUES ('admin@selfstorage.local', 'PBKDF2$SHA256$100000$WovjKMI714LVNHuXFrno7Q==$zAzmrID0vY0BL0EnJLfYIjrALD5GB8Bqgy7XMjYCKDs=', 'active', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
     DECLARE @adminId BIGINT = SCOPE_IDENTITY();
     DECLARE @roleId BIGINT = (SELECT id FROM core.roles WHERE code = 'system_administrator');
     INSERT INTO core.user_roles (user_id, role_id, granted_at) VALUES (@adminId, @roleId, SYSDATETIMEOFFSET());
+END
+ELSE
+BEGIN
+    UPDATE core.users
+    SET password_hash = 'PBKDF2$SHA256$100000$WovjKMI714LVNHuXFrno7Q==$zAzmrID0vY0BL0EnJLfYIjrALD5GB8Bqgy7XMjYCKDs=',
+        status = 'active',
+        updated_at = SYSDATETIMEOFFSET()
+    WHERE email = 'admin@selfstorage.local';
 END
 
 IF NOT EXISTS (SELECT 1 FROM core.users WHERE email = 'manager.d1@selfstorage.local')
 BEGIN
     INSERT INTO core.users (email, password_hash, status, created_at, updated_at)
-    VALUES ('manager.d1@selfstorage.local', 'PH:v1:100000:32:00000000000000000000000000000000:0000000000000000000000000000000000000000000000000000000000000000', 'active', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
+    VALUES ('manager.d1@selfstorage.local', 'PBKDF2$SHA256$100000$WovjKMI714LVNHuXFrno7Q==$zAzmrID0vY0BL0EnJLfYIjrALD5GB8Bqgy7XMjYCKDs=', 'active', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
     DECLARE @mgrId BIGINT = SCOPE_IDENTITY();
     DECLARE @mgrRoleId BIGINT = (SELECT id FROM core.roles WHERE code = 'facility_manager');
     INSERT INTO core.user_roles (user_id, role_id, granted_at) VALUES (@mgrId, @mgrRoleId, SYSDATETIMEOFFSET());
+    INSERT INTO core.employee_profiles (user_id, employee_code, full_name, hire_date, employment_status)
+    VALUES (@mgrId, 'MGR-D1-001', 'Manager District 1', CONVERT(date, '2024-01-01', 23), 'active');
+    INSERT INTO core.staff_facility_assignments (employee_id, facility_id, assignment_role, starts_at, assigned_by)
+    VALUES (@mgrId, 1, 'facility_manager', CONVERT(datetimeoffset, '2024-01-01 00:00:00+07:00'), 1);
+END
+ELSE
+BEGIN
+    UPDATE core.users
+    SET password_hash = 'PBKDF2$SHA256$100000$WovjKMI714LVNHuXFrno7Q==$zAzmrID0vY0BL0EnJLfYIjrALD5GB8Bqgy7XMjYCKDs=',
+        status = 'active',
+        updated_at = SYSDATETIMEOFFSET()
+    WHERE email = 'manager.d1@selfstorage.local';
+    
+    DECLARE @existingMgrId BIGINT = (SELECT id FROM core.users WHERE email = 'manager.d1@selfstorage.local');
+    IF NOT EXISTS (SELECT 1 FROM core.employee_profiles WHERE user_id = @existingMgrId)
+    BEGIN
+        INSERT INTO core.employee_profiles (user_id, employee_code, full_name, hire_date, employment_status)
+        VALUES (@existingMgrId, 'MGR-D1-001', 'Manager District 1', CONVERT(date, '2024-01-01', 23), 'active');
+    END
+    IF NOT EXISTS (SELECT 1 FROM core.staff_facility_assignments WHERE employee_id = @existingMgrId)
+    BEGIN
+        INSERT INTO core.staff_facility_assignments (employee_id, facility_id, assignment_role, starts_at, assigned_by)
+        VALUES (@existingMgrId, 1, 'facility_manager', CONVERT(datetimeoffset, '2024-01-01 00:00:00+07:00'), 1);
+    END
 END
 
 IF NOT EXISTS (SELECT 1 FROM core.users WHERE email = 'staff.d1@selfstorage.local')
 BEGIN
     INSERT INTO core.users (email, password_hash, status, created_at, updated_at)
-    VALUES ('staff.d1@selfstorage.local', 'PH:v1:100000:32:00000000000000000000000000000000:0000000000000000000000000000000000000000000000000000000000000000', 'active', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
+    VALUES ('staff.d1@selfstorage.local', 'PBKDF2$SHA256$100000$WovjKMI714LVNHuXFrno7Q==$zAzmrID0vY0BL0EnJLfYIjrALD5GB8Bqgy7XMjYCKDs=', 'active', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
     DECLARE @staffId BIGINT = SCOPE_IDENTITY();
     DECLARE @staffRoleId BIGINT = (SELECT id FROM core.roles WHERE code = 'facility_staff');
     INSERT INTO core.user_roles (user_id, role_id, granted_at) VALUES (@staffId, @staffRoleId, SYSDATETIMEOFFSET());
+    INSERT INTO core.employee_profiles (user_id, employee_code, full_name, hire_date, employment_status)
+    VALUES (@staffId, 'STF-D1-001', 'Staff District 1', CONVERT(date, '2024-01-01', 23), 'active');
+    INSERT INTO core.staff_facility_assignments (employee_id, facility_id, assignment_role, starts_at, assigned_by)
+    VALUES (@staffId, 1, 'facility_staff', CONVERT(datetimeoffset, '2024-01-01 00:00:00+07:00'), 1);
+END
+ELSE
+BEGIN
+    UPDATE core.users
+    SET password_hash = 'PBKDF2$SHA256$100000$WovjKMI714LVNHuXFrno7Q==$zAzmrID0vY0BL0EnJLfYIjrALD5GB8Bqgy7XMjYCKDs=',
+        status = 'active',
+        updated_at = SYSDATETIMEOFFSET()
+    WHERE email = 'staff.d1@selfstorage.local';
+    
+    DECLARE @existingStaffId BIGINT = (SELECT id FROM core.users WHERE email = 'staff.d1@selfstorage.local');
+    IF NOT EXISTS (SELECT 1 FROM core.employee_profiles WHERE user_id = @existingStaffId)
+    BEGIN
+        INSERT INTO core.employee_profiles (user_id, employee_code, full_name, hire_date, employment_status)
+        VALUES (@existingStaffId, 'STF-D1-001', 'Staff District 1', CONVERT(date, '2024-01-01', 23), 'active');
+    END
+    IF NOT EXISTS (SELECT 1 FROM core.staff_facility_assignments WHERE employee_id = @existingStaffId)
+    BEGIN
+        INSERT INTO core.staff_facility_assignments (employee_id, facility_id, assignment_role, starts_at, assigned_by)
+        VALUES (@existingStaffId, 1, 'facility_staff', CONVERT(datetimeoffset, '2024-01-01 00:00:00+07:00'), 1);
+    END
 END
 
 IF NOT EXISTS (SELECT 1 FROM core.users WHERE email = 'customer1@example.com')
 BEGIN
     INSERT INTO core.users (email, password_hash, status, created_at, updated_at)
-    VALUES ('customer1@example.com', 'PH:v1:100000:32:00000000000000000000000000000000:0000000000000000000000000000000000000000000000000000000000000000', 'active', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
+    VALUES ('customer1@example.com', 'PBKDF2$SHA256$100000$WovjKMI714LVNHuXFrno7Q==$zAzmrID0vY0BL0EnJLfYIjrALD5GB8Bqgy7XMjYCKDs=', 'active', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
     DECLARE @custId BIGINT = SCOPE_IDENTITY();
     DECLARE @custRoleId BIGINT = (SELECT id FROM core.roles WHERE code = 'storage_customer');
     INSERT INTO core.user_roles (user_id, role_id, granted_at) VALUES (@custId, @custRoleId, SYSDATETIMEOFFSET());
+    INSERT INTO core.customer_profiles (user_id, full_name, identity_number, date_of_birth, address)
+    VALUES (@custId, 'Customer One', 'DEMO-CUSTOMER-003', CONVERT(date, '2000-01-01', 23), 'Ho Chi Minh City');
+END
+ELSE
+BEGIN
+    UPDATE core.users
+    SET password_hash = 'PBKDF2$SHA256$100000$WovjKMI714LVNHuXFrno7Q==$zAzmrID0vY0BL0EnJLfYIjrALD5GB8Bqgy7XMjYCKDs=',
+        status = 'active',
+        updated_at = SYSDATETIMEOFFSET()
+    WHERE email = 'customer1@example.com';
+    
+    DECLARE @existingCustId BIGINT = (SELECT id FROM core.users WHERE email = 'customer1@example.com');
+    IF NOT EXISTS (SELECT 1 FROM core.customer_profiles WHERE user_id = @existingCustId)
+    BEGIN
+        INSERT INTO core.customer_profiles (user_id, full_name, identity_number, date_of_birth, address)
+        VALUES (@existingCustId, 'Customer One', 'DEMO-CUSTOMER-003', CONVERT(date, '2000-01-01', 23), 'Ho Chi Minh City');
+    END
 END
 GO

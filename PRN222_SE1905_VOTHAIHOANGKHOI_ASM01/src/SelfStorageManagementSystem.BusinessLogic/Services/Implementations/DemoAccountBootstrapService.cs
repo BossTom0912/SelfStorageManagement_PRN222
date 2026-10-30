@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using SelfStorageManagementSystem.BusinessLogic.Common.Constants;
 using SelfStorageManagementSystem.BusinessLogic.Services.Interfaces;
 using SelfStorageManagementSystem.DataAccess.Context;
+using SelfStorageManagementSystem.DataAccess.Entities;
 
 namespace SelfStorageManagementSystem.BusinessLogic.Services.Implementations;
 
@@ -15,6 +16,7 @@ public class DemoAccountBootstrapService : IDemoAccountBootstrapService
     private readonly ILogger<DemoAccountBootstrapService> _logger;
 
     private const string PlaceholderHash = "external-auth-demo-only";
+    private const string LegacyPlaceholderPrefix = "PH:v1:";
 
     public DemoAccountBootstrapService(
         SelfStorageDbContext context,
@@ -76,7 +78,7 @@ public class DemoAccountBootstrapService : IDemoAccountBootstrapService
         _logger.LogInformation("[Bootstrap] Verified role '{Role}' and updated password hash for admin account '{Email}'.", RoleConstants.SystemAdministrator, adminEmail);
 
         var demoUsersWithPlaceholderHash = await _context.users
-            .Where(u => u.id != adminUser.id && u.password_hash == PlaceholderHash)
+            .Where(u => u.id != adminUser.id && (u.password_hash == PlaceholderHash || u.password_hash.StartsWith(LegacyPlaceholderPrefix)))
             .ToListAsync(cancellationToken);
 
         if (demoUsersWithPlaceholderHash.Count > 0)
@@ -94,7 +96,109 @@ public class DemoAccountBootstrapService : IDemoAccountBootstrapService
             }
         }
 
+        await EnsureDemoProfilesAsync(cancellationToken);
+
         await _context.SaveChangesAsync(cancellationToken);
         _logger.LogInformation("[Bootstrap] Successfully bootstrapped admin and {Count} demo accounts.", demoUsersWithPlaceholderHash.Count);
+    }
+
+    private async Task EnsureDemoProfilesAsync(CancellationToken cancellationToken)
+    {
+        var now = DateTimeOffset.UtcNow;
+        var firstFacility = await _context.facilities.FirstOrDefaultAsync(cancellationToken);
+
+        var manager = await _context.users
+            .Include(u => u.employee_profile)
+            .FirstOrDefaultAsync(u => u.email == "manager.d1@selfstorage.local", cancellationToken);
+
+        if (manager != null)
+        {
+            if (manager.employee_profile == null)
+            {
+                _context.employee_profiles.Add(new employee_profile
+                {
+                    user_id = manager.id,
+                    employee_code = "MGR-D1-001",
+                    full_name = "Manager District 1",
+                    hire_date = DateOnly.FromDateTime(DateTime.UtcNow.AddYears(-1)),
+                    employment_status = EmploymentStatusConstants.Active,
+                    created_at = now,
+                    updated_at = now
+                });
+            }
+
+            if (firstFacility != null)
+            {
+                var hasAssignment = await _context.staff_facility_assignments
+                    .AnyAsync(a => a.employee_id == manager.id, cancellationToken);
+                if (!hasAssignment)
+                {
+                    _context.staff_facility_assignments.Add(new staff_facility_assignment
+                    {
+                        employee_id = manager.id,
+                        facility_id = firstFacility.id,
+                        assignment_role = RoleConstants.FacilityManager,
+                        starts_at = now.AddMonths(-1),
+                        created_at = now
+                    });
+                }
+            }
+        }
+
+        var staff = await _context.users
+            .Include(u => u.employee_profile)
+            .FirstOrDefaultAsync(u => u.email == "staff.d1@selfstorage.local", cancellationToken);
+
+        if (staff != null)
+        {
+            if (staff.employee_profile == null)
+            {
+                _context.employee_profiles.Add(new employee_profile
+                {
+                    user_id = staff.id,
+                    employee_code = "STF-D1-001",
+                    full_name = "Staff District 1",
+                    hire_date = DateOnly.FromDateTime(DateTime.UtcNow.AddYears(-1)),
+                    employment_status = EmploymentStatusConstants.Active,
+                    created_at = now,
+                    updated_at = now
+                });
+            }
+
+            if (firstFacility != null)
+            {
+                var hasAssignment = await _context.staff_facility_assignments
+                    .AnyAsync(a => a.employee_id == staff.id, cancellationToken);
+                if (!hasAssignment)
+                {
+                    _context.staff_facility_assignments.Add(new staff_facility_assignment
+                    {
+                        employee_id = staff.id,
+                        facility_id = firstFacility.id,
+                        assignment_role = RoleConstants.FacilityStaff,
+                        starts_at = now.AddMonths(-1),
+                        created_at = now
+                    });
+                }
+            }
+        }
+
+        var customer = await _context.users
+            .Include(u => u.customer_profile)
+            .FirstOrDefaultAsync(u => u.email == "customer1@example.com", cancellationToken);
+
+        if (customer != null && customer.customer_profile == null)
+        {
+            _context.customer_profiles.Add(new customer_profile
+            {
+                user_id = customer.id,
+                full_name = "Customer One",
+                identity_number = "DEMO-CUSTOMER-003",
+                date_of_birth = new DateOnly(2000, 1, 1),
+                address = "Ho Chi Minh City",
+                created_at = now,
+                updated_at = now
+            });
+        }
     }
 }

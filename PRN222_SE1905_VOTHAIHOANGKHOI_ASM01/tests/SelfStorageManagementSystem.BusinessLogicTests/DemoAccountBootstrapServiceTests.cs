@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -182,5 +182,67 @@ public class DemoAccountBootstrapServiceTests
 
         Assert.NotNull(demoUser);
         Assert.Equal("hashed_demo_pw", demoUser.password_hash);
+    }
+
+    [Fact]
+    public async Task BootstrapDemoAccountsAsync_WhenManagerD1HasLegacyHash_ShouldUpdateHashAndCreateEmployeeProfileAndAssignment()
+    {
+        using var context = CreateInMemoryContext(Guid.NewGuid().ToString());
+        SeedAdminUser(context, "admin@selfstorage.local", withAdminRole: true);
+
+        context.facilities.Add(new facility
+        {
+            id = 1,
+            code = "FAC-01",
+            name = "Facility 01",
+            address_line = "123 Main St",
+            city = "HCM",
+            district = "D1",
+            timezone = "Asia/Ho_Chi_Minh",
+            status = "active",
+            created_at = DateTimeOffset.UtcNow,
+            updated_at = DateTimeOffset.UtcNow
+        });
+
+        context.users.Add(new user
+        {
+            id = 10002,
+            email = "manager.d1@selfstorage.local",
+            password_hash = "PH:v1:100000:32:00000000000000000000000000000000:0000000000000000000000000000000000000000000000000000000000000000",
+            status = UserStatusConstants.Active,
+            created_at = DateTimeOffset.UtcNow,
+            updated_at = DateTimeOffset.UtcNow
+        });
+        await context.SaveChangesAsync();
+
+        _passwordHasherMock.Setup(h => h.HashPassword("SecretAdminPassword123!"))
+            .Returns("hashed_secret_pw");
+
+        var inMemoryConfig = new Dictionary<string, string?>
+        {
+            { "AdminAccount:Email", "admin@selfstorage.local" },
+            { "AdminAccount:Password", "SecretAdminPassword123!" }
+        };
+        var configuration = new ConfigurationBuilder().AddInMemoryCollection(inMemoryConfig).Build();
+
+        var service = new DemoAccountBootstrapService(
+            context,
+            _passwordHasherMock.Object,
+            configuration,
+            _loggerMock.Object);
+
+        await service.BootstrapDemoAccountsAsync();
+
+        var managerUser = await context.users.FindAsync((long)10002);
+        Assert.NotNull(managerUser);
+        Assert.Equal("hashed_secret_pw", managerUser.password_hash);
+
+        var empProfile = await context.employee_profiles.FindAsync((long)10002);
+        Assert.NotNull(empProfile);
+        Assert.Equal(EmploymentStatusConstants.Active, empProfile.employment_status);
+
+        var assignment = await context.staff_facility_assignments.FirstOrDefaultAsync(a => a.employee_id == 10002);
+        Assert.NotNull(assignment);
+        Assert.Equal(RoleConstants.FacilityManager, assignment.assignment_role);
     }
 }
