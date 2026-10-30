@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using SelfStorageManagementSystem.BusinessLogic.Common.Constants;
 using SelfStorageManagementSystem.BusinessLogic.DependencyInjection;
 using SelfStorageManagementSystem.BusinessLogic.Services.Interfaces;
@@ -16,6 +16,7 @@ builder.Services.AddSelfStorageWebComposition(builder.Configuration);
 // 2. Đăng ký MVC Controllers với Views, Razor Pages, và SignalR Realtime Hub
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddServerSideBlazor();
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<IStorageUnitHubConnectionTracker, StorageUnitHubConnectionTracker>();
 builder.Services.AddScoped<StorageUnitRealtimePublisher>();
@@ -30,7 +31,10 @@ builder.Services.AddSingleton(System.Text.Encodings.Web.HtmlEncoder.Create(Syste
 builder.Services.AddScoped<IReservationExpirationHook, ReservationExpirationRealtimeHook>();
 if (builder.Configuration.GetValue<bool?>("ReservationWorker:Enabled") ?? true)
 {
-    builder.Services.AddHostedService<ReservationHoldExpirationWorker>();
+    builder.Services.AddHostedService(sp => new ReservationHoldExpirationWorker(
+        sp.GetRequiredService<IServiceScopeFactory>(),
+        sp.GetRequiredService<ILogger<ReservationHoldExpirationWorker>>(),
+        sp.GetRequiredService<IConfiguration>()));
 }
 
 // 4. Cấu hình Cookie Authentication độc lập và an toàn theo chuẩn TeacherCode & PRN222 (T05)
@@ -64,6 +68,14 @@ builder.Services.AddAntiforgery(options =>
 });
 
 var app = builder.Build();
+
+// Bootstrap admin / demo accounts only in Development when explicitly enabled
+if (app.Environment.IsDevelopment() && app.Configuration.GetValue<bool>("Bootstrap:Enabled"))
+{
+    using var scope = app.Services.CreateScope();
+    var bootstrapService = scope.ServiceProvider.GetRequiredService<IDemoAccountBootstrapService>();
+    await bootstrapService.BootstrapDemoAccountsAsync();
+}
 
 // Xử lý ngoại lệ tập trung và trang mã trạng thái HTTP
 if (!app.Environment.IsDevelopment())
@@ -105,6 +117,8 @@ app.MapControllers();
 
 // Razor Pages Route
 app.MapRazorPages();
+app.MapBlazorHub(options => options.CloseOnAuthenticationExpiration = true)
+    .RequireAuthorization("StaffOnly");
 
 app.Run();
 

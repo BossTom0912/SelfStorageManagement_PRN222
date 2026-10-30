@@ -33,7 +33,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IReservationRepository, ReservationRepository>();
         services.AddScoped<IPaymentRepository, PaymentRepository>();
         services.AddScoped<ICheckInRepository, CheckInRepository>();
-        services.AddScoped<IStorageUnitAdminRepository, StorageUnitAdminRepository>();
+        services.AddScoped<IStorageUnitKhoiVTHRepository, StorageUnitKhoiVTHRepository>();
+        services.AddScoped<IStorageUnitAdminRepository>(sp => sp.GetRequiredService<IStorageUnitKhoiVTHRepository>());
 
         return services;
     }

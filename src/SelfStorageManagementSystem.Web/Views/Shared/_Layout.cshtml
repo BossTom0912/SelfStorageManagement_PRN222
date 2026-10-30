@@ -21,7 +21,12 @@
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
+    <link rel="icon" href="data:," />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    @if (Context.Request.Path.StartsWithSegments("/Blazor"))
+    {
+        <base href="@Url.Content("~/")" />
+    }
     <title>@ViewData["Title"] - Hệ Thống Quản Lý Kho Tự Quản SelfStorage</title>
     
     <!-- Tài nguyên cục bộ (Local Assets only - Không dùng CDN bên ngoài) -->
@@ -97,6 +102,9 @@
                                 <a class="nav-link" href="/StorageUnits">Quản trị ô kho</a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link fw-bold text-primary" href="/Blazor/StorageUnits">Quản trị ô kho Blazor</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link" href="/Staff/CheckIn">Quầy tiếp nhận</a>
                             </li>
                             <li class="nav-item">
@@ -124,6 +132,9 @@
                         {
                             <li class="nav-item">
                                 <a class="nav-link" href="/StorageUnits">Quản trị ô kho</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link fw-bold text-primary" href="/Blazor/StorageUnits">Quản trị ô kho Blazor</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="/Staff/CheckIn">Quầy tiếp nhận</a>
