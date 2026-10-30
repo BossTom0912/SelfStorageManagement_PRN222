@@ -1,0 +1,12 @@
+@page "/Blazor/StorageUnits"
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Policy = "StaffOnly")]
+@{
+    ViewData["Title"] = "Quản trị ô kho Blazor";
+}
+
+<component type="typeof(SelfStorageManagementSystem.Web.Components.StorageUnitManager)" render-mode="ServerPrerendered" />
+
+@section Scripts {
+    <script src="~/_framework/blazor.server.js"></script>
+}

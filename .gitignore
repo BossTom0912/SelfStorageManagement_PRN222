@@ -27,3 +27,9 @@ TestResults/
 *.ldf
 *.nupkg
 ~$*
+
+# Published assignment worker
+**/publish/
+
+# Local backup retained because the original ASM01 directory is locked
+/PRN222_SE1905_VOTHAIHOANGKHOI_ASM01/

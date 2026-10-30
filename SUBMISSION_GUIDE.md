@@ -1,88 +1,57 @@
-# BÁO CÁO NỘP BÀI ASSIGNMENT 01 - 04 MÔN PRN222 (.NET 8)
-**Sinh viên:** Võ Thái Hoàng Khôi  
-**Lớp:** SE1905  
-**Môn học:** PRN222 (Thầy VũLNS)  
-**Nhánh:** `PRN222_SE1905_VOTHAIHOANGKHOI_ASM01-04`
+# Bộ bài ASM01–04 — Trần Đoàn Thanh Hà
 
----
+Cập nhật: 30/10/2026. Bộ nộp bài nằm trong bốn thư mục `PRN222_SE1905_TRANDOANTHANHHA_ASM01` đến `ASM04` tại repository `Final_Project_Web`.
 
-## 1. CẤU TRÚC 4 THƯ MỤC NỘP BÀI (ASM 01 -> ASM 04)
+| Bài | Công nghệ / màn hình demo | Kết quả chạy lại |
+| --- | --- | --- |
+| ASM01 | MVC CRUD `/StorageUnits` + SignalR `/storageUnitHub` | 190/190 (37 nghiệp vụ + 153 web) |
+| ASM02 | Razor Pages `/StorageUnits`, báo cáo đặt chỗ, SignalR | 192/192 (37 nghiệp vụ + 155 web, gồm E2E hai trình duyệt) |
+| ASM03 | Blazor Server `/Blazor/StorageUnits`, Razor host, DI, async và phân trang | 194/194 (37 nghiệp vụ + 157 web) |
+| ASM04 | Console / Windows Service mới; giữ Web + API + WPF | 700/700 (250 nghiệp vụ/API/WPF + 450 web) |
 
-Mỗi thư mục đại diện cho một giai đoạn hoàn chỉnh, độc lập, có đầy đủ Solution `.sln`, mã nguồn 3 tầng, bộ unit tests và script chạy tự động (`run.bat`, `run.ps1`):
+**Tổng: 1.276 test đạt, 0 thất bại, 0 bỏ qua.** Build cả bốn solution ASM và solution API/WPF của ASM04 đạt. Bộ ASM04 có 19 test SQL concurrency đã chạy trên database test riêng.
 
-### 1.1. `PRN222_SE1905_VOTHAIHOANGKHOI_ASM01`
-* **Trọng tâm công nghệ:** Razor Pages + EF Core + 3-Layer Architecture.
-* **Cấu trúc kiến trúc:**
-  * `SelfStorageManagementSystem.BusinessObjects`: Chứa Entities, DbContext.
-  * `SelfStorageManagementSystem.DataAccess`: Chứa các DAO và Generic/Specific Repositories.
-  * `SelfStorageManagementSystem.BusinessLogic`: Chứa Services và DTOs.
-  * `SelfStorageManagementSystem.Web`: Razor Pages UI (Tuân thủ nghiêm ngặt: UI không gọi DbContext trực tiếp).
-* **Bảo mật & Cấu hình:** Chuỗi kết nối và tài khoản Admin đọc từ `appsettings.json`, phân quyền đăng nhập Session.
-* **Kiểm thử:** 185/185 Unit & Web Tests passed.
+## Chạy ASM01–03 và phần Web của ASM04
 
-### 1.2. `PRN222_SE1905_VOTHAIHOANGKHOI_ASM02`
-* **Trọng tâm công nghệ:** Tích hợp SignalR Real-time + Nghiệp vụ báo cáo StartDate/EndDate.
-* **Tính năng:**
-  * Real-time notification hub đồng bộ tức thì cho các client đang mở danh sách khi có Thêm / Sửa / Xóa dữ liệu.
-  * Báo cáo thống kê đơn đặt chỗ / hợp đồng thuê theo khoảng thời gian (`StartDate` - `EndDate`).
-* **Kiểm thử:** 192/192 Unit & Web Tests passed.
+Mở solution mang tên cùng thư mục hoặc mở PowerShell tại từng thư mục:
 
-### 1.3. `PRN222_SE1905_VOTHAIHOANGKHOI_ASM03`
-* **Trọng tâm công nghệ:** Xử lý bất đồng bộ (`async`/`await`), Phân trang (`Pagination`), Dependency Injection (DI) toàn diện.
-* **Tính năng:** Tái sử dụng tầng BusinessObjects & DataAccess, tối ưu hiệu năng cơ sở dữ liệu với phân trang phía server (Server-side Pagination).
-* **Kiểm thử:** 190/190 Unit & Web Tests passed.
-
-### 1.4. `PRN222_SE1905_VOTHAIHOANGKHOI_ASM04`
-* **Trọng tâm công nghệ:** Final Project hoàn thiện / Tích hợp Web API + Client đa nền tảng (Web + WPF).
-* **Tính năng nâng cao:**
-  * Kiểm soát tương tranh (Optimistic Concurrency Control, rowversion).
-  * Transaction an toàn, chống Race Condition khi đặt chỗ/thanh toán.
-  * Web API (Swagger UI) chuẩn RESTful với JWT Token Authentication (khóa 256-bit).
-  * Background Worker Service kiểm tra tự động giải phóng vị trí quá hạn giữ chỗ (`ReservationHoldExpirationWorker`).
-* **Kiểm thử:** 681/681 Tests passed (450 WebTests + 231 API/Logic/WPF Tests).
-
----
-
-## 2. HƯỚNG DẪN KHỞI CHẠY TỪNG ASSIGNMENT
-
-### Cách 1: Mở bằng Visual Studio (Khuyên dùng)
-Double-click mở file solution tương ứng trong từng thư mục:
-1. `PRN222_SE1905_VOTHAIHOANGKHOI_ASM01/PRN222_SE1905_VOTHAIHOANGKHOI_ASM01.sln`
-2. `PRN222_SE1905_VOTHAIHOANGKHOI_ASM02/PRN222_SE1905_VOTHAIHOANGKHOI_ASM02.sln`
-3. `PRN222_SE1905_VOTHAIHOANGKHOI_ASM03/PRN222_SE1905_VOTHAIHOANGKHOI_ASM03.sln`
-4. `PRN222_SE1905_VOTHAIHOANGKHOI_ASM04/PRN222_SE1905_VOTHAIHOANGKHOI_ASM04.sln` (Web App) hoặc `SelfStorageManagementSystem.sln` (Web API Swagger)
-Nhấn **F5** để khởi chạy ngay (startup project đã được cấu hình mặc định sẵn).
-
-### Cách 2: Chạy bằng Command Line (`dotnet run`)
 ```powershell
-# Chạy ASM 01
-cd PRN222_SE1905_VOTHAIHOANGKHOI_ASM01/src/SelfStorageManagementSystem.Web
-dotnet run
-
-# Chạy ASM 02
-cd PRN222_SE1905_VOTHAIHOANGKHOI_ASM02/src/SelfStorageManagementSystem.Web
-dotnet run
-
-# Chạy ASM 03
-cd PRN222_SE1905_VOTHAIHOANGKHOI_ASM03/src/SelfStorageManagementSystem.Web
-dotnet run
-
-# Chạy ASM 04 Web
-cd PRN222_SE1905_VOTHAIHOANGKHOI_ASM04/src/SelfStorageManagementSystem.Web
-dotnet run
-
-# Chạy ASM 04 Web API (Swagger)
-cd PRN222_SE1905_VOTHAIHOANGKHOI_ASM04/src/SelfStorageManagementSystem.Presentation
-dotnet run
+.\run.ps1
+# Hoặc
+.\run.bat
+# Chạy toàn bộ test của solution trong thư mục hiện tại
+dotnet test .\PRN222_SE1905_TRANDOANTHANHHA_ASM01.sln
 ```
 
----
+Đổi `ASM01` trong lệnh test thành số bài tương ứng. Script chạy dùng đường dẫn dựa trên vị trí script nên có thể gọi từ thư mục khác.
 
-## 3. DANH SÁCH TÀI KHOẢN ĐÃ SEED SẴN
+Cần .NET 8 runtime/SDK và SQL Server/LocalDB có schema Database First của dự án. Cấu hình kết nối qua `ConnectionStrings__DefaultConnection`; cấu hình tài khoản bootstrap bằng `AdminAccount__Email`, `AdminAccount__Password`, `Bootstrap__Enabled` khi chủ động khởi tạo tài khoản demo trên database riêng. Khi không muốn thay đổi mật khẩu demo lúc startup, đặt `Bootstrap__Enabled=false`. Không dùng dữ liệu ứng dụng thật để chạy bộ test.
 
-| Vai trò | Email đăng nhập | Mật khẩu mặc định |
-| :--- | :--- | :--- |
-| **System Administrator (Admin)** | `admin@selfstorage.local` | `SecretAdminPassword123!` |
-| **Facility Manager (Quản lý chi nhánh)** | `manager.d1@selfstorage.local` | `SecretAdminPassword123!` |
-| **Facility Staff (Nhân viên vận hành)** | `staff.d1@selfstorage.local` | `SecretAdminPassword123!` |
-| **Storage Customer (Khách hàng)** | `customer1@example.com` | `SecretAdminPassword123!` |
+Các profile Web cũ mặc định dùng cổng 7041/5041; khi cần chạy nhiều bài cùng lúc, truyền `--urls` với cổng khác nhau và `--no-launch-profile`. Kiểm thử trình duyệt lần này dùng HTTPS 7141–7144, desktop 1440×1000 và Blazor mobile 390×844.
+
+## Chạy ASM04 console và kiểm tra Windows Service
+
+Tại `PRN222_SE1905_TRANDOANTHANHHA_ASM04`:
+
+```powershell
+# Chạy liên tục, log mỗi 5 giây, Ctrl+C để dừng
+.\run-worker.ps1
+# Log ba lần tại giây 0, 5, 10 rồi tự dừng
+.\run-worker.ps1 --Worker:MaxCycles=3
+# Kiểm tra đăng ký service và mở Services trên máy
+.\check-service.ps1 -OpenServices
+# Cài và chạy nếu cần: phải mở PowerShell bằng Run as Administrator
+.\install-service.ps1 -Start
+```
+
+Service name: `PRN222_TRANDOANTHANHHA_ASM04`. Lần kiểm tra thực tế: **chưa cài service trên máy**; tài khoản thực thi không có quyền Administrator. Đã mở Services, truy vấn Service Control Manager, build và publish executable, chạy console trực tiếp lẫn bản publish thành công. Chưa chạy dưới Service Control Manager vì service chưa được đăng ký.
+
+Console ghi bằng `ILogger`; khi chạy Windows Service, log Information trở lên ghi vào Event Viewer → Windows Logs → Application, source cùng tên service. File cấu hình của worker được đọc từ thư mục executable. Mặc định chỉ heartbeat, không thay đổi database. Có thể bật tác vụ giải phóng giữ chỗ qua `ReservationWorker__Enabled=true` và cung cấp connection string cho tiến trình/service; worker gọi `IReservationService` qua DI scope riêng.
+
+## Bằng chứng và giới hạn
+
+- Kiểm thử trình duyệt bằng Playwright + Microsoft Edge: ASM01 tạo/sửa/xóa bằng MVC và nhận cập nhật ở phiên độc lập; ASM02 tìm kiếm bằng Razor Pages; ASM03 thao tác CRUD/tìm kiếm qua Blazor, chặn khách hàng; ASM04 Web và SignalR hoạt động. Không có lỗi console trong các luồng đã kiểm tra.
+- Dữ liệu thử trình duyệt nằm trong LocalDB `SelfStoragePRN222_WebDemo`, được tạo mới bằng script bootstrap có kiểm tra database tồn tại; đã dọn ô kho tạm. Test SQL concurrency dùng `localhost/SelfStoragePRN222_Test`; E2E có sẵn dùng LocalDB `SelfStoragePRN222_WebE2eTest`.
+- Log, TRX, ảnh và script kiểm thử bổ sung nằm ngoài repository tại `C:\Users\tommy\.codex\visualizations\2026\10\30\01a18af3-cc2c-77d0-abd3-d043b517fe46\asm-verification`.
+- Có cảnh báo có sẵn về tên entity EF viết thường, nullable và raw SQL trong test; không có lỗi build. Không sửa schema/entity sinh tự động, không commit hoặc push.
+- Thư mục ASM01 tên cũ còn được giữ làm bản gốc vì tiến trình khác đang khóa thư mục. **Nộp bản `PRN222_SE1905_TRANDOANTHANHHA_ASM01` mới**, không dùng thư mục tên cũ.

@@ -1,26 +1,16 @@
-# Rà soát ASM 01–04 (20/10/2026)
+# Trạng thái kiểm tra ASM01–04
 
-## Kết luận tạm thời
+Cập nhật 30/10/2026. Phạm vi đã được người dùng xác nhận: sửa trực tiếp bộ bài trong `Final_Project_Web`, đổi định danh nộp bài sang `TRANDOANTHANHHA`, ASM01 MVC + SignalR, ASM02 Razor Pages, ASM03 Blazor, ASM04 Console / Windows Service.
 
-Repository không phải chỉ có ASM 01. Mã nguồn đã kết hợp Razor Pages, MVC, SignalR, WPF, Web API, EF Core, DI và các nghiệp vụ đặt chỗ/thanh toán. Theo mức công nghệ, dự án đã đi tới **ASM 04 đang hoàn thiện**, nhưng chưa thể nghiệm thu cả bốn ASM vì còn thiếu bằng chứng chạy thật và một số yêu cầu cụ thể.
-
-| ASM | Bằng chứng hiện có | Chưa xác nhận / còn thiếu |
+| Bài | Thay đổi chính | Kiểm chứng |
 | --- | --- | --- |
-| 01 | `src/SelfStorageManagementSystem.Web/Program.cs` cấu hình Razor Pages, cookie auth và role policies; `src/SelfStorageManagementSystem.Web/Pages/StorageUnits/` có CRUD; `src/SelfStorageManagementSystem.BusinessLogic/` và `src/SelfStorageManagementSystem.DataAccess/` phân tầng; `appsettings.json` chứa connection string không kèm mật khẩu. | Yêu cầu "tài khoản Admin từ appsettings.json" không đúng hoàn toàn với thiết kế hiện tại: tài khoản nằm trong DB và demo bootstrap dùng cấu hình/secret. Cần làm rõ đề bài chính thức trước khi thay đổi cơ chế này. |
-| 02 | `src/SelfStorageManagementSystem.Web/Hubs/StorageUnitHub.cs` và `wwwroot/js/storage-units-realtime.js` xử lý cập nhật SignalR; `Pages/Reservations/` có đặt chỗ; `Pages/Reports/Reservations` đã có báo cáo theo ngày bắt đầu thuê. | Kịch bản hai trình duyệt chưa chạy được vì thiếu DB E2E riêng. |
-| 03 | `AddControllersWithViews` và `Views/Account`, `Views/Home` là MVC; service async, phân trang trong `PagedRequest`, DI trong composition. | Phần lớn màn hình nghiệp vụ vẫn là Razor Pages, nên mức "chuyển đổi tầng giao diện sang MVC" cần so với đề bài từng học kỳ. |
-| 04 | Có WPF gọi Web API, transaction trong dịch vụ, cơ chế concurrency ở repository/service và bảo vệ dữ liệu đầu vào. | Chưa xác nhận toàn bộ race trên SQL Server thật; chưa thấy chức năng nhập/xuất file (đề cho phép **hoặc** backend/frontend tách mạng, vốn đã có). Tài liệu `docs/FIVE_CORE_FUNCTIONS_SUMMARY.md` liệt kê rủi ro thanh toán chưa nghiệm thu và đã cũ so với code hiện tại. |
+| ASM01 | Đưa CRUD MVC và view từ module MVC đã có vào bản ASM01, chuyển Razor StorageUnits cũ sang tài liệu tham khảo để không trùng route, cập nhật test phản hồi từ chối MVC và kiểm tra không ghi dữ liệu trái phép. | 190 test đạt; trình duyệt độc lập nhận thay đổi tạo/sửa/xóa qua SignalR. |
+| ASM02 | Đổi tên thư mục/solution/định danh tài liệu, giữ Razor Pages và SignalR, sửa script chạy theo vị trí script. | 192 test đạt, gồm E2E; tìm kiếm thực tế bằng Edge đạt. |
+| ASM03 | Thêm component Blazor CRUD/tìm kiếm/phân trang, Razor host được bảo vệ, hub policy và thời hạn cookie, mỗi sự kiện dùng DI scope mới, base URL và namespace Web cho event binding, khóa nút trước khi circuit sẵn sàng. | 194 test đạt; browser CRUD/tìm kiếm, khách hàng bị chặn, desktop/mobile, không lỗi console. |
+| ASM04 | Thêm Worker project, heartbeat định kỳ 5 giây, chế độ console/service, script kiểm tra/cài service, tác vụ hết hạn giữ chỗ tùy chọn dùng BLL. | 700 test đạt; 19 SQL concurrency chạy thật; build/publish worker; console log ở giây 0, 5, 10. |
 
-## Kết quả thực thi hiện tại
+Tổng 1.276 test đạt, 0 fail, 0 skip. Cả bốn solution bài nộp và solution API/WPF ASM04 build đạt. Windows Service `PRN222_TRANDOANTHANHHA_ASM04` chưa cài trên máy; Services đã được mở và danh sách service được kiểm tra. Cần PowerShell Administrator để đăng ký bằng `install-service.ps1 -Start`; chưa xác minh chạy thực tế dưới Service Control Manager.
 
-- Gemini CLI cũ bị từ chối xác thực, nhưng Antigravity CLI (`agy.exe`) chạy được Gemini Flash. Gemini đã thêm báo cáo đặt chỗ theo khoảng ngày; các vòng review tiếp theo đã sửa lỗi phạm vi cơ sở, tên chỉ số và test. Xem `GEMINI_ASM_REPORT.md` để biết thay đổi cụ thể.
-- Build Web đạt với 5 cảnh báo, 0 lỗi. Sáu test mục tiêu đạt. Bộ test nghiệp vụ đạt 231 pass, 19 skip, 0 fail. Bộ WebTests không hoàn tất trong lượt kiểm tra này và đã được dừng sau khi chạy lâu không trả kết quả.
-- Một test E2E SignalR hai trình duyệt thất bại khi khởi tạo do không kết nối được database SQL Server riêng `SelfStoragePRN222_WebE2eTest` trên `(localdb)\\mssqllocaldb`. Đây là giới hạn môi trường, chưa chứng minh lỗi chức năng SignalR.
-- Bản rà soát này chỉ là kết luận sơ bộ từ cấu trúc code và một test. Không tuyên bố code không lỗi.
+Không thay đổi schema/EF entity, không ghi test vào database ứng dụng chính, không commit/push. Các cảnh báo cũ (CS8981, nullable, EF1002 trong test SQL) vẫn được ghi trong log. Bản ASM01 tên cũ được giữ vì thư mục bị khóa bởi tiến trình khác; bản nộp là thư mục mang tên mới.
 
-## Việc cần làm để nghiệm thu
-
-1. Tiếp tục giao các khoảng trống còn lại cho Gemini qua Antigravity CLI, với phạm vi nhỏ đủ để kiểm tra từng vòng.
-2. Cấp database SQL Server test riêng và chạy các E2E/concurrency tests; không chạy script clean install trên DB chứa dữ liệu thật.
-3. Đối chiếu đề ASM chính thức của lớp, đặc biệt yêu cầu Admin trong appsettings, báo cáo thống kê và mức bắt buộc chuyển giao diện sang MVC.
-4. Review diff, báo cáo Gemini và test sau mỗi vòng; chỉ đánh dấu hoàn thiện khi mọi mục bắt buộc được chứng minh.
+Xem `SUBMISSION_GUIDE.md` để có lệnh chạy, kết quả chi tiết và vị trí bằng chứng. Kết quả này thay thế các nhận định sơ bộ ngày 20/10 trong tài liệu cũ.
