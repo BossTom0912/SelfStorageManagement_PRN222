@@ -1,6 +1,6 @@
-# Bộ bài ASM01–04 — Trần Đoàn Thanh Hà
+# Bộ bài ASM01–04 — Võ Thái Hoàng Khôi
 
-Cập nhật: 30/10/2026. Bộ nộp bài nằm trong bốn thư mục `PRN222_SE1905_TRANDOANTHANHHA_ASM01` đến `ASM04` tại repository `Final_Project_Web`.
+Cập nhật: 30/10/2026. Bộ nộp bài nằm trong bốn thư mục `PRN222_SE1905_VOTHAIHOANGKHOI_ASM01` đến `ASM04` tại repository `Final_Project_Web`.
 
 | Bài | Công nghệ / màn hình demo | Kết quả chạy lại |
 | --- | --- | --- |
@@ -20,7 +20,7 @@ Mở solution mang tên cùng thư mục hoặc mở PowerShell tại từng th�
 # Hoặc
 .\run.bat
 # Chạy toàn bộ test của solution trong thư mục hiện tại
-dotnet test .\PRN222_SE1905_TRANDOANTHANHHA_ASM01.sln
+dotnet test .\PRN222_SE1905_VOTHAIHOANGKHOI_ASM01.sln
 ```
 
 Đổi `ASM01` trong lệnh test thành số bài tương ứng. Script chạy dùng đường dẫn dựa trên vị trí script nên có thể gọi từ thư mục khác.
@@ -31,7 +31,7 @@ Các profile Web cũ mặc định dùng cổng 7041/5041; khi cần chạy nhi�
 
 ## Chạy ASM04 console và kiểm tra Windows Service
 
-Tại `PRN222_SE1905_TRANDOANTHANHHA_ASM04`:
+Tại `PRN222_SE1905_VOTHAIHOANGKHOI_ASM04`:
 
 ```powershell
 # Chạy liên tục, log mỗi 5 giây, Ctrl+C để dừng
@@ -44,7 +44,7 @@ Tại `PRN222_SE1905_TRANDOANTHANHHA_ASM04`:
 .\install-service.ps1 -Start
 ```
 
-Service name: `PRN222_TRANDOANTHANHHA_ASM04`. Lần kiểm tra thực tế: **chưa cài service trên máy**; tài khoản thực thi không có quyền Administrator. Đã mở Services, truy vấn Service Control Manager, build và publish executable, chạy console trực tiếp lẫn bản publish thành công. Chưa chạy dưới Service Control Manager vì service chưa được đăng ký.
+Service name: `PRN222_VOTHAIHOANGKHOI_ASM04`. Lần kiểm tra thực tế: **chưa cài service trên máy**; tài khoản thực thi không có quyền Administrator. Đã mở Services, truy vấn Service Control Manager, build và publish executable, chạy console trực tiếp lẫn bản publish thành công. Chưa chạy dưới Service Control Manager vì service chưa được đăng ký.
 
 Console ghi bằng `ILogger`; khi chạy Windows Service, log Information trở lên ghi vào Event Viewer → Windows Logs → Application, source cùng tên service. File cấu hình của worker được đọc từ thư mục executable. Mặc định chỉ heartbeat, không thay đổi database. Có thể bật tác vụ giải phóng giữ chỗ qua `ReservationWorker__Enabled=true` và cung cấp connection string cho tiến trình/service; worker gọi `IReservationService` qua DI scope riêng.
 
@@ -54,4 +54,4 @@ Console ghi bằng `ILogger`; khi chạy Windows Service, log Information trở 
 - Dữ liệu thử trình duyệt nằm trong LocalDB `SelfStoragePRN222_WebDemo`, được tạo mới bằng script bootstrap có kiểm tra database tồn tại; đã dọn ô kho tạm. Test SQL concurrency dùng `localhost/SelfStoragePRN222_Test`; E2E có sẵn dùng LocalDB `SelfStoragePRN222_WebE2eTest`.
 - Log, TRX, ảnh và script kiểm thử bổ sung nằm ngoài repository tại `C:\Users\tommy\.codex\visualizations\2026\10\30\01a18af3-cc2c-77d0-abd3-d043b517fe46\asm-verification`.
 - Có cảnh báo có sẵn về tên entity EF viết thường, nullable và raw SQL trong test; không có lỗi build. Không sửa schema/entity sinh tự động, không commit hoặc push.
-- Thư mục ASM01 tên cũ còn được giữ làm bản gốc vì tiến trình khác đang khóa thư mục. **Nộp bản `PRN222_SE1905_TRANDOANTHANHHA_ASM01` mới**, không dùng thư mục tên cũ.
+- Thư mục ASM01 tên cũ còn được giữ làm bản gốc vì tiến trình khác đang khóa thư mục. **Nộp bản `PRN222_SE1905_VOTHAIHOANGKHOI_ASM01` mới**, không dùng thư mục tên cũ.

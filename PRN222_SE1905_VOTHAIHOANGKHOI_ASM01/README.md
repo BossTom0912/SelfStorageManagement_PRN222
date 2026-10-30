@@ -1,6 +1,6 @@
-# PRN222_SE1905_TRANDOANTHANHHA_ASM01 — MVC + SignalR
+# PRN222_SE1905_VOTHAIHOANGKHOI_ASM01 — MVC + SignalR
 
-Sinh viên: Trần Đoàn Thanh Hà. Cập nhật 30/10/2026.
+Sinh viên: Võ Thái Hoàng Khôi. Cập nhật 30/10/2026.
 
 Module quản trị ô kho tại `/StorageUnits` sử dụng ASP.NET Core MVC: `Controllers/StorageUnitsController.cs`, `Models/StorageUnitViewModels.cs`, `Views/StorageUnits/`. Có CRUD, tìm kiếm, phân trang, DataAnnotations, kiểm tra quyền/phạm vi cơ sở qua service và chống CSRF trên POST. Nhân viên chỉ đọc; quản lý/quản trị viên ghi dữ liệu theo quyền hiện tại trong DB.
 
@@ -11,8 +11,8 @@ Bản Razor Pages cũ của module được chuyển vào `docs/LegacyRazorStora
 ```powershell
 .\run.ps1
 # Hoặc .\run.bat
-dotnet build .\PRN222_SE1905_TRANDOANTHANHHA_ASM01.sln
-dotnet test .\PRN222_SE1905_TRANDOANTHANHHA_ASM01.sln
+dotnet build .\PRN222_SE1905_VOTHAIHOANGKHOI_ASM01.sln
+dotnet test .\PRN222_SE1905_VOTHAIHOANGKHOI_ASM01.sln
 ```
 
 Kết quả: 190/190 test (37 nghiệp vụ + 153 web), không skip. Các test từ chối MVC kiểm tra chuyển hướng `/Account/Forbidden` và xác nhận không tạo/xóa dữ liệu trái phép. Xem `../SUBMISSION_GUIDE.md` để cấu hình kết nối/tài khoản và xem vị trí log.

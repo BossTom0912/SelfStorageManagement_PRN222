@@ -1,6 +1,6 @@
-# PRN222_SE1905_TRANDOANTHANHHA_ASM03 — Blazor Server
+# PRN222_SE1905_VOTHAIHOANGKHOI_ASM03 — Blazor Server
 
-Sinh viên: Trần Đoàn Thanh Hà. Cập nhật 30/10/2026.
+Sinh viên: Võ Thái Hoàng Khôi. Cập nhật 30/10/2026.
 
 Màn hình chính: `/Blazor/StorageUnits`, được liên kết từ thanh điều hướng quản trị.
 
@@ -14,8 +14,8 @@ Màn hình chính: `/Blazor/StorageUnits`, được liên kết từ thanh đi�
 ```powershell
 .\run.ps1
 # Hoặc .\run.bat
-dotnet build .\PRN222_SE1905_TRANDOANTHANHHA_ASM03.sln
-dotnet test .\PRN222_SE1905_TRANDOANTHANHHA_ASM03.sln
+dotnet build .\PRN222_SE1905_VOTHAIHOANGKHOI_ASM03.sln
+dotnet test .\PRN222_SE1905_VOTHAIHOANGKHOI_ASM03.sln
 ```
 
 Kết quả: 194/194 test (37 nghiệp vụ + 157 web), không skip. Test mới `BlazorStorageUnitsTests.cs` xác nhận truy cập host/hub của người chưa đăng nhập, khách hàng, nhân viên và quản trị viên; kiểm tra base URL và event binding. Edge đã thực hiện CRUD/tìm kiếm qua circuit thật, chặn khách hàng, chụp desktop/mobile; không có lỗi console trong luồng kiểm tra. Xem `../SUBMISSION_GUIDE.md` để cấu hình kết nối và vị trí log/ảnh.

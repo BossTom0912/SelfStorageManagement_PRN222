@@ -125,7 +125,7 @@ public class LandingPageAndBootstrapTests : IClassFixture<WebTestFixture>
     {
         // Directly inspect source configuration files on disk, not merged runtime configuration with environment variables
         var currentDir = new DirectoryInfo(AppContext.BaseDirectory);
-        while (currentDir != null && !File.Exists(Path.Combine(currentDir.FullName, "PRN222_SE1905_TRANDOANTHANHHA_ASM03.sln")) && !File.Exists(Path.Combine(currentDir.FullName, "PRN222_SE1905_TRANDOANTHANHHA_ASM01.sln")))
+        while (currentDir != null && !File.Exists(Path.Combine(currentDir.FullName, "PRN222_SE1905_VOTHAIHOANGKHOI_ASM03.sln")) && !File.Exists(Path.Combine(currentDir.FullName, "PRN222_SE1905_VOTHAIHOANGKHOI_ASM01.sln")))
         {
             currentDir = currentDir.Parent;
         }

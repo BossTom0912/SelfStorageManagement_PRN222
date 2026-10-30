@@ -1,6 +1,6 @@
 param([switch]$Start)
 $ErrorActionPreference = 'Stop'
-$serviceName = 'PRN222_TRANDOANTHANHHA_ASM04'
+$serviceName = 'PRN222_VOTHAIHOANGKHOI_ASM04'
 $principal = [Security.Principal.WindowsPrincipal]::new([Security.Principal.WindowsIdentity]::GetCurrent())
 if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
     throw 'Run this script in PowerShell as Administrator to register the Windows service.'
@@ -17,6 +17,6 @@ if (-not (Test-Path -LiteralPath $executable)) { throw 'Published executable is 
 if (-not [Diagnostics.EventLog]::SourceExists($serviceName)) {
     New-EventLog -LogName Application -Source $serviceName
 }
-New-Service -Name $serviceName -DisplayName 'PRN222 Thanh Ha ASM04 Worker' -BinaryPathName ('"' + $executable + '"') -StartupType Manual -Description 'ASM04 worker: heartbeat every 5 seconds; optional reservation maintenance.'
+New-Service -Name $serviceName -DisplayName 'PRN222 Vo Thai Hoang Khoi ASM04 Worker' -BinaryPathName ('"' + $executable + '"') -StartupType Manual -Description 'ASM04 worker: heartbeat every 5 seconds; optional reservation maintenance.'
 if ($Start) { Start-Service -Name $serviceName }
 Get-Service -Name $serviceName
