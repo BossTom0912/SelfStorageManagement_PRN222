@@ -553,7 +553,7 @@ public class StorageUnitAdminRepositoryTests
         Assert.Equal("DELETE_POLICY_REJECTED", policyRejected.Message);
         Assert.NotNull(await context.storage_units.FindAsync(99L)); // Still exists
 
-        // 2. Add an allocation FK reference -> Hard delete blocked by reference protection
+        // 2. References preserve the row and unlist it under the same lock.
         context.unit_allocations.Add(new unit_allocation
         {
             id = 991,
@@ -565,14 +565,20 @@ public class StorageUnitAdminRepositoryTests
         });
         await context.SaveChangesAsync();
 
-        var fkRejected = await repo.DeleteStorageUnitWithLockAsync(
+        var unlisted = await repo.DeleteStorageUnitWithLockAsync(
             99,
             time,
             evaluatePolicy: ctx => Task.FromResult(true));
 
-        Assert.False(fkRejected.Success);
-        Assert.Equal("STORAGE_UNIT_HAS_EXISTING_REFERENCES", fkRejected.Message);
-        Assert.NotNull(await context.storage_units.FindAsync(99L));
+        Assert.True(unlisted.Success);
+        Assert.True(unlisted.IsUnlistedOnly);
+        Assert.Equal("STORAGE_UNIT_UNLISTED", unlisted.Message);
+        var retained = await context.storage_units.FindAsync(99L);
+        Assert.NotNull(retained);
+        Assert.False(retained.is_listed);
+        Assert.True(retained.updated_at > time);
+        await Assert.ThrowsAsync<StorageUnitConcurrencyException>(() =>
+            repo.DeleteStorageUnitWithLockAsync(99, time, ctx => Task.FromResult(true)));
 
         // 3. Remove FK reference -> Deletion succeeds
         var alloc = await context.unit_allocations.FindAsync(991L);
@@ -582,10 +588,11 @@ public class StorageUnitAdminRepositoryTests
 
         var successResult = await repo.DeleteStorageUnitWithLockAsync(
             99,
-            time,
+            retained.updated_at,
             evaluatePolicy: ctx => Task.FromResult(true));
 
         Assert.True(successResult.Success);
+        Assert.False(successResult.IsUnlistedOnly);
         Assert.Equal("STORAGE_UNIT_DELETED", successResult.Message);
         Assert.Null(await context.storage_units.FindAsync(99L)); // Gone!
     }

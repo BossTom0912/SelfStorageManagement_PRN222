@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -439,17 +439,12 @@ public class StorageUnitAdminServiceKhoiVTH : IStorageUnitAdminService
                 return Task.FromResult(false);
             }
 
-            // 2. Reject if any historical or active relational dependency exists
-            if (ctx.ReferenceSummary.HasAnyReferences)
-            {
-                return Task.FromResult(false);
-            }
-
-            // 3. Block when facility/type has active holds or confirmed unassigned reservations,
-            //    or if deleting would breach committed capacity.
-            if (ctx.CapacityImpact.UnassignedHoldsCount > 0 ||
-                ctx.CapacityImpact.UnassignedConfirmedCount > 0 ||
-                ctx.CapacityImpact.WouldBreachCapacityIfDeleted)
+            // 2. Units with dependent records will be unlisted (is_listed = false) rather than rejected.
+            // Capacity checks: If deleting a clean unit or unlisting a candidate unit, check capacity commitment
+            // Capacity checks: If target contributes to candidate capacity, only block if deletion breaches capacity.
+            var capacity = ctx.CapacityImpact;
+            if (capacity.IsTargetUnitCurrentlyCandidate &&
+                capacity.WouldBreachCapacityIfDeleted)
             {
                 return Task.FromResult(false);
             }
@@ -467,29 +462,27 @@ public class StorageUnitAdminServiceKhoiVTH : IStorageUnitAdminService
 
             if (!result.Success)
             {
-                if (result.Message == "STORAGE_UNIT_HAS_EXISTING_REFERENCES" ||
-                    (result.ReferenceSummary != null && result.ReferenceSummary.HasAnyReferences))
+                if (result.CapacityImpact != null &&
+                    result.CapacityImpact.IsTargetUnitCurrentlyCandidate &&
+                    result.CapacityImpact.WouldBreachCapacityIfDeleted)
                 {
                     throw new ConflictException(
-                        $"Storage unit '{result.UnitCode}' cannot be deleted because it has existing history or relational records.");
+                        $"Không thể xóa ô kho '{result.UnitCode}' vì số ô kho còn lại không đủ đáp ứng các đặt chỗ hiện tại.");
                 }
 
-                if (result.CapacityImpact != null &&
-                    (result.CapacityImpact.UnassignedHoldsCount > 0 ||
-                     result.CapacityImpact.UnassignedConfirmedCount > 0 ||
-                     result.CapacityImpact.WouldBreachCapacityIfDeleted))
+                if (result.Message == "UNIT_NOT_AVAILABLE")
                 {
                     throw new ConflictException(
-                        $"Storage unit '{result.UnitCode}' cannot be deleted because active reservation holds or confirmed bookings exist for this unit type.");
+                        $"Không thể xóa ô kho '{result.UnitCode}' vì trạng thái ô kho không khả dụng ('available').");
                 }
 
                 if (result.Message == "DELETE_POLICY_REJECTED")
                 {
                     throw new ConflictException(
-                        $"Storage unit '{result.UnitCode}' cannot be deleted due to policy restrictions (not available, existing references, or active capacity commitments).");
+                        $"Không thể xóa ô kho '{result.UnitCode}' do vi phạm chính sách xóa.");
                 }
 
-                throw new ConflictException($"Storage unit deletion was rejected: {result.Message}");
+                throw new ConflictException($"Không thể xóa ô kho '{result.UnitCode}': {result.Message}");
             }
 
             return new DeleteStorageUnitResult
@@ -497,6 +490,7 @@ public class StorageUnitAdminServiceKhoiVTH : IStorageUnitAdminService
                 UnitId = result.UnitId,
                 UnitCode = result.UnitCode,
                 Success = true,
+                IsUnlistedOnly = result.IsUnlistedOnly,
                 Message = result.Message
             };
         }
@@ -687,8 +681,11 @@ public class StorageUnitAdminServiceKhoiVTH : IStorageUnitAdminService
             MaintenanceOrdersCount = refSummary.MaintenanceWorkOrdersCount,
             ActiveMaintenanceOrdersCount = refSummary.ActiveMaintenanceWorkOrdersCount,
             SupportTicketsCount = refSummary.SupportTicketsCount,
+            TransferRequestsFromCount = refSummary.TransferRequestsFromCount,
+            TransferRequestsToCount = refSummary.TransferRequestsToCount,
             StatusHistoryCount = refSummary.StatusHistoryCount,
             HasMapPosition = refSummary.HasMapPosition,
+            HasAnyReferences = refSummary.HasAnyReferences,
 
             CurrentCustomerName = activeAlloc?.agreement?.customer?.full_name,
             CurrentAgreementNo = activeAlloc?.agreement?.agreement_no,

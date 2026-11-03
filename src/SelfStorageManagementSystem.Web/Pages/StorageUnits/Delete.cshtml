@@ -69,7 +69,14 @@
             <div class="d-flex align-items-center">
                 <span class="me-2 fs-5 text-warning fw-bold">&#9888;</span>
                 <div>
-                    <strong>Cảnh báo:</strong> Bạn có chắc chắn muốn xóa vĩnh viễn ô kho <strong>@(Model.StorageUnit?.UnitCode)</strong> không? Thao tác này sẽ giải phóng dữ liệu và không thể hoàn tác.
+                    @if (Model.StorageUnit?.HasAnyReferences == true)
+                    {
+                        <text>Ô kho có dữ liệu liên kết. Xác nhận sẽ giữ bản ghi và chuyển sang trạng thái ngừng niêm yết.</text>
+                    }
+                    else
+                    {
+                        <text>Bạn có chắc chắn muốn xóa vĩnh viễn ô kho <strong>@(Model.StorageUnit?.UnitCode)</strong> không? Thao tác này không thể hoàn tác.</text>
+                    }
                 </div>
             </div>
         </div>
@@ -139,7 +146,7 @@
                     <input type="button" id="btnDeleteBySignalR" value="Delete by SignalR" class="btn btn-outline-danger px-4 fw-semibold" />
                     <button type="submit" id="btnSubmitDelete" class="btn btn-danger px-4 fw-semibold">
                         <span id="btnSubmitSpinner" class="spinner-border spinner-border-sm me-1 d-none" role="status" aria-hidden="true"></span>
-                        <span id="btnSubmitText">Xác Nhận Xóa Ô Kho</span>
+                        <span id="btnSubmitText">@(Model.StorageUnit?.HasAnyReferences == true ? "Xác nhận ngừng niêm yết" : "Xác nhận xóa vĩnh viễn")</span>
                     </button>
                 }
             </div>

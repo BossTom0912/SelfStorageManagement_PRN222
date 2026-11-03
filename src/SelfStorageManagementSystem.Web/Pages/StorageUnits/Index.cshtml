@@ -449,14 +449,14 @@
             });
 
             // Reconnection: Tự động tải lại dữ liệu mới nhất sau khi ngắt kết nối phục hồi
-            connection.onreconnected(function (connectionId) {
+            connection.onreconnected(async function (connectionId) {
                 StorageUnitsRealtime.showMessage(
                     messageAreaId,
                     'success',
                     'Kết nối Realtime đã phục hồi. Đang tải lại dữ liệu mới nhất...',
                     3000
                 );
-                setTimeout(() => window.location.reload(), 1000);
+                await StorageUnitsRealtime.syncTableViaHub('storageUnitsTableBody', 'storageUnitsTotalCount', null, 'reconnect', currentFilter, connection);
             });
 
             // 3. Khởi chạy kết nối SAU KHI đã đăng ký đầy đủ listeners

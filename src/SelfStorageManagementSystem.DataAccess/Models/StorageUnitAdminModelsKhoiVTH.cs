@@ -216,6 +216,7 @@ public class StorageUnitDeleteResultKhoiVTH
     public long UnitId { get; set; }
     public string UnitCode { get; set; } = string.Empty;
     public bool Success { get; set; }
+    public bool IsUnlistedOnly { get; set; }
     public string Message { get; set; } = string.Empty;
     public StorageUnitReferenceSummaryKhoiVTH? ReferenceSummary { get; set; }
     public StorageUnitCapacityImpactKhoiVTH? CapacityImpact { get; set; }
