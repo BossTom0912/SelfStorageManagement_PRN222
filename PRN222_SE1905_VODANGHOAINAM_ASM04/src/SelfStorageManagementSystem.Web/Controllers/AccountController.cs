@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -82,8 +82,22 @@ public class AccountController : Controller
             var userAgent = Request.Headers.UserAgent.ToString();
 
             // Map UserName sang email cho BLL Core AuthenticateAsync
+            var loginIdentifier = request.UserName?.Trim() ?? string.Empty;
+            if (string.Equals(loginIdentifier, "admin", StringComparison.OrdinalIgnoreCase))
+            {
+                loginIdentifier = "admin@selfstorage.local";
+            }
+            else if (string.Equals(loginIdentifier, "manager", StringComparison.OrdinalIgnoreCase))
+            {
+                loginIdentifier = "manager.d1@selfstorage.local";
+            }
+            else if (string.Equals(loginIdentifier, "staff", StringComparison.OrdinalIgnoreCase))
+            {
+                loginIdentifier = "staff.d1@selfstorage.local";
+            }
+
             var account = await _userAccountService.AuthenticateAsync(
-                request.UserName,
+                loginIdentifier,
                 request.Password,
                 ipAddress,
                 userAgent,
