@@ -1182,14 +1182,11 @@ public class StorageUnitsBrowserRealtimeTests : IClassFixture<CookieAuthWebTestF
         var hasPage2LinkBack10 = await session.EvaluateBoolAsync("document.querySelector('ul.pagination li.page-item a[href*=\"pageNumber=2\" i]') !== null");
         Assert.False(hasPage2LinkBack10, "F04 E2E: Pagination Page 2 link removed when total units reverted back to 10.");
 
-        // 6. F05 E2E: Real SignalR Sequencing with coordinated fetch responses
-        // T13-R6-F02 / T13-R7-F02: Genuinely distinct HTML snapshots.
-        // Intercept GET fetch from production listener, delay first response while holding Snapshot A (contains only SEQ-A, count 11).
-        // Then insert SEQ-B (count 12) and emit Event 2. Fetch 2 applies Snapshot B to DOM (count 12, row 402 exists).
-        // Then release Snapshot A and observe superseded callback, asserting DOM is not rolled back.
+        // F05: Hold a genuine Hub snapshot A, apply newer snapshot B, then release A.
+        // The production generation guard must prevent rolling the DOM back to A.
         await session.ExecuteScriptAsync("""
             (function() {
-                window.__origFetch = window.fetch;
+                window.__origInvoke = window.connection.invoke;
                 let resolveFirst;
                 window.__firstFetchPromise = new Promise(resolve => { resolveFirst = resolve; });
                 window.__resolveFirst = resolveFirst;
@@ -1206,7 +1203,7 @@ public class StorageUnitsBrowserRealtimeTests : IClassFixture<CookieAuthWebTestF
                     return res;
                 };
 
-                window.fetch = function(...args) {
+                window.connection.invoke = function(...args) {
                     fetchCount++;
                     const idx = fetchCount;
                     window.__fetchLog.push({ idx: idx, url: String(args[0]) });
@@ -1214,15 +1211,13 @@ public class StorageUnitsBrowserRealtimeTests : IClassFixture<CookieAuthWebTestF
                         // T13-R7-F02: Genuinely fetch Snapshot A from server right now (when only SEQ-A is in DB),
                         // clone the response body to extract and prove its HTML contents, then hold the promise unresolved.
                         window.__fetch1Gen = window.StorageUnitsRealtime.getLatestScheduledGeneration();
-                        return window.__origFetch.apply(this, args).then(realResp => {
-                            return realResp.clone().text().then(htmlText => {
-                                window.__resp1Html = htmlText;
-                                window.__resp1Ready = true;
-                                return window.__firstFetchPromise.then(() => realResp);
-                            });
+                        return window.__origInvoke.apply(this, args).then(snapshot => {
+                            window.__resp1Html = JSON.stringify(snapshot);
+                            window.__resp1Ready = true;
+                            return window.__firstFetchPromise.then(() => snapshot);
                         });
                     }
-                    return window.__origFetch.apply(this, args);
+                    return window.__origInvoke.apply(this, args);
                 };
             })()
         """);
@@ -1290,9 +1285,9 @@ public class StorageUnitsBrowserRealtimeTests : IClassFixture<CookieAuthWebTestF
             // T13-R7-F02: Definitively prove Snapshot A was fetched from server before B existed:
             // Must contain unit-row-401 (SEQ-A), must NOT contain unit-row-402 (SEQ-B), and total count must be 11.
             var resp1Html = await session.EvaluateStringRequiredAsync("window.__resp1Html || ''");
-            Assert.Contains($"unit-row-{seqAId}", resp1Html);
-            Assert.DoesNotContain($"unit-row-{seqBId}", resp1Html);
-            Assert.Contains("11", resp1Html);
+            Assert.Contains($"\"id\":\"{seqAId}\"", resp1Html);
+            Assert.DoesNotContain($"\"id\":\"{seqBId}\"", resp1Html);
+            Assert.Contains("\"totalCount\":11", resp1Html);
 
             // Step 3: Now insert UNIT-00-B into DB (total units is now 12: 10 baseline + SEQ-A + SEQ-B)
             // Unit code UNIT-00-B also sorts on Page 1!
@@ -1392,7 +1387,7 @@ public class StorageUnitsBrowserRealtimeTests : IClassFixture<CookieAuthWebTestF
             // Always restore original fetch and refetchTable
             await session.ExecuteScriptAsync("""
                 (function() {
-                    if (window.__origFetch) window.fetch = window.__origFetch;
+                    if (window.__origInvoke) window.connection.invoke = window.__origInvoke;
                     if (window.__origRefetch) window.StorageUnitsRealtime.refetchTable = window.__origRefetch;
                 })()
             """);
@@ -1409,21 +1404,17 @@ public class StorageUnitsBrowserRealtimeTests : IClassFixture<CookieAuthWebTestF
             }
         }
 
-        // 7. F06 E2E: Real SignalR listener handles HTTP 200 with missing table elements and retry resolves alert
-        // T13-R6-F03: Intercept listener's fetch to return HTTP 200 with missing table elements once
+        // F06: Reject an invalid Hub snapshot, retain the DOM, then recover through retry.
         await session.ExecuteScriptAsync("""
             (function() {
-                window.__origFetch = window.fetch;
+                window.__origInvoke = window.connection.invoke;
                 let failOnce = true;
-                window.fetch = function(...args) {
+                window.connection.invoke = function(...args) {
                     if (failOnce) {
                         failOnce = false;
-                        return Promise.resolve(new Response("<html><body><div id='maintenance'>Trang bao tri khong co bang</div></body></html>", {
-                            status: 200,
-                            headers: { "Content-Type": "text/html" }
-                        }));
+                        return Promise.resolve({});
                     }
-                    return window.__origFetch.apply(this, args);
+                    return window.__origInvoke.apply(this, args);
                 };
             })()
         """);
@@ -1528,7 +1519,7 @@ public class StorageUnitsBrowserRealtimeTests : IClassFixture<CookieAuthWebTestF
         }
 
         // Restore fetch and clean up
-        await session.ExecuteScriptAsync("window.fetch = window.__origFetch;");
+        await session.ExecuteScriptAsync("window.connection.invoke = window.__origInvoke;");
     }
 
     [Fact]

@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
 using SelfStorageManagementSystem.BusinessLogic.Common.Constants;
 using SelfStorageManagementSystem.BusinessLogic.DTOs.Requests.Reservations;
@@ -21,14 +21,14 @@ public class ReservationServiceTests
         return new SelfStorageDbContext(options);
     }
 
-    private (ReservationService Service, SelfStorageDbContext Context) SetupService(string dbName)
+    private (ReservationServiceKhoiVTH Service, SelfStorageDbContext Context) SetupService(string dbName)
     {
         var context = CreateInMemoryContext(dbName);
-        var resRepo = new ReservationRepository(context);
-        var userRepo = new UserRepository(context);
-        var scopeService = new FacilityScopeService(context, userRepo);
-        var logger = NullLogger<ReservationService>.Instance;
-        var service = new ReservationService(resRepo, scopeService, logger);
+        var resRepo = new ReservationRepositoryKhoiVTH(context);
+        var userRepo = new UserRepositoryKhoiVTH(context);
+        var scopeService = new FacilityScopeServiceKhoiVTH(context, userRepo);
+        var logger = NullLogger<ReservationServiceKhoiVTH>.Instance;
+        var service = new ReservationServiceKhoiVTH(resRepo, scopeService, logger);
         return (service, context);
     }
 

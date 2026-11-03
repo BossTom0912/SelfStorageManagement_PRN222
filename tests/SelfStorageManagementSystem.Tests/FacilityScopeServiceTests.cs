@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Moq;
 using SelfStorageManagementSystem.BusinessLogic.Common.Constants;
 using SelfStorageManagementSystem.BusinessLogic.Services.Implementations;
@@ -25,7 +25,7 @@ public class FacilityScopeServiceTests
     public async Task HasAccessToFacilityAsync_ForSystemAdministrator_ShouldReturnTrueRegardlessOfAssignment()
     {
         using var context = CreateInMemoryContext(Guid.NewGuid().ToString());
-        var service = new FacilityScopeService(context, _userRepoMock.Object);
+        var service = new FacilityScopeServiceKhoiVTH(context, _userRepoMock.Object);
 
         var adminUser = new user
         {
@@ -48,7 +48,7 @@ public class FacilityScopeServiceTests
     public async Task HasAccessToFacilityAsync_ForBusinessOperationsManager_ShouldReturnTrueRegardlessOfAssignment()
     {
         using var context = CreateInMemoryContext(Guid.NewGuid().ToString());
-        var service = new FacilityScopeService(context, _userRepoMock.Object);
+        var service = new FacilityScopeServiceKhoiVTH(context, _userRepoMock.Object);
 
         var bomUser = new user
         {
@@ -103,7 +103,7 @@ public class FacilityScopeServiceTests
         });
         await context.SaveChangesAsync();
 
-        var service = new FacilityScopeService(context, _userRepoMock.Object);
+        var service = new FacilityScopeServiceKhoiVTH(context, _userRepoMock.Object);
 
         var hasAccessFacility10 = await service.HasAccessToFacilityAsync(3, 10, RoleConstants.FacilityStaff);
         var hasAccessFacility20 = await service.HasAccessToFacilityAsync(3, 20, RoleConstants.FacilityStaff);
@@ -149,7 +149,7 @@ public class FacilityScopeServiceTests
         });
         await context.SaveChangesAsync();
 
-        var service = new FacilityScopeService(context, _userRepoMock.Object);
+        var service = new FacilityScopeServiceKhoiVTH(context, _userRepoMock.Object);
 
         var result = await service.HasAccessToFacilityAsync(3, 10, RoleConstants.FacilityStaff);
 
@@ -194,7 +194,7 @@ public class FacilityScopeServiceTests
         });
         await context.SaveChangesAsync();
 
-        var service = new FacilityScopeService(context, _userRepoMock.Object);
+        var service = new FacilityScopeServiceKhoiVTH(context, _userRepoMock.Object);
 
         var result = await service.HasAccessToFacilityAsync(4, 10, RoleConstants.FacilityStaff);
 
@@ -238,7 +238,7 @@ public class FacilityScopeServiceTests
         });
         await context.SaveChangesAsync();
 
-        var service = new FacilityScopeService(context, _userRepoMock.Object);
+        var service = new FacilityScopeServiceKhoiVTH(context, _userRepoMock.Object);
 
         // Staff cannot access Manager scope
         var result = await service.HasAccessToFacilityAsync(5, 10, RoleConstants.FacilityManager);
@@ -283,7 +283,7 @@ public class FacilityScopeServiceTests
         });
         await context.SaveChangesAsync();
 
-        var service = new FacilityScopeService(context, _userRepoMock.Object);
+        var service = new FacilityScopeServiceKhoiVTH(context, _userRepoMock.Object);
 
         // Manager can perform staff operations under current rules
         var staffResult = await service.HasAccessToFacilityAsync(6, 10, RoleConstants.FacilityStaff);
@@ -326,7 +326,7 @@ public class FacilityScopeServiceTests
         });
         await context.SaveChangesAsync();
 
-        var service = new FacilityScopeService(context, _userRepoMock.Object);
+        var service = new FacilityScopeServiceKhoiVTH(context, _userRepoMock.Object);
 
         var ids = await service.GetAccessibleFacilityIdsAsync(7);
 
@@ -376,7 +376,7 @@ public class FacilityScopeServiceTests
         });
         await context.SaveChangesAsync();
 
-        var service = new FacilityScopeService(context, _userRepoMock.Object);
+        var service = new FacilityScopeServiceKhoiVTH(context, _userRepoMock.Object);
 
         var assignments = await service.GetActiveAssignmentsForUserAsync(8);
 

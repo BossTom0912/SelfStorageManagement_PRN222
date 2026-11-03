@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
 using SelfStorageManagementSystem.BusinessLogic.Common.Constants;
@@ -23,7 +23,7 @@ public class AdminAccountServiceTests
     private readonly Mock<IRepository<facility>> _facilityRepoMock = new();
     private readonly Mock<IPasswordHasher> _passwordHasherMock = new();
     private readonly Mock<IAuditService> _auditMock = new();
-    private readonly Mock<ILogger<AdminAccountService>> _loggerMock = new();
+    private readonly Mock<ILogger<AdminAccountServiceKhoiVTH>> _loggerMock = new();
 
     private SelfStorageDbContext CreateInMemoryContext(string dbName)
     {
@@ -37,7 +37,7 @@ public class AdminAccountServiceTests
     public async Task UpdateUserStatus_ShouldPreventLockingTheOnlyActiveSystemAdministrator()
     {
         using var context = CreateInMemoryContext(Guid.NewGuid().ToString());
-        var service = new AdminAccountService(
+        var service = new AdminAccountServiceKhoiVTH(
             context,
             _userRepoMock.Object,
             _roleRepoMock.Object,
@@ -75,7 +75,7 @@ public class AdminAccountServiceTests
     public async Task ManageUserRoles_ShouldPreventRevokingSystemAdministratorFromLastAdmin()
     {
         using var context = CreateInMemoryContext(Guid.NewGuid().ToString());
-        var service = new AdminAccountService(
+        var service = new AdminAccountServiceKhoiVTH(
             context,
             _userRepoMock.Object,
             _roleRepoMock.Object,
@@ -113,7 +113,7 @@ public class AdminAccountServiceTests
     public async Task ManageUserRoles_ShouldPreventAssigningStaffRoleWithoutEmployeeProfile()
     {
         using var context = CreateInMemoryContext(Guid.NewGuid().ToString());
-        var service = new AdminAccountService(
+        var service = new AdminAccountServiceKhoiVTH(
             context,
             _userRepoMock.Object,
             _roleRepoMock.Object,
@@ -180,7 +180,7 @@ public class AdminAccountServiceTests
         });
         await context.SaveChangesAsync();
 
-        var service = new AdminAccountService(
+        var service = new AdminAccountServiceKhoiVTH(
             context,
             _userRepoMock.Object,
             _roleRepoMock.Object,
@@ -222,7 +222,7 @@ public class AdminAccountServiceTests
         bool expectedHasNext)
     {
         using var context = CreateInMemoryContext(Guid.NewGuid().ToString());
-        var service = new AdminAccountService(
+        var service = new AdminAccountServiceKhoiVTH(
             context,
             _userRepoMock.Object,
             _roleRepoMock.Object,

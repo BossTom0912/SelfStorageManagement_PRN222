@@ -1,4 +1,4 @@
-# Database Schema Report — Self-Storage Facility Rental and Management System
+﻿# Database Schema Report — Self-Storage Facility Rental and Management System
 
 **Database:** `SelfStoragePRN222`  
 **Engine:** Microsoft SQL Server 2019+  
@@ -12,7 +12,7 @@
 - **Database Name:** `SelfStoragePRN222`
 - **Default Application Schema:** `core`
 - **Total Base Tables:** 57 tables [PROVEN BY DATABASE]
-- **Total SQL Views:** 2 views (`core.UnitTypeHaTDT`, `core.StorageUnitHaTDT`) [PROVEN BY DATABASE]
+- **Total SQL Views:** 2 views (`core.UnitTypeKhoiVTH`, `core.StorageUnitKhoiVTH`) [PROVEN BY DATABASE]
 - **Total Foreign Keys:** 139 foreign keys [PROVEN BY DATABASE]
 - **Total Check Constraints:** 178 constraints [verified against the live database during the final review]
 - **Total Active Triggers:** 35 triggers [PROVEN BY DATABASE]
@@ -83,8 +83,8 @@ All tables reside under the `core` schema.
 57. `users` (8 cols)
 
 ### Views (2)
-1. `core.UnitTypeHaTDT` (14 cols) [PROVEN BY DATABASE]
-2. `core.StorageUnitHaTDT` (12 cols) [PROVEN BY DATABASE]
+1. `core.UnitTypeKhoiVTH` (14 cols) [PROVEN BY DATABASE]
+2. `core.StorageUnitKhoiVTH` (12 cols) [PROVEN BY DATABASE]
 
 ---
 
@@ -98,7 +98,7 @@ All tables reside under the `core` schema.
   - `service_ratings.ticket_id` (`bigint`, PK & FK referencing `support_tickets.id`)
   - `ticket_charge_approvals.proposal_id` (`bigint`, PK & FK referencing `ticket_charge_proposals.id`)
   - `unit_map_positions.unit_id` (`bigint`, PK & FK referencing `storage_units.id`)
-- **Keyless Entities (2 views):** `UnitTypeHaTDT`, `StorageUnitHaTDT` (mapped with `HasNoKey()`).
+- **Keyless Entities (2 views):** `UnitTypeKhoiVTH`, `StorageUnitKhoiVTH` (mapped with `HasNoKey()`).
 
 ---
 
@@ -322,8 +322,8 @@ All status-like fields are constrained by explicit SQL CHECK constraints [PROVEN
 ---
 
 ## 22. Views / Keyless Entities
-1. `core.UnitTypeHaTDT`: Compatibility view over `core.unit_types`.
-2. `core.StorageUnitHaTDT`: Compatibility view over `core.storage_units`.
+1. `core.UnitTypeKhoiVTH`: Compatibility view over `core.unit_types`.
+2. `core.StorageUnitKhoiVTH`: Compatibility view over `core.storage_units`.
 - Scaffold Mapping: Configured with `entity.HasNoKey().ToView(...)`.
 - Usage: Must be treated as read-only projections. All inserts, updates, and deletes must target the base tables `unit_types` and `storage_units`.
 
@@ -348,7 +348,7 @@ The database contains 35 active triggers enforcing core business invariants [PRO
 
 ## 25. Risks / Important Notes
 1. **Trigger Rejections:** Predictable, verified constraint/trigger failures may be translated at an appropriate persistence/business boundary into application exceptions. Presentation maps those application exceptions to HTTP. Unknown SQL, connection, timeout, permission, and trigger failures must remain unexpected errors and produce a generic HTTP 500; do not translate all SQL errors into business errors.
-2. **Keyless Views:** `UnitTypeHaTDT` and `StorageUnitHaTDT` cannot be queried with `Find(id)` and cannot be tracked for updates.
+2. **Keyless Views:** `UnitTypeKhoiVTH` and `StorageUnitKhoiVTH` cannot be queried with `Find(id)` and cannot be tracked for updates.
 3. **Composite Keys:** The current repository uses `GetByIdAsync(object[] keyValues, CancellationToken)` for both single and composite keys. Supply values in the configured primary-key order and with the corresponding CLR types.
 4. **Precision Loss Prevention:** Financial amounts must remain strictly `decimal` in C# DTOs and calculations.
 

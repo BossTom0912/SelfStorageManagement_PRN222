@@ -1,4 +1,4 @@
-@page
+﻿@page
 @model SelfStorageManagementSystem.Web.Pages.StorageUnits.CreateModel
 @{
     ViewData["Title"] = "Thêm ô kho mới";
@@ -258,19 +258,17 @@
             if (btnCreateBySignalR && canManage) {
                 // 1. Khởi tạo HubConnection
                 const connection = new signalR.HubConnectionBuilder()
-                    .withUrl("/storageUnitHub")
+                    .withUrl("/storageUnitHub").configureLogging(signalR.LogLevel.None)
                     .withAutomaticReconnect()
                     .build();
 
                 // 2. Đăng ký listener trước start()
                 connection.on("Receiver_CreateStorageUnit", function (item) {
-                    console.log("Receiver_CreateStorageUnit received on Create page:", item);
                 });
 
                 connection.start().then(function () {
-                    console.log("Connected to the SignalR Hub on Create page");
                 }).catch(function (err) {
-                    return console.error("SignalR start error:", err.toString());
+                    return;
                 });
 
                 // 3. Sự kiện click: JSON.stringify payload, gọi invoke("HubCreate_StorageUnit", dataObj), chặn form submit lần 2
@@ -316,15 +314,12 @@
                         Notes: notesInput ? notesInput.value.trim() : null
                     });
 
-                    console.log("Invoking HubCreate_StorageUnit with dataObj:", dataObj);
 
                     connection.invoke("HubCreate_StorageUnit", dataObj)
                         .then(function (result) {
-                            console.log("HubCreate_StorageUnit success:", result);
                             window.location.href = "/StorageUnits?facilityId=" + encodeURIComponent(selectFacility.value);
                         })
                         .catch(function (err) {
-                            console.error("HubCreate_StorageUnit failed:", err.toString());
                             btnCreateBySignalR.disabled = false;
                             if (submitBtn) submitBtn.disabled = !canManage;
                             if (spinnerSignalR) spinnerSignalR.classList.add('d-none');

@@ -1,4 +1,4 @@
-using System.Net;
+﻿using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -372,7 +372,7 @@ public class PaymentIntegrationTests : IClassFixture<CustomWebApplicationFactory
             if (hashDataBuilder.Length > 0) hashDataBuilder.Append('&');
             hashDataBuilder.Append(System.Net.WebUtility.UrlEncode(key)).Append('=').Append(System.Net.WebUtility.UrlEncode(value));
         }
-        var validHash = SelfStorageManagementSystem.BusinessLogic.Services.Implementations.VnpayGateway.ComputeHmacSha512("SECRETTESTKEY1234567890ABCDEF12", hashDataBuilder.ToString());
+        var validHash = SelfStorageManagementSystem.BusinessLogic.Services.Implementations.VnpayGatewayKhoiVTH.ComputeHmacSha512("SECRETTESTKEY1234567890ABCDEF12", hashDataBuilder.ToString());
 
         var queryString = string.Join("&", rawParams.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}")) + $"&vnp_SecureHash={validHash}";
         var response = await _client.GetAsync($"/api/payments/vnpay/ipn?{queryString}");
@@ -423,7 +423,7 @@ public class PaymentIntegrationTests : IClassFixture<CustomWebApplicationFactory
             if (hashDataBuilder.Length > 0) hashDataBuilder.Append('&');
             hashDataBuilder.Append(System.Net.WebUtility.UrlEncode(key)).Append('=').Append(System.Net.WebUtility.UrlEncode(value));
         }
-        var validHash = SelfStorageManagementSystem.BusinessLogic.Services.Implementations.VnpayGateway.ComputeHmacSha512("SECRETTESTKEY1234567890ABCDEF12", hashDataBuilder.ToString());
+        var validHash = SelfStorageManagementSystem.BusinessLogic.Services.Implementations.VnpayGatewayKhoiVTH.ComputeHmacSha512("SECRETTESTKEY1234567890ABCDEF12", hashDataBuilder.ToString());
 
         var queryString = string.Join("&", rawParams.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}")) + $"&vnp_SecureHash={validHash}";
         var response = await _client.GetAsync($"/api/payments/vnpay/ipn?{queryString}");
@@ -474,7 +474,7 @@ public class PaymentIntegrationTests : IClassFixture<CustomWebApplicationFactory
             if (hashDataBuilder.Length > 0) hashDataBuilder.Append('&');
             hashDataBuilder.Append(System.Net.WebUtility.UrlEncode(key)).Append('=').Append(System.Net.WebUtility.UrlEncode(value));
         }
-        var validHash = SelfStorageManagementSystem.BusinessLogic.Services.Implementations.VnpayGateway.ComputeHmacSha512("SECRETTESTKEY1234567890ABCDEF12", hashDataBuilder.ToString());
+        var validHash = SelfStorageManagementSystem.BusinessLogic.Services.Implementations.VnpayGatewayKhoiVTH.ComputeHmacSha512("SECRETTESTKEY1234567890ABCDEF12", hashDataBuilder.ToString());
 
         var queryString = string.Join("&", rawParams.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}")) + $"&vnp_SecureHash={validHash}";
         var response = await _client.GetAsync($"/api/payments/vnpay/ipn?{queryString}");

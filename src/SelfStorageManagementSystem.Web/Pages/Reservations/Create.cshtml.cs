@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -86,7 +86,7 @@ public class CreateModel : PageModel
             }
         }
 
-        // Tính ngày hiện tại theo múi giờ cơ sở được chọn, đồng bộ hoàn toàn với ReservationService (BR-RSV-02)
+        // Tính ngày hiện tại theo múi giờ cơ sở được chọn, đồng bộ hoàn toàn với ReservationServiceKhoiVTH (BR-RSV-02)
         var facilityTz = AppFormatters.ResolveFacilityTimeZone(Facility?.Timezone);
         var today = DateOnly.FromDateTime(TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, facilityTz));
         MinStartDate = today;
@@ -122,7 +122,7 @@ public class CreateModel : PageModel
             await LoadPreviewDataAsync(Input.FacilityId, Input.UnitTypeId, cancellationToken);
         }
 
-        // Tính ngày hiện tại theo múi giờ cơ sở được chọn, đồng bộ hoàn toàn với ReservationService (BR-RSV-02)
+        // Tính ngày hiện tại theo múi giờ cơ sở được chọn, đồng bộ hoàn toàn với ReservationServiceKhoiVTH (BR-RSV-02)
         var facilityTz = AppFormatters.ResolveFacilityTimeZone(Facility?.Timezone);
         var today = DateOnly.FromDateTime(TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, facilityTz));
         MinStartDate = today;

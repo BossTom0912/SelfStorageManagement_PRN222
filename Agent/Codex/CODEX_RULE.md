@@ -1,4 +1,4 @@
-# RULE.md — Codex Engineering Rules
+﻿# RULE.md — Codex Engineering Rules
 ## Self-Storage Facility Rental and Management System
 
 > Target agent: Codex / Astra / code-review agents  
@@ -658,8 +658,8 @@ user_roles
 Known keyless views:
 
 ```text
-UnitTypeHaTDT
-StorageUnitHaTDT
+UnitTypeKhoiVTH
+StorageUnitKhoiVTH
 ```
 
 The SQL Server database is the source of truth.
@@ -993,8 +993,8 @@ Those belong in BusinessLogic.
 These entities are read-only:
 
 ```text
-UnitTypeHaTDT
-StorageUnitHaTDT
+UnitTypeKhoiVTH
+StorageUnitKhoiVTH
 ```
 
 Do not call:

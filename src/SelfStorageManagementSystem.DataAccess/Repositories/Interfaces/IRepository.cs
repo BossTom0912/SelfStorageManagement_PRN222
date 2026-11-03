@@ -1,10 +1,10 @@
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 
 namespace SelfStorageManagementSystem.DataAccess.Repositories.Interfaces;
 
 /// <summary>
 /// Generic repository interface for persistence operations over entity types.
-/// Note: Keyless views (e.g. UnitTypeHaTDT, StorageUnitHaTDT) do not have primary keys
+/// Note: Keyless views (e.g. UnitTypeKhoiVTH, StorageUnitKhoiVTH) do not have primary keys
 /// and do not support GetByIdAsync, Update, or Delete.
 /// </summary>
 /// <typeparam name="T">Entity class type</typeparam>

@@ -1,4 +1,4 @@
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
 using SelfStorageManagementSystem.BusinessLogic.Common.Constants;
@@ -247,10 +247,10 @@ public class ReservationSqlServerConcurrencyTests
             var task1 = Task.Run(async () =>
             {
                 await using var db1 = CreateDbContext(connectionString);
-                var repo1 = new ReservationRepository(db1);
-                var userRepo1 = new UserRepository(db1);
-                var scopeService1 = new FacilityScopeService(db1, userRepo1);
-                var svc1 = new ReservationService(repo1, scopeService1, NullLogger<ReservationService>.Instance);
+                var repo1 = new ReservationRepositoryKhoiVTH(db1);
+                var userRepo1 = new UserRepositoryKhoiVTH(db1);
+                var scopeService1 = new FacilityScopeServiceKhoiVTH(db1, userRepo1);
+                var svc1 = new ReservationServiceKhoiVTH(repo1, scopeService1, NullLogger<ReservationServiceKhoiVTH>.Instance);
 
                 return await svc1.CreateReservationHoldAsync(custUser1Id, new CreateReservationRequest
                 {
@@ -264,10 +264,10 @@ public class ReservationSqlServerConcurrencyTests
             var task2 = Task.Run(async () =>
             {
                 await using var db2 = CreateDbContext(connectionString);
-                var repo2 = new ReservationRepository(db2);
-                var userRepo2 = new UserRepository(db2);
-                var scopeService2 = new FacilityScopeService(db2, userRepo2);
-                var svc2 = new ReservationService(repo2, scopeService2, NullLogger<ReservationService>.Instance);
+                var repo2 = new ReservationRepositoryKhoiVTH(db2);
+                var userRepo2 = new UserRepositoryKhoiVTH(db2);
+                var scopeService2 = new FacilityScopeServiceKhoiVTH(db2, userRepo2);
+                var svc2 = new ReservationServiceKhoiVTH(repo2, scopeService2, NullLogger<ReservationServiceKhoiVTH>.Instance);
 
                 return await svc2.CreateReservationHoldAsync(custUser2Id, new CreateReservationRequest
                 {
@@ -508,7 +508,7 @@ public class ReservationSqlServerConcurrencyTests
             var taskCancel = Task.Run(async () =>
             {
                 await using var db = CreateDbContext(connectionString);
-                var repo = new ReservationRepository(db);
+                var repo = new ReservationRepositoryKhoiVTH(db);
                 barrier.SignalAndWait();
                 try
                 {
@@ -527,7 +527,7 @@ public class ReservationSqlServerConcurrencyTests
             var taskExpire = Task.Run(async () =>
             {
                 await using var db = CreateDbContext(connectionString);
-                var repo = new ReservationRepository(db);
+                var repo = new ReservationRepositoryKhoiVTH(db);
                 barrier.SignalAndWait();
                 try
                 {

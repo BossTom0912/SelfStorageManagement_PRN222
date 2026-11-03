@@ -15,7 +15,7 @@ using Xunit;
 namespace SelfStorageManagementSystem.WebTests;
 
 /// <summary>
-/// Unit tests for StorageUnitAdminService enforcing:
+/// Unit tests for StorageUnitAdminServiceKhoiVTH enforcing:
 /// 1. Actor authentication & server-side role/scope verification (Admin, Ops, Manager, Staff, Customer).
 /// 2. Role-based read/write access (Staff read-only, Manager write restricted to assigned facility).
 /// 3. Creation rules (Server enforces available and is_listed=true, unique code, area in facility).
@@ -295,15 +295,15 @@ public class StorageUnitAdminServiceTests
         public override DateTimeOffset GetUtcNow() => _utcNow;
     }
 
-    private static (StorageUnitAdminService Service, SelfStorageDbContext Context) CreateTestService(
+    private static (StorageUnitAdminServiceKhoiVTH Service, SelfStorageDbContext Context) CreateTestService(
         string dbName,
         TimeProvider? timeProvider = null)
     {
         var context = CreateInMemoryContext(dbName);
-        var unitRepo = new StorageUnitAdminRepository(context);
-        var userRepo = new UserRepository(context);
-        var scopeService = new FacilityScopeService(context, userRepo);
-        var service = new StorageUnitAdminService(unitRepo, userRepo, scopeService, timeProvider);
+        var unitRepo = new StorageUnitAdminRepositoryKhoiVTH(context);
+        var userRepo = new UserRepositoryKhoiVTH(context);
+        var scopeService = new FacilityScopeServiceKhoiVTH(context, userRepo);
+        var service = new StorageUnitAdminServiceKhoiVTH(unitRepo, userRepo, scopeService, timeProvider);
         return (service, context);
     }
 
@@ -939,13 +939,15 @@ public class StorageUnitAdminServiceTests
     }
 
     [Fact]
-    public async Task DeleteAsync_UnitHasHistoryOrReferences_ThrowsConflictException()
+    public async Task DeleteAsync_UnitHasHistoryOrReferences_RetainsRowAndSetsIsListedFalseAtomically()
     {
         var dbName = Guid.NewGuid().ToString();
         var (service, context) = CreateTestService(dbName);
         await SeedDatabaseAsync(context);
 
         var unit1 = await context.storage_units.FindAsync(1L);
+        var initialUpdatedAt = unit1!.updated_at;
+        Assert.True(unit1.is_listed);
 
         // Add historical allocation to Unit 1
         context.unit_allocations.Add(new unit_allocation
@@ -960,11 +962,22 @@ public class StorageUnitAdminServiceTests
         });
         await context.SaveChangesAsync();
 
-        var ex = await Assert.ThrowsAsync<ConflictException>(() =>
-            service.DeleteAsync(1, unit1!.updated_at, actorUserId: 10));
+        var result = await service.DeleteAsync(1, initialUpdatedAt, actorUserId: 10);
 
-        Assert.Contains("history", ex.Message, StringComparison.OrdinalIgnoreCase);
-        Assert.NotNull(await context.storage_units.FindAsync(1L)); // Still in database
+        Assert.True(result.Success);
+        Assert.True(result.IsUnlistedOnly);
+        Assert.Equal("STORAGE_UNIT_UNLISTED", result.Message);
+
+        // Unit 1 must still exist in database, with is_listed set to false and updated_at refreshed
+        var retainedUnit = await context.storage_units.FindAsync(1L);
+        Assert.NotNull(retainedUnit);
+        Assert.False(retainedUnit.is_listed);
+        Assert.True(retainedUnit.updated_at > initialUpdatedAt);
+
+        // Optimistic concurrency: calling delete with stale initialUpdatedAt now fails with ConflictException
+        var conflictEx = await Assert.ThrowsAsync<ConflictException>(() =>
+            service.DeleteAsync(1, initialUpdatedAt, actorUserId: 10));
+        Assert.Contains("conflict", conflictEx.Message, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -997,7 +1010,7 @@ public class StorageUnitAdminServiceTests
         var ex = await Assert.ThrowsAsync<ConflictException>(() =>
             service.DeleteAsync(1, unit1!.updated_at, actorUserId: 10));
 
-        Assert.Contains("reservation holds", ex.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("không đủ đáp ứng các đặt chỗ", ex.Message, StringComparison.OrdinalIgnoreCase);
         Assert.NotNull(await context.storage_units.FindAsync(1L)); // Preserved
     }
 
@@ -1030,7 +1043,7 @@ public class StorageUnitAdminServiceTests
         var ex = await Assert.ThrowsAsync<ConflictException>(() =>
             service.DeleteAsync(1, unit1!.updated_at, actorUserId: 10));
 
-        Assert.Contains("confirmed bookings", ex.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("không đủ đáp ứng các đặt chỗ", ex.Message, StringComparison.OrdinalIgnoreCase);
         Assert.NotNull(await context.storage_units.FindAsync(1L)); // Preserved
     }
 
@@ -1080,6 +1093,352 @@ public class StorageUnitAdminServiceTests
 
         // Unit 3 must be completely removed from database
         Assert.Null(await context.storage_units.FindAsync(3L));
+    }
+
+    [Fact]
+    public async Task DeleteAsync_ActiveConfirmedReservation_SufficientRemainingCandidateCapacity_Succeeds()
+    {
+        var dbName = Guid.NewGuid().ToString();
+        var (service, context) = CreateTestService(dbName);
+        await SeedDatabaseAsync(context);
+        var now = DateTimeOffset.UtcNow;
+        var today = DateOnly.FromDateTime(now.UtcDateTime);
+
+        // Add a second available candidate unit to Facility 10, UnitType 100
+        context.storage_units.Add(new storage_unit
+        {
+            id = 105,
+            facility_id = 10,
+            unit_type_id = 100,
+            area_id = 1000,
+            unit_code = "SU-10-05",
+            physical_status = "available",
+            is_listed = true,
+            created_at = now,
+            updated_at = now
+        });
+
+        // Add 1 active confirmed reservation
+        context.reservations.Add(new reservation
+        {
+            id = 8803,
+            facility_id = 10,
+            unit_type_id = 100,
+            customer_id = 40,
+            reservation_code = "RES-CONF-8803",
+            status = "confirmed",
+            start_date = today,
+            end_date = today.AddMonths(1)
+        });
+        await context.SaveChangesAsync();
+
+        // Unit 1 has 1 extra candidate peer (Unit 105). After deleting Unit 1, 1 candidate remains for 1 reservation.
+        var unit1 = await context.storage_units.FindAsync(1L);
+        var result = await service.DeleteAsync(1, unit1!.updated_at, actorUserId: 10);
+
+        Assert.True(result.Success);
+        Assert.Equal("STORAGE_UNIT_DELETED", result.Message);
+        Assert.Null(await context.storage_units.FindAsync(1L));
+    }
+
+    [Fact]
+    public async Task DeleteAsync_ActiveHold_SufficientRemainingCandidateCapacity_Succeeds()
+    {
+        var dbName = Guid.NewGuid().ToString();
+        var (service, context) = CreateTestService(dbName);
+        await SeedDatabaseAsync(context);
+        var now = DateTimeOffset.UtcNow;
+        var today = DateOnly.FromDateTime(now.UtcDateTime);
+
+        context.storage_units.Add(new storage_unit
+        {
+            id = 106,
+            facility_id = 10,
+            unit_type_id = 100,
+            area_id = 1000,
+            unit_code = "SU-10-06",
+            physical_status = "available",
+            is_listed = true,
+            created_at = now,
+            updated_at = now
+        });
+
+        context.reservations.Add(new reservation
+        {
+            id = 8804,
+            facility_id = 10,
+            unit_type_id = 100,
+            customer_id = 40,
+            reservation_code = "RES-HOLD-8804",
+            status = "pending",
+            hold_until = now.AddMinutes(20),
+            start_date = today,
+            end_date = today.AddMonths(1)
+        });
+        await context.SaveChangesAsync();
+
+        var unit1 = await context.storage_units.FindAsync(1L);
+        var result = await service.DeleteAsync(1, unit1!.updated_at, actorUserId: 10);
+
+        Assert.True(result.Success);
+        Assert.Equal("STORAGE_UNIT_DELETED", result.Message);
+        Assert.Null(await context.storage_units.FindAsync(1L));
+    }
+    [Fact]
+    public async Task DeleteAsync_CapacityAfterDeleteMatchesDemandExactly_Succeeds()
+    {
+        var dbName = Guid.NewGuid().ToString();
+        var (service, context) = CreateTestService(dbName);
+        await SeedDatabaseAsync(context);
+        var now = DateTimeOffset.UtcNow;
+        var today = DateOnly.FromDateTime(now.UtcDateTime);
+
+        // Unit 1 is candidate in Facility 10, Type 100. Add second candidate (Unit 108).
+        context.storage_units.Add(new storage_unit
+        {
+            id = 108,
+            facility_id = 10,
+            unit_type_id = 100,
+            area_id = 1000,
+            unit_code = "SU-10-08",
+            physical_status = "available",
+            is_listed = true,
+            created_at = now,
+            updated_at = now
+        });
+
+        // 1 confirmed unassigned reservation. Total candidate units = 2.
+        context.reservations.Add(new reservation
+        {
+            id = 8809,
+            facility_id = 10,
+            unit_type_id = 100,
+            customer_id = 40,
+            reservation_code = "RES-EXACT-8809",
+            status = "confirmed",
+            start_date = today,
+            end_date = today.AddMonths(1)
+        });
+        await context.SaveChangesAsync();
+
+        // After deleting Unit 1, remaining candidate count is 1, which exactly matches demand (1).
+        // Candidate surplus after delete is 0 (exact match). This must succeed without breach.
+        var unit1 = await context.storage_units.FindAsync(1L);
+        var result = await service.DeleteAsync(1, unit1!.updated_at, actorUserId: 10);
+
+        Assert.True(result.Success);
+        Assert.Equal("STORAGE_UNIT_DELETED", result.Message);
+        Assert.Null(await context.storage_units.FindAsync(1L));
+
+        // Boundary check: now only 1 candidate remains (Unit 108) for 1 reservation.
+        // Attempting to delete Unit 108 would cause remaining candidates (0) < demand (1), so it must breach.
+        var unit108 = await context.storage_units.FindAsync(108L);
+        var breachEx = await Assert.ThrowsAsync<ConflictException>(() =>
+            service.DeleteAsync(108, unit108!.updated_at, actorUserId: 10));
+        Assert.Contains("không đủ đáp ứng các đặt chỗ", breachEx.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.NotNull(await context.storage_units.FindAsync(108L));
+    }
+
+
+    [Fact]
+    public async Task DeleteAsync_TargetUnitNotCandidate_NotBlockedByReservations()
+    {
+        var dbName = Guid.NewGuid().ToString();
+        var (service, context) = CreateTestService(dbName);
+        await SeedDatabaseAsync(context);
+        var now = DateTimeOffset.UtcNow;
+        var today = DateOnly.FromDateTime(now.UtcDateTime);
+
+        // Unit 107 is unlisted (is_listed = false) but physical_status = 'available'
+        context.storage_units.Add(new storage_unit
+        {
+            id = 107,
+            facility_id = 10,
+            unit_type_id = 100,
+            area_id = 1000,
+            unit_code = "SU-10-07",
+            physical_status = "available",
+            is_listed = false, // Not in candidate pool
+            created_at = now,
+            updated_at = now
+        });
+
+        // Add an active confirmed reservation that uses Unit 1's capacity
+        context.reservations.Add(new reservation
+        {
+            id = 8805,
+            facility_id = 10,
+            unit_type_id = 100,
+            customer_id = 40,
+            reservation_code = "RES-CONF-8805",
+            status = "confirmed",
+            start_date = today,
+            end_date = today.AddMonths(1)
+        });
+        await context.SaveChangesAsync();
+
+        // Deleting Unit 107 does NOT reduce candidate capacity. Must succeed!
+        var unit107 = await context.storage_units.FindAsync(107L);
+        var result = await service.DeleteAsync(107, unit107!.updated_at, actorUserId: 10);
+
+        Assert.True(result.Success);
+        Assert.Null(await context.storage_units.FindAsync(107L));
+    }
+
+    [Fact]
+    public async Task DeleteAsync_AssignedOrExpiredReservations_DoNotAffectCapacity_Succeeds()
+    {
+        var dbName = Guid.NewGuid().ToString();
+        var (service, context) = CreateTestService(dbName);
+        await SeedDatabaseAsync(context);
+        var now = DateTimeOffset.UtcNow;
+        var today = DateOnly.FromDateTime(now.UtcDateTime);
+
+        // Expired hold (hold_until in past)
+        context.reservations.Add(new reservation
+        {
+            id = 8806,
+            facility_id = 10,
+            unit_type_id = 100,
+            customer_id = 40,
+            reservation_code = "RES-EXP-8806",
+            status = "pending",
+            hold_until = now.AddMinutes(-10),
+            start_date = today,
+            end_date = today.AddMonths(1)
+        });
+
+        // Cancelled reservation
+        context.reservations.Add(new reservation
+        {
+            id = 8807,
+            facility_id = 10,
+            unit_type_id = 100,
+            customer_id = 40,
+            reservation_code = "RES-CANC-8807",
+            status = "cancelled",
+            start_date = today,
+            end_date = today.AddMonths(1)
+        });
+
+        // Reservation for different facility (Facility 20)
+        context.reservations.Add(new reservation
+        {
+            id = 8808,
+            facility_id = 20,
+            unit_type_id = 100,
+            customer_id = 40,
+            reservation_code = "RES-DIFF-8808",
+            status = "confirmed",
+            start_date = today,
+            end_date = today.AddMonths(1)
+        });
+        await context.SaveChangesAsync();
+
+        // Unit 1 is the only candidate in Facility 10, Type 100, and should delete successfully!
+        var unit1 = await context.storage_units.FindAsync(1L);
+        var result = await service.DeleteAsync(1, unit1!.updated_at, actorUserId: 10);
+
+        Assert.True(result.Success);
+        Assert.Null(await context.storage_units.FindAsync(1L));
+    }
+
+    [Fact]
+    public async Task DeleteAsync_StatusHistoryReference_RetainsRowAndUnlists()
+    {
+        var dbName = Guid.NewGuid().ToString();
+        var (service, context) = CreateTestService(dbName);
+        await SeedDatabaseAsync(context);
+        var now = DateTimeOffset.UtcNow;
+
+        // Unit 3 is clean available unit. Add status history reference.
+        context.unit_status_histories.Add(new unit_status_history
+        {
+            id = 9910,
+            storage_unit_id = 3,
+            old_status = "cleaning",
+            new_status = "available",
+            changed_by = 10,
+            reason = "Cleaned",
+            changed_at = now.AddDays(-1)
+        });
+        await context.SaveChangesAsync();
+
+        var unit3 = await context.storage_units.FindAsync(3L);
+        var result = await service.DeleteAsync(3, unit3!.updated_at, actorUserId: 10);
+
+        Assert.True(result.Success);
+        Assert.True(result.IsUnlistedOnly);
+        Assert.Equal("STORAGE_UNIT_UNLISTED", result.Message);
+
+        var retained = await context.storage_units.FindAsync(3L);
+        Assert.NotNull(retained);
+        Assert.False(retained.is_listed);
+    }
+
+    [Fact]
+    public async Task DeleteAsync_TransferRequestReference_RetainsRowAndUnlists()
+    {
+        var dbName = Guid.NewGuid().ToString();
+        var (service, context) = CreateTestService(dbName);
+        await SeedDatabaseAsync(context);
+        var now = DateTimeOffset.UtcNow;
+
+        // Add unit_transfer_request reference linking to Unit 3
+        context.unit_transfer_requests.Add(new unit_transfer_request
+        {
+            id = 9920,
+            agreement_id = 1,
+            from_unit_id = 3,
+            to_unit_id = 1,
+            reason = "Upgrade request",
+            status = "completed",
+            requested_by = 10,
+            created_at = now.AddDays(-2)
+        });
+        await context.SaveChangesAsync();
+
+        var unit3 = await context.storage_units.FindAsync(3L);
+        var result = await service.DeleteAsync(3, unit3!.updated_at, actorUserId: 10);
+
+        Assert.True(result.Success);
+        Assert.True(result.IsUnlistedOnly);
+        Assert.Equal("STORAGE_UNIT_UNLISTED", result.Message);
+
+        var retained = await context.storage_units.FindAsync(3L);
+        Assert.NotNull(retained);
+        Assert.False(retained.is_listed);
+    }
+
+    [Fact]
+    public async Task GetByIdAsync_PopulatesHasAnyReferences_Accurately()
+    {
+        var dbName = Guid.NewGuid().ToString();
+        var (service, context) = CreateTestService(dbName);
+        await SeedDatabaseAsync(context);
+
+        // Unit 3 is clean: HasAnyReferences should be false
+        var cleanDetail = await service.GetByIdAsync(3L, actorUserId: 10);
+        Assert.NotNull(cleanDetail);
+        Assert.False(cleanDetail.HasAnyReferences);
+
+        // Add status history to Unit 3
+        context.unit_status_histories.Add(new unit_status_history
+        {
+            id = 9930,
+            storage_unit_id = 3,
+            old_status = "available",
+            new_status = "cleaning",
+            changed_by = 10,
+            reason = "Audit test",
+            changed_at = DateTimeOffset.UtcNow
+        });
+        await context.SaveChangesAsync();
+
+        // HasAnyReferences should now be true!
+        var updatedDetail = await service.GetByIdAsync(3L, actorUserId: 10);
+        Assert.NotNull(updatedDetail);
+        Assert.True(updatedDetail.HasAnyReferences);
     }
 
     // =========================================================================

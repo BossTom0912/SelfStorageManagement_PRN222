@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,7 +18,7 @@ public interface IStorageUnitAdminRepository : IRepository<storage_unit>
     /// Does not buffer the entire dataset in memory.
     /// </summary>
     Task<(IReadOnlyList<storage_unit> Items, int TotalCount)> GetPagedStorageUnitsAsync(
-        StorageUnitAdminQueryParameters queryParams,
+        StorageUnitAdminQueryParametersKhoiVTH queryParams,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -63,7 +63,7 @@ public interface IStorageUnitAdminRepository : IRepository<storage_unit>
     /// Validates referential integrity and area facility assignment before mutation.
     /// Guarantees area belongs to the same facility (trigger 51020 requirement).
     /// </summary>
-    Task<StorageUnitScopeValidationResult> ValidateScopeReferencesAsync(
+    Task<StorageUnitScopeValidationResultKhoiVTH> ValidateScopeReferencesAsync(
         long facilityId,
         long unitTypeId,
         long? areaId,
@@ -74,7 +74,7 @@ public interface IStorageUnitAdminRepository : IRepository<storage_unit>
     /// including allocations, inspections, maintenance orders, support tickets, transfers,
     /// unit map position, and unit status history.
     /// </summary>
-    Task<StorageUnitReferenceSummary> GetStorageUnitReferenceSummaryAsync(
+    Task<StorageUnitReferenceSummaryKhoiVTH> GetStorageUnitReferenceSummaryAsync(
         long unitId,
         CancellationToken cancellationToken = default);
 
@@ -82,7 +82,7 @@ public interface IStorageUnitAdminRepository : IRepository<storage_unit>
     /// Computes candidate available units, unassigned holds, and unassigned confirmed reservations
     /// for a facility and unit type. Provides data needed for BLL delete capacity policy.
     /// </summary>
-    Task<StorageUnitCapacityImpact> GetCapacityImpactAsync(
+    Task<StorageUnitCapacityImpactKhoiVTH> GetCapacityImpactAsync(
         long facilityId,
         long unitTypeId,
         long? targetUnitId = null,
@@ -117,9 +117,9 @@ public interface IStorageUnitAdminRepository : IRepository<storage_unit>
     /// computes reference summary and unassigned holds/confirmed capacity impact,
     /// invokes the BLL policy delegate within the transaction, and safely deletes or rolls back.
     /// </summary>
-    Task<StorageUnitDeleteResult> DeleteStorageUnitWithLockAsync(
+    Task<StorageUnitDeleteResultKhoiVTH> DeleteStorageUnitWithLockAsync(
         long unitId,
         DateTimeOffset expectedUpdatedAt,
-        Func<StorageUnitDeleteEvaluationContext, Task<bool>>? evaluatePolicy = null,
+        Func<StorageUnitDeleteEvaluationContextKhoiVTH, Task<bool>>? evaluatePolicy = null,
         CancellationToken cancellationToken = default);
 }

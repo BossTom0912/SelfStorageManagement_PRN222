@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
 using SelfStorageManagementSystem.BusinessLogic.Common;
@@ -25,14 +25,14 @@ public class CheckInServiceTests
         return new SelfStorageDbContext(options);
     }
 
-    private (CheckInService Service, SelfStorageDbContext Context, CheckInRepository Repo, FacilityCatalogRepository CatalogRepo) SetupService(string dbName)
+    private (CheckInServiceKhoiVTH Service, SelfStorageDbContext Context, CheckInRepositoryKhoiVTH Repo, FacilityCatalogRepositoryKhoiVTH CatalogRepo) SetupService(string dbName)
     {
         var context = CreateInMemoryContext(dbName);
-        var checkInRepo = new CheckInRepository(context);
-        var catalogRepo = new FacilityCatalogRepository(context);
-        var userRepo = new UserRepository(context);
-        var scopeService = new FacilityScopeService(context, userRepo);
-        var logger = NullLogger<CheckInService>.Instance;
+        var checkInRepo = new CheckInRepositoryKhoiVTH(context);
+        var catalogRepo = new FacilityCatalogRepositoryKhoiVTH(context);
+        var userRepo = new UserRepositoryKhoiVTH(context);
+        var scopeService = new FacilityScopeServiceKhoiVTH(context, userRepo);
+        var logger = NullLogger<CheckInServiceKhoiVTH>.Instance;
 
         var config = new ConfigurationBuilder()
             .AddInMemoryCollection(new Dictionary<string, string?>
@@ -41,7 +41,7 @@ public class CheckInServiceTests
             })
             .Build();
 
-        var service = new CheckInService(checkInRepo, scopeService, config);
+        var service = new CheckInServiceKhoiVTH(checkInRepo, scopeService, config);
         return (service, context, checkInRepo, catalogRepo);
     }
 
@@ -1047,9 +1047,9 @@ public class CheckInServiceTests
     {
         var dbName = Guid.NewGuid().ToString();
         var context = CreateInMemoryContext(dbName);
-        var checkInRepo = new CheckInRepository(context);
-        var userRepo = new UserRepository(context);
-        var scopeService = new FacilityScopeService(context, userRepo);
+        var checkInRepo = new CheckInRepositoryKhoiVTH(context);
+        var userRepo = new UserRepositoryKhoiVTH(context);
+        var scopeService = new FacilityScopeServiceKhoiVTH(context, userRepo);
 
         // Using CheckIn__PinHmacSecret (double underscore environment key format)
         var config = new ConfigurationBuilder()
@@ -1059,7 +1059,7 @@ public class CheckInServiceTests
             })
             .Build();
 
-        var service = new CheckInService(checkInRepo, scopeService, config);
+        var service = new CheckInServiceKhoiVTH(checkInRepo, scopeService, config);
         await SeedBaselineDataAsync(context);
         await SeedConfirmedReservationAndScheduledAgreementAsync(context);
 

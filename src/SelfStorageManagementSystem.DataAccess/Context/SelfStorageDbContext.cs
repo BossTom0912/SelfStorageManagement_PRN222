@@ -12,9 +12,9 @@ public partial class SelfStorageDbContext : DbContext
     {
     }
 
-    public virtual DbSet<StorageUnitHaTDT> StorageUnitHaTDTs { get; set; }
+    public virtual DbSet<StorageUnitKhoiVTH> StorageUnitKhoiVTHs { get; set; }
 
-    public virtual DbSet<UnitTypeHaTDT> UnitTypeHaTDTs { get; set; }
+    public virtual DbSet<UnitTypeKhoiVTH> UnitTypeKhoiVTHs { get; set; }
 
     public virtual DbSet<access_credential> access_credentials { get; set; }
 
@@ -132,13 +132,13 @@ public partial class SelfStorageDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<StorageUnitHaTDT>(entity =>
+        modelBuilder.Entity<StorageUnitKhoiVTH>(entity =>
         {
             entity
                 .HasNoKey()
-                .ToView("StorageUnitHaTDT", "core");
+                .ToView("StorageUnitKhoiVTH", "core");
 
-            entity.Property(e => e.StorageUnitHaTDTId).ValueGeneratedOnAdd();
+            entity.Property(e => e.StorageUnitKhoiVTHId).ValueGeneratedOnAdd();
             entity.Property(e => e.floor_label).HasMaxLength(255);
             entity.Property(e => e.notes).HasMaxLength(255);
             entity.Property(e => e.physical_status).HasMaxLength(255);
@@ -146,13 +146,13 @@ public partial class SelfStorageDbContext : DbContext
             entity.Property(e => e.zone_label).HasMaxLength(255);
         });
 
-        modelBuilder.Entity<UnitTypeHaTDT>(entity =>
+        modelBuilder.Entity<UnitTypeKhoiVTH>(entity =>
         {
             entity
                 .HasNoKey()
-                .ToView("UnitTypeHaTDT", "core");
+                .ToView("UnitTypeKhoiVTH", "core");
 
-            entity.Property(e => e.UnitTypeHaTDTId).ValueGeneratedOnAdd();
+            entity.Property(e => e.UnitTypeKhoiVTHId).ValueGeneratedOnAdd();
             entity.Property(e => e.area_m2).HasColumnType("numeric(10, 2)");
             entity.Property(e => e.code).HasMaxLength(255);
             entity.Property(e => e.description).HasMaxLength(255);

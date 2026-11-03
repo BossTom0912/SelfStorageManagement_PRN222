@@ -40,6 +40,35 @@
             const output = document.getElementById('test-output');
             const summary = document.getElementById('summary');
 
+            // Adapt the existing HTML fixtures to the new Hub snapshot contract.
+            // Only this test adapter uses the mocked fetch; production code invokes SignalR.
+            window.connection = {
+                state: 'Connected',
+                invoke: async function (method, query) {
+                    if (method !== 'HubGet_StorageUnitsTableSnapshot') throw new Error('Unexpected Hub method');
+                    const response = await window.fetch('/test-snapshot-fixture');
+                    if (!response.ok) throw new Error('Fixture unavailable');
+                    const doc = new DOMParser().parseFromString(await response.text(), 'text/html');
+                    const body = doc.getElementById('storageUnitsTableBody');
+                    const count = doc.getElementById('storageUnitsTotalCount');
+                    if (!body || !count) return {};
+                    const totalCount = Number(count.textContent);
+                    const pageSize = query.pageSize;
+                    const totalPages = Math.ceil(totalCount / pageSize);
+                    return {
+                        items: Array.from(body.querySelectorAll('tr')).map(row => ({
+                            id: row.id.replace('unit-row-', ''),
+                            unitCode: row.textContent.trim(),
+                            physicalStatus: 'available', isListed: true
+                        })),
+                        totalCount, pageNumber: query.pageNumber, pageSize, totalPages,
+                        hasPreviousPage: query.pageNumber > 1,
+                        hasNextPage: query.pageNumber < totalPages,
+                        canManage: false, clientGeneration: query.clientGeneration
+                    };
+                }
+            };
+
             function assert(condition, message) {
                 if (!condition) {
                     throw new Error(message || 'Assertion failed');
@@ -302,7 +331,7 @@
                 assert(document.getElementById('storageUnitsTotalCount').textContent === '11', 'Count must update to 11');
                 const nav11 = document.getElementById('storageUnitsPaginationContainer');
                 assert(nav11.querySelector('ul.pagination') !== null, 'Pagination links must appear when transitioning 10 -> 11');
-                assert(nav11.querySelectorAll('li.page-item').length === 2, 'Must have page 1 and page 2 links');
+                assert(Array.from(nav11.querySelectorAll('a.page-link')).filter(a => /^(1|2)$/.test(a.textContent.trim())).length === 2, 'Must have page 1 and page 2 links');
 
                 // Chuyển 11 -> 10: Giả lập xóa dòng 11, server trả về lại 1 trang
                 const mockHtml10Items = `
@@ -489,7 +518,7 @@
                 resolveR2();
                 const res2 = await refetch2Promise;
                 assert(res2 && res2.status === 'failed', 'R2 must report failed because required table/footer elements are missing');
-                assert(res2.reason === 'missing_table_elements', 'R2 failure reason must be missing_table_elements');
+                assert(res2.reason === 'invalid_snapshot', 'R2 failure reason must identify an invalid snapshot');
 
                 // T13-R6-F03: Kiểm tra DOM trước retry:
                 // - Cảnh báo đồng bộ xuất hiện
@@ -529,6 +558,33 @@
             }
 
             // =========================================================================
+            // SignalR snapshots must render without issuing any HTTP fetch.
+            try {
+                const originalFetch = window.fetch;
+                const originalConnection = window.connection;
+                let fetchCalls = 0;
+                window.fetch = async () => { fetchCalls++; throw new Error('Unexpected HTTP fetch'); };
+                window.connection = {
+                    state: 'Connected',
+                    invoke: async (method, query) => ({
+                        items: [{ id: '987654321098765432', unitCode: '<img src=x onerror=alert(1)>', physicalStatus: 'available', isListed: true }],
+                        totalCount: 1, pageNumber: 1, pageSize: 10, totalPages: 1,
+                        canManage: false, clientGeneration: query.clientGeneration
+                    })
+                };
+                const result = await StorageUnitsRealtime.refetchTable();
+                assert(result.status === 'applied', 'Hub snapshot must apply');
+                assert(fetchCalls === 0, 'Production synchronization must not fetch HTML');
+                const row = document.getElementById('unit-row-987654321098765432');
+                assert(row !== null, 'bigint ID must remain exact');
+                assert(row.querySelector('img') === null, 'Snapshot row values must be escaped');
+                window.fetch = originalFetch;
+                window.connection = originalConnection;
+                logTest('HUB-NO-HTTP', 'Snapshot qua Hub không fetch HTML, giữ bigint và escape nội dung', true, {});
+            } catch (e) {
+                logTest('HUB-NO-HTTP', 'Snapshot qua Hub không fetch HTML, giữ bigint và escape nội dung', false, { error: e.message });
+            }
+
             // TỔNG KẾT
             // =========================================================================
             const failedCount = results.filter(r => !r.success).length;

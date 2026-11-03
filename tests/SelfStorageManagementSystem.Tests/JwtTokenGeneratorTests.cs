@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using SelfStorageManagementSystem.BusinessLogic.Common;
 using SelfStorageManagementSystem.BusinessLogic.Common.Constants;
 using SelfStorageManagementSystem.BusinessLogic.Services.Implementations;
@@ -18,7 +18,7 @@ public class JwtTokenGeneratorTests
     {
         var options = Options.Create(new JwtOptions { Key = invalidKey });
 
-        var ex = Assert.Throws<InvalidOperationException>(() => new JwtTokenGenerator(options));
+        var ex = Assert.Throws<InvalidOperationException>(() => new JwtTokenGeneratorKhoiVTH(options));
         Assert.Contains("JWT signing key is missing or shorter than", ex.Message);
     }
 
@@ -34,7 +34,7 @@ public class JwtTokenGeneratorTests
             ExpiryMinutes = 60
         });
 
-        var generator = new JwtTokenGenerator(options);
+        var generator = new JwtTokenGeneratorKhoiVTH(options);
         var user = new user
         {
             id = 100,

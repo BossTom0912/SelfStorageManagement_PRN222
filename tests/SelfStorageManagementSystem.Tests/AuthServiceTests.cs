@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore.Storage;
+﻿using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 using Moq;
 using SelfStorageManagementSystem.BusinessLogic.Common.Constants;
@@ -23,13 +23,13 @@ public class AuthServiceTests
     private readonly Mock<IJwtTokenGenerator> _jwtGeneratorMock = new();
     private readonly Mock<IFacilityScopeService> _facilityScopeMock = new();
     private readonly Mock<IAuditService> _auditMock = new();
-    private readonly Mock<ILogger<AuthService>> _loggerMock = new();
+    private readonly Mock<ILogger<AuthServiceKhoiVTH>> _loggerMock = new();
 
-    private readonly AuthService _authService;
+    private readonly AuthServiceKhoiVTH _authService;
 
     public AuthServiceTests()
     {
-        var accountIdentityService = new AccountIdentityService(
+        var accountIdentityService = new AccountIdentityServiceKhoiVTH(
             _userRepoMock.Object,
             _roleRepoMock.Object,
             _userRoleRepoMock.Object,
@@ -38,9 +38,9 @@ public class AuthServiceTests
             _passwordHasherMock.Object,
             _facilityScopeMock.Object,
             _auditMock.Object,
-            new Microsoft.Extensions.Logging.Abstractions.NullLogger<AccountIdentityService>());
+            new Microsoft.Extensions.Logging.Abstractions.NullLogger<AccountIdentityServiceKhoiVTH>());
 
-        _authService = new AuthService(
+        _authService = new AuthServiceKhoiVTH(
             accountIdentityService,
             _jwtGeneratorMock.Object);
     }

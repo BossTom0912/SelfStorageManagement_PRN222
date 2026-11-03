@@ -1,4 +1,4 @@
-# Base Architecture Report — Self-Storage Facility Rental and Management System
+﻿# Base Architecture Report — Self-Storage Facility Rental and Management System
 
 **Project:** Self-Storage Facility Rental and Management System (PRN222)  
 **Architecture:** Strict 3-Layer Architecture  
@@ -114,7 +114,7 @@ SQL Server
   1. `payment_allocations`: `(payment_id, invoice_id)`
   2. `shift_assignments`: `(shift_id, employee_id)`
   3. `user_roles`: `(user_id, role_id)`
-- **Keyless Views:** `UnitTypeHaTDT` and `StorageUnitHaTDT` mapped with `HasNoKey().ToView(...)`.
+- **Keyless Views:** `UnitTypeKhoiVTH` and `StorageUnitKhoiVTH` mapped with `HasNoKey().ToView(...)`.
 - **Code First Artifacts:** No migrations, no `EnsureCreated()`, no `Database.Migrate()`.
 
 ---
