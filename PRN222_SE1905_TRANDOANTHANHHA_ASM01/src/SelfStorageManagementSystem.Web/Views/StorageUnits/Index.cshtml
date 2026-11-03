@@ -1,4 +1,4 @@
-@model SelfStorageManagementSystem.Web.Models.StorageUnitsIndexViewModel
+﻿@model SelfStorageManagementSystem.Web.Models.StorageUnitsIndexViewModel
 @{
     ViewData["Title"] = "Quản trị danh mục ô kho";
 }
@@ -367,7 +367,7 @@
                     return;
                 }
 
-                const outcome = await StorageUnitsRealtime.refetchTable('storageUnitsTableBody', 'storageUnitsTotalCount', item.id, 'create');
+                const outcome = await StorageUnitsRealtime.syncTableViaHub('storageUnitsTableBody', 'storageUnitsTotalCount', item.id, 'create', currentFilter, connection);
                 if (outcome && outcome.status === 'applied') {
                     const rowInDom = document.getElementById('unit-row-' + item.id);
                     if (rowInDom) {
@@ -396,7 +396,7 @@
             connection.on("Receiver_UpdateStorageUnit", async function (item) {
                 console.log("Receiver_UpdateStorageUnit received:", item);
 
-                const outcome = await StorageUnitsRealtime.refetchTable('storageUnitsTableBody', 'storageUnitsTotalCount', item.id, 'update');
+                const outcome = await StorageUnitsRealtime.syncTableViaHub('storageUnitsTableBody', 'storageUnitsTotalCount', item.id, 'update', currentFilter, connection);
                 if (outcome && outcome.status === 'applied') {
                     const rowInDom = document.getElementById('unit-row-' + item.id);
                     if (rowInDom) {
@@ -420,7 +420,7 @@
             connection.on("Receiver_DeleteStorageUnit", async function (id) {
                 console.log("Receiver_DeleteStorageUnit received for id:", id);
 
-                const outcome = await StorageUnitsRealtime.refetchTable('storageUnitsTableBody', 'storageUnitsTotalCount', null, 'delete');
+                const outcome = await StorageUnitsRealtime.syncTableViaHub('storageUnitsTableBody', 'storageUnitsTotalCount', null, 'delete', currentFilter, connection);
                 if (outcome && outcome.status === 'applied') {
                     renderEmptyTableIfNeeded();
                     StorageUnitsRealtime.showMessage(
@@ -437,7 +437,7 @@
                 }
             });
 
-            connection.onreconnected(function (connectionId) {
+            connection.onreconnected(async function (connectionId) {
                 console.log("SignalR reconnected:", connectionId);
                 StorageUnitsRealtime.showMessage(
                     messageAreaId,
@@ -445,7 +445,7 @@
                     'Kết nối Realtime đã phục hồi. Đang tải lại dữ liệu mới nhất...',
                     3000
                 );
-                setTimeout(() => window.location.reload(), 1000);
+                await StorageUnitsRealtime.syncTableViaHub('storageUnitsTableBody', 'storageUnitsTotalCount', null, 'reconnect', currentFilter, connection);
             });
 
             connection.start().then(function () {
