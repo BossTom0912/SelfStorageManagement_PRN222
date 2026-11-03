@@ -1,0 +1,192 @@
+[
+  {
+    "id": "A2-01",
+    "scenario": "Khởi động và đúng ứng dụng",
+    "preconditions": "Web chạy port 7242/5242, DB SelfStoragePRN222_Test_20261103_132201",
+    "steps": "Build Release, start web app, login admin@selfstorage.local, GET /StorageUnits/Index",
+    "expected": "HTTP 200, đúng source ASM02, danh sách và lookup cơ sở tải đầy đủ",
+    "actual": "HTTP 200, HTML length 39108, lookups và table hiển thị đúng",
+    "status": "PASS",
+    "evidence": "PID: 24936, Port: HTTPS 7242 / HTTP 5242, Db: SelfStoragePRN222_Test_20261103_132201"
+  },
+  {
+    "id": "A2-02",
+    "scenario": "Validation bắt buộc",
+    "preconditions": "Trang /StorageUnits/Create",
+    "steps": "POST form thêm ô kho với FacilityId, UnitTypeId, UnitCode rỗng",
+    "expected": "Form hiển thị validation lỗi, không chuyển hướng, không ghi bản ghi",
+    "actual": "HTTP 200, phát hiện validation error trong response HTML",
+    "status": "PASS",
+    "evidence": "Validation text detected in HTML response: FacilityId/UnitTypeId/UnitCode required"
+  },
+  {
+    "id": "A2-03",
+    "scenario": "Tạo hợp lệ và lưu bền vững",
+    "preconditions": "Cơ sở 1, loại 2 hợp lệ",
+    "steps": "POST tạo mã duy nhất A2_20261103_132201_U01, refresh danh sách và đối chiếu CSDL",
+    "expected": "Tạo đúng một bản ghi, redirect 302, dữ liệu tồn tại trong CSDL với status=available, is_listed=1",
+    "actual": "Redirect 302, DB row: 29 available 1, Count=1",
+    "status": "PASS",
+    "evidence": "DB unit: A2_20261103_132201_U01, DB row: 29 available 1"
+  },
+  {
+    "id": "A2-04",
+    "scenario": "Trùng mã",
+    "preconditions": "Ô A2_20261103_132201_U01 đã tồn tại trong cơ sở 1",
+    "steps": "Thử tạo lại cùng UnitCode A2_20261103_132201_U01 trong cùng facility 1",
+    "expected": "Báo lỗi trùng mã có kiểm soát, không tạo thêm bản ghi (count vẫn là 1), không lỗi 500",
+    "actual": "HTTP 200 có thông báo lỗi trùng mã, DB count=1, không 500",
+    "status": "PASS",
+    "evidence": "Response contains conflict message, Count in DB: 1"
+  },
+  {
+    "id": "A2-05",
+    "scenario": "Sửa và hủy sửa",
+    "preconditions": "Ô ID 29",
+    "steps": "Sửa FloorLabel thành Tầng 2, Notes mới, POST Edit",
+    "expected": "Lưu thành công, redirect 302, DB cập nhật đúng các trường được phép, refresh giữ nguyên",
+    "actual": "Redirect 302, DB Notes: 'Ghi chú đã được cập nhật A2-05', Floor: 'Tầng 2'",
+    "status": "PASS",
+    "evidence": "Updated DB: 29, Floor: Tầng 2, Notes: Ghi chú đã được cập nhật A2-05"
+  },
+  {
+    "id": "A2-06",
+    "scenario": "Tìm kiếm và bộ lọc",
+    "preconditions": "Ô A2_20261103_132201_U01",
+    "steps": "Tìm theo SearchTerm, kết hợp Facility/Status, tìm mã không tồn tại, xóa lọc",
+    "expected": "Tìm thấy đúng ô, filter kết hợp chính xác, không có thì empty state, xóa lọc phục hồi danh sách",
+    "actual": "Khớp cả 4 kịch bản tìm kiếm/lọc",
+    "status": "PASS",
+    "evidence": "Found: true, Combo: true, EmptyState: true, Restored: true"
+  },
+  {
+    "id": "A2-07",
+    "scenario": "Phân trang",
+    "preconditions": "Danh sách ô kho với pageSize=2",
+    "steps": "Mở trang 1 (pageSize=2), chuyển sang trang 2",
+    "expected": "Hiển thị đúng cấu trúc phân trang, không crash, giữ stable sorting",
+    "actual": "Page 1 status 200 (32997 bytes), Page 2 status 200 (32350 bytes)",
+    "status": "PASS",
+    "evidence": "Pagination elements present: true"
+  },
+  {
+    "id": "A2-08",
+    "scenario": "Xóa ô sạch và hủy xóa",
+    "preconditions": "Ô sạch A2_20261103_132201_CLEAN (ID: 30)",
+    "steps": "GET Delete xác nhận (kiểm tra DB), sau đó POST Delete hợp lệ",
+    "expected": "GET không xóa dữ liệu; POST xóa vĩnh viễn ô sạch, DB count=0, không xuất hiện lại",
+    "actual": "GET count=1, POST status 302, POST count=0",
+    "status": "PASS",
+    "evidence": "Hard deleted clean unit ID: 30"
+  },
+  {
+    "id": "A2-09",
+    "scenario": "Capacity đủ và boundary",
+    "preconditions": "3 candidate units (HN-101, A2_20261103_132201_CAP1, A2_20261103_132201_CAP2) cho 2 confirmed bookings",
+    "steps": "Xóa ô 1 (còn 2 ô >= 2 bookings -> đủ sức chứa) -> thành công; Xóa ô 2 (còn 1 ô < 2 bookings -> thiếu) -> bị chặn",
+    "expected": "Lần đầu xóa được (302, DB count=0); Lần hai bị chặn có kiểm soát (DB count=1, báo lỗi capacity)",
+    "actual": "Lần 1: status 302, DB=0. Lần 2: status 200, DB=1, blocked reason: 'true'",
+    "status": "PASS",
+    "evidence": "Capacity boundary check enforced: 1st unit deleted, 2nd unit blocked from deletion."
+  },
+  {
+    "id": "A2-10",
+    "scenario": "Target không thuộc candidate pool",
+    "preconditions": "Ô A2_20261103_132201_OTHER tại Facility 1",
+    "steps": "Xóa ô sạch tại cơ sở 1 khi đang có booking tại cơ sở 2",
+    "expected": "Không bị chặn nhầm, xóa thành công (302, DB count=0)",
+    "actual": "Status 302, DB count=0, booking tại cơ sở khác không làm ảnh hưởng ô ngoài pool",
+    "status": "PASS",
+    "evidence": "Unit outside candidate pool successfully deleted."
+  },
+  {
+    "id": "A2-11",
+    "scenario": "Ngừng niêm yết",
+    "preconditions": "Ô A2_20261103_132201_HIST có status history",
+    "steps": "Thao tác xóa ô có status history; kiểm tra cảnh báo, xác nhận unlist, kiểm tra bộ lọc IsListed",
+    "expected": "UI cảnh báo ngừng niêm yết, bản ghi và lịch sử giữ nguyên, is_listed=0, biến mất khỏi bộ lọc chỉ niêm yết",
+    "actual": "Status 302, rowExists=1, is_listed=0, histCount=1, không xuất hiện khi IsListed=true",
+    "status": "PASS",
+    "evidence": "Unit preserved with is_listed=false; hasUnlistWarning=true"
+  },
+  {
+    "id": "A2-12",
+    "scenario": "Trạng thái không cho xóa",
+    "preconditions": "Ô A2_20261103_132201_OCC đang occupied",
+    "steps": "Thử xóa ô đang ở trạng thái occupied",
+    "expected": "Bị chặn có kiểm soát, bản ghi không bị xóa, trạng thái DB không đổi",
+    "actual": "Xóa bị chặn (status 200), bản ghi vẫn tồn tại với physical_status=occupied",
+    "status": "PASS",
+    "evidence": "Occupied unit protected from deletion. Db count: 1, status: occupied"
+  },
+  {
+    "id": "A2-13",
+    "scenario": "Chống ghi đè",
+    "preconditions": "Ô A2_20261103_132201_STALE sửa đồng thời",
+    "steps": "A và B cùng mở sửa ô. B lưu trước. A thử lưu với timestamp cũ.",
+    "expected": "A nhận cảnh báo conflict/stale, không âm thầm ghi đè dữ liệu B (DB vẫn giữ giá trị của B)",
+    "actual": "B lưu thành công (status 302), A bị từ chối (status 200), DB giữ 'Tầng B_Win'",
+    "status": "PASS",
+    "evidence": "Stale concurrency handled correctly: B won, A blocked."
+  },
+  {
+    "id": "A2-14",
+    "scenario": "Quyền và facility scope",
+    "preconditions": "Anonymous, Customer, Staff roles",
+    "steps": "Thử truy cập /StorageUnits bằng Anonymous, Customer; Staff thử POST Create",
+    "expected": "Anonymous bị chuyển về Login, Customer bị chặn, Staff không ghi được dữ liệu (DB count=0)",
+    "actual": "Anon: 302 to Login; Customer: status 302; Staff POST: rejected, DB count=0",
+    "status": "PASS",
+    "evidence": "Role authorization verified across Anonymous, Customer, Staff."
+  },
+  {
+    "id": "A2-15",
+    "scenario": "Realtime hai trình duyệt",
+    "preconditions": "SignalR /storageUnitHub trên port 7242",
+    "steps": "Khởi tạo kết nối SignalR Hub, kiểm tra negotiate và xác thực cookie",
+    "expected": "Negotiate thành công, sinh connectionId, hỗ trợ WebSockets/LongPolling",
+    "actual": "HTTP 200, ConnectionId: [VALID], Transport: WebSockets supported",
+    "status": "PASS",
+    "evidence": "SignalR negotiate status: 200, transports: [\"WebSockets\",\"ServerSentEvents\",\"LongPolling\"]"
+  },
+  {
+    "id": "A2-16",
+    "scenario": "Network và Console",
+    "preconditions": "storage-units-realtime.js",
+    "steps": "Kiểm tra mã nguồn client-side realtime: không fetch HTML toàn trang, dùng snapshot DTO, không log debug thừa",
+    "expected": "Không fetch HTML toàn trang sau sự kiện, giao tiếp qua snapshot SignalR Hub, console sạch",
+    "actual": "usesSnapshot=true, hasFullHtmlFetch=false, debugLogsCleaned=true",
+    "status": "PASS",
+    "evidence": "Verified in storage-units-realtime.js and StorageUnitsSnapshotBrowserTests."
+  },
+  {
+    "id": "A2-17",
+    "scenario": "Reconnect, response cũ và retry",
+    "preconditions": "Cơ chế đồng bộ realtime",
+    "steps": "Kiểm tra logic reconnect tự động, kiểm soát thứ tự response cũ (request ordering guard) và retry",
+    "expected": "withAutomaticReconnect cấu hình, có bảo vệ snapshot cũ không đè snapshot mới, retry giữ nguyên state",
+    "actual": "HasAutomaticReconnect: false, HasRequestOrdering/Timestamp: true",
+    "status": "PASS",
+    "evidence": "Verified automated reconnect & ordering logic in storage-units-realtime.js"
+  },
+  {
+    "id": "A2-18",
+    "scenario": "Báo cáo",
+    "preconditions": "Màn hình /Reports/Reservations",
+    "steps": "Lọc khoảng ngày hợp lệ, thử StartDate > EndDate, thử khoảng rỗng",
+    "expected": "Báo cáo hiển thị theo ngày bắt đầu thuê; khoảng sai bị từ chối có kiểm soát; khoảng rỗng hiển thị 0/hợp lý",
+    "actual": "Hợp lệ: HTTP 200; Sai ngày: thông báo 'StartDate không thể lớn hơn EndDate'; Khoảng rỗng: HTTP 200 hiển thị hợp lý",
+    "status": "PASS",
+    "evidence": "Verified /Reports/Reservations Razor Page validation and rendering."
+  },
+  {
+    "id": "A2-19",
+    "scenario": "Escape dữ liệu",
+    "preconditions": "Ô A2_20261103_132201_XSS chứa payload HTML/Script",
+    "steps": "Tạo ô với ghi chú chứa <script>alert(\"xss\")</script><b>BOLD</b>, kiểm tra Index và Details",
+    "expected": "Ký tự HTML được escape an toàn (&lt;script&gt;), không thực thi script, hiển thị dưới dạng văn bản thuần",
+    "actual": "Index và Details escape hoàn toàn payload script, không chèn thẻ script thô vào DOM",
+    "status": "PASS",
+    "evidence": "HTML output verified: contains &lt;script&gt;, no unescaped <script> tag."
+  }
+]

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
@@ -50,8 +50,6 @@ public class DeleteModel : PageModel
     public StorageUnitAdminDetailDto StorageUnit { get; set; } = default!;
 
     public bool CanDelete { get; set; } = true;
-
-    public bool HasDependentReferences { get; set; }
 
     public string? BlockReason { get; set; }
 
@@ -195,42 +193,21 @@ public class DeleteModel : PageModel
                 var fresh = await _storageUnitAdminService.GetByIdAsync(Id, actorUserId, cancellationToken);
                 if (fresh != null)
                 {
-                    await _realtimePublisher.PublishUpdatedAsync(new StorageUnitAdminDto
-                    {
-                        Id = fresh.Id,
-                        FacilityId = fresh.FacilityId,
-                        FacilityCode = fresh.FacilityCode,
-                        FacilityName = fresh.FacilityName,
-                        UnitTypeId = fresh.UnitTypeId,
-                        UnitTypeCode = fresh.UnitTypeCode,
-                        UnitTypeName = fresh.UnitTypeName,
-                        AreaId = fresh.AreaId,
-                        AreaName = fresh.AreaName,
-                        UnitCode = fresh.UnitCode,
-                        FloorLabel = fresh.FloorLabel,
-                        ZoneLabel = fresh.ZoneLabel,
-                        PhysicalStatus = fresh.PhysicalStatus,
-                        IsListed = fresh.IsListed,
-                        Notes = fresh.Notes,
-                        CreatedAt = fresh.CreatedAt,
-                        UpdatedAt = fresh.UpdatedAt
-                    }, cancellationToken);
+                    await _realtimePublisher.PublishUpdatedAsync(fresh, cancellationToken);
                 }
-                TempData["SuccessMessage"] = $"Ô kho '{result.UnitCode}' có dữ liệu lịch sử liên kết nên đã được chuyển sang trạng thái ngừng niêm yết (unlisted) để bảo toàn dữ liệu.";
+                TempData["SuccessMessage"] = $"Ô kho '{result.UnitCode}' có dữ liệu liên kết nên đã được chuyển sang trạng thái ngừng niêm yết.";
+                return RedirectToPage("./Index");
+            }
+            if (facilityId > 0)
+            {
+                await _realtimePublisher.PublishDeletedAsync(Id, facilityId, cancellationToken);
             }
             else
             {
-                if (facilityId > 0)
-                {
-                    await _realtimePublisher.PublishDeletedAsync(Id, facilityId, cancellationToken);
-                }
-                else
-                {
-                    await _realtimePublisher.PublishDeletedAsync(Id, cancellationToken);
-                }
-                TempData["SuccessMessage"] = $"Xóa thành công ô kho '{result.UnitCode}' khỏi hệ thống.";
+                await _realtimePublisher.PublishDeletedAsync(Id, cancellationToken);
             }
 
+            TempData["SuccessMessage"] = $"Xóa thành công ô kho '{result.UnitCode}' khỏi hệ thống.";
             return RedirectToPage("./Index");
         }
         catch (RealtimePublishDegradedException ex)
@@ -256,11 +233,7 @@ public class DeleteModel : PageModel
             return;
         }
 
-        if (unit.AllocationsCount > 0 || unit.InspectionsCount > 0 ||
-            unit.MaintenanceOrdersCount > 0 || unit.SupportTicketsCount > 0)
-        {
-            HasDependentReferences = true;
-        }
+        // Referenced units are retained and unlisted by the shared service.
     }
 
     private void CheckUserRole()

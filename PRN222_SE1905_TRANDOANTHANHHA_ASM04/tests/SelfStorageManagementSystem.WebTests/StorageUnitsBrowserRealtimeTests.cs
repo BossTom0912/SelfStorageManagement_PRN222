@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -813,6 +813,7 @@ public class StorageUnitsBrowserRealtimeTests : IClassFixture<CookieAuthWebTestF
 
             var summaryText = await session.EvaluateStringRequiredAsync("document.getElementById('summary')?.textContent || ''");
             Assert.Equal("PASS", testStatus);
+            Assert.Contains("100%", summaryText);
             Assert.Contains("100%", summaryText);
         }
         finally

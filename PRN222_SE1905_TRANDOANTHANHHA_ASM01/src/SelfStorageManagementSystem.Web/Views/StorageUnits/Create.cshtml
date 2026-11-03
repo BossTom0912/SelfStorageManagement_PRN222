@@ -1,4 +1,4 @@
-@model SelfStorageManagementSystem.Web.Models.StorageUnitCreateViewModel
+﻿@model SelfStorageManagementSystem.Web.Models.StorageUnitCreateViewModel
 @{
     ViewData["Title"] = "Thêm ô kho mới";
 }
@@ -159,8 +159,11 @@
                     </a>
                     @if (Model.CanManage)
                     {
-                        <button type="submit" class="btn btn-primary px-4 fw-semibold" id="btnSubmitCreate">
-                            Lưu Ô Kho Mới
+                        <button type="submit" name="submitMode" value="signalr" class="btn btn-primary px-4 fw-semibold" id="btnSubmitCreate" title="Lưu ô kho và phát thông báo đồng bộ realtime qua SignalR">
+                            Lưu Ô Kho Mới (Add by SignalR)
+                        </button>
+                        <button type="submit" name="submitMode" value="normal" class="btn btn-outline-primary px-4 fw-semibold" id="btnSubmitCreateNormal" title="Lưu ô kho và ghi log hệ thống tiêu chuẩn (không qua SignalR)">
+                            Lưu Ô Kho Mới (Ghi log bình thường)
                         </button>
                     }
                 </div>

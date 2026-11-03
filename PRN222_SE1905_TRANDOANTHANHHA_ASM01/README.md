@@ -16,3 +16,5 @@ dotnet test .\PRN222_SE1905_TRANDOANTHANHHA_ASM01.sln
 ```
 
 Kết quả: 190/190 test (37 nghiệp vụ + 153 web), không skip. Các test từ chối MVC kiểm tra chuyển hướng `/Account/Forbidden` và xác nhận không tạo/xóa dữ liệu trái phép. Xem `../SUBMISSION_GUIDE.md` để cấu hình kết nối/tài khoản và xem vị trí log.
+
+Nếu thanh toán báo trùng khóa `core.invoices` với giá trị `<NULL>`, chạy [bản sửa database hiện có](DB/SelfStoragePRN222_InvoiceNullableProposal_Upgrade.sql) trong SSMS. Script giữ nguyên dữ liệu, thay ràng buộc UNIQUE cũ của `ticket_charge_proposal_id` bằng unique index có điều kiện `IS NOT NULL`, và có thể chạy lại. `database_init.sql` đã dùng định nghĩa này cho lần tạo database mới; không chạy lại file khởi tạo để nâng cấp database đang dùng.

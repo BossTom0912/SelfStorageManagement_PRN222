@@ -13,4 +13,8 @@
     <ProjectReference Include="..\SelfStorageManagementSystem.BusinessLogic\SelfStorageManagementSystem.BusinessLogic.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="SelfStorageManagementSystem.WebTests" />
+  </ItemGroup>
+
 </Project>

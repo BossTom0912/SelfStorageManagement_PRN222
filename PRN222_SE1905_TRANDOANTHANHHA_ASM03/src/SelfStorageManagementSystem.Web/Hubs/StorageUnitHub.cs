@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -14,6 +14,8 @@ using SelfStorageManagementSystem.BusinessLogic.DTOs.Responses.StorageUnits;
 using SelfStorageManagementSystem.BusinessLogic.Exceptions;
 using SelfStorageManagementSystem.BusinessLogic.Services.Interfaces;
 using SelfStorageManagementSystem.Web.Realtime;
+using SelfStorageManagementSystem.Web.Helpers;
+using SelfStorageManagementSystem.BusinessLogic.Common;
 
 namespace SelfStorageManagementSystem.Web.Hubs;
 
@@ -352,7 +354,41 @@ public class StorageUnitHub : Hub
         // T13-R6-F01: Thao tác DB đã lưu thành công. Xử lý đồng bộ realtime sau commit độc lập.
         try
         {
-            await _realtimePublisher.PublishDeletedAsync(unitId, facilityId);
+            if (result.IsUnlistedOnly)
+            {
+                var fresh = await _storageUnitAdminService.GetByIdAsync(unitId, actorUserId);
+                if (fresh != null)
+                {
+                    await _realtimePublisher.PublishUpdatedAsync(new StorageUnitAdminDto
+                    {
+                        Id = fresh.Id,
+                        FacilityId = fresh.FacilityId,
+                        FacilityCode = fresh.FacilityCode,
+                        FacilityName = fresh.FacilityName,
+                        UnitTypeId = fresh.UnitTypeId,
+                        UnitTypeCode = fresh.UnitTypeCode,
+                        UnitTypeName = fresh.UnitTypeName,
+                        AreaId = fresh.AreaId,
+                        AreaName = fresh.AreaName,
+                        UnitCode = fresh.UnitCode,
+                        FloorLabel = fresh.FloorLabel,
+                        ZoneLabel = fresh.ZoneLabel,
+                        PhysicalStatus = fresh.PhysicalStatus,
+                        IsListed = fresh.IsListed,
+                        Notes = fresh.Notes,
+                        CreatedAt = fresh.CreatedAt,
+                        UpdatedAt = fresh.UpdatedAt
+                    });
+                }
+            }
+            else if (facilityId > 0)
+            {
+                await _realtimePublisher.PublishDeletedAsync(unitId, facilityId);
+            }
+            else
+            {
+                await _realtimePublisher.PublishDeletedAsync(unitId);
+            }
         }
         catch (RealtimePublishDegradedException ex)
         {
@@ -364,6 +400,123 @@ public class StorageUnitHub : Hub
         }
 
         return unitId.ToString();
+    }
+
+    /// <summary>
+    /// Invocable by client: HubGet_StorageUnitsTableSnapshot(StorageUnitTableQueryRequest? query)
+    /// Read-only snapshot method for Storage Units table.
+    /// Retrieves current page snapshot via existing BLL service (IStorageUnitAdminService.ListAsync),
+    /// strictly enforcing actor validation, staff/manager/admin roles, facility scoping,
+    /// parameter clamping, and returning only necessary presentation DTO fields (no sensitive internal notes).
+    /// </summary>
+    public async Task<StorageUnitTableSnapshotDto> HubGet_StorageUnitsTableSnapshot(StorageUnitTableQueryRequest? query)
+    {
+        query ??= new StorageUnitTableQueryRequest();
+
+        var (actorUserId, canManage) = GetActorInfo();
+
+        var pageSize = Math.Clamp(query.PageSize, 1, 100);
+        var pageNumber = Math.Max(1, query.PageNumber);
+
+        long? parsedFacilityId = long.TryParse(query.FacilityId, out var fid) && fid > 0 ? fid : null;
+        long? parsedUnitTypeId = long.TryParse(query.UnitTypeId, out var utid) && utid > 0 ? utid : null;
+        long? parsedAreaId = long.TryParse(query.AreaId, out var aid) && aid > 0 ? aid : null;
+        bool? parsedIsListed = bool.TryParse(query.IsListed, out var il) ? il : null;
+
+        var allowedSortColumns = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "unit_code", "created_at", "updated_at", "physical_status", "unit_type", "facility", "id"
+        };
+        var sortBy = !string.IsNullOrWhiteSpace(query.SortBy) && allowedSortColumns.Contains(query.SortBy.Trim())
+            ? query.SortBy.Trim()
+            : "unit_code";
+
+        var filterRequest = new StorageUnitFilterRequest
+        {
+            FacilityId = parsedFacilityId,
+            UnitTypeId = parsedUnitTypeId,
+            AreaId = parsedAreaId,
+            PhysicalStatus = string.IsNullOrWhiteSpace(query.PhysicalStatus) ? null : query.PhysicalStatus.Trim(),
+            IsListed = parsedIsListed,
+            SearchTerm = string.IsNullOrWhiteSpace(query.SearchTerm) ? null : query.SearchTerm.Trim(),
+            SortBy = sortBy,
+            SortDescending = query.SortDescending,
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
+
+        PagedResult<StorageUnitAdminDto> result;
+        try
+        {
+            result = await _storageUnitAdminService.ListAsync(filterRequest, actorUserId, Context.ConnectionAborted);
+        }
+        catch (ForbiddenException ex)
+        {
+            _logger.LogWarning(ex, "Từ chối quyền truy cập snapshot bảng ô kho cho user {UserId}.", actorUserId);
+            throw new HubException("Bạn không có quyền truy cập dữ liệu cơ sở này.");
+        }
+        catch (UnauthorizedException ex)
+        {
+            _logger.LogWarning(ex, "Người dùng {UserId} chưa được xác thực khi yêu cầu snapshot bảng ô kho.", actorUserId);
+            throw new HubException("Phiên làm việc đã hết hạn hoặc tài khoản không hoạt động.");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Lỗi khi lấy snapshot bảng ô kho cho user {UserId}.", actorUserId);
+            throw new HubException("Đã xảy ra lỗi khi tải dữ liệu bảng.");
+        }
+
+        // Nếu xóa hết dòng của trang cuối, tự động chuyển về trang hợp lệ gần nhất
+        if (result.Items.Count == 0 && result.TotalCount > 0 && pageNumber > 1)
+        {
+            var adjustedPage = Math.Max(1, (int)Math.Ceiling((double)result.TotalCount / pageSize));
+            if (adjustedPage != pageNumber)
+            {
+                filterRequest.PageNumber = adjustedPage;
+                try
+                {
+                    result = await _storageUnitAdminService.ListAsync(filterRequest, actorUserId, Context.ConnectionAborted);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "Lỗi khi điều chỉnh trang snapshot bảng ô kho.");
+                }
+            }
+        }
+
+        var items = result.Items.Select(item => new StorageUnitTableRowDto
+        {
+            Id = item.Id.ToString(),
+            IdNumeric = item.Id,
+            UnitCode = item.UnitCode,
+            FacilityId = item.FacilityId.ToString(),
+            FacilityCode = item.FacilityCode,
+            FacilityName = item.FacilityName,
+            UnitTypeId = item.UnitTypeId.ToString(),
+            UnitTypeCode = item.UnitTypeCode,
+            UnitTypeName = item.UnitTypeName,
+            AreaId = item.AreaId?.ToString(),
+            AreaName = item.AreaName,
+            FloorLabel = item.FloorLabel,
+            ZoneLabel = item.ZoneLabel,
+            PhysicalStatus = item.PhysicalStatus,
+            IsListed = item.IsListed,
+            UpdatedAt = item.UpdatedAt.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffffffZ"),
+            UpdatedAtFormatted = AppFormatters.FormatDateTime(item.UpdatedAt)
+        }).ToList();
+
+        return new StorageUnitTableSnapshotDto
+        {
+            Items = items,
+            TotalCount = result.TotalCount,
+            PageNumber = result.PageNumber,
+            PageSize = result.PageSize,
+            TotalPages = result.TotalPages,
+            HasPreviousPage = result.HasPreviousPage,
+            HasNextPage = result.HasNextPage,
+            CanManage = canManage,
+            ClientGeneration = query.ClientGeneration
+        };
     }
 
     private (long actorUserId, bool canManage) GetActorInfo()

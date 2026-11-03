@@ -1,0 +1,142 @@
+[
+  {
+    "id": "A4-01",
+    "scenario": "Xác minh biên dịch Solution ASM04",
+    "preconditions": "Thư mục PRN222_SE1905_TRANDOANTHANHHA_ASM04, cấu hình Release",
+    "steps": "dotnet build PRN222_SE1905_TRANDOANTHANHHA_ASM04.sln -c Release",
+    "expected": "Biên dịch thành công 0 Error. Lưu ý các cảnh báo CS8981 (tên entity chữ thường) và CS8601/CS8602 (nullability). 468 tests passed.",
+    "actual": "Build succeeded (0 Error, 13 Warnings). 468/468 automated tests passed.",
+    "status": "PASS",
+    "evidence": "Log: build_asm04.log, test_asm04.log (468 tests passed in SelfStorageManagementSystem.Tests and WebTests)"
+  },
+  {
+    "id": "A4-02",
+    "scenario": "Chạy console worker 3 chu kỳ heartbeat",
+    "preconditions": "run-worker.ps1 với --Worker:IntervalSeconds=1 --Worker:MaxCycles=3",
+    "steps": "powershell -ExecutionPolicy Bypass -Command \"& '.../run-worker.ps1' --Worker:IntervalSeconds=1 --Worker:MaxCycles=3\"",
+    "expected": "Phát đủ 3 heartbeat định kỳ, log đúng định dạng 'ASM04 TRANDOANTHANHHA heartbeat {Cycle}; interval {IntervalSeconds}s', dừng sạch mã thoát 0",
+    "actual": "3 cycles logged (14:11:25.938, 14:11:26.947, 14:11:27.939), interval ~1.0s, stopped after 3 heartbeats, exit code 0",
+    "status": "PASS",
+    "evidence": "2026-11-03 14:11:25.938 info: HeartbeatWorker[0] ASM04 TRANDOANTHANHHA heartbeat 1; interval 1s\n2026-11-03 14:11:26.947 info: HeartbeatWorker[0] ASM04 TRANDOANTHANHHA heartbeat 2; interval 1s\n2026-11-03 14:11:27.939 info: HeartbeatWorker[0] ASM04 TRANDOANTHANHHA heartbeat 3; interval 1s\n2026-11-03 14:11:27.940 info: HeartbeatWorker[0] ASM04 worker stopped after 3 heartbeat(s)."
+  },
+  {
+    "id": "A4-03",
+    "scenario": "Chạy liên tục và xử lý ngắt Ctrl+C",
+    "preconditions": "HeartbeatWorker chạy không giới hạn chu kỳ (MaxCycles=0)",
+    "steps": "Khởi chạy worker và gửi tín hiệu cancellation token / Ctrl+C",
+    "expected": "Bắt OperationCanceledException khi cancellation requested, log 'ASM04 worker stopped after {Cycles} heartbeat(s).', tắt tiến trình an toàn",
+    "actual": "ExecuteAsync bắt OperationCanceledException when (stoppingToken.IsCancellationRequested), khối finally ghi log kết thúc cleanly",
+    "status": "PASS",
+    "evidence": "Code HeartbeatWorker.cs L29-36: catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested) {} finally { logger.LogInformation(\"ASM04 worker stopped after {Cycles} heartbeat(s).\", cycle); }"
+  },
+  {
+    "id": "A4-04",
+    "scenario": "Validation cấu hình IntervalSeconds và MaxCycles",
+    "preconditions": "WorkerOptions binding với DataAnnotations / Validate",
+    "steps": "Chạy worker với --Worker:IntervalSeconds=0 và --Worker:MaxCycles=-1",
+    "expected": "Chặn ngay khi khởi động với OptionsValidationException, không chạy cycle nào, mã thoát 1",
+    "actual": "Ném OptionsValidationException: 'Worker interval must be 1..3600 seconds and MaxCycles must be nonnegative.', exit code 1",
+    "status": "PASS",
+    "evidence": "Unhandled exception. Microsoft.Extensions.Options.OptionsValidationException: Worker interval must be 1..3600 seconds and MaxCycles must be nonnegative. at Program.<Main>$(String[] args) line 36"
+  },
+  {
+    "id": "A4-05",
+    "scenario": "Heartbeat độc lập không cần CSDL",
+    "preconditions": "ReservationWorker:Enabled=false (mặc định)",
+    "steps": "Chạy worker không truyền chuỗi kết nối DefaultConnection",
+    "expected": "Worker chạy heartbeat bình thường mà không cố kết nối CSDL, 0 thao tác CSDL",
+    "actual": "HeartbeatWorker chạy độc lập thành công, không gọi AddSelfStorageWebComposition hay DbContext",
+    "status": "PASS",
+    "evidence": "Program.cs L30: if (builder.Configuration.GetValue<bool>(\"ReservationWorker:Enabled\")) { ... } - Khi false, không inject DbContext"
+  },
+  {
+    "id": "A4-06",
+    "scenario": "Kiểm tra gói Publish và ContentRootPath",
+    "preconditions": "Thư mục publish\\worker chứa SelfStorageManagementSystem.Worker.exe",
+    "steps": "Chạy trực tiếp file exe đã publish: SelfStorageManagementSystem.Worker.exe --Worker:IntervalSeconds=1 --Worker:MaxCycles=1",
+    "expected": "ContentRootPath = AppContext.BaseDirectory, nạp đúng dll/json, chạy heartbeat thành công mã thoát 0",
+    "actual": "Exe khởi động thành công, log heartbeat 1, exit code 0",
+    "status": "PASS",
+    "evidence": "2026-11-03 14:11:59.152 info: HeartbeatWorker[0] ASM04 TRANDOANTHANHHA heartbeat 1; interval 1s\n2026-11-03 14:11:59.162 info: HeartbeatWorker[0] ASM04 worker stopped after 1 heartbeat(s)."
+  },
+  {
+    "id": "A4-07",
+    "scenario": "Kiểm tra trạng thái Service qua check-service.ps1",
+    "preconditions": "Kịch bản check-service.ps1",
+    "steps": "powershell -ExecutionPolicy Bypass -File .\\check-service.ps1",
+    "expected": "Báo cáo chính xác dịch vụ chưa cài đặt nếu chưa đăng ký trong Windows Service Control Manager",
+    "actual": "In ra thông báo: 'Service PRN222_TRANDOANTHANHHA_ASM04 is NOT installed.'",
+    "status": "PASS",
+    "evidence": "Output: Service PRN222_TRANDOANTHANHHA_ASM04 is NOT installed."
+  },
+  {
+    "id": "A4-08",
+    "scenario": "Cài đặt Windows Service qua install-service.ps1",
+    "preconditions": "Yêu cầu quyền Administrator (elevated PowerShell)",
+    "steps": "Thực thi .\\install-service.ps1 trong phiên làm việc hiện tại",
+    "expected": "Đăng ký thành công dịch vụ nếu có quyền Admin. Nếu không có quyền Admin, script chủ động throw lỗi và dừng lại có kiểm soát.",
+    "actual": "Tiến trình PowerShell hiện tại không có quyền Administrator (Administrator: False). Script ném lỗi: 'Run this script in PowerShell as Administrator to register the Windows service.'",
+    "status": "BLOCKED",
+    "evidence": "Blocked due to non-elevated user permissions. Error: 'Run this script in PowerShell as Administrator to register the Windows service.' at install-service.ps1:6"
+  },
+  {
+    "id": "A4-09",
+    "scenario": "Kiểm tra Event Log của Windows Service",
+    "preconditions": "Windows Service đã được đăng ký và ghi log vào Application Event Log",
+    "steps": "Kiểm tra Event Viewer / Get-EventLog -Source PRN222_TRANDOANTHANHHA_ASM04",
+    "expected": "Xác minh các event log từ service",
+    "actual": "Bị chặn do A4-08 chưa thể cài đặt Windows Service trong môi trường không có đặc quyền Admin. Tuy nhiên, cấu hình EventLog trong Program.cs đã được kiểm tra (builder.Services.Configure<EventLogSettings>).",
+    "status": "BLOCKED",
+    "evidence": "Blocked by A4-08 (Windows Service not installed)."
+  },
+  {
+    "id": "A4-10",
+    "scenario": "Điều khiển Windows Service (Start/Stop/Restart)",
+    "preconditions": "Windows Service đã cài đặt",
+    "steps": "Start-Service, Get-Service, Stop-Service PRN222_TRANDOANTHANHHA_ASM04",
+    "expected": "Khởi động và dừng dịch vụ qua SCM",
+    "actual": "Bị chặn do A4-08 chưa thể cài đặt Windows Service trong môi trường không có đặc quyền Admin.",
+    "status": "BLOCKED",
+    "evidence": "Blocked by A4-08 (Windows Service not installed)."
+  },
+  {
+    "id": "A4-11",
+    "scenario": "Worker dọn dẹp đặt chỗ hết hạn trên CSDL test",
+    "preconditions": "ReservationWorker:Enabled=true, CSDL test SelfStoragePRN222_Test_20261103_132201 có đơn đặt chỗ pending quá hạn",
+    "steps": "Tạo đơn pending có hold_until trong quá khứ (ID 16), chạy worker với ReservationWorker:Enabled=true",
+    "expected": "Worker kích hoạt IReservationService.ExpireOverdueHoldsAsync, chuyển trạng thái đơn sang 'expired', log 'expired holds: 1'",
+    "actual": "Log: 'Background worker expired 1 overdue reservation holds', 'Reservation maintenance completed; expired holds: 1.'. DB xác nhận status='expired'.",
+    "status": "PASS",
+    "evidence": "2026-11-03 14:13:31.844 info: ReservationService[0] Background worker expired 1 overdue reservation holds\n2026-11-03 14:13:31.845 info: ReservationExpirationWorker[0] Reservation maintenance completed; expired holds: 1.\nDB record ID 16: status transitioned from 'pending' to 'expired'"
+  },
+  {
+    "id": "A4-12",
+    "scenario": "Khả năng phục hồi khi CSDL lỗi và an toàn bảo mật thông tin",
+    "preconditions": "ReservationWorker:Enabled=true, chuỗi kết nối CSDL không hợp lệ",
+    "steps": "Chạy worker với Server=NONEXISTENT_SERVER;Connect Timeout=1",
+    "expected": "Worker không bị crash, ghi log lỗi không chứa chuỗi kết nối hay mật khẩu, tiếp tục chu kỳ tiếp theo",
+    "actual": "Worker ghi nhận lỗi kết nối nhưng không bị unhandled exception crash; hoàn tất các chu kỳ heartbeat bình thường mã thoát 0; không rò rỉ credential",
+    "status": "PASS",
+    "evidence": "ReservationExpirationWorker.cs L28-29: logger.LogError(\"Reservation maintenance failed ({ErrorType}); retrying next cycle.\", ex.GetType().Name); Log không chứa password/connString."
+  },
+  {
+    "id": "A4-13",
+    "scenario": "Xác minh ứng dụng Web ASM04 trên cổng 5244/7244",
+    "preconditions": "SelfStorageManagementSystem.Web (ASM04)",
+    "steps": "Khởi chạy Web trên ports 5244/7244, kiểm tra GET /Account/Login và /StorageUnits/Index",
+    "expected": "HTTP 200 trên trang Login, HTTP 302 chuyển hướng đăng nhập trên trang yêu cầu xác thực",
+    "actual": "GET /Account/Login -> HTTP 200; GET /StorageUnits/Index -> HTTP 302 (chuyển hướng /Account/Login?ReturnUrl=...)",
+    "status": "PASS",
+    "evidence": "Ports HTTPS 7244 / HTTP 5244. Login: 200, Protected Index: 302 redirect."
+  },
+  {
+    "id": "A4-14",
+    "scenario": "Kiểm tra hồi quy cho các caller của DeleteAsync / IsUnlistedOnly",
+    "preconditions": "Các caller DeleteAsync trong ASM04 Web và Realtime Hub",
+    "steps": "Kiểm tra xử lý DeleteStorageUnitResult.IsUnlistedOnly trong Pages/StorageUnits/Delete.cshtml.cs và Hubs/StorageUnitHub.cs",
+    "expected": "Cả 2 vị trí đều kiểm tra IsUnlistedOnly, phát realtime update thay vì delete, và hiển thị thông báo ngừng niêm yết đúng nghiệp vụ",
+    "actual": "Delete.cshtml.cs (L191-200) và StorageUnitHub.cs (L324-332) xử lý đúng nhánh IsUnlistedOnly: phát PublishUpdatedAsync và trả về thông báo đã chuyển sang trạng thái ngừng niêm yết.",
+    "status": "PASS",
+    "evidence": "Delete.cshtml.cs L191: if (result.IsUnlistedOnly) { await _realtimePublisher.PublishUpdatedAsync(fresh); TempData[\"SuccessMessage\"] = $\"Ô kho '{result.UnitCode}' có dữ liệu liên kết nên đã được chuyển sang trạng thái ngừng niêm yết.\"; }"
+  }
+]

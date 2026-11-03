@@ -1,4 +1,4 @@
-@model SelfStorageManagementSystem.Web.Models.StorageUnitDeleteViewModel
+﻿@model SelfStorageManagementSystem.Web.Models.StorageUnitDeleteViewModel
 @{
     ViewData["Title"] = Model.StorageUnit != null ? $"Xóa ô kho {Model.StorageUnit.UnitCode}" : "Xác nhận xóa ô kho";
 }
@@ -68,7 +68,7 @@
             <div class="d-flex align-items-center">
                 <span class="me-2 fs-5 text-warning fw-bold">&#9888;</span>
                 <div>
-                    @if (Model.StorageUnit != null && (Model.StorageUnit.AllocationsCount > 0 || Model.StorageUnit.InspectionsCount > 0 || Model.StorageUnit.MaintenanceOrdersCount > 0 || Model.StorageUnit.SupportTicketsCount > 0))
+                    @if (Model.StorageUnit?.HasAnyReferences == true)
                     {
                         <text><strong>Cảnh báo:</strong> Ô kho <strong>@Model.StorageUnit.UnitCode</strong> có dữ liệu liên kết. Xác nhận sẽ giữ bản ghi và chuyển sang trạng thái ngừng niêm yết.</text>
                     }
@@ -140,7 +140,7 @@
                 @if (Model.CanDelete && Model.CanManage)
                 {
                     <button type="submit" class="btn btn-danger px-4 fw-semibold" id="btnSubmitDelete">
-                        Xác Nhận Xóa Vĩnh Viễn
+                        @(Model.StorageUnit?.HasAnyReferences == true ? "Xác nhận ngừng niêm yết" : "Xác nhận xóa vĩnh viễn")
                     </button>
                 }
             </div>
@@ -155,7 +155,7 @@
 
             if (typeof signalR !== 'undefined') {
                 const connection = new signalR.HubConnectionBuilder()
-                    .withUrl("/storageUnitHub")
+                    .withUrl("/storageUnitHub").configureLogging(signalR.LogLevel.None)
                     .withAutomaticReconnect()
                     .build();
 

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading;
@@ -216,7 +216,7 @@ public class StorageUnitsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(StorageUnitCreateViewModel model, CancellationToken cancellationToken)
+    public async Task<IActionResult> Create(StorageUnitCreateViewModel model, [FromForm] string? submitMode, CancellationToken cancellationToken)
     {
         var actorUserId = GetActorUserId();
         if (actorUserId <= 0)
@@ -272,10 +272,21 @@ public class StorageUnitsController : Controller
             return View(model);
         }
 
+        var isNormalMode = string.Equals(submitMode, "normal", StringComparison.OrdinalIgnoreCase);
+        if (isNormalMode)
+        {
+            _logger.LogInformation("[Normal Log] Đã tạo mới ô kho '{UnitCode}' (ID: {UnitId}, Cơ sở ID: {FacilityId}) thành công vào CSDL bởi User {UserId} tại {TimestampUtc} ở chế độ ghi log tiêu chuẩn (không phát SignalR).",
+                created.UnitCode, created.Id, created.FacilityId, actorUserId, DateTimeOffset.UtcNow);
+            TempData["SuccessMessage"] = $"Tạo mới ô kho '{created.UnitCode}' tại cơ sở '{created.FacilityName}' thành công (Ghi log bình thường).";
+            return RedirectToAction(nameof(Index), new { facilityId = created.FacilityId });
+        }
+
         try
         {
+            _logger.LogInformation("[SignalR Realtime] Bắt đầu phát sự kiện Receiver_CreateStorageUnit qua SignalR cho ô kho '{UnitCode}' (ID: {UnitId}, Cơ sở ID: {FacilityId}) bởi User {UserId}.",
+                created.UnitCode, created.Id, created.FacilityId, actorUserId);
             await _realtimePublisher.PublishCreatedAsync(created, cancellationToken);
-            TempData["SuccessMessage"] = $"Tạo mới ô kho '{created.UnitCode}' tại cơ sở '{created.FacilityName}' thành công.";
+            TempData["SuccessMessage"] = $"Tạo mới ô kho '{created.UnitCode}' tại cơ sở '{created.FacilityName}' thành công (Add by SignalR).";
             return RedirectToAction(nameof(Index), new { facilityId = created.FacilityId });
         }
         catch (RealtimePublishDegradedException ex)
@@ -469,7 +480,7 @@ public class StorageUnitsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Delete(long id, DateTimeOffset expectedUpdatedAt, CancellationToken cancellationToken)
+    public async Task<IActionResult> Delete(long id, DateTimeOffset expectedUpdatedAt, [FromForm] string? submitMode, CancellationToken cancellationToken)
     {
         var actorUserId = GetActorUserId();
         if (actorUserId <= 0)
@@ -558,6 +569,24 @@ public class StorageUnitsController : Controller
             return View(viewModel);
         }
 
+        var isNormalMode = string.Equals(submitMode, "normal", StringComparison.OrdinalIgnoreCase);
+        if (isNormalMode)
+        {
+            if (result.IsUnlistedOnly)
+            {
+                _logger.LogInformation("[Normal Log] Ô kho '{UnitCode}' (ID: {UnitId}) có dữ liệu liên kết nên đã chuyển sang ngừng niêm yết (is_listed = false) bởi User {UserId} tại {TimestampUtc} ở chế độ ghi log tiêu chuẩn (không phát SignalR).",
+                    result.UnitCode, id, actorUserId, DateTimeOffset.UtcNow);
+                TempData["SuccessMessage"] = $"Ô kho '{result.UnitCode}' có dữ liệu liên kết nên đã được chuyển sang trạng thái ngừng niêm yết (Ghi log bình thường).";
+            }
+            else
+            {
+                _logger.LogInformation("[Normal Log] Đã xóa vĩnh viễn ô kho '{UnitCode}' (ID: {UnitId}, Cơ sở ID: {FacilityId}) khỏi CSDL bởi User {UserId} tại {TimestampUtc} ở chế độ ghi log tiêu chuẩn (không phát SignalR).",
+                    result.UnitCode, id, facilityId, actorUserId, DateTimeOffset.UtcNow);
+                TempData["SuccessMessage"] = $"Xóa thành công ô kho '{result.UnitCode}' khỏi hệ thống (Ghi log bình thường).";
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
         try
         {
             if (result.IsUnlistedOnly)
@@ -565,6 +594,7 @@ public class StorageUnitsController : Controller
                 var fresh = await _storageUnitAdminService.GetByIdAsync(id, actorUserId, cancellationToken);
                 if (fresh != null)
                 {
+                    _logger.LogInformation("[SignalR Realtime] Ô kho '{UnitCode}' (ID: {UnitId}) ngừng niêm yết, phát sự kiện Receiver_UpdateStorageUnit qua SignalR.", fresh.UnitCode, fresh.Id);
                     await _realtimePublisher.PublishUpdatedAsync(new StorageUnitAdminDto
                     {
                         Id = fresh.Id,
@@ -586,17 +616,19 @@ public class StorageUnitsController : Controller
                         UpdatedAt = fresh.UpdatedAt
                     }, cancellationToken);
                 }
-                TempData["SuccessMessage"] = $"Ô kho '{result.UnitCode}' có dữ liệu liên kết nên đã được chuyển sang trạng thái ngừng niêm yết.";
+                TempData["SuccessMessage"] = $"Ô kho '{result.UnitCode}' có dữ liệu liên kết nên đã được chuyển sang trạng thái ngừng niêm yết (Delete by SignalR).";
             }
             else if (facilityId > 0)
             {
+                _logger.LogInformation("[SignalR Realtime] Ô kho '{UnitCode}' (ID: {UnitId}, Cơ sở ID: {FacilityId}) bị xóa, phát sự kiện Receiver_DeleteStorageUnit qua SignalR.", result.UnitCode, id, facilityId);
                 await _realtimePublisher.PublishDeletedAsync(id, facilityId, cancellationToken);
-                TempData["SuccessMessage"] = $"Xóa thành công ô kho '{result.UnitCode}' khỏi hệ thống.";
+                TempData["SuccessMessage"] = $"Xóa thành công ô kho '{result.UnitCode}' khỏi hệ thống (Delete by SignalR).";
             }
             else
             {
+                _logger.LogInformation("[SignalR Realtime] Ô kho '{UnitCode}' (ID: {UnitId}) bị xóa, phát sự kiện Receiver_DeleteStorageUnit qua SignalR.", result.UnitCode, id);
                 await _realtimePublisher.PublishDeletedAsync(id, cancellationToken);
-                TempData["SuccessMessage"] = $"Xóa thành công ô kho '{result.UnitCode}' khỏi hệ thống.";
+                TempData["SuccessMessage"] = $"Xóa thành công ô kho '{result.UnitCode}' khỏi hệ thống (Delete by SignalR).";
             }
             return RedirectToAction(nameof(Index));
         }

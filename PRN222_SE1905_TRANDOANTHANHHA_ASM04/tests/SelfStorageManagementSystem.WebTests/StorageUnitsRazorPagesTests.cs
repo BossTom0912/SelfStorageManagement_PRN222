@@ -648,6 +648,43 @@ public class StorageUnitsRazorPagesTests : IClassFixture<CookieAuthWebTestFixtur
     #region 5. Delete Page Tests: GET chỉ xác nhận, POST an toàn & Ràng buộc tham chiếu
 
     [Fact]
+    public async Task Delete_Post_UnitWithStatusHistory_UnlistsAndPreservesHistory()
+    {
+        var (_, _, _, unit) = await SeedStorageUnitHierarchyAsync("UNLIST_HISTORY");
+        using (var db = _factory.CreateDbContext())
+        {
+            db.unit_status_histories.Add(new unit_status_history
+            {
+                storage_unit_id = unit.id, old_status = "maintenance", new_status = "available",
+                reason = "Maintenance complete", changed_at = DateTimeOffset.UtcNow
+            });
+            await db.SaveChangesAsync();
+        }
+        var (client, authCookie, _) = await LoginAsRoleAsync(RoleConstants.SystemAdministrator);
+        var getRequest = new HttpRequestMessage(HttpMethod.Get, $"/StorageUnits/Delete?id={unit.id}");
+        getRequest.Headers.Add("Cookie", authCookie);
+        var getResponse = await client.SendAsync(getRequest);
+        var html = await getResponse.Content.ReadAsStringAsync();
+        Assert.Contains("Xác nhận ngừng niêm yết", WebUtility.HtmlDecode(html));
+        Assert.DoesNotContain("Xác nhận xóa vĩnh viễn", WebUtility.HtmlDecode(html));
+        var postRequest = new HttpRequestMessage(HttpMethod.Post, "/StorageUnits/Delete");
+        postRequest.Headers.Add("Cookie", authCookie);
+        postRequest.Content = new FormUrlEncodedContent(new Dictionary<string, string>
+        {
+            ["Id"] = unit.id.ToString(),
+            ["ExpectedUpdatedAt"] = ExtractHiddenInputValue(html, "ExpectedUpdatedAt"),
+            ["__RequestVerificationToken"] = ExtractToken(html)
+        });
+        var response = await client.SendAsync(postRequest);
+        Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
+        using var verifiedDb = _factory.CreateDbContext();
+        var retained = await verifiedDb.storage_units.FindAsync(unit.id);
+        Assert.NotNull(retained);
+        Assert.False(retained.is_listed);
+        Assert.True(await verifiedDb.unit_status_histories.AnyAsync(h => h.storage_unit_id == unit.id));
+    }
+
+    [Fact]
     public async Task Delete_Get_OnlyShowsConfirmation_DoesNotDeleteUnit()
     {
         var (facility, unitType, area, unit) = await SeedStorageUnitHierarchyAsync("DEL1");

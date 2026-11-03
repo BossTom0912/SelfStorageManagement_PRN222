@@ -328,4 +328,42 @@ public class StorageUnitsMvcControllerTests : IClassFixture<CookieAuthWebTestFix
         Assert.Contains("có dữ liệu liên kết. Xác nhận sẽ giữ bản ghi và chuyển sang trạng thái ngừng niêm yết.", html);
         Assert.DoesNotContain("Xác nhận xóa vĩnh viễn", html);
     }
+
+    [Fact]
+    public async Task StorageUnits_Create_Get_RendersBothSignalRAndNormalButtons()
+    {
+        var (facility, unitType, area, unit) = await SeedStorageUnitHierarchyAsync("CREATE_BTNS");
+        var (client, authCookie, _) = await LoginAsRoleAsync(RoleConstants.FacilityManager, facility.id);
+
+        var req = new HttpRequestMessage(HttpMethod.Get, $"/StorageUnits/Create?facilityId={facility.id}");
+        req.Headers.Add("Cookie", authCookie);
+
+        var resp = await client.SendAsync(req);
+        Assert.Equal(HttpStatusCode.OK, resp.StatusCode);
+
+        var html = await resp.Content.ReadAsStringAsync();
+        Assert.Contains("id=\"btnSubmitCreate\"", html);
+        Assert.Contains("Add by SignalR", html);
+        Assert.Contains("id=\"btnSubmitCreateNormal\"", html);
+        Assert.Contains("Ghi log bình thường", html);
+    }
+
+    [Fact]
+    public async Task StorageUnits_Delete_Get_RendersBothSignalRAndNormalButtons()
+    {
+        var (facility, unitType, area, unit) = await SeedStorageUnitHierarchyAsync("DEL_BTNS");
+        var (client, authCookie, _) = await LoginAsRoleAsync(RoleConstants.FacilityManager, facility.id);
+
+        var req = new HttpRequestMessage(HttpMethod.Get, $"/StorageUnits/Delete?id={unit.id}");
+        req.Headers.Add("Cookie", authCookie);
+
+        var resp = await client.SendAsync(req);
+        Assert.Equal(HttpStatusCode.OK, resp.StatusCode);
+
+        var html = await resp.Content.ReadAsStringAsync();
+        Assert.Contains("id=\"btnSubmitDelete\"", html);
+        Assert.Contains("Delete by SignalR", html);
+        Assert.Contains("id=\"btnSubmitDeleteNormal\"", html);
+        Assert.Contains("Ghi log bình thường", html);
+    }
 }

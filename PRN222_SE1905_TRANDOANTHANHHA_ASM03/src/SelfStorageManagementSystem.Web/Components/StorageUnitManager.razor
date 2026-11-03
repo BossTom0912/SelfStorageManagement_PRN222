@@ -1,6 +1,17 @@
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@using SelfStorageManagementSystem.BusinessLogic.Common
+@using SelfStorageManagementSystem.BusinessLogic.Common.Constants
+@using SelfStorageManagementSystem.BusinessLogic.DTOs.Requests.StorageUnits
+@using SelfStorageManagementSystem.BusinessLogic.DTOs.Responses.StorageUnits
+@using SelfStorageManagementSystem.BusinessLogic.Exceptions
+@using SelfStorageManagementSystem.BusinessLogic.Services.Interfaces
+@using SelfStorageManagementSystem.Web.Realtime
 @inject IServiceScopeFactory ScopeFactory
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ILogger<StorageUnitManager> Logger
+@inject IStorageUnitCircuitNotificationService NotificationService
+@implements IDisposable
 
 <h1>Quản trị ô kho Blazor</h1>
 <p class="text-muted">Tìm kiếm, phân trang và quản lý ô kho theo quyền tại cơ sở của bạn.</p>
@@ -81,9 +92,22 @@
     @if (_delete is not null)
     {
         <div class="alert alert-warning" role="alert">
-            Xác nhận xóa ô kho <strong>@_delete.UnitCode</strong>? Các ô có dữ liệu liên quan sẽ được xử lý theo quy tắc nghiệp vụ.
-            <button class="btn btn-danger ms-2" type="button" @onclick="DeleteAsync">Xác nhận xóa</button>
-            <button class="btn btn-secondary" type="button" @onclick="CancelEditor">Hủy</button>
+            @if (_deleteDetail?.HasAnyReferences == true)
+            {
+                <div>Ô kho <strong>@_delete.UnitCode</strong> có dữ liệu liên kết. Khi xác nhận, hệ thống sẽ giữ lại bản ghi và chuyển sang trạng thái <strong>ngừng niêm yết</strong> để bảo toàn lịch sử dữ liệu.</div>
+                <div class="mt-2">
+                    <button class="btn btn-danger" type="button" @onclick="DeleteAsync">Xác nhận ngừng niêm yết</button>
+                    <button class="btn btn-secondary ms-2" type="button" @onclick="CancelEditor">Hủy</button>
+                </div>
+            }
+            else
+            {
+                <div>Bạn có chắc chắn muốn xóa vĩnh viễn ô kho <strong>@_delete.UnitCode</strong> không? Thao tác này không thể hoàn tác.</div>
+                <div class="mt-2">
+                    <button class="btn btn-danger" type="button" @onclick="DeleteAsync">Xác nhận xóa vĩnh viễn</button>
+                    <button class="btn btn-secondary ms-2" type="button" @onclick="CancelEditor">Hủy</button>
+                </div>
+            }
         </div>
     }
 
@@ -100,7 +124,7 @@
                             @if (_canManage)
                             {
                                 <button class="btn btn-sm btn-outline-primary" type="button" @onclick="() => StartEditAsync(unit)">Sửa</button>
-                                <button class="btn btn-sm btn-outline-danger" type="button" @onclick="() => StartDelete(unit)">Xóa</button>
+                                <button class="btn btn-sm btn-outline-danger" type="button" @onclick="() => StartDeleteAsync(unit)">Xóa</button>
                             }
                         </td>
                     </tr>
@@ -130,6 +154,7 @@
     private CreateStorageUnitRequest? _create;
     private UpdateStorageUnitRequest? _edit;
     private StorageUnitAdminDto? _delete;
+    private StorageUnitAdminDetailDto? _deleteDetail;
 
     protected override void OnAfterRender(bool firstRender)
     {
@@ -140,16 +165,63 @@
         }
     }
 
-    protected override Task OnInitializedAsync() => RunAsync(async (service, actor) =>
+    protected override Task OnInitializedAsync()
+    {
+        NotificationService.OnStorageUnitChanged += HandleCrossCircuitNotificationAsync;
+        return RunAsync((service, _) => LoadInitialAsync(service));
+    }
+
+    private async Task LoadInitialAsync(IStorageUnitAdminService service)
     {
         var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
         _canManage = user.IsInRole(RoleConstants.FacilityManager) || user.IsInRole(RoleConstants.BusinessOperationsManager) || user.IsInRole(RoleConstants.SystemAdministrator);
-        _facilities = await service.GetLookupsAsync(actor);
-        await LoadAsync(service, actor);
-    });
+        if (long.TryParse(user.FindFirstValue(ClaimTypes.NameIdentifier), out var actor))
+        {
+            _facilities = await service.GetLookupsAsync(actor);
+            await LoadAsync(service, actor);
+        }
+    }
+
+    public void Dispose()
+    {
+        NotificationService.OnStorageUnitChanged -= HandleCrossCircuitNotificationAsync;
+    }
+
+    private async Task HandleCrossCircuitNotificationAsync(StorageUnitCircuitNotification notification)
+    {
+        if (_facilityId.HasValue && notification.FacilityId > 0 && _facilityId.Value != notification.FacilityId)
+        {
+            return;
+        }
+
+        if (_busy) return;
+
+        try
+        {
+            await InvokeAsync(async () =>
+            {
+                await RunAsync((service, _) => LoadCurrentAsync(service));
+                StateHasChanged();
+            });
+        }
+        catch (InvalidOperationException)
+        {
+            // Fallback for non-rendered test contexts where circuit Dispatcher is unassigned
+            await RunAsync((service, _) => LoadCurrentAsync(service));
+        }
+    }
+
+    private async Task LoadCurrentAsync(IStorageUnitAdminService service)
+    {
+        var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+        if (long.TryParse(user.FindFirstValue(ClaimTypes.NameIdentifier), out var actor))
+        {
+            await LoadAsync(service, actor);
+        }
+    }
 
     // Each event has its own scope. A circuit must not share a tracked DbContext across events.
-    private async Task RunAsync(Func<IStorageUnitAdminService, long, Task> action)
+    private async Task RunAsync(Func<IStorageUnitAdminService, IStorageUnitRealtimePublisher, Task> action)
     {
         if (_busy) return;
         _busy = true;
@@ -158,10 +230,12 @@
         try
         {
             var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
-            if (user.Identity?.IsAuthenticated != true || !long.TryParse(user.FindFirstValue(ClaimTypes.NameIdentifier), out var actor))
+            if (user.Identity?.IsAuthenticated != true || !long.TryParse(user.FindFirstValue(ClaimTypes.NameIdentifier), out _))
                 throw new UnauthorizedException("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
             await using var scope = ScopeFactory.CreateAsyncScope();
-            await action(scope.ServiceProvider.GetRequiredService<IStorageUnitAdminService>(), actor);
+            var service = scope.ServiceProvider.GetRequiredService<IStorageUnitAdminService>();
+            var publisher = scope.ServiceProvider.GetRequiredService<IStorageUnitRealtimePublisher>();
+            await action(service, publisher);
         }
         catch (Exception ex) when (ex is ForbiddenException or UnauthorizedException or BadRequestException or ConflictException or NotFoundException)
         {
@@ -187,26 +261,35 @@
         }
     }
 
-    private Task SearchAsync() { _page = 1; CancelEditor(); return RunAsync(LoadAsync); }
-    private Task PreviousAsync() { if (_page > 1) _page--; return RunAsync(LoadAsync); }
-    private Task NextAsync() { if (_units.HasNextPage) _page++; return RunAsync(LoadAsync); }
-    private void CancelEditor() { _create = null; _edit = null; _delete = null; }
-    private Task StartCreateAsync() => RunAsync(async (service, actor) =>
+    private Task SearchAsync() { _page = 1; CancelEditor(); return RunAsync((s, _) => LoadCurrentAsync(s)); }
+    private Task PreviousAsync() { if (_page > 1) _page--; return RunAsync((s, _) => LoadCurrentAsync(s)); }
+    private Task NextAsync() { if (_units.HasNextPage) _page++; return RunAsync((s, _) => LoadCurrentAsync(s)); }
+    private void CancelEditor() { _create = null; _edit = null; _delete = null; _deleteDetail = null; }
+
+    private Task StartCreateAsync() => RunAsync(async (service, _) =>
     {
         CancelEditor();
+        var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+        var actor = long.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)!);
         _facilities = await service.GetLookupsAsync(actor);
         var facility = _facilityId ?? _facilities.Facilities.FirstOrDefault()?.Id;
         if (facility is null) throw new ForbiddenException("Bạn chưa có cơ sở được phép quản lý.");
         _lookups = await service.GetLookupsAsync(actor, facility);
         _create = new CreateStorageUnitRequest { FacilityId = facility.Value };
     });
-    private Task LoadCreateLookupsAsync() => RunAsync(async (service, actor) =>
+
+    private Task LoadCreateLookupsAsync() => RunAsync(async (service, _) =>
     {
+        var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+        var actor = long.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)!);
         _create!.UnitTypeId = 0;
         _lookups = await service.GetLookupsAsync(actor, _create.FacilityId);
     });
-    private Task CreateAsync() => RunAsync(async (service, actor) =>
+
+    private Task CreateAsync() => RunAsync(async (service, publisher) =>
     {
+        var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+        var actor = long.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)!);
         var created = await service.CreateAsync(_create!, actor);
         CancelEditor();
         _facilityId = created.FacilityId;
@@ -214,27 +297,145 @@
         _search = created.UnitCode;
         await LoadAsync(service, actor);
         _message = "Đã tạo ô kho.";
+
+        try
+        {
+            await publisher.PublishCreatedAsync(created);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogWarning(ex, "Đồng bộ realtime bị suy giảm sau khi tạo ô kho {UnitCode}.", created.UnitCode);
+        }
     });
-    private Task StartEditAsync(StorageUnitAdminDto unit) => RunAsync(async (service, actor) =>
+
+    private Task StartEditAsync(StorageUnitAdminDto unit) => RunAsync(async (service, _) =>
     {
+        var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+        var actor = long.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)!);
         var detail = await service.GetByIdAsync(unit.Id, actor) ?? throw new NotFoundException("Không tìm thấy ô kho.");
         CancelEditor();
         _editId = unit.Id;
-        _edit = new UpdateStorageUnitRequest { UnitCode = detail.UnitCode, AreaId = detail.AreaId, FloorLabel = detail.FloorLabel, ZoneLabel = detail.ZoneLabel, Notes = detail.Notes, ExpectedUpdatedAt = detail.UpdatedAt };
+        _edit = new UpdateStorageUnitRequest
+        {
+            UnitCode = detail.UnitCode,
+            AreaId = detail.AreaId,
+            FloorLabel = detail.FloorLabel,
+            ZoneLabel = detail.ZoneLabel,
+            Notes = detail.Notes,
+            ExpectedUpdatedAt = detail.UpdatedAt
+        };
     });
-    private Task SaveAsync() => RunAsync(async (service, actor) =>
+
+    private Task SaveAsync() => RunAsync(async (service, publisher) =>
     {
-        await service.UpdateAsync(_editId, _edit!, actor);
+        var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+        var actor = long.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var updated = await service.UpdateAsync(_editId, _edit!, actor);
         CancelEditor();
         await LoadAsync(service, actor);
         _message = "Đã lưu thay đổi.";
+
+        try
+        {
+            await publisher.PublishUpdatedAsync(updated);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogWarning(ex, "Đồng bộ realtime bị suy giảm sau khi cập nhật ô kho {UnitCode}.", updated.UnitCode);
+        }
     });
-    private void StartDelete(StorageUnitAdminDto unit) { CancelEditor(); _delete = unit; }
-    private Task DeleteAsync() => RunAsync(async (service, actor) =>
+
+    private Task StartDeleteAsync(StorageUnitAdminDto unit) => RunAsync(async (service, _) =>
     {
-        var result = await service.DeleteAsync(_delete!.Id, _delete.UpdatedAt, actor);
+        CancelEditor();
+        _delete = unit;
+        var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+        if (long.TryParse(user.FindFirstValue(ClaimTypes.NameIdentifier), out var actor))
+        {
+            _deleteDetail = await service.GetByIdAsync(unit.Id, actor);
+        }
+    });
+
+    private Task DeleteAsync() => RunAsync(async (service, publisher) =>
+    {
+        var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+        var actor = long.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var unitToDelete = _delete!;
+        var result = await service.DeleteAsync(unitToDelete.Id, unitToDelete.UpdatedAt, actor);
         CancelEditor();
         await LoadAsync(service, actor);
-        _message = result.Message;
+        _message = result.IsUnlistedOnly
+            ? $"Ô kho '{result.UnitCode}' có dữ liệu liên kết nên đã được chuyển sang trạng thái ngừng niêm yết."
+            : $"Đã xóa vĩnh viễn ô kho '{result.UnitCode}'.";
+
+        try
+        {
+            if (result.IsUnlistedOnly)
+            {
+                var fresh = await service.GetByIdAsync(unitToDelete.Id, actor);
+                if (fresh != null)
+                {
+                    await publisher.PublishUpdatedAsync(fresh);
+                }
+            }
+            else
+            {
+                await publisher.PublishDeletedAsync(unitToDelete.Id, unitToDelete.FacilityId);
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogWarning(ex, "Đồng bộ realtime bị suy giảm sau khi xóa ô kho {UnitCode}.", result.UnitCode);
+        }
     });
+
+    // Internal test accessors
+    internal bool TestIsBusy => _busy;
+    internal bool TestCanManage => _canManage;
+    internal string? TestMessage => _message;
+    internal bool TestIsError => _isError;
+    internal int TestPage => _page;
+    internal int TestItemCount => _units.Items.Count;
+    internal IReadOnlyCollection<StorageUnitAdminDto> TestItems => _units.Items;
+    internal CreateStorageUnitRequest? TestCreateRequest => _create;
+    internal UpdateStorageUnitRequest? TestEditRequest => _edit;
+    internal StorageUnitAdminDto? TestDeleteDto => _delete;
+    internal StorageUnitAdminDetailDto? TestDeleteDetail => _deleteDetail;
+
+    internal void InitializeForTest(
+        IServiceScopeFactory scopeFactory,
+        AuthenticationStateProvider authStateProvider,
+        ILogger<StorageUnitManager> logger,
+        IStorageUnitCircuitNotificationService notificationService)
+    {
+        ScopeFactory = scopeFactory;
+        AuthenticationStateProvider = authStateProvider;
+        Logger = logger;
+        NotificationService = notificationService;
+        _interactive = true;
+    }
+
+    internal Task TestInitAsync() => OnInitializedAsync();
+    internal Task TestSearchAsync(string code) { _search = code; return SearchAsync(); }
+    internal Task TestStartCreateAsync() => StartCreateAsync();
+    internal Task TestCreateAsync(string code, long unitTypeId, long? facilityId = null)
+    {
+        _create!.UnitCode = code;
+        _create.UnitTypeId = unitTypeId;
+        if (facilityId.HasValue)
+        {
+            _create.FacilityId = facilityId.Value;
+        }
+        return CreateAsync();
+    }
+    internal Task TestStartEditAsync(StorageUnitAdminDto unit) => StartEditAsync(unit);
+    internal Task TestSaveAsync(string newCode, string? notes = null)
+    {
+        _edit!.UnitCode = newCode;
+        if (notes != null) _edit.Notes = notes;
+        return SaveAsync();
+    }
+    internal Task TestStartDeleteAsync(StorageUnitAdminDto unit) => StartDeleteAsync(unit);
+    internal Task TestDeleteAsync() => DeleteAsync();
+    internal Task TestCrossCircuitNotificationAsync(StorageUnitCircuitNotification notification) => HandleCrossCircuitNotificationAsync(notification);
 }

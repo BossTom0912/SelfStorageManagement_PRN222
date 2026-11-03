@@ -1,4 +1,4 @@
-﻿@page
+@page
 @model SelfStorageManagementSystem.Web.Pages.StorageUnits.DeleteModel
 @{
     ViewData["Title"] = Model.StorageUnit != null ? $"Xóa ô kho {Model.StorageUnit.UnitCode}" : "Xác nhận xóa ô kho";
@@ -55,23 +55,9 @@
             <div class="d-flex align-items-start">
                 <span class="me-3 fs-4 text-danger">&#9888;</span>
                 <div>
-                    <h6 class="alert-heading fw-bold mb-1">Ràng buộc chính sách: Không thể xóa ô kho này</h6>
+                    <h6 class="alert-heading fw-bold mb-1">Ràng buộc chính sách & tham chiếu: Không thể xóa ô kho này</h6>
                     <p class="mb-0 small">
                         @Model.BlockReason
-                    </p>
-                </div>
-            </div>
-        </div>
-    }
-    else if (Model.HasDependentReferences)
-    {
-        <div class="alert alert-info shadow-sm mb-4 border-info" role="alert">
-            <div class="d-flex align-items-start">
-                <span class="me-3 fs-4 text-info">&#8505;</span>
-                <div>
-                    <h6 class="alert-heading fw-bold mb-1">Bảo toàn dữ liệu lịch sử liên kết</h6>
-                    <p class="mb-0 small">
-                        Ô kho <strong>@(Model.StorageUnit?.UnitCode)</strong> đang có dữ liệu tham chiếu lịch sử (hợp đồng thuê, kiểm tra hoặc bảo trì). Khi xác nhận, hệ thống sẽ <strong>giữ lại bản ghi</strong> và tự động <strong>chuyển trạng thái ngừng niêm yết (is_listed = false)</strong> để bảo toàn toàn vẹn dữ liệu và kiểm toán thay vì xóa cứng.
                     </p>
                 </div>
             </div>
@@ -83,7 +69,14 @@
             <div class="d-flex align-items-center">
                 <span class="me-2 fs-5 text-warning fw-bold">&#9888;</span>
                 <div>
-                    <strong>Cảnh báo:</strong> Ô kho <strong>@(Model.StorageUnit?.UnitCode)</strong> không có bản ghi phụ thuộc. Thao tác này sẽ thực hiện <strong>xóa vĩnh viễn (hard delete)</strong> ô kho khỏi hệ thống.
+                    @if (Model.StorageUnit?.HasAnyReferences == true)
+                    {
+                        <text>Ô kho có dữ liệu liên kết. Xác nhận sẽ giữ bản ghi và chuyển sang trạng thái ngừng niêm yết.</text>
+                    }
+                    else
+                    {
+                        <text>Bạn có chắc chắn muốn xóa vĩnh viễn ô kho <strong>@(Model.StorageUnit?.UnitCode)</strong> không? Thao tác này không thể hoàn tác.</text>
+                    }
                 </div>
             </div>
         </div>
@@ -153,7 +146,7 @@
                     <input type="button" id="btnDeleteBySignalR" value="Delete by SignalR" class="btn btn-outline-danger px-4 fw-semibold" />
                     <button type="submit" id="btnSubmitDelete" class="btn btn-danger px-4 fw-semibold">
                         <span id="btnSubmitSpinner" class="spinner-border spinner-border-sm me-1 d-none" role="status" aria-hidden="true"></span>
-                        <span id="btnSubmitText">Xác Nhận Xóa Ô Kho</span>
+                        <span id="btnSubmitText">@(Model.StorageUnit?.HasAnyReferences == true ? "Xác nhận ngừng niêm yết" : "Xác nhận xóa vĩnh viễn")</span>
                     </button>
                 }
             </div>
@@ -186,7 +179,7 @@
             if (btnDeleteBySignalR && canManage && canDelete) {
                 // 1. Khởi tạo HubConnection theo mẫu TeacherCode
                 const connection = new signalR.HubConnectionBuilder()
-                    .withUrl("/storageUnitHub")
+                    .withUrl("/storageUnitHub").configureLogging(signalR.LogLevel.None)
                     .withAutomaticReconnect()
                     .build();
 
@@ -201,7 +194,6 @@
 
                 function handleRealtimeDelete(id) {
                     if (String(id) === "@Model.Id") {
-                        console.log("Storage unit deleted externally:", id);
                         btnDeleteBySignalR.disabled = true;
                         if (submitBtn) submitBtn.disabled = true;
                         window.location.href = "/StorageUnits";
@@ -209,9 +201,8 @@
                 }
 
                 connection.start().then(function () {
-                    console.log("Connected to SignalR Hub on Delete page");
                 }).catch(function (err) {
-                    return console.error("SignalR start error on Delete page:", err.toString());
+                    return;
                 });
 
                 // 3. Sự kiện click: gọi invoke("HubDelete_StorageUnit", id, expectedUpdatedAt)
@@ -225,16 +216,13 @@
                     btnDeleteBySignalR.disabled = true;
                     if (submitBtn) submitBtn.disabled = true;
 
-                    console.log("Invoking HubDelete_StorageUnit for id:", id);
 
                     // Hỗ trợ cả HubDelete_TransactionCashDepositSlip và HubDelete_StorageUnit
                     connection.invoke("HubDelete_StorageUnit", id, expectedUpdatedAt)
                         .then(function (result) {
-                            console.log("HubDelete_StorageUnit success:", result);
                             window.location.href = "/StorageUnits";
                         })
                         .catch(function (err) {
-                            console.error("HubDelete_StorageUnit failed:", err.toString());
                             btnDeleteBySignalR.disabled = false;
                             if (submitBtn) submitBtn.disabled = false;
                             alert("Lỗi khi xóa ô kho qua SignalR: " + err.toString());

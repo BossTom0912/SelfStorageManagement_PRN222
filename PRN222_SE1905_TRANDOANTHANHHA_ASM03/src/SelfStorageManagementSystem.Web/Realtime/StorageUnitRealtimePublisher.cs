@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,15 +27,18 @@ public class StorageUnitRealtimePublisher : IWebRealtimePublisher
     private readonly IHubContext<StorageUnitHub> _hubContext;
     private readonly StorageUnitHubScopeRevocationService _revocationService;
     private readonly ILogger<StorageUnitRealtimePublisher> _logger;
+    private readonly IStorageUnitCircuitNotificationService? _circuitNotificationService;
 
     public StorageUnitRealtimePublisher(
         IHubContext<StorageUnitHub> hubContext,
         StorageUnitHubScopeRevocationService revocationService,
-        ILogger<StorageUnitRealtimePublisher> logger)
+        ILogger<StorageUnitRealtimePublisher> logger,
+        IStorageUnitCircuitNotificationService? circuitNotificationService = null)
     {
         _hubContext = hubContext ?? throw new ArgumentNullException(nameof(hubContext));
         _revocationService = revocationService ?? throw new ArgumentNullException(nameof(revocationService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _circuitNotificationService = circuitNotificationService;
     }
 
     #region Storage Unit CRUD Broadcasts (Preserved from T13)
@@ -75,6 +78,16 @@ public class StorageUnitRealtimePublisher : IWebRealtimePublisher
         // T13-F01 / T13-R7-F01: Broadcast CRUD event only to verified facility group and verified system-wide admin group
         var authorizedGroups = new[] { $"facility_{unit.FacilityId}", "admin_global" };
         await _hubContext.Clients.Groups(authorizedGroups).SendAsync("Receiver_CreateStorageUnit", eventDto, cancellationToken);
+
+        if (_circuitNotificationService != null)
+        {
+            await _circuitNotificationService.NotifyChangedAsync(new StorageUnitCircuitNotification
+            {
+                FacilityId = unit.FacilityId,
+                UnitId = unit.Id,
+                Action = "Created"
+            });
+        }
 
         // Catalog invalidation event for capacity listeners (public safe event for customer/catalog)
         await _hubContext.Clients.All.SendAsync("CatalogInvalidated", new
@@ -120,6 +133,16 @@ public class StorageUnitRealtimePublisher : IWebRealtimePublisher
         var authorizedGroups = new[] { $"facility_{unit.FacilityId}", "admin_global" };
         await _hubContext.Clients.Groups(authorizedGroups).SendAsync("Receiver_UpdateStorageUnit", eventDto, cancellationToken);
 
+        if (_circuitNotificationService != null)
+        {
+            await _circuitNotificationService.NotifyChangedAsync(new StorageUnitCircuitNotification
+            {
+                FacilityId = unit.FacilityId,
+                UnitId = unit.Id,
+                Action = "Updated"
+            });
+        }
+
         // Catalog invalidation event for capacity listeners
         await _hubContext.Clients.All.SendAsync("CatalogInvalidated", new
         {
@@ -161,6 +184,16 @@ public class StorageUnitRealtimePublisher : IWebRealtimePublisher
         var authorizedGroups = new[] { $"facility_{facilityId}", "admin_global" };
         await _hubContext.Clients.Groups(authorizedGroups).SendAsync("Receiver_DeleteStorageUnit", unitId.ToString(), cancellationToken);
 
+        if (_circuitNotificationService != null)
+        {
+            await _circuitNotificationService.NotifyChangedAsync(new StorageUnitCircuitNotification
+            {
+                FacilityId = facilityId,
+                UnitId = unitId,
+                Action = "Deleted"
+            });
+        }
+
         // Catalog invalidation event for capacity listeners
         await _hubContext.Clients.All.SendAsync("CatalogInvalidated", new
         {
@@ -196,6 +229,16 @@ public class StorageUnitRealtimePublisher : IWebRealtimePublisher
 
         // Broadcast to verified admin_global only
         await _hubContext.Clients.Group("admin_global").SendAsync("Receiver_DeleteStorageUnit", unitId.ToString(), cancellationToken);
+
+        if (_circuitNotificationService != null)
+        {
+            await _circuitNotificationService.NotifyChangedAsync(new StorageUnitCircuitNotification
+            {
+                FacilityId = 0,
+                UnitId = unitId,
+                Action = "Deleted"
+            });
+        }
     }
 
     #endregion
