@@ -1,4 +1,4 @@
-/**
+﻿/**
  * SelfStorageManagementSystem.Web - Storage Units Realtime CRUD Script (Task T13)
  * Implements SignalR real-time CRUD operations adhering to TeacherCode pattern.
  * Safely encodes HTML to prevent XSS, upserts rows by ID to prevent duplicates,
@@ -41,7 +41,7 @@
                 <span class="me-2 fs-5">${type === 'success' ? '&#10004;' : type === 'warning' ? '&#9888;' : '&#10008;'}</span>
                 <div>${messageHtml}</div>
             </div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
+            <button type="button" class="btn-close-custom" onclick="this.closest('.alert').remove()" aria-label="Đóng">&times;</button>
         `;
 
         container.prepend(alertDiv);

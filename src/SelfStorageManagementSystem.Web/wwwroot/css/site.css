@@ -1,4 +1,4 @@
-/*
+﻿/*
  * SelfStorageManagementSystem.Web - Giao Diện Chung PRN222
  * Phong cách học phần kế thừa TeacherCode kết hợp chuẩn hóa giao diện Bootstrap 5.3.3
  */
@@ -206,4 +206,21 @@ body {
 .status-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Nút đóng thông báo không phụ thuộc SVG data URI để tránh sinh request trong DevTools Network tab */
+.btn-close-custom {
+  background: transparent;
+  border: 0;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: inherit;
+  opacity: 0.6;
+  cursor: pointer;
+  margin-left: auto;
+  padding: 0.25rem 0.5rem;
+  transition: opacity 0.15s ease-in-out;
+}
+.btn-close-custom:hover {
+  opacity: 1;
 }

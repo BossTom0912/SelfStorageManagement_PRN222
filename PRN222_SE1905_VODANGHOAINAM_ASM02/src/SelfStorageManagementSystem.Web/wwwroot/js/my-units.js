@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
                 <div>
                     <button type="button" class="btn btn-sm btn-info fw-semibold me-2" onclick="window.location.reload();">Tải Lại</button>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
+                    <button type="button" class="btn-close-custom" onclick="this.closest('.alert').remove()" aria-label="Đóng">&times;</button>
                 </div>
             </div>`;
     }

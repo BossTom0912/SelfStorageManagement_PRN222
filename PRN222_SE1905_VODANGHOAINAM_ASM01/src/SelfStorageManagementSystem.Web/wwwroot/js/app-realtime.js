@@ -85,7 +85,7 @@
 
             const closeBtn = document.createElement('button');
             closeBtn.type = 'button';
-            closeBtn.className = 'btn-close';
+            closeBtn.className = 'btn-close-custom'; closeBtn.innerHTML = '&times;'; closeBtn.onclick = function () { if (alertDiv.parentNode) alertDiv.remove(); };
             closeBtn.setAttribute('data-bs-dismiss', 'alert');
             closeBtn.setAttribute('aria-label', 'Đóng');
 

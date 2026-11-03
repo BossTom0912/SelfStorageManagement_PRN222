@@ -1,4 +1,4 @@
-@*
+﻿@*
     Partial hiển thị thông báo thành công / thất bại / cảnh báo / thông tin từ TempData
     Hỗ trợ cả tên khóa đầy đủ (SuccessMessage) và khóa ngắn gọn (Success).
 *@
@@ -19,7 +19,7 @@
                 <strong>Thành công:</strong> @successMsg
             </div>
         </div>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
+        <button type="button" class="btn-close-custom" onclick="this.closest('.alert').remove()" aria-label="Đóng">&times;</button>
     </div>
 }
 
@@ -32,7 +32,7 @@
                 <strong>Lỗi:</strong> @errorMsg
             </div>
         </div>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
+        <button type="button" class="btn-close-custom" onclick="this.closest('.alert').remove()" aria-label="Đóng">&times;</button>
     </div>
 }
 
@@ -45,7 +45,7 @@
                 <strong>Cảnh báo:</strong> @warningMsg
             </div>
         </div>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
+        <button type="button" class="btn-close-custom" onclick="this.closest('.alert').remove()" aria-label="Đóng">&times;</button>
     </div>
 }
 
@@ -58,6 +58,6 @@
                 <strong>Thông tin:</strong> @infoMsg
             </div>
         </div>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
+        <button type="button" class="btn-close-custom" onclick="this.closest('.alert').remove()" aria-label="Đóng">&times;</button>
     </div>
 }

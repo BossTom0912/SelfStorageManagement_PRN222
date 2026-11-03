@@ -1,4 +1,4 @@
-/**
+﻿/**
  * admin-accounts.js
  * JavaScript cho mô-đun Quản trị tài khoản & Phân quyền (Task T14)
  * Hỗ trợ giao diện quản trị, cảnh báo an toàn và hook realtime SignalR T15.
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
                 <div>
                     <button type="button" class="btn btn-sm btn-info fw-semibold me-2" onclick="window.location.reload();">Tải Lại</button>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
+                    <button type="button" class="btn-close-custom" onclick="this.closest('.alert').remove()" aria-label="Đóng">&times;</button>
                 </div>
             </div>`;
     }

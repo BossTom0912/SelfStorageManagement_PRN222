@@ -1,4 +1,4 @@
-@model SelfStorageManagementSystem.Web.Models.StorageUnitsIndexViewModel
+﻿@model SelfStorageManagementSystem.Web.Models.StorageUnitsIndexViewModel
 @{
     ViewData["Title"] = "Quản trị danh mục ô kho";
 }
@@ -35,7 +35,7 @@
                 <span class="me-2 fs-5 text-danger fw-bold">&#10008;</span>
                 <div>@Model.ErrorMessage</div>
             </div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
+            <button type="button" class="btn-close-custom" onclick="this.closest('.alert').remove()" aria-label="Đóng">&times;</button>
         </div>
     }
 
