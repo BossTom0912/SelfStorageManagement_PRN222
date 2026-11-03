@@ -30,6 +30,8 @@ removed assignment directories are not restored.
   Existing generated-entity, nullable, and SQL-test analyzer warnings remain.
 - BusinessLogicTests: 38 passed.
 - Focused delete/capacity/MVC/Hub tests: 36 passed.
+- The broader storage-unit service/repository/Razor Pages/realtime-Hub suite:
+  152 passed, compared with 144 passed on the unchanged main baseline.
 - Edge browser tests: both the client suite (including a no-HTTP-fetch, bigint,
   and escaping case) and the real Kestrel/WebSocket sequencing/retry test passed.
 
