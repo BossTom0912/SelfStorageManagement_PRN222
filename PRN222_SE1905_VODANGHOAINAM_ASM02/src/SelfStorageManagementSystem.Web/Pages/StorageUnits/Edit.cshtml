@@ -1,4 +1,4 @@
-@page
+﻿@page
 @model SelfStorageManagementSystem.Web.Pages.StorageUnits.EditModel
 @{
     ViewData["Title"] = $"Chỉnh sửa ô kho {Model.Input.UnitCode}";
@@ -257,7 +257,7 @@
             if (btnUpdateBySignalR && canManage) {
                 // 1. Khởi tạo HubConnection
                 const connection = new signalR.HubConnectionBuilder()
-                    .withUrl("/storageUnitHub")
+                    .withUrl("/storageUnitHub").configureLogging(signalR.LogLevel.None)
                     .withAutomaticReconnect()
                     .build();
 
@@ -307,7 +307,6 @@
                         codeElement.style.backgroundColor = "yellow";
                     }
 
-                    console.warn("T13-F02: Realtime update received for unit being edited. Form locked to prevent lost updates:", item);
                 }
 
                 // Nếu ô kho bị xóa trong lúc đang mở trang Edit
@@ -322,9 +321,8 @@
 
                 // Khởi chạy SignalR
                 connection.start().then(function () {
-                    console.log("Connected to the SignalR Hub on Edit page");
                 }).catch(function (err) {
-                    return console.error("SignalR start error:", err.toString());
+                    return;
                 });
 
                 // 3. Sự kiện click: JSON.stringify payload, gọi invoke("HubUpdate_StorageUnit", dataObj), chặn form submit lần 2
@@ -365,15 +363,12 @@
                         ExpectedUpdatedAt: expInput ? expInput.value : null
                     });
 
-                    console.log("Invoking HubUpdate_StorageUnit with dataObj:", dataObj);
 
                     connection.invoke("HubUpdate_StorageUnit", dataObj)
                         .then(function (result) {
-                            console.log("HubUpdate_StorageUnit success:", result);
                             window.location.href = "/StorageUnits";
                         })
                         .catch(function (err) {
-                            console.error("HubUpdate_StorageUnit failed:", err.toString());
                             btnUpdateBySignalR.disabled = false;
                             if (submitBtn) submitBtn.disabled = !canManage;
                             if (spinnerSignalR) spinnerSignalR.classList.add('d-none');

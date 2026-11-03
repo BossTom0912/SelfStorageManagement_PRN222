@@ -25,8 +25,17 @@ public class StorageUnitAdminDetailDto : StorageUnitAdminDto
     public int MaintenanceOrdersCount { get; set; }
     public int ActiveMaintenanceOrdersCount { get; set; }
     public int SupportTicketsCount { get; set; }
+    public int TransferRequestsFromCount { get; set; }
+    public int TransferRequestsToCount { get; set; }
     public int StatusHistoryCount { get; set; }
     public bool HasMapPosition { get; set; }
+
+    /// <summary>
+    /// Indicates whether any historical or active relational dependency exists
+    /// (allocations, inspections, maintenance, tickets, transfers, status history).
+    /// Used by admin UI and BLL to distinguish hard deletion from unlisting.
+    /// </summary>
+    public bool HasAnyReferences { get; set; }
 
     // Active occupancy information (if currently allocated)
     public string? CurrentCustomerName { get; set; }

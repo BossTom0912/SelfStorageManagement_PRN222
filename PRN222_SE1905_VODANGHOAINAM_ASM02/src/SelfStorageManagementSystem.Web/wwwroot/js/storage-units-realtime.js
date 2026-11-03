@@ -2,8 +2,8 @@
  * SelfStorageManagementSystem.Web - Storage Units Realtime CRUD Script (Task T13)
  * Implements SignalR real-time CRUD operations adhering to TeacherCode pattern.
  * Safely encodes HTML to prevent XSS, upserts rows by ID to prevent duplicates,
- * respects filter scopes, serializes refetch requests to prevent out-of-order race conditions,
- * and maintains reliable pagination footers across page transitions.
+ * respects filter scopes, serializes snapshot requests via SignalR Hub to prevent race conditions,
+ * eliminates full-page HTML fetches, and maintains reliable pagination footers across page transitions.
  */
 (function (window, document, $) {
     'use strict';
@@ -127,10 +127,46 @@
     };
 
     /**
-     * Generates table row inner HTML for a storage unit with safe XSS escaping.
+     * Reads current filter context from DOM dataset safely.
+     */
+    RealtimeUtils.getCurrentFilter = function () {
+        const configEl = document.getElementById('storageUnitsPageConfig');
+        return {
+            facilityId: configEl ? (configEl.dataset.facilityId || '') : '',
+            unitTypeId: configEl ? (configEl.dataset.unitTypeId || '') : '',
+            areaId: configEl ? (configEl.dataset.areaId || '') : '',
+            physicalStatus: configEl ? (configEl.dataset.physicalStatus || '') : '',
+            isListed: configEl ? (configEl.dataset.isListed || '') : '',
+            searchTerm: configEl ? (configEl.dataset.searchTerm || '') : '',
+            sortBy: configEl ? (configEl.dataset.sortBy || 'unit_code') : 'unit_code',
+            sortDescending: configEl ? configEl.dataset.sortDescending === 'true' : false,
+            pageNumber: configEl ? parseInt(configEl.dataset.pageNumber || '1', 10) : 1,
+            pageSize: configEl ? parseInt(configEl.dataset.pageSize || '10', 10) : 10,
+            totalCount: configEl ? parseInt(configEl.dataset.totalCount || '0', 10) : 0,
+            canManage: configEl ? configEl.dataset.canManage === 'true' : false
+        };
+    };
+
+    /**
+     * Updates storageUnitsPageConfig dataset attributes with fresh snapshot data.
+     */
+    RealtimeUtils.updateConfigDataset = function (snapshot) {
+        const configEl = document.getElementById('storageUnitsPageConfig');
+        if (!configEl || !snapshot) return;
+
+        configEl.dataset.pageNumber = String(snapshot.pageNumber);
+        configEl.dataset.totalCount = String(snapshot.totalCount);
+        if (snapshot.pageSize) {
+            configEl.dataset.pageSize = String(snapshot.pageSize);
+        }
+    };
+
+    /**
+     * Generates table row inner HTML for a storage unit with safe XSS escaping and string ID safety.
      */
     RealtimeUtils.generateRowContent = function (item, canManage) {
-        const badge = RealtimeUtils.getStatusBadge(item.status);
+        const rawStatus = item.physicalStatus || item.status;
+        const badge = RealtimeUtils.getStatusBadge(rawStatus);
         const areaDisplay = item.areaName
             ? RealtimeUtils.escapeHtml(item.areaName)
             : 'Chưa gắn khu vực';
@@ -142,25 +178,32 @@
             subArea = `<div class="small text-muted">${floor}${zone}</div>`;
         }
 
-        const listingBadge = item.isListed
+        const isListedBool = typeof item.isListed === 'boolean' ? item.isListed : String(item.isListed).toLowerCase() === 'true';
+        const listingBadge = isListedBool
             ? '<span class="badge bg-info-subtle text-info border border-info-subtle">Niêm yết</span>'
             : '<span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle">Tạm ẩn</span>';
 
+        // Stringify ID to prevent 64-bit integer precision truncation in JavaScript
+        const stringId = String(item.id || item.idNumeric || '');
+
         const actionButtons = `
             <div class="btn-group btn-group-sm" role="group">
-                <a href="/StorageUnits/Details?id=${encodeURIComponent(item.id)}" class="btn btn-outline-secondary" title="Xem chi tiết">
+                <a href="/StorageUnits/Details?id=${encodeURIComponent(stringId)}" class="btn btn-outline-secondary" title="Xem chi tiết">
                     Chi tiết
                 </a>
                 ${canManage ? `
-                    <a href="/StorageUnits/Edit?id=${encodeURIComponent(item.id)}" class="btn btn-outline-primary" title="Chỉnh sửa ô kho">
+                    <a href="/StorageUnits/Edit?id=${encodeURIComponent(stringId)}" class="btn btn-outline-primary" title="Chỉnh sửa ô kho">
                         Sửa
                     </a>
-                    <a href="/StorageUnits/Delete?id=${encodeURIComponent(item.id)}" class="btn btn-outline-danger" title="Xóa ô kho">
+                    <a href="/StorageUnits/Delete?id=${encodeURIComponent(stringId)}" class="btn btn-outline-danger" title="Xóa ô kho">
                         Xóa
                     </a>
                 ` : ''}
             </div>
         `;
+
+        const typeNameDisplay = item.unitTypeName || item.typeName || '';
+        const timeDisplay = item.updatedAtFormatted || RealtimeUtils.formatDateTime(item.updatedAt);
 
         return `
             <td class="ps-3 fw-bold text-primary font-monospace">
@@ -171,7 +214,7 @@
                 <div class="small text-muted font-monospace">${RealtimeUtils.escapeHtml(item.facilityCode)}</div>
             </td>
             <td>
-                <div>${RealtimeUtils.escapeHtml(item.typeName)}</div>
+                <div>${RealtimeUtils.escapeHtml(typeNameDisplay)}</div>
                 <div class="small text-muted font-monospace">${RealtimeUtils.escapeHtml(item.unitTypeCode)}</div>
             </td>
             <td>
@@ -185,7 +228,7 @@
                 ${listingBadge}
             </td>
             <td class="small text-muted">
-                ${RealtimeUtils.formatDateTime(item.updatedAt)}
+                ${RealtimeUtils.escapeHtml(timeDisplay)}
             </td>
             <td class="pe-3 text-end">
                 ${actionButtons}
@@ -194,10 +237,100 @@
     };
 
     /**
-     * T13-F03 / T13-R2-F03 / T13-R3-F03:
-     * Fast-path client evaluation for categorical filters (facility, unit type, area, status, isListed).
-     * IMPORTANT: When SearchTerm is active, event DTO intentionally omits 'notes' for security/privacy.
-     * Therefore, client must NEVER reject an event based on searchTerm; server refetch is the sole source of truth.
+     * Generates valid pagination URL preserving active filter parameters.
+     */
+    RealtimeUtils.generatePaginationUrl = function (targetPage, filter) {
+        const params = new URLSearchParams();
+        params.set('pageNumber', targetPage);
+        params.set('pageSize', filter.pageSize || 10);
+        if (filter.facilityId) params.set('facilityId', filter.facilityId);
+        if (filter.unitTypeId) params.set('unitTypeId', filter.unitTypeId);
+        if (filter.areaId) params.set('areaId', filter.areaId);
+        if (filter.physicalStatus) params.set('physicalStatus', filter.physicalStatus);
+        if (filter.isListed !== undefined && filter.isListed !== null && filter.isListed !== '') {
+            params.set('isListed', String(filter.isListed).toLowerCase());
+        }
+        if (filter.searchTerm) params.set('searchTerm', filter.searchTerm);
+        if (filter.sortBy) params.set('sortBy', filter.sortBy);
+        if (filter.sortDescending) params.set('sortDescending', 'true');
+        return '/StorageUnits?' + params.toString();
+    };
+
+    /**
+     * Generates inner HTML for storageUnitsFooterContainer from snapshot data.
+     */
+    RealtimeUtils.generateFooterContent = function (snapshot, filter) {
+        if (!snapshot) return '';
+
+        const totalCount = snapshot.totalCount || 0;
+        const pageNumber = snapshot.pageNumber || 1;
+        const pageSize = snapshot.pageSize || 10;
+        const totalPages = snapshot.totalPages || 0;
+        const hasPrev = !!snapshot.hasPreviousPage;
+        const hasNext = !!snapshot.hasNextPage;
+
+        if (totalPages > 1) {
+            const from = (pageNumber - 1) * pageSize + 1;
+            const to = Math.min(pageNumber * pageSize, totalCount);
+
+            let pageItemsHtml = '';
+            for (let p = 1; p <= totalPages; p++) {
+                const isActive = p === pageNumber ? 'active' : '';
+                const url = RealtimeUtils.generatePaginationUrl(p, filter);
+                pageItemsHtml += `
+                    <li class="page-item ${isActive}">
+                        <a class="page-link" href="${url}">${p}</a>
+                    </li>
+                `;
+            }
+
+            const prevUrl = hasPrev ? RealtimeUtils.generatePaginationUrl(pageNumber - 1, filter) : '#';
+            const nextUrl = hasNext ? RealtimeUtils.generatePaginationUrl(pageNumber + 1, filter) : '#';
+
+            return `
+                <div class="card-footer bg-white d-flex flex-wrap justify-content-between align-items-center py-3 border-top">
+                    <div class="small text-muted mb-2 mb-md-0" id="storageUnitsDisplayRange">
+                        Hiển thị <strong>${from}</strong>
+                        đến <strong>${to}</strong>
+                        trong tổng số <strong id="storageUnitsTotalCount">${totalCount}</strong> ô kho
+                    </div>
+                    <nav aria-label="Phân trang ô kho" id="storageUnitsPaginationContainer">
+                        <ul class="pagination pagination-sm mb-0">
+                            <li class="page-item ${hasPrev ? '' : 'disabled'}">
+                                <a class="page-link" href="${prevUrl}" aria-label="Trang trước">&laquo;</a>
+                            </li>
+                            ${pageItemsHtml}
+                            <li class="page-item ${hasNext ? '' : 'disabled'}">
+                                <a class="page-link" href="${nextUrl}" aria-label="Trang sau">&raquo;</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            `;
+        } else if (totalCount > 0) {
+            return `
+                <div class="card-footer bg-white d-flex flex-wrap justify-content-between align-items-center py-3 border-top">
+                    <div class="small text-muted mb-2 mb-md-0" id="storageUnitsDisplayRange">
+                        Hiển thị <strong>1</strong> đến <strong>${totalCount}</strong>
+                        trong tổng số <strong id="storageUnitsTotalCount">${totalCount}</strong> ô kho
+                    </div>
+                    <nav aria-label="Phân trang ô kho" id="storageUnitsPaginationContainer"></nav>
+                </div>
+            `;
+        } else {
+            return `
+                <div class="card-footer bg-white d-flex flex-wrap justify-content-between align-items-center py-3 border-top">
+                    <div class="small text-muted mb-2 mb-md-0" id="storageUnitsDisplayRange">
+                        Hiển thị <strong>0</strong> trong tổng số <strong id="storageUnitsTotalCount">0</strong> ô kho
+                    </div>
+                    <nav aria-label="Phân trang ô kho" id="storageUnitsPaginationContainer"></nav>
+                </div>
+            `;
+        }
+    };
+
+    /**
+     * Fast-path client evaluation for categorical filters.
      */
     RealtimeUtils.matchesFilter = function (item, filter) {
         if (!item || !filter) return true;
@@ -214,7 +347,8 @@
             return false;
         }
 
-        if (filter.physicalStatus && String(item.status || '').toLowerCase() !== String(filter.physicalStatus).toLowerCase()) {
+        const itemStatus = item.physicalStatus || item.status || '';
+        if (filter.physicalStatus && itemStatus.toLowerCase() !== String(filter.physicalStatus).toLowerCase()) {
             return false;
         }
 
@@ -225,97 +359,106 @@
             }
         }
 
-        // SearchTerm: Server queries unit_code, notes, floor_label, zone_label.
-        // If categorical filters match, we do NOT reject here even if unitCode/floor/zone don't match,
-        // because the unit's notes may match on the server.
         return true;
     };
 
     /**
-     * T13-R3-F04 / T13-R3-F05 / T13-R4-F04: Refetch table content from server.
-     * Uses generation sequence numbers to discard out-of-order stale responses.
-     * Returns an outcome object:
-     *   - { status: 'applied', generation, success: true, applied: true }
-     *   - { status: 'superseded', generation, success: false, applied: false }
-     *   - { status: 'failed', generation, success: false, applied: false, statusHttp?, error? }
-     * Atomically replaces table body and stable pagination footer container.
+     * Synchronizes table content via read-only SignalR snapshot method (HubGet_StorageUnitsTableSnapshot).
+     * Eliminates full-page HTML HTTP fetches, serializes requests with generation sequence numbers,
+     * securely escapes user input, and updates table body and pagination atomically.
      */
-    RealtimeUtils.refetchTable = async function (tableBodyId, totalCountId, affectedItemId, eventType, fetchUrl) {
+    RealtimeUtils.syncTableViaHub = async function (tableBodyId, totalCountId, affectedItemId, eventType, filterOverride, hubConnection) {
         const generation = ++latestScheduledGeneration;
-        const targetUrl = fetchUrl || window.location.href;
+        const connection = hubConnection || window.connection;
 
-        try {
-            const response = await fetch(targetUrl, {
-                headers: { 'Cache-Control': 'no-cache', 'X-Requested-With': 'XMLHttpRequest' }
-            });
-
-            if (!response.ok) {
-                // T13-R4-F04: Only mark failed if this request is still the latest scheduled generation
-                if (generation < latestScheduledGeneration) {
-                    console.warn(`[Realtime] Superseded fetch failed with status ${response.status} (generation ${generation} < latest ${latestScheduledGeneration})`);
-                    return { status: 'superseded', generation: generation, success: false, applied: false };
-                }
-                console.warn(`[Realtime] Latest refetch failed with status ${response.status} (generation ${generation})`);
-                return { status: 'failed', generation: generation, statusHttp: response.status, success: false, applied: false };
-            }
-
-            const html = await response.text();
-
-            // T13-R4-F04: Out-of-order and superseded check.
-            // If a newer generation was scheduled OR has already applied to DOM, discard this stale snapshot.
-            if (generation < latestScheduledGeneration || generation < latestAppliedGeneration) {
-                console.warn(`[Realtime] Discarding superseded refetch response generation ${generation} (latest scheduled: ${latestScheduledGeneration}, latest applied: ${latestAppliedGeneration})`);
+        // If SignalR is not connected, keep existing DOM and show persistent retry warning
+        if (!connection || connection.state !== 'Connected') {
+            if (generation < latestScheduledGeneration) {
                 return { status: 'superseded', generation: generation, success: false, applied: false };
             }
+            RealtimeUtils.showSyncPendingWarning();
+            return { status: 'failed', generation: generation, reason: 'connection_not_ready', success: false, applied: false };
+        }
 
-            const doc = new DOMParser().parseFromString(html, 'text/html');
+        const filter = filterOverride || RealtimeUtils.getCurrentFilter();
 
-            // T13-R6-F03: Kiểm tra cấu trúc HTML nhận về. Nếu HTTP 200 nhưng thiếu table body hoặc thiếu footer/count,
-            // coi là refetch thất bại, không cập nhật latestAppliedGeneration, giữ/hiển thị cảnh báo.
-            const newTable = doc.getElementById(tableBodyId || 'storageUnitsTableBody');
-            const newFooter = doc.getElementById('storageUnitsFooterContainer');
-            const newTotalCount = doc.getElementById(totalCountId || 'storageUnitsTotalCount');
+        const query = {
+            facilityId: filter.facilityId || '',
+            unitTypeId: filter.unitTypeId || '',
+            areaId: filter.areaId || '',
+            physicalStatus: filter.physicalStatus || '',
+            isListed: (filter.isListed !== undefined && filter.isListed !== null && filter.isListed !== '') ? String(filter.isListed) : '',
+            searchTerm: filter.searchTerm || '',
+            sortBy: filter.sortBy || 'unit_code',
+            sortDescending: !!filter.sortDescending,
+            pageNumber: filter.pageNumber || 1,
+            pageSize: filter.pageSize || 10,
+            clientGeneration: generation
+        };
 
-            if (!newTable || (!newFooter && !newTotalCount)) {
-                console.warn(`[Realtime] Refetch returned HTTP 200 but HTML lacks required table body or footer elements (newTable: ${!!newTable}, newFooter: ${!!newFooter}, newTotalCount: ${!!newTotalCount}).`);
+        try {
+            const snapshot = await connection.invoke('HubGet_StorageUnitsTableSnapshot', query);
+
+            if (!snapshot || !Array.isArray(snapshot.items) ||
+                !Number.isSafeInteger(snapshot.totalCount) || snapshot.totalCount < 0 ||
+                !Number.isSafeInteger(snapshot.pageNumber) || snapshot.pageNumber < 1 ||
+                !Number.isSafeInteger(snapshot.pageSize) || snapshot.pageSize < 1 ||
+                snapshot.clientGeneration !== generation) {
+                if (generation < latestScheduledGeneration) {
+                    return { status: 'superseded', generation: generation, success: false, applied: false };
+                }
                 RealtimeUtils.showSyncPendingWarning();
-                return { status: 'failed', generation: generation, reason: 'missing_table_elements', success: false, applied: false };
+                return { status: 'failed', generation: generation, reason: 'invalid_snapshot', success: false, applied: false };
             }
 
-            latestAppliedGeneration = generation;
-
-            // 1. Update table body
-            const targetTable = document.getElementById(tableBodyId || 'storageUnitsTableBody');
-            if (newTable && targetTable) {
-                targetTable.innerHTML = newTable.innerHTML;
+            // Generation sequence check: Discard out-of-order stale responses
+            if (snapshot.clientGeneration < latestScheduledGeneration || snapshot.clientGeneration < latestAppliedGeneration) {
+                return { status: 'superseded', generation: snapshot.clientGeneration, success: false, applied: false };
             }
 
-            // 2. T13-R3-F04: Atomically update stable footer container (contains range, count, and pagination nav)
-            const targetFooter = document.getElementById('storageUnitsFooterContainer');
-            if (newFooter && targetFooter) {
-                targetFooter.innerHTML = newFooter.innerHTML;
+            latestAppliedGeneration = snapshot.clientGeneration;
+
+            // Update client filter state and DOM config
+            filter.pageNumber = snapshot.pageNumber;
+            filter.totalCount = snapshot.totalCount;
+            RealtimeUtils.updateConfigDataset(snapshot);
+
+            // 1. Render table body
+            const tbody = document.getElementById(tableBodyId || 'storageUnitsTableBody');
+            if (tbody) {
+                if (!snapshot.items || snapshot.items.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="8" class="text-center py-5 text-muted">
+                                <div class="mb-2 fs-3">&#128230;</div>
+                                <div class="fw-semibold">Không tìm thấy ô kho nào phù hợp với điều kiện tìm kiếm.</div>
+                                <div class="small">Vui lòng thử thay đổi bộ lọc hoặc thêm ô kho mới.</div>
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    let rowsHtml = '';
+                    for (const item of snapshot.items) {
+                        const stringId = String(item.id || item.idNumeric || '');
+                        const rowContent = RealtimeUtils.generateRowContent(item, snapshot.canManage);
+                        rowsHtml += `<tr id="unit-row-${RealtimeUtils.escapeHtml(stringId)}" data-unit-id="${RealtimeUtils.escapeHtml(stringId)}">${rowContent}</tr>`;
+                    }
+                    tbody.innerHTML = rowsHtml;
+                }
+            }
+
+            // 2. Render footer container
+            const footerContainer = document.getElementById('storageUnitsFooterContainer');
+            if (footerContainer) {
+                footerContainer.innerHTML = RealtimeUtils.generateFooterContent(snapshot, filter);
             } else {
-                // Fallback for individual elements if footer container not used
-                const newTotalCount = doc.getElementById(totalCountId || 'storageUnitsTotalCount');
-                const targetTotalCount = document.getElementById(totalCountId || 'storageUnitsTotalCount');
-                if (newTotalCount && targetTotalCount) {
-                    targetTotalCount.textContent = newTotalCount.textContent;
-                }
-
-                const newRange = doc.getElementById('storageUnitsDisplayRange');
-                const targetRange = document.getElementById('storageUnitsDisplayRange');
-                if (newRange && targetRange) {
-                    targetRange.innerHTML = newRange.innerHTML;
-                }
-
-                const newPagination = doc.getElementById('storageUnitsPaginationContainer');
-                const targetPagination = document.getElementById('storageUnitsPaginationContainer');
-                if (newPagination && targetPagination) {
-                    targetPagination.innerHTML = newPagination.innerHTML;
+                const totalCountEl = document.getElementById(totalCountId || 'storageUnitsTotalCount');
+                if (totalCountEl) {
+                    totalCountEl.textContent = String(snapshot.totalCount);
                 }
             }
 
-            // 3. Highlight affected row if present in current view
+            // 3. Highlight affected row if present
             if (affectedItemId) {
                 const affectedRow = document.getElementById('unit-row-' + affectedItemId);
                 if (affectedRow) {
@@ -330,7 +473,7 @@
                 }
             }
 
-            // Clear any active realtime sync alert banner
+            // Clear active sync alert banner
             const syncAlert = document.getElementById('realtimeSyncAlert');
             if (syncAlert) {
                 if (window.$ && window.$.fn && window.$.fn.fadeOut) {
@@ -342,19 +485,27 @@
 
             return { status: 'applied', generation: generation, success: true, applied: true };
         } catch (e) {
-            console.warn("[Realtime] Table refetch failed:", e);
             if (generation < latestScheduledGeneration) {
                 return { status: 'superseded', generation: generation, success: false, applied: false };
             }
+            RealtimeUtils.showSyncPendingWarning();
             return { status: 'failed', generation: generation, error: e, success: false, applied: false };
         }
     };
 
     /**
-     * T13-R3-F06 / T13-R4-F04: Retry helper invoked manually or automatically after a transient refetch failure.
+     * Alias for backwards compatibility with tests and callers.
+     * Delegates directly to syncTableViaHub without any full HTML fetch.
+     */
+    RealtimeUtils.refetchTable = async function (tableBodyId, totalCountId, affectedItemId, eventType) {
+        return await RealtimeUtils.syncTableViaHub(tableBodyId, totalCountId, affectedItemId, eventType);
+    };
+
+    /**
+     * Retry helper invoked manually or after connection restore.
      */
     RealtimeUtils.retryRefetch = async function () {
-        const res = await RealtimeUtils.refetchTable('storageUnitsTableBody', 'storageUnitsTotalCount');
+        const res = await RealtimeUtils.syncTableViaHub('storageUnitsTableBody', 'storageUnitsTotalCount');
         if (res && res.status === 'applied') {
             const syncAlert = document.getElementById('realtimeSyncAlert');
             if (syncAlert) {

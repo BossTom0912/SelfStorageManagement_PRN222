@@ -1,4 +1,4 @@
-@page
+﻿@page
 @model SelfStorageManagementSystem.Web.Pages.StorageUnits.IndexModel
 @{
     ViewData["Title"] = "Quản trị danh mục ô kho";
@@ -20,15 +20,6 @@
                     <span class="me-1 fw-bold">&#43;</span> Thêm Ô Kho Mới
                 </a>
             }
-            <a asp-page-handler="ExportJson" class="btn btn-outline-success shadow-sm">
-                <span class="me-1">&#128190;</span> Xuất JSON
-            </a>
-            <a asp-page-handler="ExportCsv" class="btn btn-outline-info shadow-sm">
-                <span class="me-1">&#128196;</span> Xuất CSV
-            </a>
-            <button type="button" class="btn btn-outline-warning shadow-sm" data-bs-toggle="modal" data-bs-target="#importModal">
-                <span class="me-1">&#128229;</span> Nhập JSON
-            </button>
             <a asp-page="./Index" class="btn btn-outline-secondary">
                 <span>&#8635;</span> Tải Lại
             </a>
@@ -37,17 +28,6 @@
 
     <!-- Vùng thông báo động chuẩn bị cho realtime SignalR tại T13 -->
     <div id="storageUnitsMessageArea" class="mb-3"></div>
-
-    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
-    {
-        <div class="alert alert-success alert-dismissible fade show shadow-sm mb-4" role="alert">
-            <div class="d-flex align-items-center">
-                <span class="me-2 fs-5 text-success fw-bold">&#10004;</span>
-                <div>@Model.SuccessMessage</div>
-            </div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
-        </div>
-    }
 
     @if (!string.IsNullOrEmpty(Model.ErrorMessage))
     {
@@ -295,34 +275,6 @@
      data-can-manage="@(Model.CanManageUnits ? "true" : "false")"
      style="display:none;"></div>
 
-    <!-- Modal Nhập dữ liệu từ file JSON an toàn (ASM 04 - Insecure Deserialization Protection) -->
-    <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow">
-                <form method="post" enctype="multipart/form-data" asp-page-handler="ImportJson">
-                    @Html.AntiForgeryToken()
-                    <div class="modal-header bg-light">
-                        <h5 class="modal-title fw-bold" id="importModalLabel">&#128229; Nhập Danh Mục Ô Kho Từ File JSON</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
-                    </div>
-                    <div class="modal-body p-4">
-                        <div class="alert alert-info small mb-3">
-                            <strong>Lưu ý bảo mật:</strong> Hệ thống kiểm tra cấu trúc schema nghiêm ngặt, chỉ chấp nhận file <code>.json</code> tối đa 2MB, chống tấn công Insecure Deserialization.
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Chọn tệp JSON</label>
-                            <input type="file" name="ImportFile" class="form-control" accept=".json" required />
-                        </div>
-                    </div>
-                    <div class="modal-footer bg-light">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                        <button type="submit" class="btn btn-primary">Bắt Đầu Nhập</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
 @section Scripts {
     <script src="~/js/storage-units-realtime.js" asp-append-version="true"></script>
     <script>
@@ -374,7 +326,7 @@
 
             // 1. Khởi tạo HubConnection theo mẫu TeacherCode với reconnect tự động
             const connection = new signalR.HubConnectionBuilder()
-                .withUrl("/storageUnitHub")
+                .withUrl("/storageUnitHub").configureLogging(signalR.LogLevel.None)
                 .withAutomaticReconnect([0, 2000, 5000, 10000])
                 .build();
             window.connection = connection;
@@ -406,7 +358,6 @@
 
             // Listener: Receiver_CreateStorageUnit - Thêm dòng nổi bật hoặc refetch đồng bộ sắp xếp/phân trang
             connection.on("Receiver_CreateStorageUnit", async function (item) {
-                console.log("Receiver_CreateStorageUnit received:", item);
 
                 // T13-F03 / T13-R3-F03: Kiểm tra khớp cơ sở/loại/khu vực/trạng thái cơ bản
                 if (!StorageUnitsRealtime.matchesFilter(item, currentFilter)) {
@@ -451,7 +402,6 @@
 
             // Listener: Receiver_UpdateStorageUnit - Cập nhật bảng ngay lập tức hoặc gỡ dòng nếu rời bộ lọc
             connection.on("Receiver_UpdateStorageUnit", async function (item) {
-                console.log("Receiver_UpdateStorageUnit received:", item);
 
                 // T13-R2-F03 / T13-R3-F05 / T13-R4-F04: Refetch từ server để đồng bộ chính xác thứ tự và bộ lọc
                 const outcome = await StorageUnitsRealtime.refetchTable('storageUnitsTableBody', 'storageUnitsTotalCount', item.id, 'update');
@@ -478,7 +428,6 @@
 
             // Listener: Receiver_DeleteStorageUnit - Bỏ dòng tương ứng khỏi bảng (theo mẫu TeacherCode)
             connection.on("Receiver_DeleteStorageUnit", async function (id) {
-                console.log("Receiver_DeleteStorageUnit received for id:", id);
 
                 // T13-R2-F04 / T13-R3-F05 / T13-R4-F04: Refetch từ server để kéo dòng kế tiếp từ trang sau vào trang đầy và đồng bộ số tổng
                 const outcome = await StorageUnitsRealtime.refetchTable('storageUnitsTableBody', 'storageUnitsTotalCount', null, 'delete');
@@ -500,22 +449,19 @@
             });
 
             // Reconnection: Tự động tải lại dữ liệu mới nhất sau khi ngắt kết nối phục hồi
-            connection.onreconnected(function (connectionId) {
-                console.log("SignalR reconnected:", connectionId);
+            connection.onreconnected(async function (connectionId) {
                 StorageUnitsRealtime.showMessage(
                     messageAreaId,
                     'success',
                     'Kết nối Realtime đã phục hồi. Đang tải lại dữ liệu mới nhất...',
                     3000
                 );
-                setTimeout(() => window.location.reload(), 1000);
+                await StorageUnitsRealtime.syncTableViaHub('storageUnitsTableBody', 'storageUnitsTotalCount', null, 'reconnect', currentFilter, connection);
             });
 
             // 3. Khởi chạy kết nối SAU KHI đã đăng ký đầy đủ listeners
             connection.start().then(function () {
-                console.log("Connected to /storageUnitHub successfully.");
             }).catch(function (err) {
-                console.error("SignalR Connection Error:", err.toString());
             });
         });
     </script>

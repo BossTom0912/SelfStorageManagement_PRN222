@@ -1,4 +1,4 @@
-@model SelfStorageManagementSystem.Web.Models.StorageUnitDetailsViewModel
+﻿@model SelfStorageManagementSystem.Web.Models.StorageUnitDetailsViewModel
 @{
     ViewData["Title"] = Model.StorageUnit != null ? $"Chi tiết ô kho {Model.StorageUnit.UnitCode}" : "Chi tiết ô kho";
 }
@@ -278,13 +278,12 @@
 
             if (typeof signalR !== 'undefined') {
                 const connection = new signalR.HubConnectionBuilder()
-                    .withUrl("/storageUnitHub")
+                    .withUrl("/storageUnitHub").configureLogging(signalR.LogLevel.None)
                     .withAutomaticReconnect()
                     .build();
 
                 connection.on("Receiver_UpdateStorageUnit", function (item) {
                     if (item && item.id === currentUnitId) {
-                        console.log("Realtime: Ô kho hiện tại được cập nhật:", item);
 
                         const codeEl = document.getElementById('Code');
                         if (codeEl && item.unitCode) {
@@ -314,7 +313,7 @@
                     }
                 });
 
-                connection.start().catch(err => console.error("SignalR Connection Error:", err.toString()));
+                connection.start().catch(function () {});
             }
         });
     </script>

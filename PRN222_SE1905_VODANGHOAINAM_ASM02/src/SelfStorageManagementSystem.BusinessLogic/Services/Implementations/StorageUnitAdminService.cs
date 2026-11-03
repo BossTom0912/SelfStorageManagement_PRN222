@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -441,9 +441,10 @@ public class StorageUnitAdminService : IStorageUnitAdminService
 
             // 2. Units with dependent records will be unlisted (is_listed = false) rather than rejected.
             // Capacity checks: If deleting a clean unit or unlisting a candidate unit, check capacity commitment
-            if (ctx.CapacityImpact.UnassignedHoldsCount > 0 ||
-                ctx.CapacityImpact.UnassignedConfirmedCount > 0 ||
-                ctx.CapacityImpact.WouldBreachCapacityIfDeleted)
+            // Capacity checks: If target contributes to candidate capacity, only block if deletion breaches capacity.
+            var capacity = ctx.CapacityImpact;
+            if (capacity.IsTargetUnitCurrentlyCandidate &&
+                capacity.WouldBreachCapacityIfDeleted)
             {
                 return Task.FromResult(false);
             }
@@ -462,21 +463,26 @@ public class StorageUnitAdminService : IStorageUnitAdminService
             if (!result.Success)
             {
                 if (result.CapacityImpact != null &&
-                    (result.CapacityImpact.UnassignedHoldsCount > 0 ||
-                     result.CapacityImpact.UnassignedConfirmedCount > 0 ||
-                     result.CapacityImpact.WouldBreachCapacityIfDeleted))
+                    result.CapacityImpact.IsTargetUnitCurrentlyCandidate &&
+                    result.CapacityImpact.WouldBreachCapacityIfDeleted)
                 {
                     throw new ConflictException(
-                        $"Storage unit '{result.UnitCode}' cannot be deleted because active reservation holds or confirmed bookings exist for this unit type.");
+                        $"Không thể xóa ô kho '{result.UnitCode}' vì số ô kho còn lại không đủ đáp ứng các đặt chỗ hiện tại.");
+                }
+
+                if (result.Message == "UNIT_NOT_AVAILABLE")
+                {
+                    throw new ConflictException(
+                        $"Không thể xóa ô kho '{result.UnitCode}' vì trạng thái ô kho không khả dụng ('available').");
                 }
 
                 if (result.Message == "DELETE_POLICY_REJECTED")
                 {
                     throw new ConflictException(
-                        $"Storage unit '{result.UnitCode}' cannot be deleted due to policy restrictions (not available or active capacity commitments).");
+                        $"Không thể xóa ô kho '{result.UnitCode}' do vi phạm chính sách xóa.");
                 }
 
-                throw new ConflictException($"Storage unit deletion was rejected: {result.Message}");
+                throw new ConflictException($"Không thể xóa ô kho '{result.UnitCode}': {result.Message}");
             }
 
             return new DeleteStorageUnitResult
@@ -675,8 +681,11 @@ public class StorageUnitAdminService : IStorageUnitAdminService
             MaintenanceOrdersCount = refSummary.MaintenanceWorkOrdersCount,
             ActiveMaintenanceOrdersCount = refSummary.ActiveMaintenanceWorkOrdersCount,
             SupportTicketsCount = refSummary.SupportTicketsCount,
+            TransferRequestsFromCount = refSummary.TransferRequestsFromCount,
+            TransferRequestsToCount = refSummary.TransferRequestsToCount,
             StatusHistoryCount = refSummary.StatusHistoryCount,
             HasMapPosition = refSummary.HasMapPosition,
+            HasAnyReferences = refSummary.HasAnyReferences,
 
             CurrentCustomerName = activeAlloc?.agreement?.customer?.full_name,
             CurrentAgreementNo = activeAlloc?.agreement?.agreement_no,

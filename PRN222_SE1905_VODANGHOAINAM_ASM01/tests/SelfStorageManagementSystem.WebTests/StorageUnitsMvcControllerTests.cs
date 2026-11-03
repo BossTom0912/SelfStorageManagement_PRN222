@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -276,5 +276,56 @@ public class StorageUnitsMvcControllerTests : IClassFixture<CookieAuthWebTestFix
 
         await db.SaveChangesAsync();
         return (facility, unitType, area, unit);
+    }
+
+    [Fact]
+    public async Task StorageUnits_Delete_Get_CleanUnitWithoutReferences_RendersPermanentDeleteWarningAndButton()
+    {
+        var (facility, unitType, area, unit) = await SeedStorageUnitHierarchyAsync("DEL_CLEAN");
+        var (client, authCookie, _) = await LoginAsRoleAsync(RoleConstants.FacilityManager, facility.id);
+
+        var req = new HttpRequestMessage(HttpMethod.Get, $"/StorageUnits/Delete?id={unit.id}");
+        req.Headers.Add("Cookie", authCookie);
+
+        var resp = await client.SendAsync(req);
+        Assert.Equal(HttpStatusCode.OK, resp.StatusCode);
+
+        var html = await resp.Content.ReadAsStringAsync();
+        Assert.Contains("Xác nhận xóa vĩnh viễn", html);
+        Assert.Contains("Bạn có chắc chắn muốn xóa vĩnh viễn ô kho", html);
+        Assert.DoesNotContain("Xác nhận ngừng niêm yết", html);
+    }
+
+    [Fact]
+    public async Task StorageUnits_Delete_Get_UnitWithStatusHistoryReference_RendersUnlistWarningAndButton()
+    {
+        var (facility, unitType, area, unit) = await SeedStorageUnitHierarchyAsync("DEL_UNLIST");
+
+        using (var db = _factory.CreateDbContext())
+        {
+            db.unit_status_histories.Add(new unit_status_history
+            {
+                storage_unit_id = unit.id,
+                old_status = "cleaning",
+                new_status = "available",
+                changed_by = 1,
+                reason = "Maintenance done",
+                changed_at = DateTimeOffset.UtcNow.AddDays(-1)
+            });
+            await db.SaveChangesAsync();
+        }
+
+        var (client, authCookie, _) = await LoginAsRoleAsync(RoleConstants.FacilityManager, facility.id);
+
+        var req = new HttpRequestMessage(HttpMethod.Get, $"/StorageUnits/Delete?id={unit.id}");
+        req.Headers.Add("Cookie", authCookie);
+
+        var resp = await client.SendAsync(req);
+        Assert.Equal(HttpStatusCode.OK, resp.StatusCode);
+
+        var html = await resp.Content.ReadAsStringAsync();
+        Assert.Contains("Xác nhận ngừng niêm yết", html);
+        Assert.Contains("có dữ liệu liên kết. Xác nhận sẽ giữ bản ghi và chuyển sang trạng thái ngừng niêm yết.", html);
+        Assert.DoesNotContain("Xác nhận xóa vĩnh viễn", html);
     }
 }

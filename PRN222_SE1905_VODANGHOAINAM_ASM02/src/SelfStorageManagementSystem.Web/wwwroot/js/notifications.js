@@ -1,4 +1,4 @@
-/**
+﻿/**
  * notifications.js
  * JavaScript cho mô-đun Thông báo người dùng (Task T14)
  * Chuẩn bị listener invalidation cho T15 realtime SignalR (NotificationsChanged).
@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const msgArea = document.getElementById('notificationsMessageArea');
 
         document.addEventListener('app:notifications-changed', function (e) {
-            console.log('[Notifications] NotificationsChanged received:', e.detail);
             if (msgArea) {
                 showInvalidationNotice(msgArea, 'Bạn có thông báo mới từ hệ thống! Bấm vào đây để cập nhật danh sách.');
             }
@@ -18,7 +17,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // T15 R2 Fix (F07): Refetch canonical state khi reconnect
         document.addEventListener('app:realtime-reconnected', function () {
-            console.log('[Notifications] Phục hồi kết nối realtime. Refetching trạng thái thông báo...');
             fetch(window.location.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
                 .then(function () {
                     if (msgArea) {

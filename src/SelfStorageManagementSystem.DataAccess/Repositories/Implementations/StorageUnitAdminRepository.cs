@@ -955,32 +955,38 @@ public class StorageUnitAdminRepository : GenericRepository<storage_unit>, IStor
                         UnitId = unitId,
                         UnitCode = unit.unit_code,
                         Success = false,
-                        Message = "DELETE_POLICY_REJECTED",
+                        Message = unit.physical_status != "available" ? "UNIT_NOT_AVAILABLE" : (capacityImpact.WouldBreachCapacityIfDeleted ? "INSUFFICIENT_CAPACITY" : "DELETE_POLICY_REJECTED"),
                         ReferenceSummary = refSummary,
                         CapacityImpact = capacityImpact
                     };
                 }
             }
 
-            // Enforce referential integrity: reject deletion if inbound FK references exist
+            // When unit has dependent records, retain row and set is_listed=false atomically under repository lock/transaction
             if (refSummary.HasAnyReferences)
             {
+                unit.is_listed = false;
+                unit.updated_at = DateTimeOffset.UtcNow;
+                await _context.SaveChangesAsync(cancellationToken);
+
                 if (transaction != null)
                 {
-                    await transaction.RollbackAsync(cancellationToken);
+                    await transaction.CommitAsync(cancellationToken);
                 }
 
                 return new StorageUnitDeleteResult
                 {
                     UnitId = unitId,
                     UnitCode = unit.unit_code,
-                    Success = false,
-                    Message = "STORAGE_UNIT_HAS_EXISTING_REFERENCES",
+                    Success = true,
+                    IsUnlistedOnly = true,
+                    Message = "STORAGE_UNIT_UNLISTED",
                     ReferenceSummary = refSummary,
                     CapacityImpact = capacityImpact
                 };
             }
 
+            // For unit with no dependencies preserve existing hard delete policy
             // Remove associated unit map position if mapped
             if (unit.unit_map_position != null)
             {
@@ -1000,6 +1006,7 @@ public class StorageUnitAdminRepository : GenericRepository<storage_unit>, IStor
                 UnitId = unitId,
                 UnitCode = unit.unit_code,
                 Success = true,
+                IsUnlistedOnly = false,
                 Message = "STORAGE_UNIT_DELETED",
                 ReferenceSummary = refSummary,
                 CapacityImpact = capacityImpact

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
@@ -188,6 +188,16 @@ public class DeleteModel : PageModel
         // T13-R6-F01: Thao tác DB đã lưu thành công. Xử lý đồng bộ realtime sau commit độc lập.
         try
         {
+            if (result.IsUnlistedOnly)
+            {
+                var fresh = await _storageUnitAdminService.GetByIdAsync(Id, actorUserId, cancellationToken);
+                if (fresh != null)
+                {
+                    await _realtimePublisher.PublishUpdatedAsync(fresh, cancellationToken);
+                }
+                TempData["SuccessMessage"] = $"Ô kho '{result.UnitCode}' có dữ liệu liên kết nên đã được chuyển sang trạng thái ngừng niêm yết.";
+                return RedirectToPage("./Index");
+            }
             if (facilityId > 0)
             {
                 await _realtimePublisher.PublishDeletedAsync(Id, facilityId, cancellationToken);
@@ -223,12 +233,7 @@ public class DeleteModel : PageModel
             return;
         }
 
-        if (unit.AllocationsCount > 0 || unit.InspectionsCount > 0 ||
-            unit.MaintenanceOrdersCount > 0 || unit.SupportTicketsCount > 0)
-        {
-            CanDelete = false;
-            BlockReason = $"Ô kho có dữ liệu lịch sử liên kết ({unit.AllocationsCount} lần gán thuê, {unit.InspectionsCount} lượt kiểm tra, {unit.MaintenanceOrdersCount} lệnh bảo trì, {unit.SupportTicketsCount} phiếu hỗ trợ). Vì lý do bảo toàn dữ liệu lịch sử và kiểm toán, ô kho không thể bị xóa.";
-        }
+        // Referenced units are retained and unlisted by the shared service.
     }
 
     private void CheckUserRole()

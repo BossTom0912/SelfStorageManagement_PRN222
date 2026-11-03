@@ -1,4 +1,4 @@
-@page
+﻿@page
 @model SelfStorageManagementSystem.Web.Pages.StorageUnits.DetailsModel
 @{
     ViewData["Title"] = Model.StorageUnit != null ? $"Chi tiết ô kho {Model.StorageUnit.UnitCode}" : "Chi tiết ô kho";
@@ -263,7 +263,7 @@
 
                 // 1. Khởi tạo HubConnection theo mẫu TeacherCode 3.txt & 4.txt
                 const connection = new signalR.HubConnectionBuilder()
-                    .withUrl("/storageUnitHub")
+                    .withUrl("/storageUnitHub").configureLogging(signalR.LogLevel.None)
                     .withAutomaticReconnect()
                     .build();
 
@@ -320,7 +320,6 @@
 
                 function handleDetailsDelete(id) {
                     if (String(id) === String(currentUnitId)) {
-                        console.warn("Current storage unit was deleted:", id);
                         const alertContainer = document.getElementById("depositSliptID");
                         if (alertContainer) {
                             alertContainer.innerHTML = `
@@ -346,15 +345,12 @@
 
                 // Tự động tải lại sau khi reconnect phục hồi
                 connection.onreconnected(function (connectionId) {
-                    console.log("Details page SignalR reconnected:", connectionId);
                     window.location.reload();
                 });
 
                 // 3. Khởi chạy kết nối
                 connection.start().then(function () {
-                    console.log("Connected to SignalR Hub on Details page.");
                 }).catch(function (err) {
-                    console.error("SignalR connection error on Details:", err.toString());
                 });
                 </text>
             }

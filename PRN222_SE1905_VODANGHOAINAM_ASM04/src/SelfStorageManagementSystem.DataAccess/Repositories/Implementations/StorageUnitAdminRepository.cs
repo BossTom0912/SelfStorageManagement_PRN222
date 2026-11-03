@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
@@ -955,7 +955,7 @@ public class StorageUnitAdminRepository : GenericRepository<storage_unit>, IStor
                         UnitId = unitId,
                         UnitCode = unit.unit_code,
                         Success = false,
-                        Message = "DELETE_POLICY_REJECTED",
+                        Message = unit.physical_status != "available" ? "UNIT_NOT_AVAILABLE" : (capacityImpact.WouldBreachCapacityIfDeleted ? "INSUFFICIENT_CAPACITY" : "DELETE_POLICY_REJECTED"),
                         ReferenceSummary = refSummary,
                         CapacityImpact = capacityImpact
                     };
