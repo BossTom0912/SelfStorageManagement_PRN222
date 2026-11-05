@@ -1,11 +1,11 @@
-@model SelfStorageManagementSystem.BusinessLogic.DTOs.Responses.Reservations.ReservationDetailResponse
+﻿@model SelfStorageManagementSystem.BusinessLogic.DTOs.Responses.Reservations.ReservationDetailResponse
 @{
     ViewData["Title"] = $"Chi tiết Đơn đặt chỗ #{Model.ReservationCode} - MVC";
 }
 
 <div class="container py-4">
     <div class="mb-4">
-        <a href="/Reservations" class="btn btn-outline-secondary btn-sm">
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
             <i class="bi bi-arrow-left me-1"></i>Quay lại danh sách
         </a>
     </div>

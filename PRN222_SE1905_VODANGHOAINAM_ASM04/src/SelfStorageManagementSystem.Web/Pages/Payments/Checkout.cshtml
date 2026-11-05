@@ -246,7 +246,7 @@
                         </ul>
 
                         <!-- Form thanh toán chính (Checkout Form) -->
-                        <form method="post" id="checkoutForm">
+                        <form method="post" asp-page="/Payments/Checkout" asp-page-handler="" id="checkoutForm">
                             <input type="hidden" name="ReservationId" value="@Model.ReservationId" />
                             <input type="hidden" name="PromotionCode" value="@Model.PromotionCode" />
                             <input type="hidden" name="AcceptedPolicyVersionId" value="@quote.PolicyVersionId" />

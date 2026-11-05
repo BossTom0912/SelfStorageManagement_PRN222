@@ -1,4 +1,4 @@
-@model SelfStorageManagementSystem.Web.Models.ReservationReportViewModel
+﻿@model SelfStorageManagementSystem.Web.Models.ReservationReportViewModel
 @{
     ViewData["Title"] = "Báo cáo Đặt chỗ Kho (Reservation Report) - MVC";
 }
@@ -34,7 +34,7 @@
             </h5>
         </div>
         <div class="card-body">
-            <form method="get" action="/Reports/Reservations" class="row g-3">
+            <form method="get" asp-action="Reservations" class="row g-3">
                 <div class="col-md-3">
                     <label for="startDateInput" class="form-label fw-bold small text-muted">NGÀY BẮT ĐẦU THUÊ TỪ</label>
                     <input type="date" id="startDateInput" name="startDate" class="form-control"
@@ -70,7 +70,7 @@
                     </select>
                 </div>
                 <div class="col-12 text-end mt-3">
-                    <a href="/Reports/Reservations" class="btn btn-outline-secondary me-2">
+                    <a asp-action="Reservations" class="btn btn-outline-secondary me-2">
                         <i class="bi bi-arrow-counterclockwise me-1"></i>Đặt lại
                     </a>
                     <button type="submit" class="btn btn-primary px-4">

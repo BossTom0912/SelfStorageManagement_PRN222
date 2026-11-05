@@ -1,4 +1,4 @@
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SelfStorageManagementSystem.BusinessLogic.Common;
@@ -16,6 +16,7 @@ namespace SelfStorageManagementSystem.Web.Controllers;
 /// - Phân quyền đăng nhập Cookie Authentication
 /// </summary>
 [Authorize]
+[Route("Mvc/Reservations")]
 public class ReservationsController : Controller
 {
     private readonly IReservationService _reservationService;
@@ -29,8 +30,8 @@ public class ReservationsController : Controller
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    [HttpGet]
-    [Route("Reservations")]
+    [HttpGet("")]
+
     public async Task<IActionResult> Index(
         string? status,
         int pageNumber = 1,
@@ -67,8 +68,7 @@ public class ReservationsController : Controller
         return View("~/Views/Reservations/Index.cshtml", reservations);
     }
 
-    [HttpGet]
-    [Route("Reservations/Details/{id:long}")]
+    [HttpGet("Details/{id:long}")]
     public async Task<IActionResult> Details(long id, CancellationToken cancellationToken = default)
     {
         var actorUserId = GetActorUserId();

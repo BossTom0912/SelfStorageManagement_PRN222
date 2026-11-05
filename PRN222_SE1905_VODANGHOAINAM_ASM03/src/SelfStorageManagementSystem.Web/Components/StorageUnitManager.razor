@@ -1,6 +1,7 @@
 @inject IServiceScopeFactory ScopeFactory
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ILogger<StorageUnitManager> Logger
+@using SelfStorageManagementSystem.Web.Realtime
 
 <h1>Quản trị ô kho Blazor</h1>
 <p class="text-muted">Tìm kiếm, phân trang và quản lý ô kho theo quyền tại cơ sở của bạn.</p>
@@ -212,8 +213,9 @@
         _facilityId = created.FacilityId;
         _page = 1;
         _search = created.UnitCode;
-        await LoadAsync(service, actor);
         _message = "Đã tạo ô kho.";
+        await PublishAsync(publisher => publisher.PublishCreatedAsync(created));
+        await LoadAsync(service, actor);
     });
     private Task StartEditAsync(StorageUnitAdminDto unit) => RunAsync(async (service, actor) =>
     {
@@ -224,17 +226,48 @@
     });
     private Task SaveAsync() => RunAsync(async (service, actor) =>
     {
-        await service.UpdateAsync(_editId, _edit!, actor);
+        var updated = await service.UpdateAsync(_editId, _edit!, actor);
         CancelEditor();
-        await LoadAsync(service, actor);
         _message = "Đã lưu thay đổi.";
+        await PublishAsync(publisher => publisher.PublishUpdatedAsync(updated));
+        await LoadAsync(service, actor);
     });
     private void StartDelete(StorageUnitAdminDto unit) { CancelEditor(); _delete = unit; }
     private Task DeleteAsync() => RunAsync(async (service, actor) =>
     {
-        var result = await service.DeleteAsync(_delete!.Id, _delete.UpdatedAt, actor);
+        var unit = _delete!;
+        var result = await service.DeleteAsync(unit.Id, unit.UpdatedAt, actor);
         CancelEditor();
+        _message = result.IsUnlistedOnly
+            ? "Ô kho có dữ liệu liên quan nên đã được ngừng niêm yết."
+            : "Đã xóa ô kho.";
+        await PublishAsync(async publisher =>
+        {
+            if (result.IsUnlistedOnly)
+            {
+                var updated = await service.GetByIdAsync(unit.Id, actor);
+                if (updated is not null) await publisher.PublishUpdatedAsync(updated);
+            }
+            else
+            {
+                await publisher.PublishDeletedAsync(unit.Id, unit.FacilityId);
+            }
+        });
         await LoadAsync(service, actor);
-        _message = result.Message;
     });
+
+    private async Task PublishAsync(Func<IStorageUnitRealtimePublisher, Task> publish)
+    {
+        // Persistence has succeeded. A broadcast failure must not invite a duplicate submission.
+        try
+        {
+            await using var scope = ScopeFactory.CreateAsyncScope();
+            await publish(scope.ServiceProvider.GetRequiredService<IStorageUnitRealtimePublisher>());
+        }
+        catch (Exception ex)
+        {
+            Logger.LogWarning(ex, "Blazor storage unit saved, but realtime publish failed.");
+            _message += " Đồng bộ thời gian thực tạm thời gián đoạn; các màn hình khác cần tải lại trang.";
+        }
+    }
 }

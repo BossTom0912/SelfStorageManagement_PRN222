@@ -1,4 +1,4 @@
-@model SelfStorageManagementSystem.BusinessLogic.Common.PagedResult<SelfStorageManagementSystem.BusinessLogic.DTOs.Responses.Reservations.ReservationListItemResponse>
+﻿@model SelfStorageManagementSystem.BusinessLogic.Common.PagedResult<SelfStorageManagementSystem.BusinessLogic.DTOs.Responses.Reservations.ReservationListItemResponse>
 @{
     ViewData["Title"] = "Quản lý Đơn đặt chỗ (Reservations) - MVC";
     var currentStatus = ViewData["CurrentStatus"] as string;
@@ -23,11 +23,11 @@
     <div class="card shadow-sm border-0 mb-4">
         <div class="card-body py-2">
             <div class="nav nav-pills">
-                <a class="nav-link @(string.IsNullOrEmpty(currentStatus) ? "active" : "")" href="/Reservations">Tất cả</a>
-                <a class="nav-link @(currentStatus == "pending" ? "active" : "")" href="/Reservations?status=pending">Chờ giữ chỗ</a>
-                <a class="nav-link @(currentStatus == "awaiting_deposit" ? "active" : "")" href="/Reservations?status=awaiting_deposit">Chờ cọc</a>
-                <a class="nav-link @(currentStatus == "confirmed" ? "active" : "")" href="/Reservations?status=confirmed">Đã xác nhận</a>
-                <a class="nav-link @(currentStatus == "cancelled" ? "active" : "")" href="/Reservations?status=cancelled">Đã hủy</a>
+                <a class="nav-link @(string.IsNullOrEmpty(currentStatus) ? "active" : "")" asp-action="Index">Tất cả</a>
+                <a class="nav-link @(currentStatus == "pending" ? "active" : "")" asp-action="Index" asp-route-status="pending">Chờ giữ chỗ</a>
+                <a class="nav-link @(currentStatus == "awaiting_deposit" ? "active" : "")" asp-action="Index" asp-route-status="awaiting_deposit">Chờ cọc</a>
+                <a class="nav-link @(currentStatus == "confirmed" ? "active" : "")" asp-action="Index" asp-route-status="confirmed">Đã xác nhận</a>
+                <a class="nav-link @(currentStatus == "cancelled" ? "active" : "")" asp-action="Index" asp-route-status="cancelled">Đã hủy</a>
             </div>
         </div>
     </div>
@@ -93,7 +93,7 @@
                                     <span class="badge @badgeClass">@statusText</span>
                                 </td>
                                 <td class="text-end pe-3">
-                                    <a href="/Reservations/Details/@item.Id" class="btn btn-sm btn-outline-secondary">
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">
                                         <i class="bi bi-eye me-1"></i>Chi tiết
                                     </a>
                                 </td>
@@ -103,5 +103,19 @@
                 </tbody>
             </table>
         </div>
+        @if (Model.TotalPages > 1)
+        {
+            <nav class="card-footer d-flex gap-3 align-items-center" aria-label="Phân trang đơn đặt chỗ MVC">
+                @if (Model.HasPreviousPage)
+                {
+                    <a class="btn btn-sm btn-outline-primary" asp-action="Index" asp-route-status="@currentStatus" asp-route-pageNumber="@(Model.PageNumber - 1)" asp-route-pageSize="@Model.PageSize">Trang trước</a>
+                }
+                <span>Trang @Model.PageNumber / @Model.TotalPages</span>
+                @if (Model.HasNextPage)
+                {
+                    <a class="btn btn-sm btn-outline-primary" asp-action="Index" asp-route-status="@currentStatus" asp-route-pageNumber="@(Model.PageNumber + 1)" asp-route-pageSize="@Model.PageSize">Trang sau</a>
+                }
+            </nav>
+        }
     </div>
 </div>

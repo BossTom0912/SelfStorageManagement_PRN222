@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -88,6 +88,7 @@ public sealed class KestrelRealtimeServer : IAsyncDisposable
         builder.Services.AddRazorPages()
             .AddApplicationPart(typeof(SelfStorageManagementSystem.Web.Pages.StorageUnits.IndexModel).Assembly);
         builder.Services.AddSignalR();
+        builder.Services.AddServerSideBlazor();
         builder.Services.AddSingleton<IStorageUnitHubConnectionTracker, StorageUnitHubConnectionTracker>();
         builder.Services.AddScoped<StorageUnitRealtimePublisher>();
         builder.Services.AddScoped<IStorageUnitRealtimePublisher>(sp => sp.GetRequiredService<StorageUnitRealtimePublisher>());
@@ -152,6 +153,8 @@ public sealed class KestrelRealtimeServer : IAsyncDisposable
         });
         app.MapRazorPages();
         app.MapControllers();
+        app.MapBlazorHub(options => options.CloseOnAuthenticationExpiration = true)
+            .RequireAuthorization("StaffOnly");
 
         await app.StartAsync();
 
