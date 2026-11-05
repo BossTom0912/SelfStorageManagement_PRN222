@@ -1,6 +1,6 @@
 # Self-Storage Facility Rental and Management System
 
-PRN222 project base for a self-storage facility rental and management system.
+PRN222 self-storage facility rental and management system. ASM01–04 share one solution: MVC + SignalR, Razor Pages, Blazor Server, and a Console / Windows Service worker. See [SUBMISSION_GUIDE.md](SUBMISSION_GUIDE.md) for current routes, setup, and run commands, and [ASM_REVIEW_STATUS.md](ASM_REVIEW_STATUS.md) for verification results.
 
 ## Technology Stack
 
@@ -88,10 +88,13 @@ dotnet dev-certs https --trust
 
 The demo account bootstrap service (`DemoAccountBootstrapService`) replaces initial placeholder hashes for seed accounts. To protect production environments:
 - It **only** runs when `ASPNETCORE_ENVIRONMENT=Development` **AND** `DemoAccounts:Enabled=true`.
-- The bootstrap password must be explicitly supplied via `DemoAccounts:DefaultPassword` (or `DEMO_DEFAULT_PASSWORD` environment variable); if missing, it halts with a descriptive configuration error.
+- Configure `AdminAccount:Email` for an existing administrator and supply `AdminAccount:Password` (or `ADMIN_ACCOUNT_PASSWORD`). Bootstrap verifies the administrator role before updating its password. `DemoAccounts:DefaultPassword` (or `DEMO_DEFAULT_PASSWORD`) optionally sets the password for other demo accounts with placeholder hashes; otherwise it uses the admin bootstrap password.
+- The Web host uses `Bootstrap:Enabled` in Development. Disable the relevant host's bootstrap flag when password updates are not intended.
 
 ```powershell
 dotnet user-secrets set "DemoAccounts:Enabled" "true" --project src/SelfStorageManagementSystem.Presentation
+dotnet user-secrets set "AdminAccount:Email" "<existing-admin-email>" --project src/SelfStorageManagementSystem.Presentation
+dotnet user-secrets set "AdminAccount:Password" "<your-local-admin-password>" --project src/SelfStorageManagementSystem.Presentation
 dotnet user-secrets set "DemoAccounts:DefaultPassword" "<your-local-demo-password>" --project src/SelfStorageManagementSystem.Presentation
 ```
 
@@ -124,11 +127,13 @@ dotnet run --project src/SelfStorageManagementSystem.WpfClient
 
 | Module | Status | Notes |
 | :--- | :--- | :--- |
-| **Feature 1: Authentication & RBAC** | **Implemented (Core)** | Core implementation complete: login, customer registration, JWT auth, facility scope authorization (`FacilityScopeService`), admin account management with database pagination, and WPF UI. |
-| **Feature 2: Facility & Storage Unit Catalog** | In Progress (Under Verification) | Catalog controller (`/api/facilities`), DTOs, service/repository, floor map endpoint, WPF client catalog views, and catalog tests are drafted in the codebase. Currently under ongoing integration verification; not yet marked fully finalized. |
-| **Feature 3: Reservation & Hold Unit** | **Implemented (Core); SQL Server/WPF Verification Pending** | Create/view/list/cancel reservations, 15-minute capacity hold by unit type, 30-second expiration worker, WPF countdown. 124 tests pass; the dedicated SQL Server concurrency test is skipped until a separate test database is configured. See [function status](docs/FIVE_CORE_FUNCTIONS_SUMMARY.md). |
-| **Feature 4: Payment & Rental Agreement** | **Implemented (Core); review fixes pending, not accepted yet** | Quote, checkout, Demo/VNPAY Sandbox, invoices, scheduled agreements, late payment reconciliation, refunds and WPF checkout are in code. Latest suite: 179 passed, 4 SQL concurrency tests skipped. See [current Function 4 progress](docs/FIVE_CORE_FUNCTIONS_SUMMARY.md) for remaining issues. |
-| **Feature 5: Check-in & Digital Handover** | Not Implemented | Identity verification, unit handover, access PIN/QR generation, and agreement activation. Pending future development. |
+| **Feature 1: Authentication & RBAC** | Implemented | Login, registration, cookie auth for Web, JWT for API/WPF, facility scope, and account administration. |
+| **Feature 2: Facility & Storage Unit Catalog** | Implemented | Catalog, floor maps, MVC/Razor/Blazor storage-unit management, capacity-safe deletion, and SignalR updates. |
+| **Feature 3: Reservation & Hold Unit** | Implemented | Create/view/list/cancel reservations, 15-minute capacity holds, countdowns, and expiration workers. |
+| **Feature 4: Payment & Rental Agreement** | Implemented | Quotes, checkout, Demo/VNPAY Sandbox, invoices, scheduled agreements, reconciliation, and refunds. |
+| **Feature 5: Check-in & Digital Handover** | Implemented | Identity verification, inspection, allocation, handover, access PIN generation, and agreement activation. |
+
+Current test results and verification limits are recorded in [ASM_REVIEW_STATUS.md](ASM_REVIEW_STATUS.md). Older function reports describe historical checkpoints.
 
 > [!NOTE]
 > **Demo Tax Notice (Feature 4)**:

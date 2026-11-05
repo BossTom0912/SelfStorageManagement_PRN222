@@ -93,6 +93,58 @@ public class PaymentRazorPagesAndCallbackTests : IClassFixture<PaymentWebTestFix
         Assert.Contains("1.800.000", html); // 2,000,000 - 200,000 = 1,800,000
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task CheckoutPage_PayAfterApplyingPromo_SubmitsRenderedFormToCheckout(bool usePromotion)
+    {
+        var suffix = Guid.NewGuid().ToString("N")[..8];
+        var seed = await _factory.SeedPaymentEnvironmentAsync(suffix);
+        using var client = await _factory.CreateAuthenticatedClientAsync(seed.CustomerUser.email, PaymentWebTestFixture.DefaultPassword);
+        var (token, cookieHeader) = await PaymentWebTestFixture.GetAntiforgeryTokenAndCookieAsync(
+            client, $"/Payments/Checkout?reservationId={seed.ActiveReservation.id}");
+        var idempotencyKey = $"IDEM-PROMO-CHECKOUT-{suffix}";
+
+        using var promoRequest = new HttpRequestMessage(HttpMethod.Post, "/Payments/Checkout?handler=ApplyPromo");
+        promoRequest.Headers.Add("Cookie", cookieHeader);
+        promoRequest.Content = new FormUrlEncodedContent(new Dictionary<string, string>
+        {
+            ["ReservationId"] = seed.ActiveReservation.id.ToString(),
+            ["PromotionCode"] = usePromotion ? seed.Promotion.code : string.Empty,
+            ["IdempotencyKey"] = idempotencyKey,
+            ["PaymentMethod"] = "demo",
+            ["__RequestVerificationToken"] = token
+        });
+        using var promoResponse = await client.SendAsync(promoRequest);
+        Assert.Equal(HttpStatusCode.OK, promoResponse.StatusCode);
+
+        var html = await promoResponse.Content.ReadAsStringAsync();
+        var form = Regex.Match(html, @"<form\b(?=[^>]*\bid=""checkoutForm"")(?<attributes>[^>]*)>(?<body>.*?)</form>", RegexOptions.Singleline);
+        Assert.True(form.Success, "The checkout form must be rendered after applying a promotion.");
+
+        // Follow the rendered action, including the browser's current-URL fallback when action is absent.
+        var action = Regex.Match(form.Groups["attributes"].Value, @"\baction=""([^""]*)""");
+        var checkoutUrl = new Uri(promoResponse.RequestMessage!.RequestUri!, WebUtility.HtmlDecode(action.Groups[1].Value));
+        var fields = new Dictionary<string, string>();
+        foreach (Match input in Regex.Matches(form.Groups["body"].Value, @"<input\b[^>]*\btype=""hidden""[^>]*>"))
+        {
+            var name = Regex.Match(input.Value, @"\bname=""([^""]+)""").Groups[1].Value;
+            var value = Regex.Match(input.Value, @"\bvalue=""([^""]*)""").Groups[1].Value;
+            fields[WebUtility.HtmlDecode(name)] = WebUtility.HtmlDecode(value);
+        }
+        fields["AcceptPolicy"] = "true";
+        fields["PaymentMethod"] = "demo";
+
+        using var checkoutResponse = await client.PostAsync(checkoutUrl, new FormUrlEncodedContent(fields));
+        Assert.Equal(HttpStatusCode.Redirect, checkoutResponse.StatusCode);
+        Assert.Contains("/Payments/DemoSimulator", checkoutResponse.Headers.Location?.ToString());
+
+        using var db = _factory.CreateDbContext();
+        var payment = await db.payments.SingleAsync(p => p.idempotency_key == idempotencyKey);
+        Assert.Equal(usePromotion ? 1800000m : 2000000m, payment.amount);
+        Assert.Equal("pending", payment.status);
+    }
+
     [Fact]
     public async Task CheckoutPage_PostWithoutPolicyAgreement_ReturnsValidationError()
     {

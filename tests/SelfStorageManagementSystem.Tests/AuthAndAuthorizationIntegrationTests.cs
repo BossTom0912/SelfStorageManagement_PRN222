@@ -27,6 +27,8 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        // Fixtures seed their own isolated database after the host starts.
+        builder.UseSetting("DemoAccounts:Enabled", "false");
         builder.UseSetting("Jwt:Key", TestJwtKey);
         builder.UseSetting("Jwt:Issuer", TestIssuer);
         builder.UseSetting("Jwt:Audience", TestAudience);

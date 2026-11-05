@@ -1,57 +1,57 @@
 # Bộ bài ASM01–04 — Võ Thái Hoàng Khôi
 
-Cập nhật: 30/10/2026. Bộ nộp bài nằm trong bốn thư mục `PRN222_SE1905_VOTHAIHOANGKHOI_ASM01` đến `ASM04` tại repository `Final_Project_Web`.
+Cập nhật 05/11/2026. ASM01–04 đã được hợp nhất vào repository này. Mở `SelfStorageManagementSystem.sln` tại thư mục gốc; không cần các thư mục hoặc solution ASM riêng của bản nộp ngày 30/10.
 
-| Bài | Công nghệ / màn hình demo | Kết quả chạy lại |
+| Bài | Thành phần | Đường dẫn demo |
 | --- | --- | --- |
-| ASM01 | MVC CRUD `/StorageUnits` + SignalR `/storageUnitHub` | 190/190 (37 nghiệp vụ + 153 web) |
-| ASM02 | Razor Pages `/StorageUnits`, báo cáo đặt chỗ, SignalR | 192/192 (37 nghiệp vụ + 155 web, gồm E2E hai trình duyệt) |
-| ASM03 | Blazor Server `/Blazor/StorageUnits`, Razor host, DI, async và phân trang | 194/194 (37 nghiệp vụ + 157 web) |
-| ASM04 | Console / Windows Service mới; giữ Web + API + WPF | 700/700 (250 nghiệp vụ/API/WPF + 450 web) |
+| ASM01 | MVC CRUD và SignalR | `/StorageUnits`, `/storageUnitHub` |
+| ASM02 | Razor Pages: catalog, đặt chỗ, thanh toán, báo cáo | `/Catalog`, `/Reservations`, `/Reports/Reservations` |
+| ASM03 | Blazor Server CRUD, tìm kiếm, phân trang | `/Blazor/StorageUnits` |
+| ASM04 | Console / Windows Service, heartbeat và tác vụ hết hạn giữ chỗ tùy chọn | `src/SelfStorageManagementSystem.Worker` |
 
-**Tổng: 1.276 test đạt, 0 thất bại, 0 bỏ qua.** Build cả bốn solution ASM và solution API/WPF của ASM04 đạt. Bộ ASM04 có 19 test SQL concurrency đã chạy trên database test riêng.
+MVC đặt chỗ và báo cáo có route riêng `/Mvc/Reservations` và `/Mvc/Reports/Reservations`, để các route Razor Pages vẫn giữ đồng hồ giữ chỗ, phân trang và chuyển tiếp từ catalog. Blazor phát sự kiện CRUD qua cùng publisher SignalR với MVC và Razor Pages.
 
-## Chạy ASM01–03 và phần Web của ASM04
+## Build và chạy tại thư mục gốc
 
-Mở solution mang tên cùng thư mục hoặc mở PowerShell tại từng thư mục:
+Cần .NET 8 SDK/runtime và SQL Server/LocalDB có schema Database First. Không chạy lại script clean-install trên database có dữ liệu cần giữ.
 
 ```powershell
+dotnet build .\SelfStorageManagementSystem.sln
 .\run.ps1
 # Hoặc
 .\run.bat
-# Chạy toàn bộ test của solution trong thư mục hiện tại
-dotnet test .\PRN222_SE1905_VOTHAIHOANGKHOI_ASM01.sln
 ```
 
-Đổi `ASM01` trong lệnh test thành số bài tương ứng. Script chạy dùng đường dẫn dựa trên vị trí script nên có thể gọi từ thư mục khác.
+Script dùng đường dẫn dựa trên vị trí script nên có thể gọi từ thư mục khác. Profile Web mặc định dùng HTTPS 7041 / HTTP 5041. Cấu hình database bằng `ConnectionStrings__DefaultConnection` hoặc User Secrets của Web project.
 
-Cần .NET 8 runtime/SDK và SQL Server/LocalDB có schema Database First của dự án. Cấu hình kết nối qua `ConnectionStrings__DefaultConnection`; cấu hình tài khoản bootstrap bằng `AdminAccount__Email`, `AdminAccount__Password`, `Bootstrap__Enabled` khi chủ động khởi tạo tài khoản demo trên database riêng. Khi không muốn thay đổi mật khẩu demo lúc startup, đặt `Bootstrap__Enabled=false`. Không dùng dữ liệu ứng dụng thật để chạy bộ test.
+Bootstrap Web chỉ chạy trong Development khi `Bootstrap__Enabled=true`. Cần tài khoản admin đã tồn tại, có đúng role, và cấu hình `AdminAccount__Email`, `AdminAccount__Password`. Đặt `Bootstrap__Enabled=false` khi không muốn cập nhật tài khoản demo lúc startup. API/WPF là host riêng và dùng cờ `DemoAccounts__Enabled`; xem README để cấu hình JWT cho API.
 
-Các profile Web cũ mặc định dùng cổng 7041/5041; khi cần chạy nhiều bài cùng lúc, truyền `--urls` với cổng khác nhau và `--no-launch-profile`. Kiểm thử trình duyệt lần này dùng HTTPS 7141–7144, desktop 1440×1000 và Blazor mobile 390×844.
-
-## Chạy ASM04 console và kiểm tra Windows Service
-
-Tại `PRN222_SE1905_VOTHAIHOANGKHOI_ASM04`:
+## Kiểm thử
 
 ```powershell
-# Chạy liên tục, log mỗi 5 giây, Ctrl+C để dừng
+# Mặc định các test SQL concurrency được bỏ qua khi chưa có cấu hình database riêng.
+dotnet test .\SelfStorageManagementSystem.sln
+
+# Chỉ dùng database kiểm thử tách biệt đã có schema, tuyệt đối không dùng database ứng dụng chính.
+$env:SELFSTORAGE_SQL_TEST_CONNECTION_STRING = 'Server=localhost;Database=SelfStoragePRN222_Test;Integrated Security=True;TrustServerCertificate=True;'
+dotnet test .\SelfStorageManagementSystem.sln
+```
+
+Bộ E2E hai trình duyệt cần Microsoft Edge và LocalDB `SelfStoragePRN222_WebE2eTest`. Bộ test tự tạo/dọn dữ liệu thử trong database này. Các ảnh T18 được bộ test hiện có ghi vào `AgentReport/Evidence/T18`; kiểm tra diff trước khi commit để tránh đưa ảnh chạy lại vào bản sửa code.
+
+## ASM04 console và Windows Service
+
+```powershell
+# Log mỗi 5 giây, Ctrl+C để dừng
 .\run-worker.ps1
-# Log ba lần tại giây 0, 5, 10 rồi tự dừng
+# Log ba lần rồi tự dừng
 .\run-worker.ps1 --Worker:MaxCycles=3
-# Kiểm tra đăng ký service và mở Services trên máy
-.\check-service.ps1 -OpenServices
-# Cài và chạy nếu cần: phải mở PowerShell bằng Run as Administrator
+# Kiểm tra service
+.\check-service.ps1
+# Cài/chạy service từ PowerShell Administrator khi cần
 .\install-service.ps1 -Start
 ```
 
-Service name: `PRN222_VOTHAIHOANGKHOI_ASM04`. Lần kiểm tra thực tế: **chưa cài service trên máy**; tài khoản thực thi không có quyền Administrator. Đã mở Services, truy vấn Service Control Manager, build và publish executable, chạy console trực tiếp lẫn bản publish thành công. Chưa chạy dưới Service Control Manager vì service chưa được đăng ký.
+Service name: `PRN222_VOTHAIHOANGKHOI_ASM04`. Mặc định worker chỉ heartbeat, không thay đổi database. Bật tác vụ hết hạn giữ chỗ bằng `ReservationWorker__Enabled=true` và cấp connection string cho tiến trình/service. Mỗi vòng bảo trì gọi BLL qua DI scope riêng. Worker đọc cấu hình từ thư mục executable.
 
-Console ghi bằng `ILogger`; khi chạy Windows Service, log Information trở lên ghi vào Event Viewer → Windows Logs → Application, source cùng tên service. File cấu hình của worker được đọc từ thư mục executable. Mặc định chỉ heartbeat, không thay đổi database. Có thể bật tác vụ giải phóng giữ chỗ qua `ReservationWorker__Enabled=true` và cung cấp connection string cho tiến trình/service; worker gọi `IReservationService` qua DI scope riêng.
-
-## Bằng chứng và giới hạn
-
-- Kiểm thử trình duyệt bằng Playwright + Microsoft Edge: ASM01 tạo/sửa/xóa bằng MVC và nhận cập nhật ở phiên độc lập; ASM02 tìm kiếm bằng Razor Pages; ASM03 thao tác CRUD/tìm kiếm qua Blazor, chặn khách hàng; ASM04 Web và SignalR hoạt động. Không có lỗi console trong các luồng đã kiểm tra.
-- Dữ liệu thử trình duyệt nằm trong LocalDB `SelfStoragePRN222_WebDemo`, được tạo mới bằng script bootstrap có kiểm tra database tồn tại; đã dọn ô kho tạm. Test SQL concurrency dùng `localhost/SelfStoragePRN222_Test`; E2E có sẵn dùng LocalDB `SelfStoragePRN222_WebE2eTest`.
-- Log, TRX, ảnh và script kiểm thử bổ sung nằm ngoài repository tại `C:\Users\tommy\.codex\visualizations\2026\10\30\01a18af3-cc2c-77d0-abd3-d043b517fe46\asm-verification`.
-- Có cảnh báo có sẵn về tên entity EF viết thường, nullable và raw SQL trong test; không có lỗi build. Không sửa schema/entity sinh tự động, không commit hoặc push.
-- Thư mục ASM01 tên cũ còn được giữ làm bản gốc vì tiến trình khác đang khóa thư mục. **Nộp bản `PRN222_SE1905_VOTHAIHOANGKHOI_ASM01` mới**, không dùng thư mục tên cũ.
+Kiểm tra console không xác minh việc đăng ký/chạy dưới Service Control Manager. Xem trạng thái và giới hạn kiểm chứng hiện tại trong `ASM_REVIEW_STATUS.md`.

@@ -51,10 +51,11 @@ public class ReservationRazorPagesAndWorkerTests : IClassFixture<CookieAuthWebTe
         });
     }
 
-    private async Task<(HttpClient Client, user User, string AuthCookie)> CreateAuthenticatedCustomerClientAsync(string emailPrefix = "cust")
+    private async Task<(HttpClient Client, user User, string AuthCookie)> CreateAuthenticatedCustomerClientAsync(
+        string emailPrefix = "cust", string roleCode = RoleConstants.StorageCustomer)
     {
         var email = $"{emailPrefix}_{Guid.NewGuid():N}@customer.test";
-        var user = await _factory.SeedUserAsync(email, "Password123!", RoleConstants.StorageCustomer, UserStatusConstants.Active, $"Khách Hàng {emailPrefix}");
+        var user = await _factory.SeedUserAsync(email, "Password123!", roleCode, UserStatusConstants.Active, $"Khách Hàng {emailPrefix}");
         var client = CreateClient(allowAutoRedirect: false);
 
         var (token, afCookie) = await CookieAuthWebTestFixture.GetAntiforgeryTokenAndCookieAsync(client, "/Account/Login");
@@ -848,6 +849,64 @@ public class ReservationRazorPagesAndWorkerTests : IClassFixture<CookieAuthWebTe
         Assert.StartsWith("/Reservations/Create", location);
         Assert.Contains("facilityId=101", location);
         Assert.Contains("unitTypeId=202", location);
+    }
+
+    [Fact]
+    public async Task MvcReservations_HasSeparateRoutes_AndLinksStayOnMvcViews()
+    {
+        var (client, customer, _) = await CreateAuthenticatedCustomerClientAsync("mvc_routes");
+        using var clientLifetime = client;
+        var facility = await SeedFacilityWithRateAsync("MVCRoutes");
+        using var scope = _factory.Services.CreateScope();
+        var reservation = await scope.ServiceProvider.GetRequiredService<IReservationService>()
+            .CreateReservationHoldAsync(customer.id, new CreateReservationRequest
+            {
+                FacilityId = facility.FacilityId,
+                UnitTypeId = facility.UnitTypeId,
+                RentalStartDate = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(1)),
+                RentalEndDate = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(1)).AddMonths(1)
+            });
+
+        using var list = await client.GetAsync("/Mvc/Reservations");
+        Assert.Equal(HttpStatusCode.OK, list.StatusCode);
+        var html = await list.Content.ReadAsStringAsync();
+        Assert.Contains($"href=\"/Mvc/Reservations/Details/{reservation.Id}\"", html);
+        Assert.Contains("/Mvc/Reservations?status=pending", html);
+        using var detail = await client.GetAsync($"/Mvc/Reservations/Details/{reservation.Id}");
+        Assert.Equal(HttpStatusCode.OK, detail.StatusCode);
+        Assert.Contains("href=\"/Mvc/Reservations\"", await detail.Content.ReadAsStringAsync());
+
+        await scope.ServiceProvider.GetRequiredService<IReservationService>()
+            .CreateReservationHoldAsync(customer.id, new CreateReservationRequest
+            {
+                FacilityId = facility.FacilityId,
+                UnitTypeId = facility.UnitTypeId,
+                RentalStartDate = reservation.StartDate,
+                RentalEndDate = reservation.EndDate
+            });
+        using var firstPage = await client.GetAsync("/Mvc/Reservations?status=pending&pageSize=1");
+        var firstPageHtml = await firstPage.Content.ReadAsStringAsync();
+        var nextLink = Regex.Match(firstPageHtml, "href=\"([^\"]*pageNumber=2[^\"]*)\"");
+        Assert.True(nextLink.Success, "The MVC list must offer a link to reservations on the next page.");
+        var nextUrl = WebUtility.HtmlDecode(nextLink.Groups[1].Value);
+        Assert.Contains("status=pending", nextUrl);
+        Assert.Contains("pageSize=1", nextUrl);
+        using var secondPage = await client.GetAsync(nextUrl);
+        Assert.Equal(HttpStatusCode.OK, secondPage.StatusCode);
+        Assert.Contains(reservation.ReservationCode, await secondPage.Content.ReadAsStringAsync());
+    }
+
+    [Fact]
+    public async Task Reports_MvcAndRazorRoutes_BothRender_AndMvcFormKeepsItsRoute()
+    {
+        var (client, _, _) = await CreateAuthenticatedCustomerClientAsync("report_routes", RoleConstants.SystemAdministrator);
+        using var clientLifetime = client;
+        using var mvc = await client.GetAsync("/Mvc/Reports/Reservations");
+        Assert.Equal(HttpStatusCode.OK, mvc.StatusCode);
+        Assert.Contains("action=\"/Mvc/Reports/Reservations\"", await mvc.Content.ReadAsStringAsync());
+        using var razor = await client.GetAsync("/Reports/Reservations");
+        Assert.Equal(HttpStatusCode.OK, razor.StatusCode);
+        Assert.DoesNotContain("(MVC View)", await razor.Content.ReadAsStringAsync());
     }
 
     [Fact]

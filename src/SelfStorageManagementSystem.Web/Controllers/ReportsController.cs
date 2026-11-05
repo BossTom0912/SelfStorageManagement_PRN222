@@ -17,6 +17,7 @@ namespace SelfStorageManagementSystem.Web.Controllers;
 /// - Phân quyền StaffOnly
 /// </summary>
 [Authorize(Policy = "StaffOnly")]
+[Route("Mvc/Reports")]
 public class ReportsController : Controller
 {
     private readonly IReservationService _reservationService;
@@ -33,14 +34,13 @@ public class ReportsController : Controller
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    [HttpGet]
+    [HttpGet("")]
     public IActionResult Index()
     {
         return RedirectToAction(nameof(Reservations));
     }
 
-    [HttpGet]
-    [Route("Reports/Reservations")]
+    [HttpGet("Reservations")]
     public async Task<IActionResult> Reservations(
         DateOnly? startDate,
         DateOnly? endDate,
