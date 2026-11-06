@@ -1,0 +1,240 @@
+is_global = true
+build_property.TargetFramework = net8.0
+build_property.TargetFrameworkIdentifier = .NETCoreApp
+build_property.TargetFrameworkVersion = v8.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property.EntryPointFilePath = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = SelfStorageManagementSystem.Web
+build_property.RootNamespace = SelfStorageManagementSystem.Web
+build_property.ProjectDir = D:\FPT\PRN222\Project\Final_Project_Web\PRN222_SE1905_TRANDOANTHANHHA_ASM03\src\SelfStorageManagementSystem.Web\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = D:\FPT\PRN222\Project\Final_Project_Web\PRN222_SE1905_TRANDOANTHANHHA_ASM03\src\SelfStorageManagementSystem.Web
+build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 8.0
+build_property.EnableCodeStyleSeverity = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Components/StorageUnitManager.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xTdG9yYWdlVW5pdE1hbmFnZXIucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Components/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xfSW1wb3J0cy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Pages/Admin/Accounts/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cQWNjb3VudHNcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Pages/Admin/Accounts/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cQWNjb3VudHNcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Pages/Admin/Accounts/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cQWNjb3VudHNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Pages/Agreements/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWdyZWVtZW50c1xEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Pages/Agreements/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWdyZWVtZW50c1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Pages/Blazor/StorageUnits.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQmxhem9yXFN0b3JhZ2VVbml0cy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Pages/Catalog/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2F0YWxvZ1xEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Pages/Catalog/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2F0YWxvZ1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Pages/Invoices/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW52b2ljZXNcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Pages/Invoices/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW52b2ljZXNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Pages/LayoutTest.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTGF5b3V0VGVzdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Pages/MyUnits/HandoverDetails.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTXlVbml0c1xIYW5kb3ZlckRldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Pages/MyUnits/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTXlVbml0c1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Pages/Notifications/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm90aWZpY2F0aW9uc1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Pages/Payments/Checkout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGF5bWVudHNcQ2hlY2tvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Pages/Payments/DemoSimulator.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGF5bWVudHNcRGVtb1NpbXVsYXRvci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Pages/Payments/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGF5bWVudHNcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Pages/Payments/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGF5bWVudHNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Pages/Payments/Result.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGF5bWVudHNcUmVzdWx0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Pages/Reports/Reservations.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVwb3J0c1xSZXNlcnZhdGlvbnMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Pages/Reservations/Cancel.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVzZXJ2YXRpb25zXENhbmNlbC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Pages/Reservations/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVzZXJ2YXRpb25zXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Pages/Reservations/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVzZXJ2YXRpb25zXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Pages/Reservations/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVzZXJ2YXRpb25zXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Pages/Reservations/MyReservations.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVzZXJ2YXRpb25zXE15UmVzZXJ2YXRpb25zLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Pages/Staff/CheckIn/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3RhZmZcQ2hlY2tJblxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Pages/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Pages/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Views/Account/Forbidden.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxGb3JiaWRkZW4uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Views/Account/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxMb2dpbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Views/Account/Logout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxMb2dvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Views/Account/Profile.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxQcm9maWxlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Views/Account/Register.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxSZWdpc3Rlci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Views/Home/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxFcnJvci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Views/Home/StatusCode.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxTdGF0dXNDb2RlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Views/Reports/Reservations.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVwb3J0c1xSZXNlcnZhdGlvbnMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Views/Reservations/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVzZXJ2YXRpb25zXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Views/Reservations/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVzZXJ2YXRpb25zXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Views/Shared/_AlertMessages.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9BbGVydE1lc3NhZ2VzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Views/Shared/_EmptyState.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9FbXB0eVN0YXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Views/Shared/_LoadingState.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Mb2FkaW5nU3RhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Views/Shared/_ValidationSummary.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU3VtbWFyeS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Views/StorageUnits/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RvcmFnZVVuaXRzXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Views/StorageUnits/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RvcmFnZVVuaXRzXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Views/StorageUnits/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RvcmFnZVVuaXRzXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Views/StorageUnits/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RvcmFnZVVuaXRzXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Views/StorageUnits/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RvcmFnZVVuaXRzXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/FPT/PRN222/Project/Final_Project_Web/PRN222_SE1905_TRANDOANTHANHHA_ASM03/src/SelfStorageManagementSystem.Web/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 

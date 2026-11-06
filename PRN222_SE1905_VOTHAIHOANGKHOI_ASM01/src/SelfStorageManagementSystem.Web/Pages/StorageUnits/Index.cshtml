@@ -1,0 +1,474 @@
+@page
+@model SelfStorageManagementSystem.Web.Pages.StorageUnits.IndexModel
+@{
+    ViewData["Title"] = "Quản trị danh mục ô kho";
+}
+
+<div class="container-fluid px-0">
+    <!-- Tiêu đề trang và nút thao tác chính -->
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+        <div>
+            <h1 class="h3 mb-1 fw-bold text-dark">Quản Trị Danh Mục Ô Kho</h1>
+            <p class="text-muted mb-0 small">
+                Quản lý danh sách ô kho vật lý, trạng thái sử dụng, quy cách và phân bổ theo cơ sở.
+            </p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            @if (Model.CanManageUnits)
+            {
+                <a asp-page="./Create" asp-route-facilityId="@Model.FacilityId" class="btn btn-primary shadow-sm" id="btnCreateStorageUnit">
+                    <span class="me-1 fw-bold">&#43;</span> Thêm Ô Kho Mới
+                </a>
+            }
+            <a asp-page="./Index" class="btn btn-outline-secondary">
+                <span>&#8635;</span> Tải Lại
+            </a>
+        </div>
+    </div>
+
+    <!-- Vùng thông báo động chuẩn bị cho realtime SignalR tại T13 -->
+    <div id="storageUnitsMessageArea" class="mb-3"></div>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm mb-4" role="alert">
+            <div class="d-flex align-items-center">
+                <span class="me-2 fs-5 text-danger fw-bold">&#10008;</span>
+                <div>@Model.ErrorMessage</div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
+        </div>
+    }
+
+    <!-- Thẻ bộ lọc tìm kiếm -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-3 p-md-4">
+            <form method="get" class="row g-3 align-items-end">
+                <div class="col-12 col-md-3">
+                    <label asp-for="FacilityId" class="form-label small fw-semibold text-secondary">Cơ sở lưu trữ</label>
+                    <select asp-for="FacilityId" class="form-select form-select-sm" onchange="this.form.submit()">
+                        <option value="">-- Tất cả cơ sở được phân công --</option>
+                        @foreach (var f in Model.Lookups.Facilities)
+                        {
+                            <option value="@f.Id">@f.Name (@f.Code)</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-12 col-md-3">
+                    <label asp-for="UnitTypeId" class="form-label small fw-semibold text-secondary">Loại ô kho</label>
+                    <select asp-for="UnitTypeId" class="form-select form-select-sm">
+                        <option value="">-- Tất cả loại kho --</option>
+                        @foreach (var ut in Model.Lookups.UnitTypes)
+                        {
+                            <option value="@ut.Id">@ut.Name (@ut.Code)</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-12 col-md-2">
+                    <label asp-for="PhysicalStatus" class="form-label small fw-semibold text-secondary">Trạng thái vật lý</label>
+                    <select asp-for="PhysicalStatus" class="form-select form-select-sm">
+                        <option value="">-- Tất cả trạng thái --</option>
+                        <option value="available">Khả dụng (Available)</option>
+                        <option value="occupied">Đang thuê (Occupied)</option>
+                        <option value="maintenance">Bảo trì (Maintenance)</option>
+                        <option value="reserved">Đã giữ chỗ (Reserved)</option>
+                    </select>
+                </div>
+
+                <div class="col-12 col-md-2">
+                    <label asp-for="SearchTerm" class="form-label small fw-semibold text-secondary">Tìm mã ô kho</label>
+                    <input asp-for="SearchTerm" class="form-control form-control-sm" placeholder="Nhập mã ô..." />
+                </div>
+
+                <div class="col-12 col-md-2 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary btn-sm flex-grow-1">
+                        Lọc Dữ Liệu
+                    </button>
+                    <a asp-page="./Index" class="btn btn-outline-secondary btn-sm" title="Xóa bộ lọc">
+                        Xóa Lọc
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bảng dữ liệu ô kho -->
+    <div class="card border-0 shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col" class="ps-3 py-3 text-secondary text-uppercase small fw-bold">Mã Ô Kho</th>
+                        <th scope="col" class="py-3 text-secondary text-uppercase small fw-bold">Cơ Sở</th>
+                        <th scope="col" class="py-3 text-secondary text-uppercase small fw-bold">Loại Kho</th>
+                        <th scope="col" class="py-3 text-secondary text-uppercase small fw-bold">Khu Vực / Tầng</th>
+                        <th scope="col" class="py-3 text-secondary text-uppercase small fw-bold">Trạng Thái</th>
+                        <th scope="col" class="py-3 text-secondary text-uppercase small fw-bold">Niêm Yết</th>
+                        <th scope="col" class="py-3 text-secondary text-uppercase small fw-bold">Cập Nhật</th>
+                        <th scope="col" class="pe-3 py-3 text-end text-secondary text-uppercase small fw-bold">Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody id="storageUnitsTableBody">
+                    @if (Model.StorageUnits.Items.Count == 0)
+                    {
+                        <tr>
+                            <td colspan="8" class="text-center py-5 text-muted">
+                                <div class="mb-2 fs-3">&#128230;</div>
+                                <div class="fw-semibold">Không tìm thấy ô kho nào phù hợp với điều kiện tìm kiếm.</div>
+                                <div class="small">Vui lòng thử thay đổi bộ lọc hoặc thêm ô kho mới.</div>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var item in Model.StorageUnits.Items)
+                        {
+                            var statusBadgeClass = item.PhysicalStatus switch
+                            {
+                                "available" => "bg-success text-white",
+                                "occupied" => "bg-danger text-white",
+                                "reserved" => "bg-warning text-dark",
+                                "maintenance" => "bg-secondary text-white",
+                                _ => "bg-light text-dark"
+                            };
+
+                            var statusText = item.PhysicalStatus switch
+                            {
+                                "available" => "Khả dụng",
+                                "occupied" => "Đang thuê",
+                                "reserved" => "Đã giữ chỗ",
+                                "maintenance" => "Bảo trì",
+                                _ => item.PhysicalStatus
+                            };
+
+                            <tr id="unit-row-@item.Id" data-unit-id="@item.Id">
+                                <td class="ps-3 fw-bold text-primary font-monospace">
+                                    @item.UnitCode
+                                </td>
+                                <td>
+                                    <div class="fw-semibold text-dark">@item.FacilityName</div>
+                                    <div class="small text-muted font-monospace">@item.FacilityCode</div>
+                                </td>
+                                <td>
+                                    <div>@item.UnitTypeName</div>
+                                    <div class="small text-muted font-monospace">@item.UnitTypeCode</div>
+                                </td>
+                                <td>
+                                    <div>@(string.IsNullOrWhiteSpace(item.AreaName) ? "Chưa gắn khu vực" : item.AreaName)</div>
+                                    @if (!string.IsNullOrWhiteSpace(item.FloorLabel) || !string.IsNullOrWhiteSpace(item.ZoneLabel))
+                                    {
+                                        <div class="small text-muted">
+                                            @item.FloorLabel @(string.IsNullOrWhiteSpace(item.ZoneLabel) ? "" : $"- {item.ZoneLabel}")
+                                        </div>
+                                    }
+                                </td>
+                                <td>
+                                    <span class="badge @statusBadgeClass px-2 py-1">
+                                        @statusText
+                                    </span>
+                                </td>
+                                <td>
+                                    @if (item.IsListed)
+                                    {
+                                        <span class="badge bg-info-subtle text-info border border-info-subtle">Niêm yết</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle">Tạm ẩn</span>
+                                    }
+                                </td>
+                                <td class="small text-muted">
+                                    @AppFormatters.FormatDateTime(item.UpdatedAt)
+                                </td>
+                                <td class="pe-3 text-end">
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a asp-page="./Details" asp-route-id="@item.Id" class="btn btn-outline-secondary" title="Xem chi tiết">
+                                            Chi tiết
+                                        </a>
+                                        @if (Model.CanManageUnits)
+                                        {
+                                            <a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-outline-primary" title="Chỉnh sửa ô kho">
+                                                Sửa
+                                            </a>
+                                            <a asp-page="./Delete" asp-route-id="@item.Id" class="btn btn-outline-danger" title="Xóa ô kho">
+                                                Xóa
+                                            </a>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Phân trang (T13-R3-F04: Vùng chứa footer ổn định chuyển đổi mượt giữa 1 và 2 trang) -->
+        <div id="storageUnitsFooterContainer">
+            @if (Model.StorageUnits.TotalPages > 1)
+            {
+                <div class="card-footer bg-white d-flex flex-wrap justify-content-between align-items-center py-3 border-top">
+                    <div class="small text-muted mb-2 mb-md-0" id="storageUnitsDisplayRange">
+                        Hiển thị <strong>@((Model.StorageUnits.PageNumber - 1) * Model.StorageUnits.PageSize + 1)</strong>
+                        đến <strong>@(Math.Min(Model.StorageUnits.PageNumber * Model.StorageUnits.PageSize, Model.StorageUnits.TotalCount))</strong>
+                        trong tổng số <strong id="storageUnitsTotalCount">@Model.StorageUnits.TotalCount</strong> ô kho
+                    </div>
+                    <nav aria-label="Phân trang ô kho" id="storageUnitsPaginationContainer">
+                        <ul class="pagination pagination-sm mb-0">
+                            <li class="page-item @(Model.StorageUnits.HasPreviousPage ? "" : "disabled")">
+                                <a class="page-link" href="@(Model.StorageUnits.HasPreviousPage ? Model.GetPaginationUrl(Model.StorageUnits.PageNumber - 1) : "#")" aria-label="Trang trước">
+                                    &laquo;
+                                </a>
+                            </li>
+                            @for (var p = 1; p <= Model.StorageUnits.TotalPages; p++)
+                            {
+                                <li class="page-item @(p == Model.StorageUnits.PageNumber ? "active" : "")">
+                                    <a class="page-link" href="@Model.GetPaginationUrl(p)">@p</a>
+                                </li>
+                            }
+                            <li class="page-item @(Model.StorageUnits.HasNextPage ? "" : "disabled")">
+                                <a class="page-link" href="@(Model.StorageUnits.HasNextPage ? Model.GetPaginationUrl(Model.StorageUnits.PageNumber + 1) : "#")" aria-label="Trang sau">
+                                    &raquo;
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            }
+            else if (Model.StorageUnits.TotalCount > 0)
+            {
+                <div class="card-footer bg-white d-flex flex-wrap justify-content-between align-items-center py-3 border-top">
+                    <div class="small text-muted mb-2 mb-md-0" id="storageUnitsDisplayRange">
+                        Hiển thị <strong>1</strong> đến <strong>@Model.StorageUnits.TotalCount</strong>
+                        trong tổng số <strong id="storageUnitsTotalCount">@Model.StorageUnits.TotalCount</strong> ô kho
+                    </div>
+                    <nav aria-label="Phân trang ô kho" id="storageUnitsPaginationContainer"></nav>
+                </div>
+            }
+            else
+            {
+                <div class="card-footer bg-white d-flex flex-wrap justify-content-between align-items-center py-3 border-top">
+                    <div class="small text-muted mb-2 mb-md-0" id="storageUnitsDisplayRange">
+                        Hiển thị <strong>0</strong> trong tổng số <strong id="storageUnitsTotalCount">0</strong> ô kho
+                    </div>
+                    <nav aria-label="Phân trang ô kho" id="storageUnitsPaginationContainer"></nav>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div id="storageUnitsPageConfig"
+     data-facility-id="@(Model.FacilityId.HasValue ? Model.FacilityId.Value.ToString() : "")"
+     data-unit-type-id="@(Model.UnitTypeId.HasValue ? Model.UnitTypeId.Value.ToString() : "")"
+     data-area-id="@(Model.AreaId.HasValue ? Model.AreaId.Value.ToString() : "")"
+     data-physical-status="@(string.IsNullOrWhiteSpace(Model.PhysicalStatus) ? "" : Model.PhysicalStatus.Trim())"
+     data-is-listed="@(Model.IsListed.HasValue ? Model.IsListed.Value.ToString().ToLowerInvariant() : "")"
+     data-search-term="@(string.IsNullOrWhiteSpace(Model.SearchTerm) ? "" : Model.SearchTerm.Trim())"
+     data-sort-by="@(string.IsNullOrWhiteSpace(Model.SortBy) ? "" : Model.SortBy.Trim())"
+     data-sort-descending="@(Model.SortDescending ? "true" : "false")"
+     data-page-number="@Model.StorageUnits.PageNumber"
+     data-page-size="@Model.StorageUnits.PageSize"
+     data-total-count="@Model.StorageUnits.TotalCount"
+     data-can-manage="@(Model.CanManageUnits ? "true" : "false")"
+     style="display:none;"></div>
+
+@section Scripts {
+    <script src="~/js/storage-units-realtime.js" asp-append-version="true"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const configEl = document.getElementById('storageUnitsPageConfig');
+            const canManage = configEl ? configEl.dataset.canManage === 'true' : false;
+            const tableBody = document.getElementById('storageUnitsTableBody');
+            const messageAreaId = 'storageUnitsMessageArea';
+
+            // T13-R2-F05: Đọc ngữ cảnh bộ lọc từ DOM dataset (browser tự decode an toàn, không bị Razor HTML-encode làm sai chuỗi trong script)
+            const currentFilter = {
+                facilityId: configEl ? (configEl.dataset.facilityId || '') : '',
+                unitTypeId: configEl ? (configEl.dataset.unitTypeId || '') : '',
+                areaId: configEl ? (configEl.dataset.areaId || '') : '',
+                physicalStatus: configEl ? (configEl.dataset.physicalStatus || '') : '',
+                isListed: configEl ? (configEl.dataset.isListed || '') : '',
+                searchTerm: configEl ? (configEl.dataset.searchTerm || '') : '',
+                sortBy: configEl ? (configEl.dataset.sortBy || '') : '',
+                sortDescending: configEl ? configEl.dataset.sortDescending === 'true' : false,
+                pageNumber: configEl ? parseInt(configEl.dataset.pageNumber || '1', 10) : 1,
+                pageSize: configEl ? parseInt(configEl.dataset.pageSize || '10', 10) : 10,
+                totalCount: configEl ? parseInt(configEl.dataset.totalCount || '0', 10) : 0
+            };
+
+            function updateTotalCount(delta) {
+                const el = document.getElementById('storageUnitsTotalCount');
+                if (el) {
+                    let count = parseInt(el.textContent, 10);
+                    if (!isNaN(count)) {
+                        count = Math.max(0, count + delta);
+                        el.textContent = count;
+                        currentFilter.totalCount = count;
+                    }
+                }
+            }
+
+            function renderEmptyTableIfNeeded() {
+                if (tableBody.querySelectorAll('tr[id^="unit-row-"]').length === 0) {
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="8" class="text-center py-5 text-muted">
+                                <div class="mb-2 fs-3">&#128230;</div>
+                                <div class="fw-semibold">Không còn ô kho nào trong danh sách.</div>
+                            </td>
+                        </tr>
+                    `;
+                }
+            }
+
+            // 1. Khởi tạo HubConnection theo mẫu TeacherCode với reconnect tự động
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("/storageUnitHub")
+                .withAutomaticReconnect([0, 2000, 5000, 10000])
+                .build();
+            window.connection = connection;
+
+            function showSyncPendingWarning() {
+                if (document.getElementById('realtimeSyncAlert')) return;
+                const alertDiv = document.createElement('div');
+                alertDiv.id = 'realtimeSyncAlert';
+                alertDiv.className = 'alert alert-warning alert-dismissible fade show shadow-sm mb-3';
+                alertDiv.setAttribute('role', 'alert');
+                alertDiv.innerHTML = `
+                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <div class="d-flex align-items-center">
+                            <span class="me-2 fs-5 text-warning fw-bold">&#9888;</span>
+                            <div>
+                                <strong>Đang chờ đồng bộ:</strong> Có thay đổi dữ liệu thời gian thực nhưng chưa thể cập nhật từ máy chủ. Bảng đang giữ trạng thái hiện tại.
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-warning btn-sm fw-semibold" id="btnRetrySync" onclick="window.StorageUnitsRealtime.retryRefetch()">
+                            &#8635; Thử lại
+                        </button>
+                    </div>
+                `;
+                const msgArea = document.getElementById(messageAreaId);
+                if (msgArea) msgArea.prepend(alertDiv);
+            }
+
+            // 2. Đăng ký TẤT CẢ listeners TRƯỚC KHI gọi connection.start()
+
+            // Listener: Receiver_CreateStorageUnit - Thêm dòng nổi bật hoặc refetch đồng bộ sắp xếp/phân trang
+            connection.on("Receiver_CreateStorageUnit", async function (item) {
+                console.log("Receiver_CreateStorageUnit received:", item);
+
+                // T13-F03 / T13-R3-F03: Kiểm tra khớp cơ sở/loại/khu vực/trạng thái cơ bản
+                if (!StorageUnitsRealtime.matchesFilter(item, currentFilter)) {
+                    StorageUnitsRealtime.showMessage(
+                        messageAreaId,
+                        'info',
+                        `Ô kho mới <strong>${StorageUnitsRealtime.escapeHtml(item.unitCode)}</strong> vừa được tạo (không thuộc bộ lọc hiện tại).`,
+                        4000
+                    );
+                    return;
+                }
+
+                // T13-R2-F03 / T13-R3-F03 / T13-R3-F05 / T13-R4-F04: Refetch từ server đảm bảo sắp xếp, phân trang và tìm kiếm (kể cả notes) chính xác 100%
+                const outcome = await StorageUnitsRealtime.refetchTable('storageUnitsTableBody', 'storageUnitsTotalCount', item.id, 'create');
+                if (outcome && outcome.status === 'applied') {
+                    const rowInDom = document.getElementById('unit-row-' + item.id);
+                    if (rowInDom) {
+                        StorageUnitsRealtime.showMessage(
+                            messageAreaId,
+                            'success',
+                            `Ô kho mới <strong>${StorageUnitsRealtime.escapeHtml(item.unitCode)}</strong> (#${item.id}) vừa được thêm thành công qua Realtime.`,
+                            5000
+                        );
+                    } else {
+                        // Thuộc bộ lọc nhưng ở trang khác hoặc thứ tự sắp xếp nằm ngoài trang hiện tại
+                        StorageUnitsRealtime.showMessage(
+                            messageAreaId,
+                            'info',
+                            `Có ô kho mới <strong>${StorageUnitsRealtime.escapeHtml(item.unitCode)}</strong> phù hợp bộ lọc vừa được tạo (nằm ngoài trang hoặc phạm vi hiển thị hiện tại). <a href="javascript:window.location.reload();" class="alert-link">Tải lại danh sách</a>`,
+                            6000
+                        );
+                    }
+                    return;
+                }
+
+                // T13-R3-F06 / T13-R4-F04: Chỉ hiển thị trạng thái chờ đồng bộ khi request mới nhất thất bại.
+                // Nếu outcome là 'superseded' do một event mới hơn đã đến, bỏ qua mà không hiện cảnh báo giả mạo.
+                if (outcome && outcome.status === 'failed') {
+                    showSyncPendingWarning();
+                }
+            });
+
+            // Listener: Receiver_UpdateStorageUnit - Cập nhật bảng ngay lập tức hoặc gỡ dòng nếu rời bộ lọc
+            connection.on("Receiver_UpdateStorageUnit", async function (item) {
+                console.log("Receiver_UpdateStorageUnit received:", item);
+
+                // T13-R2-F03 / T13-R3-F05 / T13-R4-F04: Refetch từ server để đồng bộ chính xác thứ tự và bộ lọc
+                const outcome = await StorageUnitsRealtime.refetchTable('storageUnitsTableBody', 'storageUnitsTotalCount', item.id, 'update');
+                if (outcome && outcome.status === 'applied') {
+                    const rowInDom = document.getElementById('unit-row-' + item.id);
+                    if (rowInDom) {
+                        StorageUnitsRealtime.showMessage(
+                            messageAreaId,
+                            'info',
+                            `Ô kho <strong>${StorageUnitsRealtime.escapeHtml(item.unitCode)}</strong> (#${item.id}) vừa được cập nhật.`,
+                            4000
+                        );
+                    } else {
+                        renderEmptyTableIfNeeded();
+                    }
+                    return;
+                }
+
+                // T13-R3-F06 / T13-R4-F04: Chỉ hiển thị cảnh báo nếu thất bại thật sự
+                if (outcome && outcome.status === 'failed') {
+                    showSyncPendingWarning();
+                }
+            });
+
+            // Listener: Receiver_DeleteStorageUnit - Bỏ dòng tương ứng khỏi bảng (theo mẫu TeacherCode)
+            connection.on("Receiver_DeleteStorageUnit", async function (id) {
+                console.log("Receiver_DeleteStorageUnit received for id:", id);
+
+                // T13-R2-F04 / T13-R3-F05 / T13-R4-F04: Refetch từ server để kéo dòng kế tiếp từ trang sau vào trang đầy và đồng bộ số tổng
+                const outcome = await StorageUnitsRealtime.refetchTable('storageUnitsTableBody', 'storageUnitsTotalCount', null, 'delete');
+                if (outcome && outcome.status === 'applied') {
+                    renderEmptyTableIfNeeded();
+                    StorageUnitsRealtime.showMessage(
+                        messageAreaId,
+                        'warning',
+                        `Ô kho mã số ID #${StorageUnitsRealtime.escapeHtml(id)} vừa bị xóa khỏi hệ thống.`,
+                        4500
+                    );
+                    return;
+                }
+
+                // T13-R3-F06 / T13-R4-F04: Chỉ hiển thị cảnh báo nếu thất bại thật sự
+                if (outcome && outcome.status === 'failed') {
+                    showSyncPendingWarning();
+                }
+            });
+
+            // Reconnection: Tự động tải lại dữ liệu mới nhất sau khi ngắt kết nối phục hồi
+            connection.onreconnected(function (connectionId) {
+                console.log("SignalR reconnected:", connectionId);
+                StorageUnitsRealtime.showMessage(
+                    messageAreaId,
+                    'success',
+                    'Kết nối Realtime đã phục hồi. Đang tải lại dữ liệu mới nhất...',
+                    3000
+                );
+                setTimeout(() => window.location.reload(), 1000);
+            });
+
+            // 3. Khởi chạy kết nối SAU KHI đã đăng ký đầy đủ listeners
+            connection.start().then(function () {
+                console.log("Connected to /storageUnitHub successfully.");
+            }).catch(function (err) {
+                console.error("SignalR Connection Error:", err.toString());
+            });
+        });
+    </script>
+}

@@ -1,0 +1,137 @@
+@page "/Admin/Accounts/Create"
+@model SelfStorageManagementSystem.Web.Pages.Admin.Accounts.CreateModel
+@using SelfStorageManagementSystem.BusinessLogic.Common.Constants
+@{
+    ViewData["Title"] = "Thêm Nhân Viên Mới";
+}
+
+<div class="container py-4">
+    <!-- Breadcrumb & Tiêu đề -->
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a asp-page="./Index">Quản trị tài khoản</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Thêm nhân viên mới</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-1 text-primary fw-bold">Khởi Tạo Tài Khoản Nhân Viên</h1>
+            <p class="text-muted mb-0 small">Tạo tài khoản người dùng kèm hồ sơ nhân sự và phân công cơ sở ban đầu</p>
+        </div>
+        <div>
+            <a asp-page="./Index" class="btn btn-outline-secondary">
+                &larr; Quay lại danh sách
+            </a>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm mb-4" role="alert">
+            <div class="d-flex align-items-center">
+                <span class="me-2 fs-5 text-danger fw-bold">&#10008;</span>
+                <div>@Model.ErrorMessage</div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3 border-bottom">
+                    <h5 class="card-title mb-0 fw-semibold text-secondary">
+                        Thông Tin Hồ Sơ &amp; Đăng Nhập
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" id="createStaffForm">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-3" role="alert"></div>
+
+                        <!-- 1. Thông tin đăng nhập -->
+                        <h6 class="fw-bold text-primary mb-3">1. Thông tin đăng nhập hệ thống</h6>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label asp-for="Input.Email" class="form-label fw-semibold small"></label> <span class="text-danger">*</span>
+                                <input asp-for="Input.Email" class="form-control" placeholder="staff@example.com" autocomplete="off" />
+                                <span asp-validation-for="Input.Email" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Input.Password" class="form-label fw-semibold small"></label> <span class="text-danger">*</span>
+                                <input asp-for="Input.Password" class="form-control" placeholder="Tối thiểu 6 ký tự" autocomplete="new-password" />
+                                <span asp-validation-for="Input.Password" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <!-- 2. Thông tin cá nhân & hồ sơ nhân sự -->
+                        <h6 class="fw-bold text-primary mb-3">2. Hồ sơ cá nhân nhân sự</h6>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label asp-for="Input.FullName" class="form-label fw-semibold small"></label> <span class="text-danger">*</span>
+                                <input asp-for="Input.FullName" class="form-control" placeholder="Nguyễn Văn A" />
+                                <span asp-validation-for="Input.FullName" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Input.EmployeeCode" class="form-label fw-semibold small"></label> <span class="text-danger">*</span>
+                                <input asp-for="Input.EmployeeCode" class="form-control" placeholder="NV-001" />
+                                <span asp-validation-for="Input.EmployeeCode" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Input.PhoneNumber" class="form-label fw-semibold small"></label>
+                                <input asp-for="Input.PhoneNumber" class="form-control" placeholder="0901234567" />
+                                <span asp-validation-for="Input.PhoneNumber" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Input.HireDate" class="form-label fw-semibold small"></label> <span class="text-danger">*</span>
+                                <input asp-for="Input.HireDate" type="date" class="form-control" />
+                                <span asp-validation-for="Input.HireDate" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <!-- 3. Phân quyền & Cơ sở -->
+                        <h6 class="fw-bold text-primary mb-3">3. Phân vai trò &amp; Cơ sở ban đầu</h6>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label asp-for="Input.RoleCode" class="form-label fw-semibold small"></label> <span class="text-danger">*</span>
+                                <select asp-for="Input.RoleCode" class="form-select" id="selectRoleCode">
+                                    <option value="@RoleConstants.FacilityStaff">Nhân viên quầy (facility_staff)</option>
+                                    <option value="@RoleConstants.FacilityManager">Quản lý cơ sở (facility_manager)</option>
+                                    <option value="@RoleConstants.BusinessOperationsManager">Quản lý vận hành (operations_manager)</option>
+                                </select>
+                                <span asp-validation-for="Input.RoleCode" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6" id="initialFacilityGroup">
+                                <label asp-for="Input.InitialFacilityId" class="form-label fw-semibold small"></label>
+                                <select asp-for="Input.InitialFacilityId" class="form-select" id="selectInitialFacility">
+                                    <option value="">-- Không phân công ngay / Phân công sau --</option>
+                                    @foreach (var fac in Model.Facilities)
+                                    {
+                                        <option value="@fac.Id">@fac.Name (@fac.Code) - @fac.City</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="Input.InitialFacilityId" class="text-danger small"></span>
+                                <div class="form-text small text-muted">
+                                    Áp dụng cho vai trò Nhân viên quầy hoặc Quản lý cơ sở.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+                            <a asp-page="./Index" class="btn btn-outline-secondary px-4">Hủy</a>
+                            <button type="submit" class="btn btn-primary px-4 fw-semibold shadow-sm" id="btnSubmitCreateStaff">
+                                <span class="me-1 fw-bold">&#10004;</span> Khởi Tạo Nhân Viên
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/admin-accounts.js" asp-append-version="true"></script>
+}

@@ -1,0 +1,25 @@
+@*
+    Partial hiển thị trạng thái dữ liệu trống (Empty State)
+    Áp dụng cho danh sách ô kho, lịch sử đặt chỗ, hóa đơn, hoặc thông báo khi chưa có dữ liệu.
+*@
+
+@model SelfStorageManagementSystem.Web.Models.EmptyStateViewModel
+@{
+    var title = Model?.Title ?? "Chưa có dữ liệu";
+    var message = Model?.Message ?? "Hiện tại chưa có bản ghi hoặc thông tin nào để hiển thị.";
+    var actionText = Model?.ActionText;
+    var actionUrl = Model?.ActionUrl;
+    var icon = Model?.Icon ?? "&#128451;";
+}
+
+<div class="empty-state-box text-center py-5 my-3 px-3 border rounded bg-white shadow-sm">
+    <div class="empty-state-icon fs-1 text-secondary mb-2">@Html.Raw(icon)</div>
+    <h5 class="empty-state-title fw-bold text-dark mb-1">@title</h5>
+    <p class="empty-state-message text-muted mb-3 small">@message</p>
+    @if (!string.IsNullOrEmpty(actionText) && !string.IsNullOrEmpty(actionUrl))
+    {
+        <a href="@actionUrl" class="btn btn-primary btn-sm px-3">
+            @actionText
+        </a>
+    }
+</div>

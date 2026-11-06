@@ -1,0 +1,1889 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="44b48cdb-e546-4981-a2a7-cf80dfd8e85a" name="tommy@TOM 2026-10-16 15:11:11" runUser="TOM\tommy" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-16T15:11:11.2342456+07:00" queuing="2026-10-16T15:11:11.2342457+07:00" start="2026-10-16T15:11:08.3161270+07:00" finish="2026-10-16T15:11:13.7593005+07:00" />
+  <TestSettings name="default" id="ac95a4f2-ae04-426a-a095-f52ee10c3a4e">
+    <Deployment runDeploymentRoot="tommy_TOM_2026-10-16_15_11_11" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="af6fc396-ea51-4a46-a568-382b496988aa" testId="7d1f892d-9037-e4c7-8027-39e53fa61fb6" testName="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests.CatalogCompatibility_RedirectsToCreatePage_WhenFacilityAndUnitTypeProvided" computerName="TOM" duration="00:00:00.0296287" startTime="2026-10-16T15:11:11.6149963+07:00" endTime="2026-10-16T15:11:11.6149963+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="af6fc396-ea51-4a46-a568-382b496988aa" />
+    <UnitTestResult executionId="eac81648-a053-4768-8d29-191066ea660c" testId="8eaca897-bee6-133f-ce46-c55bda06b8b5" testName="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Edit_Post_ValidData_UpdatesUnit_PreservesFacilityAndType_AndRedirects" computerName="TOM" duration="00:00:00.0489804" startTime="2026-10-16T15:11:11.8801525+07:00" endTime="2026-10-16T15:11:11.8801526+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="eac81648-a053-4768-8d29-191066ea660c" />
+    <UnitTestResult executionId="46188e16-b63e-47cf-b870-5670ce4ba5c6" testId="1f6e9e02-fa7e-da4a-2221-49725f4e7688" testName="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests.CancelReservation_ActiveHold_Succeeds_AndIsIdempotent" computerName="TOM" duration="00:00:00.0526517" startTime="2026-10-16T15:11:12.7891644+07:00" endTime="2026-10-16T15:11:12.7891646+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="46188e16-b63e-47cf-b870-5670ce4ba5c6" />
+    <UnitTestResult executionId="65413ac3-cef5-4c99-b423-106d12fbb57d" testId="bcb7be64-14f3-9ea9-1e6e-e8a5cc3fdba4" testName="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests.HoldDeadline_UsesEachFacilityTimezone_OnDetailsAndBothLists_WithoutChangingUtcInstant" computerName="TOM" duration="00:00:00.0545789" startTime="2026-10-16T15:11:12.6128065+07:00" endTime="2026-10-16T15:11:12.6128066+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="65413ac3-cef5-4c99-b423-106d12fbb57d" />
+    <UnitTestResult executionId="0410ead3-2d5d-4d74-9935-041f99051ee2" testId="53a27d9f-eaf9-efe5-16c5-88db7bbe3722" testName="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests.MyReservations_FiltersByStatus_AndShowsAccurateBadges" computerName="TOM" duration="00:00:00.1631031" startTime="2026-10-16T15:11:11.2042734+07:00" endTime="2026-10-16T15:11:11.2042735+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0410ead3-2d5d-4d74-9935-041f99051ee2" />
+    <UnitTestResult executionId="67c9693b-037a-4fbf-bf1c-c85029a25535" testId="960ec249-2fbb-d7d1-42d8-362132f5994e" testName="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests.CreateReservation_ValidData_CreatesHoldFor15Minutes_AndCalculatesFinancials" computerName="TOM" duration="00:00:00.0499793" startTime="2026-10-16T15:11:13.0026047+07:00" endTime="2026-10-16T15:11:13.0026049+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="67c9693b-037a-4fbf-bf1c-c85029a25535" />
+    <UnitTestResult executionId="4be82c39-21f5-496f-b17c-3b98ce635b4c" testId="f215285b-0ab9-373a-27fa-e5a8c51be659" testName="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Index_AnonymousUser_RedirectsToLogin" computerName="TOM" duration="00:00:00.0030715" startTime="2026-10-16T15:11:10.7937327+07:00" endTime="2026-10-16T15:11:10.7937328+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4be82c39-21f5-496f-b17c-3b98ce635b4c" />
+    <UnitTestResult executionId="6e6d04c2-a53a-45a3-9abb-8b1c46bbd9a6" testId="e49a97dc-facb-df2f-13ce-696e02149d6b" testName="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests.VerifyId_Successful_ShowsVerifiedBadge" computerName="TOM" duration="00:00:00.1302369" startTime="2026-10-16T15:11:12.4702891+07:00" endTime="2026-10-16T15:11:12.4702891+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6e6d04c2-a53a-45a3-9abb-8b1c46bbd9a6" />
+    <UnitTestResult executionId="02911fe1-e40f-4f6c-a553-0ad4ac1dc34d" testId="5fca735d-2096-94ff-056b-e4c2e3211948" testName="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests.ReleaseUnit_StaleAllocationId_ShowsStaleConflictAlert" computerName="TOM" duration="00:00:00.1338445" startTime="2026-10-16T15:11:13.2312690+07:00" endTime="2026-10-16T15:11:13.2312692+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="02911fe1-e40f-4f6c-a553-0ad4ac1dc34d" />
+    <UnitTestResult executionId="f90cfe3c-d21d-429b-8db0-f2fa5893b599" testId="3ae0899c-e065-2447-e507-e2765d57851e" testName="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests.Anonymous_Access_RedirectsToLogin" computerName="TOM" duration="00:00:00.0018078" startTime="2026-10-16T15:11:12.4724360+07:00" endTime="2026-10-16T15:11:12.4724361+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f90cfe3c-d21d-429b-8db0-f2fa5893b599" />
+    <UnitTestResult executionId="1e7d7377-6194-431c-9207-3ae86559e33e" testId="3c484d69-31c9-a12c-eeb5-2a855f331dbc" testName="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Delete_Get_OnlyShowsConfirmation_DoesNotDeleteUnit" computerName="TOM" duration="00:00:00.0321192" startTime="2026-10-16T15:11:11.6657757+07:00" endTime="2026-10-16T15:11:11.6657759+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1e7d7377-6194-431c-9207-3ae86559e33e" />
+    <UnitTestResult executionId="5dbc88e9-3627-4dca-9ab2-e65757e2ca75" testId="e3ea67ba-61b5-caec-fe47-660d52c8f1e1" testName="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Index_CustomerRole_IsForbidden" computerName="TOM" duration="00:00:00.0341508" startTime="2026-10-16T15:11:11.2094446+07:00" endTime="2026-10-16T15:11:11.2094447+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5dbc88e9-3627-4dca-9ab2-e65757e2ca75" />
+    <UnitTestResult executionId="f14d727c-5fdc-4569-9df5-fc43dec8e656" testId="a3d9ddc5-074a-6b2d-7761-1715239084ea" testName="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Edit_Post_StaleExpectedUpdatedAt_ReturnsConcurrencyConflictAlert_WithRefreshOption" computerName="TOM" duration="00:00:00.0729707" startTime="2026-10-16T15:11:11.4613582+07:00" endTime="2026-10-16T15:11:11.4613583+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f14d727c-5fdc-4569-9df5-fc43dec8e656" />
+    <UnitTestResult executionId="72fd5354-9bfa-499b-a436-6822ddaefebf" testId="b1d33396-9029-defd-45f1-e90df55d68e8" testName="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests.Staff_WithActiveAssignment_Access_Succeeds" computerName="TOM" duration="00:00:00.0984387" startTime="2026-10-16T15:11:11.7298024+07:00" endTime="2026-10-16T15:11:11.7298025+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="72fd5354-9bfa-499b-a436-6822ddaefebf" />
+    <UnitTestResult executionId="8dd19074-4e44-48f8-903f-cdaf45ff8b61" testId="e001d566-3979-31eb-6366-31a12559d372" testName="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Create_Post_ManagerOutsideFacilityScope_ReturnsForbiddenError" computerName="TOM" duration="00:00:00.0383154" startTime="2026-10-16T15:11:11.7826767+07:00" endTime="2026-10-16T15:11:11.7826768+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8dd19074-4e44-48f8-903f-cdaf45ff8b61" />
+    <UnitTestResult executionId="1a779f7c-f556-4df0-9435-3f14211279c3" testId="2a6a133d-06fe-4aa0-dc37-9046461c2e85" testName="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Create_Post_Manager_ValidData_CreatesUnit_AndRedirectsWithSuccessMessage" computerName="TOM" duration="00:00:00.0478101" startTime="2026-10-16T15:11:11.8308039+07:00" endTime="2026-10-16T15:11:11.8308041+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1a779f7c-f556-4df0-9435-3f14211279c3" />
+    <UnitTestResult executionId="57b52ccf-6df6-4dbc-8107-af0b8ba28772" testId="f30d2b6f-2368-11f7-aa40-42ebda6eefdc" testName="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests.ReissuePin_DocumentMismatch_Fails" computerName="TOM" duration="00:00:00.3717751" startTime="2026-10-16T15:11:12.3395802+07:00" endTime="2026-10-16T15:11:12.3395803+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="57b52ccf-6df6-4dbc-8107-af0b8ba28772" />
+    <UnitTestResult executionId="563c2621-b391-41c9-82d9-8f6098aeaaa2" testId="6da62b10-b96f-efcf-c17b-f1072d9f63c3" testName="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests.Search_ValidCode_RendersCustomerAndUnitInfo" computerName="TOM" duration="00:00:00.1103636" startTime="2026-10-16T15:11:12.6941627+07:00" endTime="2026-10-16T15:11:12.6941628+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="563c2621-b391-41c9-82d9-8f6098aeaaa2" />
+    <UnitTestResult executionId="20631fda-0745-4c40-85a0-93f15eb2c378" testId="2a809f8c-da21-5695-c226-c933cd5e9520" testName="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests.Ownership_OtherCustomer_CannotViewOrCancelReservation_ReturnsForbidden" computerName="TOM" duration="00:00:00.0716015" startTime="2026-10-16T15:11:11.6869594+07:00" endTime="2026-10-16T15:11:11.6869595+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="20631fda-0745-4c40-85a0-93f15eb2c378" />
+    <UnitTestResult executionId="3aa31033-5090-4b67-8a66-03f18015778c" testId="60903016-35fe-c85a-db6e-58d574568be3" testName="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests.Worker_OnStartup_ImmediatelyExpiresOverdueHolds_AndInvokesT15Hook" computerName="TOM" duration="00:00:00.3802771" startTime="2026-10-16T15:11:11.5850218+07:00" endTime="2026-10-16T15:11:11.5850219+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3aa31033-5090-4b67-8a66-03f18015778c" />
+    <UnitTestResult executionId="f80ae192-3695-4bde-b544-be59c3f40ade" testId="dfea7d80-beee-e488-1c9d-20a6487f9f3d" testName="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests.CreateReservation_MonthEndClamping_31JanTo28Feb_AcceptedByServer_AndDurationUnder1MonthRejected" computerName="TOM" duration="00:00:00.0456410" startTime="2026-10-16T15:11:13.0485591+07:00" endTime="2026-10-16T15:11:13.0485592+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f80ae192-3695-4bde-b544-be59c3f40ade" />
+    <UnitTestResult executionId="90a8df70-553e-48d4-afbd-54c781f12fda" testId="e79d7e76-c862-f404-41b7-79824923d20d" testName="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Create_Get_FromIndex_WithFacilityId_PreservesFacility_RendersMatchingAreas_AndAjaxLookupsWork" computerName="TOM" duration="00:00:00.0489759" startTime="2026-10-16T15:11:11.6331708+07:00" endTime="2026-10-16T15:11:11.6331709+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="90a8df70-553e-48d4-afbd-54c781f12fda" />
+    <UnitTestResult executionId="9323d676-81a2-4816-8a59-dc1c9eadc0d0" testId="85daa045-47ae-6ba2-78b7-0a95a207a372" testName="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests.AdminOrOps_WithoutStaffCounterRole_Access_ShowsForbiddenWarning" computerName="TOM" duration="00:00:00.1128072" startTime="2026-10-16T15:11:13.6997374+07:00" endTime="2026-10-16T15:11:13.6997375+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9323d676-81a2-4816-8a59-dc1c9eadc0d0" />
+    <UnitTestResult executionId="6c05a458-da6c-4115-90eb-278de30f4b43" testId="49ecd8c8-bf5e-4585-7ed3-feb7fa23140f" testName="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests.Search_UnassignedStaff_ShowsForbiddenError" computerName="TOM" duration="00:00:00.1003103" startTime="2026-10-16T15:11:13.4379848+07:00" endTime="2026-10-16T15:11:13.4379849+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6c05a458-da6c-4115-90eb-278de30f4b43" />
+    <UnitTestResult executionId="8ef9e5dd-340f-4342-9a59-b6d20ef6487d" testId="ae5bfda7-d019-5c75-9cc0-5534b641777e" testName="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests.CustomerRole_Access_ReturnsForbidden" computerName="TOM" duration="00:00:00.1105467" startTime="2026-10-16T15:11:12.5833407+07:00" endTime="2026-10-16T15:11:12.5833408+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8ef9e5dd-340f-4342-9a59-b6d20ef6487d" />
+    <UnitTestResult executionId="5ddbfea0-d91e-46e7-8f06-6af16eb09c8e" testId="b0d3f7ba-e51f-538d-825a-0e47b1736490" testName="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Index_FilterByStatus_ReturnsOnlyMatchingUnits" computerName="TOM" duration="00:00:01.9338823" startTime="2026-10-16T15:11:10.7903463+07:00" endTime="2026-10-16T15:11:10.7903464+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5ddbfea0-d91e-46e7-8f06-6af16eb09c8e" />
+    <UnitTestResult executionId="7aa03af6-fe9c-436e-9670-3b84d9790a4b" testId="0dbbb8b0-4d38-3087-1ce0-d32c1364aebf" testName="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Details_Get_Staff_RendersComprehensiveUnitSpecsAndReferenceSummary" computerName="TOM" duration="00:00:00.0418697" startTime="2026-10-16T15:11:11.7079978+07:00" endTime="2026-10-16T15:11:11.7079979+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7aa03af6-fe9c-436e-9670-3b84d9790a4b" />
+    <UnitTestResult executionId="b30143bd-3504-4346-a689-dba58f04856f" testId="7a63c929-dc0a-7bc5-c361-de4dee3a633f" testName="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Delete_Post_UnitWithAllocationsOrOccupied_IsBlockedByPolicy" computerName="TOM" duration="00:00:00.0397413" startTime="2026-10-16T15:11:11.5014993+07:00" endTime="2026-10-16T15:11:11.5014994+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b30143bd-3504-4346-a689-dba58f04856f" />
+    <UnitTestResult executionId="192eb54f-d5a8-4235-95c0-5657a371652e" testId="b71c7a84-5220-7967-b5ba-6c5812fad3bf" testName="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests.CreateReservation_FacilityTimeZone_CalculatesMinStartDateConsistently_EvenWhenUtcIsPreviousDay" computerName="TOM" duration="00:00:00.0448570" startTime="2026-10-16T15:11:12.9522125+07:00" endTime="2026-10-16T15:11:12.9522127+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="192eb54f-d5a8-4235-95c0-5657a371652e" />
+    <UnitTestResult executionId="919e6745-9e6d-4f93-93a3-078787db11c0" testId="d7a88565-77a2-43bb-7ba4-80aabda7b387" testName="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Edit_Get_Manager_RendersImmutableFields_AndRoundTripExpectedUpdatedAt" computerName="TOM" duration="00:00:00.0354878" startTime="2026-10-16T15:11:11.7440045+07:00" endTime="2026-10-16T15:11:11.7440047+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="919e6745-9e6d-4f93-93a3-078787db11c0" />
+    <UnitTestResult executionId="67866d5d-ad87-4744-9e4d-9c924a85376f" testId="77d6473e-4798-9b17-1a0a-ab45b1051050" testName="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests.VerifyId_DocumentMismatch_ShowsErrorMessage" computerName="TOM" duration="00:00:00.1056602" startTime="2026-10-16T15:11:13.3372781+07:00" endTime="2026-10-16T15:11:13.3372782+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="67866d5d-ad87-4744-9e4d-9c924a85376f" />
+    <UnitTestResult executionId="83e3b91c-bd90-4fe0-b7f0-cf46711d1165" testId="973a18e9-8efa-f195-7dc8-84d915d8af63" testName="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Delete_Post_AvailableUnitWithoutReferences_DeletesSuccessfully" computerName="TOM" duration="00:00:00.0936471" startTime="2026-10-16T15:11:11.3880135+07:00" endTime="2026-10-16T15:11:11.3880136+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="83e3b91c-bd90-4fe0-b7f0-cf46711d1165" />
+    <UnitTestResult executionId="c1cc8788-8c8f-455c-8117-38d6ba963b09" testId="4b0097f5-99b1-db4e-a8d0-8b951e445e21" testName="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests.AjaxStatus_WhenReservationIsConfirmedOrCancelled_ReturnsAccurateStatus_AndDoesNotTreatAsExpired" computerName="TOM" duration="00:00:00.0318562" startTime="2026-10-16T15:11:12.9068372+07:00" endTime="2026-10-16T15:11:12.9068373+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c1cc8788-8c8f-455c-8117-38d6ba963b09" />
+    <UnitTestResult executionId="ec52b13c-83ff-462a-ab07-c34739f526fd" testId="56e770b8-1d10-af08-3b88-70bf0f9737e2" testName="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests.ReissuePin_Successful_IssuesNewPin_SetsNoStoreHeaders_AndZeroPersistence" computerName="TOM" duration="00:00:00.1842810" startTime="2026-10-16T15:11:13.0969531+07:00" endTime="2026-10-16T15:11:13.0969532+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ec52b13c-83ff-462a-ab07-c34739f526fd" />
+    <UnitTestResult executionId="9bd4f4a1-bfad-4689-907d-86b7407736b6" testId="2dd9568a-02fc-0e8d-06a2-c034ed25e794" testName="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests.Search_NonExistentCode_ShowsErrorMessage" computerName="TOM" duration="00:00:00.1020758" startTime="2026-10-16T15:11:12.7966149+07:00" endTime="2026-10-16T15:11:12.7966150+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9bd4f4a1-bfad-4689-907d-86b7407736b6" />
+    <UnitTestResult executionId="b0d994f5-0644-4c2d-ac4e-9081961afb32" testId="bcf9dc83-4c96-1ea8-816a-f751f416a1d0" testName="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Index_StaffUser_RendersTable_WithStableRowId_AndMessageArea" computerName="TOM" duration="00:00:00.1316450" startTime="2026-10-16T15:11:10.9258189+07:00" endTime="2026-10-16T15:11:10.9258190+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b0d994f5-0644-4c2d-ac4e-9081961afb32" />
+    <UnitTestResult executionId="6e34c389-3462-4faa-b0ff-7463cd08128e" testId="a0161b1f-73e5-a46a-c623-7b232774217e" testName="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests.Manager_WithActiveAssignment_Access_Succeeds" computerName="TOM" duration="00:00:00.1073113" startTime="2026-10-16T15:11:11.8374325+07:00" endTime="2026-10-16T15:11:11.8374326+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6e34c389-3462-4faa-b0ff-7463cd08128e" />
+    <UnitTestResult executionId="0b01f2b8-1856-4cb0-8856-a22249bb83c6" testId="9ade465a-eefe-7ece-a1a7-97cf9d80552b" testName="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests.Inspection_Pass_RecordsCompleted_EnablesHandover" computerName="TOM" duration="00:00:00.1429801" startTime="2026-10-16T15:11:11.6310885+07:00" endTime="2026-10-16T15:11:11.6310886+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0b01f2b8-1856-4cb0-8856-a22249bb83c6" />
+    <UnitTestResult executionId="064cc58b-c99e-4b43-9205-499602dd6bf1" testId="6292c788-cf93-6263-b2e9-7cef2a883071" testName="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests.CreateReservation_StartDateInPast_RejectsWithValidationError" computerName="TOM" duration="00:00:00.1068958" startTime="2026-10-16T15:11:12.3431334+07:00" endTime="2026-10-16T15:11:12.3431335+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="064cc58b-c99e-4b43-9205-499602dd6bf1" />
+    <UnitTestResult executionId="9794a226-0ae8-416d-ac70-842a371b1e65" testId="31842797-89c5-701b-393b-11e0efe076b4" testName="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests.CreateReservation_ActorIsStrictlyFromCookie_ClientCannotSpoofCustomerId" computerName="TOM" duration="00:00:00.0792260" startTime="2026-10-16T15:11:12.6924185+07:00" endTime="2026-10-16T15:11:12.6924187+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9794a226-0ae8-416d-ac70-842a371b1e65" />
+    <UnitTestResult executionId="d6c58121-1656-4361-840a-792ec104a6e8" testId="1e238add-dca4-0767-0aa9-bc16a05f3b81" testName="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests.Inspection_Fail_DamagedItem_ReleasesUnit_SetsMaintenance" computerName="TOM" duration="00:00:02.4842971" startTime="2026-10-16T15:11:11.3405618+07:00" endTime="2026-10-16T15:11:11.3405619+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d6c58121-1656-4361-840a-792ec104a6e8" />
+    <UnitTestResult executionId="a5a78ebf-8511-42fe-8b45-5d648da20509" testId="898b91d5-e4af-c0d2-4a63-a956905d7da6" testName="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Delete_Post_ManagerOutsideFacilityScope_ReturnsForbiddenControlled_DoesNotReturn500_AndDoesNotDeleteData" computerName="TOM" duration="00:00:00.2485906" startTime="2026-10-16T15:11:11.1748346+07:00" endTime="2026-10-16T15:11:11.1748348+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a5a78ebf-8511-42fe-8b45-5d648da20509" />
+    <UnitTestResult executionId="b42e6646-495d-41ba-ac5f-5679a5c2e45e" testId="3628b853-76da-d711-e37c-905f0c95b336" testName="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests.Worker_DisabledByConfiguration_DoesNotRun" computerName="TOM" duration="00:00:00.2141052" startTime="2026-10-16T15:11:12.5576470+07:00" endTime="2026-10-16T15:11:12.5576473+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b42e6646-495d-41ba-ac5f-5679a5c2e45e" />
+    <UnitTestResult executionId="577c0cd0-b6fe-4046-b861-64dd759b7314" testId="fdfb86c9-6d35-4e91-f534-492877a18dbc" testName="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests.MultipleCountdowns_OnIndexAndMyReservations_RenderCorrectRowAttributes_WithFacilityTimeZone" computerName="TOM" duration="00:00:01.9195891" startTime="2026-10-16T15:11:10.7793720+07:00" endTime="2026-10-16T15:11:10.7793910+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="577c0cd0-b6fe-4046-b861-64dd759b7314" />
+    <UnitTestResult executionId="eb633467-4d93-4657-a59e-58f7d7f65ab4" testId="9fd3a4b4-2fdd-15fa-c7ba-9d244a1b2130" testName="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Create_Get_Manager_RendersFormWithLookups" computerName="TOM" duration="00:00:00.0334557" startTime="2026-10-16T15:11:11.5352515+07:00" endTime="2026-10-16T15:11:11.5352516+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="eb633467-4d93-4657-a59e-58f7d7f65ab4" />
+    <UnitTestResult executionId="9a00f5ff-9456-42f3-926e-b72b811c6da1" testId="a823bfd3-1e72-7393-78ab-6f8e9f1dc37c" testName="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Create_Post_DuplicateUnitCode_ReturnsConflictError_AndPreservesInput" computerName="TOM" duration="00:00:00.0839884" startTime="2026-10-16T15:11:11.2937992+07:00" endTime="2026-10-16T15:11:11.2937993+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9a00f5ff-9456-42f3-926e-b72b811c6da1" />
+    <UnitTestResult executionId="57ee4336-79ae-4926-bc50-fb33900d5db8" testId="044a467e-d4b2-55fc-16c2-05c74e765eab" testName="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests.Inspection_Fail_IsUnsafeFlag_ReleasesUnit_SetsMaintenance" computerName="TOM" duration="00:00:00.1294120" startTime="2026-10-16T15:11:11.9672072+07:00" endTime="2026-10-16T15:11:11.9672073+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="57ee4336-79ae-4926-bc50-fb33900d5db8" />
+    <UnitTestResult executionId="ce9f5995-9699-4be0-8744-5aa3dcb7037a" testId="ae2a1d43-9f42-e8f4-85f4-d0908f8e5c3e" testName="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests.ExpiredReservation_ServerDynamicallyExpires_AndRejectsCancelWithControlledConflict" computerName="TOM" duration="00:00:00.2597655" startTime="2026-10-16T15:11:11.0405920+07:00" endTime="2026-10-16T15:11:11.0405923+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ce9f5995-9699-4be0-8744-5aa3dcb7037a" />
+    <UnitTestResult executionId="0901dfd6-7528-4866-a3f2-b2a63067a73f" testId="5b917575-708b-958f-a256-d34cacbd7192" testName="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests.CompleteCheckIn_Successful_IssuesPin_SetsNoStoreHeaders_AndZeroPersistence" computerName="TOM" duration="00:00:00.1481889" startTime="2026-10-16T15:11:13.5865734+07:00" endTime="2026-10-16T15:11:13.5865735+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0901dfd6-7528-4866-a3f2-b2a63067a73f" />
+    <UnitTestResult executionId="3cd5b899-4d21-42bc-9997-4b71d11f4ac7" testId="bcc5cf17-866a-1a86-b8ba-b53b35b0a0c0" testName="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests.TerminatedStaff_WithExistingSession_CannotSearchOrVerifyIdentity" computerName="TOM" duration="00:00:00.1153648" startTime="2026-10-16T15:11:12.9123164+07:00" endTime="2026-10-16T15:11:12.9123165+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3cd5b899-4d21-42bc-9997-4b71d11f4ac7" />
+    <UnitTestResult executionId="17a5138c-5c5d-4e52-a39c-8bf5e7bafc4f" testId="6bc55833-5417-f675-adff-83365f1b8f8f" testName="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests.ConcurrentReservationHold_WhenOnlyOneSlotAvailable_OneSucceeds_AndOneReturnsControlledConflict" computerName="TOM" duration="00:00:00.0850640" startTime="2026-10-16T15:11:12.8746291+07:00" endTime="2026-10-16T15:11:12.8746295+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="17a5138c-5c5d-4e52-a39c-8bf5e7bafc4f" />
+    <UnitTestResult executionId="e4a55771-2025-452d-8305-dd321a6eb2e1" testId="2c43e2bb-0587-f8e2-b75b-68ab8423a35a" testName="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests.ReloadReservationDetails_PreservesIdenticalHoldDeadline_AndDoesNotCreateDuplicateReservation" computerName="TOM" duration="00:00:00.5483871" startTime="2026-10-16T15:11:12.2358511+07:00" endTime="2026-10-16T15:11:12.2358511+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e4a55771-2025-452d-8305-dd321a6eb2e1" />
+    <UnitTestResult executionId="1e9afd2e-245a-4ae8-986a-2c2f78d8c47b" testId="1cdc78e5-7810-1366-07d0-67745dad5360" testName="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests.CreateReservation_DurationLessThan1Month_RejectsWithValidationError" computerName="TOM" duration="00:00:00.0368593" startTime="2026-10-16T15:11:12.7297582+07:00" endTime="2026-10-16T15:11:12.7297583+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1e9afd2e-245a-4ae8-986a-2c2f78d8c47b" />
+    <UnitTestResult executionId="fbe4563e-f833-4a5c-a22d-b0bad462f313" testId="bc495e7a-6c9e-364f-6400-745b592ae8e7" testName="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Create_Post_StaffUser_IsReadOnly_CannotCreateUnit" computerName="TOM" duration="00:00:00.0483141" startTime="2026-10-16T15:11:11.5838985+07:00" endTime="2026-10-16T15:11:11.5838986+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fbe4563e-f833-4a5c-a22d-b0bad462f313" />
+    <UnitTestResult executionId="d54d7453-0b03-43d0-832d-ca51c20573d1" testId="60d93258-fc4c-a7a2-04cc-f8c52f96ef64" testName="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests.AssignUnit_And_ReleaseUnit_LifecycleSucceeds" computerName="TOM" duration="00:00:00.1466155" startTime="2026-10-16T15:11:11.4875739+07:00" endTime="2026-10-16T15:11:11.4875740+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d54d7453-0b03-43d0-832d-ca51c20573d1" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Index_CustomerRole_IsForbidden" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="e3ea67ba-61b5-caec-fe47-660d52c8f1e1">
+      <Execution id="5dbc88e9-3627-4dca-9ab2-e65757e2ca75" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests" name="Index_CustomerRole_IsForbidden" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests.VerifyId_DocumentMismatch_ShowsErrorMessage" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="77d6473e-4798-9b17-1a0a-ab45b1051050">
+      <Execution id="67866d5d-ad87-4744-9e4d-9c924a85376f" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests" name="VerifyId_DocumentMismatch_ShowsErrorMessage" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests.Search_UnassignedStaff_ShowsForbiddenError" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="49ecd8c8-bf5e-4585-7ed3-feb7fa23140f">
+      <Execution id="6c05a458-da6c-4115-90eb-278de30f4b43" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests" name="Search_UnassignedStaff_ShowsForbiddenError" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Edit_Post_ValidData_UpdatesUnit_PreservesFacilityAndType_AndRedirects" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="8eaca897-bee6-133f-ce46-c55bda06b8b5">
+      <Execution id="eac81648-a053-4768-8d29-191066ea660c" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests" name="Edit_Post_ValidData_UpdatesUnit_PreservesFacilityAndType_AndRedirects" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Create_Post_ManagerOutsideFacilityScope_ReturnsForbiddenError" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="e001d566-3979-31eb-6366-31a12559d372">
+      <Execution id="8dd19074-4e44-48f8-903f-cdaf45ff8b61" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests" name="Create_Post_ManagerOutsideFacilityScope_ReturnsForbiddenError" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests.CreateReservation_ActorIsStrictlyFromCookie_ClientCannotSpoofCustomerId" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="31842797-89c5-701b-393b-11e0efe076b4">
+      <Execution id="9794a226-0ae8-416d-ac70-842a371b1e65" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests" name="CreateReservation_ActorIsStrictlyFromCookie_ClientCannotSpoofCustomerId" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests.Worker_DisabledByConfiguration_DoesNotRun" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="3628b853-76da-d711-e37c-905f0c95b336">
+      <Execution id="b42e6646-495d-41ba-ac5f-5679a5c2e45e" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests" name="Worker_DisabledByConfiguration_DoesNotRun" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests.AdminOrOps_WithoutStaffCounterRole_Access_ShowsForbiddenWarning" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="85daa045-47ae-6ba2-78b7-0a95a207a372">
+      <Execution id="9323d676-81a2-4816-8a59-dc1c9eadc0d0" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests" name="AdminOrOps_WithoutStaffCounterRole_Access_ShowsForbiddenWarning" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests.Ownership_OtherCustomer_CannotViewOrCancelReservation_ReturnsForbidden" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="2a809f8c-da21-5695-c226-c933cd5e9520">
+      <Execution id="20631fda-0745-4c40-85a0-93f15eb2c378" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests" name="Ownership_OtherCustomer_CannotViewOrCancelReservation_ReturnsForbidden" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests.CatalogCompatibility_RedirectsToCreatePage_WhenFacilityAndUnitTypeProvided" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="7d1f892d-9037-e4c7-8027-39e53fa61fb6">
+      <Execution id="af6fc396-ea51-4a46-a568-382b496988aa" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests" name="CatalogCompatibility_RedirectsToCreatePage_WhenFacilityAndUnitTypeProvided" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Edit_Get_Manager_RendersImmutableFields_AndRoundTripExpectedUpdatedAt" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="d7a88565-77a2-43bb-7ba4-80aabda7b387">
+      <Execution id="919e6745-9e6d-4f93-93a3-078787db11c0" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests" name="Edit_Get_Manager_RendersImmutableFields_AndRoundTripExpectedUpdatedAt" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Create_Post_StaffUser_IsReadOnly_CannotCreateUnit" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="bc495e7a-6c9e-364f-6400-745b592ae8e7">
+      <Execution id="fbe4563e-f833-4a5c-a22d-b0bad462f313" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests" name="Create_Post_StaffUser_IsReadOnly_CannotCreateUnit" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests.Inspection_Pass_RecordsCompleted_EnablesHandover" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="9ade465a-eefe-7ece-a1a7-97cf9d80552b">
+      <Execution id="0b01f2b8-1856-4cb0-8856-a22249bb83c6" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests" name="Inspection_Pass_RecordsCompleted_EnablesHandover" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Edit_Post_StaleExpectedUpdatedAt_ReturnsConcurrencyConflictAlert_WithRefreshOption" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="a3d9ddc5-074a-6b2d-7761-1715239084ea">
+      <Execution id="f14d727c-5fdc-4569-9df5-fc43dec8e656" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests" name="Edit_Post_StaleExpectedUpdatedAt_ReturnsConcurrencyConflictAlert_WithRefreshOption" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests.HoldDeadline_UsesEachFacilityTimezone_OnDetailsAndBothLists_WithoutChangingUtcInstant" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="bcb7be64-14f3-9ea9-1e6e-e8a5cc3fdba4">
+      <Execution id="65413ac3-cef5-4c99-b423-106d12fbb57d" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests" name="HoldDeadline_UsesEachFacilityTimezone_OnDetailsAndBothLists_WithoutChangingUtcInstant" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests.Inspection_Fail_DamagedItem_ReleasesUnit_SetsMaintenance" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="1e238add-dca4-0767-0aa9-bc16a05f3b81">
+      <Execution id="d6c58121-1656-4361-840a-792ec104a6e8" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests" name="Inspection_Fail_DamagedItem_ReleasesUnit_SetsMaintenance" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests.CreateReservation_FacilityTimeZone_CalculatesMinStartDateConsistently_EvenWhenUtcIsPreviousDay" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="b71c7a84-5220-7967-b5ba-6c5812fad3bf">
+      <Execution id="192eb54f-d5a8-4235-95c0-5657a371652e" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests" name="CreateReservation_FacilityTimeZone_CalculatesMinStartDateConsistently_EvenWhenUtcIsPreviousDay" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Delete_Post_ManagerOutsideFacilityScope_ReturnsForbiddenControlled_DoesNotReturn500_AndDoesNotDeleteData" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="898b91d5-e4af-c0d2-4a63-a956905d7da6">
+      <Execution id="a5a78ebf-8511-42fe-8b45-5d648da20509" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests" name="Delete_Post_ManagerOutsideFacilityScope_ReturnsForbiddenControlled_DoesNotReturn500_AndDoesNotDeleteData" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests.ReleaseUnit_StaleAllocationId_ShowsStaleConflictAlert" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="5fca735d-2096-94ff-056b-e4c2e3211948">
+      <Execution id="02911fe1-e40f-4f6c-a553-0ad4ac1dc34d" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests" name="ReleaseUnit_StaleAllocationId_ShowsStaleConflictAlert" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests.CustomerRole_Access_ReturnsForbidden" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="ae5bfda7-d019-5c75-9cc0-5534b641777e">
+      <Execution id="8ef9e5dd-340f-4342-9a59-b6d20ef6487d" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests" name="CustomerRole_Access_ReturnsForbidden" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests.AssignUnit_And_ReleaseUnit_LifecycleSucceeds" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="60d93258-fc4c-a7a2-04cc-f8c52f96ef64">
+      <Execution id="d54d7453-0b03-43d0-832d-ca51c20573d1" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests" name="AssignUnit_And_ReleaseUnit_LifecycleSucceeds" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests.Staff_WithActiveAssignment_Access_Succeeds" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="b1d33396-9029-defd-45f1-e90df55d68e8">
+      <Execution id="72fd5354-9bfa-499b-a436-6822ddaefebf" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests" name="Staff_WithActiveAssignment_Access_Succeeds" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests.AjaxStatus_WhenReservationIsConfirmedOrCancelled_ReturnsAccurateStatus_AndDoesNotTreatAsExpired" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="4b0097f5-99b1-db4e-a8d0-8b951e445e21">
+      <Execution id="c1cc8788-8c8f-455c-8117-38d6ba963b09" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests" name="AjaxStatus_WhenReservationIsConfirmedOrCancelled_ReturnsAccurateStatus_AndDoesNotTreatAsExpired" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests.VerifyId_Successful_ShowsVerifiedBadge" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="e49a97dc-facb-df2f-13ce-696e02149d6b">
+      <Execution id="6e6d04c2-a53a-45a3-9abb-8b1c46bbd9a6" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests" name="VerifyId_Successful_ShowsVerifiedBadge" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests.ReloadReservationDetails_PreservesIdenticalHoldDeadline_AndDoesNotCreateDuplicateReservation" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="2c43e2bb-0587-f8e2-b75b-68ab8423a35a">
+      <Execution id="e4a55771-2025-452d-8305-dd321a6eb2e1" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests" name="ReloadReservationDetails_PreservesIdenticalHoldDeadline_AndDoesNotCreateDuplicateReservation" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests.Inspection_Fail_IsUnsafeFlag_ReleasesUnit_SetsMaintenance" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="044a467e-d4b2-55fc-16c2-05c74e765eab">
+      <Execution id="57ee4336-79ae-4926-bc50-fb33900d5db8" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests" name="Inspection_Fail_IsUnsafeFlag_ReleasesUnit_SetsMaintenance" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Delete_Post_AvailableUnitWithoutReferences_DeletesSuccessfully" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="973a18e9-8efa-f195-7dc8-84d915d8af63">
+      <Execution id="83e3b91c-bd90-4fe0-b7f0-cf46711d1165" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests" name="Delete_Post_AvailableUnitWithoutReferences_DeletesSuccessfully" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests.TerminatedStaff_WithExistingSession_CannotSearchOrVerifyIdentity" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="bcc5cf17-866a-1a86-b8ba-b53b35b0a0c0">
+      <Execution id="3cd5b899-4d21-42bc-9997-4b71d11f4ac7" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests" name="TerminatedStaff_WithExistingSession_CannotSearchOrVerifyIdentity" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Index_StaffUser_RendersTable_WithStableRowId_AndMessageArea" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="bcf9dc83-4c96-1ea8-816a-f751f416a1d0">
+      <Execution id="b0d994f5-0644-4c2d-ac4e-9081961afb32" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests" name="Index_StaffUser_RendersTable_WithStableRowId_AndMessageArea" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests.CreateReservation_MonthEndClamping_31JanTo28Feb_AcceptedByServer_AndDurationUnder1MonthRejected" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="dfea7d80-beee-e488-1c9d-20a6487f9f3d">
+      <Execution id="f80ae192-3695-4bde-b544-be59c3f40ade" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests" name="CreateReservation_MonthEndClamping_31JanTo28Feb_AcceptedByServer_AndDurationUnder1MonthRejected" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests.Search_ValidCode_RendersCustomerAndUnitInfo" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="6da62b10-b96f-efcf-c17b-f1072d9f63c3">
+      <Execution id="563c2621-b391-41c9-82d9-8f6098aeaaa2" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests" name="Search_ValidCode_RendersCustomerAndUnitInfo" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests.Worker_OnStartup_ImmediatelyExpiresOverdueHolds_AndInvokesT15Hook" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="60903016-35fe-c85a-db6e-58d574568be3">
+      <Execution id="3aa31033-5090-4b67-8a66-03f18015778c" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests" name="Worker_OnStartup_ImmediatelyExpiresOverdueHolds_AndInvokesT15Hook" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Index_AnonymousUser_RedirectsToLogin" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="f215285b-0ab9-373a-27fa-e5a8c51be659">
+      <Execution id="4be82c39-21f5-496f-b17c-3b98ce635b4c" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests" name="Index_AnonymousUser_RedirectsToLogin" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Create_Post_Manager_ValidData_CreatesUnit_AndRedirectsWithSuccessMessage" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="2a6a133d-06fe-4aa0-dc37-9046461c2e85">
+      <Execution id="1a779f7c-f556-4df0-9435-3f14211279c3" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests" name="Create_Post_Manager_ValidData_CreatesUnit_AndRedirectsWithSuccessMessage" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests.MyReservations_FiltersByStatus_AndShowsAccurateBadges" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="53a27d9f-eaf9-efe5-16c5-88db7bbe3722">
+      <Execution id="0410ead3-2d5d-4d74-9935-041f99051ee2" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests" name="MyReservations_FiltersByStatus_AndShowsAccurateBadges" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests.CreateReservation_ValidData_CreatesHoldFor15Minutes_AndCalculatesFinancials" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="960ec249-2fbb-d7d1-42d8-362132f5994e">
+      <Execution id="67c9693b-037a-4fbf-bf1c-c85029a25535" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests" name="CreateReservation_ValidData_CreatesHoldFor15Minutes_AndCalculatesFinancials" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests.ConcurrentReservationHold_WhenOnlyOneSlotAvailable_OneSucceeds_AndOneReturnsControlledConflict" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="6bc55833-5417-f675-adff-83365f1b8f8f">
+      <Execution id="17a5138c-5c5d-4e52-a39c-8bf5e7bafc4f" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests" name="ConcurrentReservationHold_WhenOnlyOneSlotAvailable_OneSucceeds_AndOneReturnsControlledConflict" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests.MultipleCountdowns_OnIndexAndMyReservations_RenderCorrectRowAttributes_WithFacilityTimeZone" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="fdfb86c9-6d35-4e91-f534-492877a18dbc">
+      <Execution id="577c0cd0-b6fe-4046-b861-64dd759b7314" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests" name="MultipleCountdowns_OnIndexAndMyReservations_RenderCorrectRowAttributes_WithFacilityTimeZone" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Create_Get_Manager_RendersFormWithLookups" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="9fd3a4b4-2fdd-15fa-c7ba-9d244a1b2130">
+      <Execution id="eb633467-4d93-4657-a59e-58f7d7f65ab4" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests" name="Create_Get_Manager_RendersFormWithLookups" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests.ReissuePin_DocumentMismatch_Fails" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="f30d2b6f-2368-11f7-aa40-42ebda6eefdc">
+      <Execution id="57b52ccf-6df6-4dbc-8107-af0b8ba28772" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests" name="ReissuePin_DocumentMismatch_Fails" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Delete_Post_UnitWithAllocationsOrOccupied_IsBlockedByPolicy" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="7a63c929-dc0a-7bc5-c361-de4dee3a633f">
+      <Execution id="b30143bd-3504-4346-a689-dba58f04856f" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests" name="Delete_Post_UnitWithAllocationsOrOccupied_IsBlockedByPolicy" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Details_Get_Staff_RendersComprehensiveUnitSpecsAndReferenceSummary" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="0dbbb8b0-4d38-3087-1ce0-d32c1364aebf">
+      <Execution id="7aa03af6-fe9c-436e-9670-3b84d9790a4b" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests" name="Details_Get_Staff_RendersComprehensiveUnitSpecsAndReferenceSummary" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Create_Post_DuplicateUnitCode_ReturnsConflictError_AndPreservesInput" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="a823bfd3-1e72-7393-78ab-6f8e9f1dc37c">
+      <Execution id="9a00f5ff-9456-42f3-926e-b72b811c6da1" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests" name="Create_Post_DuplicateUnitCode_ReturnsConflictError_AndPreservesInput" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests.CreateReservation_DurationLessThan1Month_RejectsWithValidationError" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="1cdc78e5-7810-1366-07d0-67745dad5360">
+      <Execution id="1e9afd2e-245a-4ae8-986a-2c2f78d8c47b" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests" name="CreateReservation_DurationLessThan1Month_RejectsWithValidationError" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests.Search_NonExistentCode_ShowsErrorMessage" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="2dd9568a-02fc-0e8d-06a2-c034ed25e794">
+      <Execution id="9bd4f4a1-bfad-4689-907d-86b7407736b6" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests" name="Search_NonExistentCode_ShowsErrorMessage" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests.Manager_WithActiveAssignment_Access_Succeeds" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="a0161b1f-73e5-a46a-c623-7b232774217e">
+      <Execution id="6e34c389-3462-4faa-b0ff-7463cd08128e" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests" name="Manager_WithActiveAssignment_Access_Succeeds" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests.ReissuePin_Successful_IssuesNewPin_SetsNoStoreHeaders_AndZeroPersistence" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="56e770b8-1d10-af08-3b88-70bf0f9737e2">
+      <Execution id="ec52b13c-83ff-462a-ab07-c34739f526fd" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests" name="ReissuePin_Successful_IssuesNewPin_SetsNoStoreHeaders_AndZeroPersistence" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests.ExpiredReservation_ServerDynamicallyExpires_AndRejectsCancelWithControlledConflict" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="ae2a1d43-9f42-e8f4-85f4-d0908f8e5c3e">
+      <Execution id="ce9f5995-9699-4be0-8744-5aa3dcb7037a" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests" name="ExpiredReservation_ServerDynamicallyExpires_AndRejectsCancelWithControlledConflict" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests.Anonymous_Access_RedirectsToLogin" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="3ae0899c-e065-2447-e507-e2765d57851e">
+      <Execution id="f90cfe3c-d21d-429b-8db0-f2fa5893b599" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests" name="Anonymous_Access_RedirectsToLogin" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests.CreateReservation_StartDateInPast_RejectsWithValidationError" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="6292c788-cf93-6263-b2e9-7cef2a883071">
+      <Execution id="064cc58b-c99e-4b43-9205-499602dd6bf1" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests" name="CreateReservation_StartDateInPast_RejectsWithValidationError" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests.CancelReservation_ActiveHold_Succeeds_AndIsIdempotent" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="1f6e9e02-fa7e-da4a-2221-49725f4e7688">
+      <Execution id="46188e16-b63e-47cf-b870-5670ce4ba5c6" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.ReservationRazorPagesAndWorkerTests" name="CancelReservation_ActiveHold_Succeeds_AndIsIdempotent" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Create_Get_FromIndex_WithFacilityId_PreservesFacility_RendersMatchingAreas_AndAjaxLookupsWork" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="e79d7e76-c862-f404-41b7-79824923d20d">
+      <Execution id="90a8df70-553e-48d4-afbd-54c781f12fda" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests" name="Create_Get_FromIndex_WithFacilityId_PreservesFacility_RendersMatchingAreas_AndAjaxLookupsWork" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Delete_Get_OnlyShowsConfirmation_DoesNotDeleteUnit" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="3c484d69-31c9-a12c-eeb5-2a855f331dbc">
+      <Execution id="1e7d7377-6194-431c-9207-3ae86559e33e" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests" name="Delete_Get_OnlyShowsConfirmation_DoesNotDeleteUnit" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Index_FilterByStatus_ReturnsOnlyMatchingUnits" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="b0d3f7ba-e51f-538d-825a-0e47b1736490">
+      <Execution id="5ddbfea0-d91e-46e7-8f06-6af16eb09c8e" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests" name="Index_FilterByStatus_ReturnsOnlyMatchingUnits" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests.CompleteCheckIn_Successful_IssuesPin_SetsNoStoreHeaders_AndZeroPersistence" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.webtests\bin\debug\net8.0\selfstoragemanagementsystem.webtests.dll" id="5b917575-708b-958f-a256-d34cacbd7192">
+      <Execution id="0901dfd6-7528-4866-a3f2-b2a63067a73f" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.WebTests\bin\Debug\net8.0\SelfStorageManagementSystem.WebTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.WebTests.StaffCheckInPageTests" name="CompleteCheckIn_Successful_IssuesPin_SetsNoStoreHeaders_AndZeroPersistence" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="7d1f892d-9037-e4c7-8027-39e53fa61fb6" executionId="af6fc396-ea51-4a46-a568-382b496988aa" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8eaca897-bee6-133f-ce46-c55bda06b8b5" executionId="eac81648-a053-4768-8d29-191066ea660c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1f6e9e02-fa7e-da4a-2221-49725f4e7688" executionId="46188e16-b63e-47cf-b870-5670ce4ba5c6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bcb7be64-14f3-9ea9-1e6e-e8a5cc3fdba4" executionId="65413ac3-cef5-4c99-b423-106d12fbb57d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="53a27d9f-eaf9-efe5-16c5-88db7bbe3722" executionId="0410ead3-2d5d-4d74-9935-041f99051ee2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="960ec249-2fbb-d7d1-42d8-362132f5994e" executionId="67c9693b-037a-4fbf-bf1c-c85029a25535" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f215285b-0ab9-373a-27fa-e5a8c51be659" executionId="4be82c39-21f5-496f-b17c-3b98ce635b4c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e49a97dc-facb-df2f-13ce-696e02149d6b" executionId="6e6d04c2-a53a-45a3-9abb-8b1c46bbd9a6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5fca735d-2096-94ff-056b-e4c2e3211948" executionId="02911fe1-e40f-4f6c-a553-0ad4ac1dc34d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3ae0899c-e065-2447-e507-e2765d57851e" executionId="f90cfe3c-d21d-429b-8db0-f2fa5893b599" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3c484d69-31c9-a12c-eeb5-2a855f331dbc" executionId="1e7d7377-6194-431c-9207-3ae86559e33e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e3ea67ba-61b5-caec-fe47-660d52c8f1e1" executionId="5dbc88e9-3627-4dca-9ab2-e65757e2ca75" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a3d9ddc5-074a-6b2d-7761-1715239084ea" executionId="f14d727c-5fdc-4569-9df5-fc43dec8e656" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b1d33396-9029-defd-45f1-e90df55d68e8" executionId="72fd5354-9bfa-499b-a436-6822ddaefebf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e001d566-3979-31eb-6366-31a12559d372" executionId="8dd19074-4e44-48f8-903f-cdaf45ff8b61" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2a6a133d-06fe-4aa0-dc37-9046461c2e85" executionId="1a779f7c-f556-4df0-9435-3f14211279c3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f30d2b6f-2368-11f7-aa40-42ebda6eefdc" executionId="57b52ccf-6df6-4dbc-8107-af0b8ba28772" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6da62b10-b96f-efcf-c17b-f1072d9f63c3" executionId="563c2621-b391-41c9-82d9-8f6098aeaaa2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2a809f8c-da21-5695-c226-c933cd5e9520" executionId="20631fda-0745-4c40-85a0-93f15eb2c378" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="60903016-35fe-c85a-db6e-58d574568be3" executionId="3aa31033-5090-4b67-8a66-03f18015778c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="dfea7d80-beee-e488-1c9d-20a6487f9f3d" executionId="f80ae192-3695-4bde-b544-be59c3f40ade" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e79d7e76-c862-f404-41b7-79824923d20d" executionId="90a8df70-553e-48d4-afbd-54c781f12fda" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="85daa045-47ae-6ba2-78b7-0a95a207a372" executionId="9323d676-81a2-4816-8a59-dc1c9eadc0d0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="49ecd8c8-bf5e-4585-7ed3-feb7fa23140f" executionId="6c05a458-da6c-4115-90eb-278de30f4b43" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ae5bfda7-d019-5c75-9cc0-5534b641777e" executionId="8ef9e5dd-340f-4342-9a59-b6d20ef6487d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b0d3f7ba-e51f-538d-825a-0e47b1736490" executionId="5ddbfea0-d91e-46e7-8f06-6af16eb09c8e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0dbbb8b0-4d38-3087-1ce0-d32c1364aebf" executionId="7aa03af6-fe9c-436e-9670-3b84d9790a4b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7a63c929-dc0a-7bc5-c361-de4dee3a633f" executionId="b30143bd-3504-4346-a689-dba58f04856f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b71c7a84-5220-7967-b5ba-6c5812fad3bf" executionId="192eb54f-d5a8-4235-95c0-5657a371652e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d7a88565-77a2-43bb-7ba4-80aabda7b387" executionId="919e6745-9e6d-4f93-93a3-078787db11c0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="77d6473e-4798-9b17-1a0a-ab45b1051050" executionId="67866d5d-ad87-4744-9e4d-9c924a85376f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="973a18e9-8efa-f195-7dc8-84d915d8af63" executionId="83e3b91c-bd90-4fe0-b7f0-cf46711d1165" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4b0097f5-99b1-db4e-a8d0-8b951e445e21" executionId="c1cc8788-8c8f-455c-8117-38d6ba963b09" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="56e770b8-1d10-af08-3b88-70bf0f9737e2" executionId="ec52b13c-83ff-462a-ab07-c34739f526fd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2dd9568a-02fc-0e8d-06a2-c034ed25e794" executionId="9bd4f4a1-bfad-4689-907d-86b7407736b6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bcf9dc83-4c96-1ea8-816a-f751f416a1d0" executionId="b0d994f5-0644-4c2d-ac4e-9081961afb32" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a0161b1f-73e5-a46a-c623-7b232774217e" executionId="6e34c389-3462-4faa-b0ff-7463cd08128e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9ade465a-eefe-7ece-a1a7-97cf9d80552b" executionId="0b01f2b8-1856-4cb0-8856-a22249bb83c6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6292c788-cf93-6263-b2e9-7cef2a883071" executionId="064cc58b-c99e-4b43-9205-499602dd6bf1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="31842797-89c5-701b-393b-11e0efe076b4" executionId="9794a226-0ae8-416d-ac70-842a371b1e65" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1e238add-dca4-0767-0aa9-bc16a05f3b81" executionId="d6c58121-1656-4361-840a-792ec104a6e8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="898b91d5-e4af-c0d2-4a63-a956905d7da6" executionId="a5a78ebf-8511-42fe-8b45-5d648da20509" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3628b853-76da-d711-e37c-905f0c95b336" executionId="b42e6646-495d-41ba-ac5f-5679a5c2e45e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fdfb86c9-6d35-4e91-f534-492877a18dbc" executionId="577c0cd0-b6fe-4046-b861-64dd759b7314" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9fd3a4b4-2fdd-15fa-c7ba-9d244a1b2130" executionId="eb633467-4d93-4657-a59e-58f7d7f65ab4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a823bfd3-1e72-7393-78ab-6f8e9f1dc37c" executionId="9a00f5ff-9456-42f3-926e-b72b811c6da1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="044a467e-d4b2-55fc-16c2-05c74e765eab" executionId="57ee4336-79ae-4926-bc50-fb33900d5db8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ae2a1d43-9f42-e8f4-85f4-d0908f8e5c3e" executionId="ce9f5995-9699-4be0-8744-5aa3dcb7037a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5b917575-708b-958f-a256-d34cacbd7192" executionId="0901dfd6-7528-4866-a3f2-b2a63067a73f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bcc5cf17-866a-1a86-b8ba-b53b35b0a0c0" executionId="3cd5b899-4d21-42bc-9997-4b71d11f4ac7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6bc55833-5417-f675-adff-83365f1b8f8f" executionId="17a5138c-5c5d-4e52-a39c-8bf5e7bafc4f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2c43e2bb-0587-f8e2-b75b-68ab8423a35a" executionId="e4a55771-2025-452d-8305-dd321a6eb2e1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1cdc78e5-7810-1366-07d0-67745dad5360" executionId="1e9afd2e-245a-4ae8-986a-2c2f78d8c47b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bc495e7a-6c9e-364f-6400-745b592ae8e7" executionId="fbe4563e-f833-4a5c-a22d-b0bad462f313" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="60d93258-fc4c-a7a2-04cc-f8c52f96ef64" executionId="d54d7453-0b03-43d0-832d-ca51c20573d1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="55" executed="55" passed="55" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)&#xD;
+[xUnit.net 00:00:00.08]   Discovering: SelfStorageManagementSystem.WebTests&#xD;
+[xUnit.net 00:00:00.13]   Discovered:  SelfStorageManagementSystem.WebTests&#xD;
+[xUnit.net 00:00:00.13]   Starting:    SelfStorageManagementSystem.WebTests&#xD;
+info: SelfStorageManagementSystem.Web.Workers.ReservationHoldExpirationWorker[0]&#xD;
+      Reservation hold expiration worker started in Web host. Cycle interval: 30s.&#xD;
+info: SelfStorageManagementSystem.Web.Workers.ReservationHoldExpirationWorker[0]&#xD;
+      Reservation hold expiration worker started in Web host. Cycle interval: 30s.&#xD;
+info: SelfStorageManagementSystem.Web.Workers.ReservationHoldExpirationWorker[0]&#xD;
+      Reservation hold expiration worker started in Web host. Cycle interval: 30s.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 5 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 5 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 5 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 5 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 5 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]&#xD;
+      Failed to determine the https port for redirect.&#xD;
+warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]&#xD;
+      Failed to determine the https port for redirect.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]&#xD;
+      Failed to determine the https port for redirect.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng multi_cd_ceaac72aa191498f946d1c513f2b365a@customer.test (ID: 1) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng user_system_administrator_8a85bb648d394ff0b7e4139039ce2cc8@example.test (ID: 1) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng staff.assigned.d0789c@example.com (ID: 2) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 7 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 5 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng near_dead_7d1e2c61c5494cf0a97729a4a6d01b93@customer.test (ID: 2) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 6 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng user_facility_staff_027b9168cbef4cdeb2b2f0bfe226329e@example.test (ID: 2) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.BusinessLogic.Services.Implementations.ReservationService[0]&#xD;
+      Created reservation hold RES-FAC-DEADL-1002000-20261016-14CBB0 (ID: 4) for customer 2 at facility 1002000, unit type 1002002. Hold until 10/16/2026 08:26:10 +00:00&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 5 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 5 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng user_facility_manager_1959b8aa94d546e7aeee89e0a96af288@example.test (ID: 3) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng list_filter_78064c3e899f4883a1ca0b2e8ea95366@customer.test (ID: 3) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 7 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.BusinessLogic.Services.Implementations.ReservationService[0]&#xD;
+      Created reservation hold RES-FAC-MYLIST-1003000-20261016-EA2D52 (ID: 5) for customer 3 at facility 1003000, unit type 1003002. Hold until 10/16/2026 08:26:11 +00:00&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.BusinessLogic.Services.Implementations.ReservationService[0]&#xD;
+      Created reservation hold RES-FAC-MYLIST-1003000-20261016-B04A78 (ID: 6) for customer 3 at facility 1003000, unit type 1003002. Hold until 10/16/2026 08:26:11 +00:00&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.BusinessLogic.Services.Implementations.ReservationService[0]&#xD;
+      Reservation RES-FAC-MYLIST-1003000-20261016-B04A78 (ID: 6) cancelled by user 3. Reason: Test cancel&#xD;
+warn: SelfStorageManagementSystem.Web.Pages.StorageUnits.DeleteModel[0]&#xD;
+      T? ch?i quy?n khi x�a � kho ID 233184: Manager is not assigned as manager at facility ID 23318.&#xD;
+      SelfStorageManagementSystem.BusinessLogic.Exceptions.ForbiddenException: Manager is not assigned as manager at facility ID 23318.&#xD;
+         at SelfStorageManagementSystem.BusinessLogic.Services.Implementations.StorageUnitAdminService.DeleteAsync(Int64 unitId, DateTimeOffset expectedUpdatedAt, Int64 actorUserId, CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\src\SelfStorageManagementSystem.BusinessLogic\Services\Implementations\StorageUnitAdminService.cs:line 422&#xD;
+         at SelfStorageManagementSystem.Web.Pages.StorageUnits.DeleteModel.OnPostAsync(CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\src\SelfStorageManagementSystem.Web\Pages\StorageUnits\Delete.cshtml.cs:line 110&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng user_storage_customer_46f0e10d441b43e189a72e0f676bed2c@example.test (ID: 4) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 9 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 5 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng worker_customer_9a381836a7e748999034166d477d4f91@customer.test (ID: 4) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng user_facility_manager_5e29e1c871fb4a3780b1dace59bffa24@example.test (ID: 5) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.BusinessLogic.Services.Implementations.ReservationService[0]&#xD;
+      Background worker expired 3 overdue reservation holds at 10/16/2026 08:11:11 +00:00&#xD;
+warn: SelfStorageManagementSystem.Web.Pages.StorageUnits.CreateModel[0]&#xD;
+      Xung d?t khi t?o � kho: Storage unit with code 'UNIT_CR3' already exists in facility ID 67001.&#xD;
+      SelfStorageManagementSystem.BusinessLogic.Exceptions.ConflictException: Storage unit with code 'UNIT_CR3' already exists in facility ID 67001.&#xD;
+       ---&gt; SelfStorageManagementSystem.DataAccess.Exceptions.StorageUnitUniqueConstraintException: Storage unit with code 'UNIT_CR3' already exists in facility ID 67001.&#xD;
+         at SelfStorageManagementSystem.DataAccess.Repositories.Implementations.StorageUnitAdminRepository.CreateStorageUnitWithLockAsync(storage_unit newUnit, CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\src\SelfStorageManagementSystem.DataAccess\Repositories\Implementations\StorageUnitAdminRepository.cs:line 578&#xD;
+         at SelfStorageManagementSystem.BusinessLogic.Services.Implementations.StorageUnitAdminService.CreateAsync(CreateStorageUnitRequest request, Int64 actorUserId, CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\src\SelfStorageManagementSystem.BusinessLogic\Services\Implementations\StorageUnitAdminService.cs:line 277&#xD;
+         --- End of inner exception stack trace ---&#xD;
+         at SelfStorageManagementSystem.BusinessLogic.Services.Implementations.StorageUnitAdminService.CreateAsync(CreateStorageUnitRequest request, Int64 actorUserId, CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\src\SelfStorageManagementSystem.BusinessLogic\Services\Implementations\StorageUnitAdminService.cs:line 283&#xD;
+         at SelfStorageManagementSystem.Web.Pages.StorageUnits.CreateModel.OnPostAsync(CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\src\SelfStorageManagementSystem.Web\Pages\StorageUnits\Create.cshtml.cs:line 151&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 5 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng user_facility_manager_8e25c73d85ee4ba8a8b621710f423474@example.test (ID: 6) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 7 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 5 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng user_facility_manager_347563cb617849d49254255a44c4e887@example.test (ID: 7) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng staff.assigned.94926a@example.com (ID: 9) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+warn: SelfStorageManagementSystem.Web.Pages.StorageUnits.EditModel[0]&#xD;
+      Xung d?t d?ng th?i khi c?p nh?t � kho ID 708054: Concurrency conflict for storage unit ID 708054. Expected updated_at: 2026-10-15T08:11:11.3894863+00:00, actual in database: 2026-10-16T08:16:11.4412603+00:00.&#xD;
+      SelfStorageManagementSystem.BusinessLogic.Exceptions.ConflictException: Concurrency conflict for storage unit ID 708054. Expected updated_at: 2026-10-15T08:11:11.3894863+00:00, actual in database: 2026-10-16T08:16:11.4412603+00:00.&#xD;
+       ---&gt; SelfStorageManagementSystem.DataAccess.Exceptions.StorageUnitConcurrencyException: Concurrency conflict for storage unit ID 708054. Expected updated_at: 2026-10-15T08:11:11.3894863+00:00, actual in database: 2026-10-16T08:16:11.4412603+00:00.&#xD;
+         at SelfStorageManagementSystem.DataAccess.Repositories.Implementations.StorageUnitAdminRepository.UpdateStorageUnitWithLockAsync(Int64 unitId, DateTimeOffset expectedUpdatedAt, Action`1 applyUpdates, Nullable`1 targetFacilityId, Nullable`1 targetUnitTypeId, CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\src\SelfStorageManagementSystem.DataAccess\Repositories\Implementations\StorageUnitAdminRepository.cs:line 823&#xD;
+         at SelfStorageManagementSystem.BusinessLogic.Services.Implementations.StorageUnitAdminService.UpdateAsync(Int64 unitId, UpdateStorageUnitRequest request, Int64 actorUserId, CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\src\SelfStorageManagementSystem.BusinessLogic\Services\Implementations\StorageUnitAdminService.cs:line 345&#xD;
+         --- End of inner exception stack trace ---&#xD;
+         at SelfStorageManagementSystem.BusinessLogic.Services.Implementations.StorageUnitAdminService.UpdateAsync(Int64 unitId, UpdateStorageUnitRequest request, Int64 actorUserId, CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\src\SelfStorageManagementSystem.BusinessLogic\Services\Implementations\StorageUnitAdminService.cs:line 366&#xD;
+         at SelfStorageManagementSystem.Web.Pages.StorageUnits.EditModel.OnPostAsync(CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\src\SelfStorageManagementSystem.Web\Pages\StorageUnits\Edit.cshtml.cs:line 124&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 5 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng user_facility_manager_84f6545e3d7d40f9b6b7eefdb691b496@example.test (ID: 8) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+warn: SelfStorageManagementSystem.Web.Pages.StorageUnits.DeleteModel[0]&#xD;
+      Xung d?t khi x�a � kho ID 487124: Storage unit 'UNIT_DEL3' cannot be deleted because its status is 'occupied'. Only 'available' units can be deleted.&#xD;
+      SelfStorageManagementSystem.BusinessLogic.Exceptions.ConflictException: Storage unit 'UNIT_DEL3' cannot be deleted because its status is 'occupied'. Only 'available' units can be deleted.&#xD;
+         at SelfStorageManagementSystem.BusinessLogic.Services.Implementations.StorageUnitAdminService.DeleteAsync(Int64 unitId, DateTimeOffset expectedUpdatedAt, Int64 actorUserId, CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\src\SelfStorageManagementSystem.BusinessLogic\Services\Implementations\StorageUnitAdminService.cs:line 429&#xD;
+         at SelfStorageManagementSystem.Web.Pages.StorageUnits.DeleteModel.OnPostAsync(CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\src\SelfStorageManagementSystem.Web\Pages\StorageUnits\Delete.cshtml.cs:line 110&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 5 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng user_facility_manager_8eea3cfc07e34aebbc5574e7c25ae20a@example.test (ID: 9) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 5 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng user_facility_staff_0b7a24a102ca48c08661b4dc239fc7c0@example.test (ID: 10) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+warn: SelfStorageManagementSystem.Web.Pages.StorageUnits.CreateModel[0]&#xD;
+      T? ch?i quy?n khi t?o � kho: Facility staff does not have permission to create storage units.&#xD;
+      SelfStorageManagementSystem.BusinessLogic.Exceptions.ForbiddenException: Facility staff does not have permission to create storage units.&#xD;
+         at SelfStorageManagementSystem.BusinessLogic.Services.Implementations.StorageUnitAdminService.CreateAsync(CreateStorageUnitRequest request, Int64 actorUserId, CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\src\SelfStorageManagementSystem.BusinessLogic\Services\Implementations\StorageUnitAdminService.cs:line 232&#xD;
+         at SelfStorageManagementSystem.Web.Pages.StorageUnits.CreateModel.OnPostAsync(CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\src\SelfStorageManagementSystem.Web\Pages\StorageUnits\Create.cshtml.cs:line 151&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 5 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 5 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng staff.assigned.db4362@example.com (ID: 16) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng user_facility_manager_bb31ca9ed71d4f7b86a862fe112c5edf@example.test (ID: 11) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng catalog_redir_6a7093e0ea3d430f88788f87391de40d@customer.test (ID: 5) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 5 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 5 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng ownera_65de99431ee444c2912f52a9a521dc06@customer.test (ID: 6) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng user_facility_manager_19775998c5b74d8da337aa839362c9a7@example.test (ID: 12) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng intruderb_49a386e334324f399d928f150044a1c5@customer.test (ID: 7) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 5 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 6 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.BusinessLogic.Services.Implementations.ReservationService[0]&#xD;
+      Created reservation hold RES-FAC-OWNER-1005000-20261016-EB8760 (ID: 10) for customer 6 at facility 1005000, unit type 1005002. Hold until 10/16/2026 08:26:11 +00:00&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng user_facility_staff_64a6666db8274be689333a13b78d32ad@example.test (ID: 13) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 5 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng reload_test_c66197db798d4befabb75d1f72f00088@customer.test (ID: 8) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 6 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.BusinessLogic.Services.Implementations.ReservationService[0]&#xD;
+      Created reservation hold RES-FAC-RELOAD-1006000-20261016-9506C8 (ID: 11) for customer 8 at facility 1006000, unit type 1006002. Hold until 10/16/2026 08:26:11 +00:00&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng staff.assigned.9715ba@example.com (ID: 23) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng user_facility_manager_2b8afe2b1840496092987eba1e6e0898@example.test (ID: 14) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 5 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 5 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng user_facility_manager_b8288b0b7f074bdea1ed9205786ee45e@example.test (ID: 15) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+warn: SelfStorageManagementSystem.Web.Pages.StorageUnits.CreateModel[0]&#xD;
+      T? ch?i quy?n khi t?o � kho: Manager is not assigned as manager at facility ID 49864.&#xD;
+      SelfStorageManagementSystem.BusinessLogic.Exceptions.ForbiddenException: Manager is not assigned as manager at facility ID 49864.&#xD;
+         at SelfStorageManagementSystem.BusinessLogic.Services.Implementations.StorageUnitAdminService.CreateAsync(CreateStorageUnitRequest request, Int64 actorUserId, CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\src\SelfStorageManagementSystem.BusinessLogic\Services\Implementations\StorageUnitAdminService.cs:line 257&#xD;
+         at SelfStorageManagementSystem.Web.Pages.StorageUnits.CreateModel.OnPostAsync(CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\src\SelfStorageManagementSystem.Web\Pages\StorageUnits\Create.cshtml.cs:line 151&#xD;
+fail: SelfStorageManagementSystem.Web.Pages.StorageUnits.CreateModel[0]&#xD;
+      Kh�ng th? t?i l?i lookups.&#xD;
+      SelfStorageManagementSystem.BusinessLogic.Exceptions.ForbiddenException: User does not have access to facility ID 49864.&#xD;
+         at SelfStorageManagementSystem.BusinessLogic.Services.Implementations.StorageUnitAdminService.GetLookupsAsync(Int64 actorUserId, Nullable`1 facilityId, CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\src\SelfStorageManagementSystem.BusinessLogic\Services\Implementations\StorageUnitAdminService.cs:line 149&#xD;
+         at SelfStorageManagementSystem.Web.Pages.StorageUnits.CreateModel.ReloadLookupsAsync(Int64 actorUserId, CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\src\SelfStorageManagementSystem.Web\Pages\StorageUnits\Create.cshtml.cs:line 194&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 5 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng user_facility_manager_0be67b8d18f4449c8b07ad61bbe48a0a@example.test (ID: 16) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 5 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng manager.assigned.f11dc3@example.com (ID: 33) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng user_facility_manager_8c6307710df0423aa2ea74bb9a883b2e@example.test (ID: 17) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Workers.ReservationHoldExpirationWorker[0]&#xD;
+      Reservation hold expiration worker stopped in Web host.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng staff.assigned.7e4375@example.com (ID: 37) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 7 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng staff.assigned.843524@example.com (ID: 44) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 5 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng past_date_d0409a65ce054b28b870d4cc170816e2@customer.test (ID: 9) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 5 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 6 entities to in-memory store.&#xD;
+warn: SelfStorageManagementSystem.Web.Pages.Reservations.CreateModel[0]&#xD;
+      POST Create invalid ModelState: Ng�y b?t d?u thu� (2026-10-11) kh�ng du?c ? qu� kh? (h�m nay theo gi? co s? l� 2026-10-16).&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng staff.assigned.a432d2@example.com (ID: 51) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng cust.98f19d@example.com (ID: 57) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng facility_tz_a3a463b41faf41be910743ad24de3a0e@customer.test (ID: 10) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 6 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 6 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng custa_spoof_c823f647114344e39cbacb27a4f3356d@customer.test (ID: 11) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng custb_victim_0096cdb1d36c4d41a5f2e4b335cbe39c@customer.test (ID: 12) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 6 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.BusinessLogic.Services.Implementations.ReservationService[0]&#xD;
+      Created reservation hold RES-FAC-SPOOF-1010000-20261016-496446 (ID: 14) for customer 11 at facility 1010000, unit type 1010002. Hold until 10/16/2026 08:26:12 +00:00&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng staff.assigned.eaeb66@example.com (ID: 65) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng min_duration_0510654c697f459199359d55b024459b@customer.test (ID: 13) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 5 entities to in-memory store.&#xD;
+warn: SelfStorageManagementSystem.Web.Pages.Reservations.CreateModel[0]&#xD;
+      POST Create invalid ModelState: Th?i h?n thu� t?i thi?u l� 1 th�ng theo quy d?nh BR-RSV-02 (ng�y k?t th�c t?i thi?u: 2026-11-16).&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng cancel_flow_c44b632906f34be9b02f2f5e38a64661@customer.test (ID: 14) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 6 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.BusinessLogic.Services.Implementations.ReservationService[0]&#xD;
+      Created reservation hold RES-FAC-CANFLOW-1012000-20261016-2F7672 (ID: 15) for customer 14 at facility 1012000, unit type 1012002. Hold until 10/16/2026 08:26:12 +00:00&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.BusinessLogic.Services.Implementations.ReservationService[0]&#xD;
+      Reservation RES-FAC-CANFLOW-1012000-20261016-2F7672 (ID: 15) cancelled by user 14. Reason: T�i d?i k? ho?ch chuy?n d? sang th�ng sau&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng staff.assigned.987deb@example.com (ID: 72) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 5 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng concur1_325ee65d044848828f469e829031c583@customer.test (ID: 15) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng concur2_b96625cba8fd4dcb8ae872b100df6e41@customer.test (ID: 16) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.BusinessLogic.Services.Implementations.ReservationService[0]&#xD;
+      Created reservation hold RES-FAC-CONCUR-1013000-20261016-73A41D (ID: 16) for customer 15 at facility 1013000, unit type 1013002. Hold until 10/16/2026 08:26:12 +00:00&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+warn: SelfStorageManagementSystem.BusinessLogic.Services.Implementations.ReservationService[0]&#xD;
+      Capacity exhausted for facility 1013000, unit type 1013002 during [10/18/2026 - 11/18/2026]&#xD;
+warn: SelfStorageManagementSystem.Web.Pages.Reservations.CreateModel[0]&#xD;
+      POST Create ConflictException: Hi?n t?i co s? kh�ng c�n d? s?c ch?a kh? d?ng cho lo?i kho da ch?n trong kho?ng th?i gian n�y.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng staff.terminated.7e5ba3@example.com (ID: 81) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng ajax_stat_4d06c4be6a714efd8a5cc3c1ab3df007@customer.test (ID: 17) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 6 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng tz_align_b2dbcbc173f4419e9d15f98412218dd2@customer.test (ID: 18) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 6 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+warn: SelfStorageManagementSystem.Web.Pages.Reservations.CreateModel[0]&#xD;
+      POST Create invalid ModelState: Ng�y b?t d?u thu� (2026-10-15) kh�ng du?c ? qu� kh? (h�m nay theo gi? co s? l� 2026-10-16).&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng create_valid_be6a57a3007841cea4a1c68a3dcbd264@customer.test (ID: 19) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 7 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.BusinessLogic.Services.Implementations.ReservationService[0]&#xD;
+      Created reservation hold RES-FAC-CRV-1016000-20261016-1E0A85 (ID: 19) for customer 19 at facility 1016000, unit type 1016002. Hold until 10/16/2026 08:26:12 +00:00&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng staff.assigned.a034b7@example.com (ID: 86) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng month_end_7043715ad6c74da681fb493314dd2f82@customer.test (ID: 20) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 6 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+warn: SelfStorageManagementSystem.Web.Pages.Reservations.CreateModel[0]&#xD;
+      POST Create invalid ModelState: Th?i h?n thu� t?i thi?u l� 1 th�ng theo quy d?nh BR-RSV-02 (ng�y k?t th�c t?i thi?u: 2027-02-28).&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.BusinessLogic.Services.Implementations.ReservationService[0]&#xD;
+      Created reservation hold RES-FAC-MONTHEND-1017000-20261016-82501E (ID: 20) for customer 20 at facility 1017000, unit type 1017002. Hold until 10/16/2026 08:26:13 +00:00&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 5 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Workers.ReservationHoldExpirationWorker[0]&#xD;
+      Reservation hold expiration worker stopped in Web host.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 6 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng staff.assigned.7619bf@example.com (ID: 93) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng staff.assigned.ae8183@example.com (ID: 100) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng staff.unassigned.06ea96@example.com (ID: 108) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng staff.assigned.c0584a@example.com (ID: 114) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 5 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 6 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 2 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 3 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng admin.6c88f1@example.com (ID: 125) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]&#xD;
+      Ngu?i d�ng ops.6c88f1@example.com (ID: 126) da dang nh?p th�nh c�ng qua Cookie.&#xD;
+info: SelfStorageManagementSystem.Web.Workers.ReservationHoldExpirationWorker[0]&#xD;
+      Reservation hold expiration worker stopped in Web host.&#xD;
+[xUnit.net 00:00:05.02]   Finished:    SelfStorageManagementSystem.WebTests&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

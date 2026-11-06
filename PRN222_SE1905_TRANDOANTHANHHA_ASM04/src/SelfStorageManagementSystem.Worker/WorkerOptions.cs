@@ -2,7 +2,7 @@ namespace SelfStorageManagementSystem.Worker;
 
 public sealed class WorkerOptions
 {
-    public const string ServiceName = "PRN222_TRANDOANTHANHHA_ASM04";
+    public const string ServiceName = "Vu632";
 
     public int IntervalSeconds { get; set; } = 5;
 

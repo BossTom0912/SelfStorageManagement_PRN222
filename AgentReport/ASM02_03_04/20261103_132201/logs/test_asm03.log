@@ -1,0 +1,1027 @@
+﻿Build started 11/3/2026 1:28:55 PM.
+     1>Project "D:\FPT\PRN222\Project\Final_Project_Web\PRN222_SE1905_TRANDOANTHANHHA_ASM03\PRN222_SE1905_TRANDOANTHANHHA_ASM03.sln" on node 1 (VSTest target(s)).
+     1>ValidateSolutionConfiguration:
+         Building solution configuration "Release|Any CPU".
+Test run for D:\FPT\PRN222\Project\Final_Project_Web\PRN222_SE1905_TRANDOANTHANHHA_ASM03\tests\SelfStorageManagementSystem.WebTests\bin\Release\net8.0\SelfStorageManagementSystem.WebTests.dll (.NETCoreApp,Version=v8.0)
+Test run for D:\FPT\PRN222\Project\Final_Project_Web\PRN222_SE1905_TRANDOANTHANHHA_ASM03\tests\SelfStorageManagementSystem.BusinessLogicTests\bin\Release\net8.0\SelfStorageManagementSystem.BusinessLogicTests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.05]   Discovering: SelfStorageManagementSystem.BusinessLogicTests
+[xUnit.net 00:00:00.07]   Discovering: SelfStorageManagementSystem.WebTests
+[xUnit.net 00:00:00.08]   Discovered:  SelfStorageManagementSystem.BusinessLogicTests
+[xUnit.net 00:00:00.08]   Starting:    SelfStorageManagementSystem.BusinessLogicTests
+[xUnit.net 00:00:00.11]   Discovered:  SelfStorageManagementSystem.WebTests
+[xUnit.net 00:00:00.11]   Starting:    SelfStorageManagementSystem.WebTests
+  Passed SelfStorageManagementSystem.Tests.PasswordHasherTests.VerifyPassword_WithWrongPassword_ShouldReturnFalse [27 ms]
+  Passed SelfStorageManagementSystem.Tests.PasswordHasherTests.VerifyPassword_WithExternalAuthDemoOnlyPlaceholder_ShouldReturnFalseSafely [< 1 ms]
+  Passed SelfStorageManagementSystem.Tests.PasswordHasherTests.HashPassword_ShouldGenerateValidPBKDF2Format [16 ms]
+  Passed SelfStorageManagementSystem.Tests.AccountIdentityServiceTests.AuthenticateAsync_WithNonExistentEmail_ShouldThrowUnauthorizedAndRecordFailedHistory [83 ms]
+  Passed SelfStorageManagementSystem.Tests.PasswordHasherTests.VerifyPassword_WithTamperedHash_ShouldReturnFalse [36 ms]
+  Passed SelfStorageManagementSystem.Tests.AccountIdentityServiceTests.AuthenticateAsync_WithDisabledAccount_ShouldThrowUnauthorizedAndRecordBlockedHistory [3 ms]
+  Passed SelfStorageManagementSystem.Tests.AccountIdentityServiceTests.GetCurrentUserAsync_ActiveManager_ReceivesBothManagerAndStaffAssignments [5 ms]
+  Passed SelfStorageManagementSystem.Tests.AccountIdentityServiceTests.GetCurrentUserAsync_WithActiveUser_ShouldReturnCurrentUserResponseWithActiveAssignments [5 ms]
+  Passed SelfStorageManagementSystem.Tests.AccountIdentityServiceTests.AuthServiceAdapter_LoginAsync_CallsAccountIdentity_AndDoesNotRecordHistoryTwice [7 ms]
+  Passed SelfStorageManagementSystem.Tests.AccountIdentityServiceTests.GetCurrentUserAsync_ActiveStaff_DoesNotReceiveManagerAssignments [1 ms]
+  Passed SelfStorageManagementSystem.Tests.AccountIdentityServiceTests.AuthenticateAsync_WithInactiveEmploymentStatus_ShouldThrowUnauthorizedAndRecordBlockedHistory(employmentStatus: "terminated") [2 ms]
+  Passed SelfStorageManagementSystem.Tests.AccountIdentityServiceTests.AuthenticateAsync_WithInactiveEmploymentStatus_ShouldThrowUnauthorizedAndRecordBlockedHistory(employmentStatus: "leave") [1 ms]
+  Passed SelfStorageManagementSystem.Tests.PasswordHasherTests.VerifyPassword_WithCorrectPassword_ShouldReturnTrue [27 ms]
+  Passed SelfStorageManagementSystem.Tests.AccountIdentityServiceTests.AuthenticateAsync_WithWrongPassword_ShouldThrowUnauthorizedAndRecordFailedHistory [2 ms]
+  Passed SelfStorageManagementSystem.Tests.AccountIdentityServiceTests.GetCurrentUserAsync_WithInactiveOrMissingUser_ShouldReturnNull [1 ms]
+info: SelfStorageManagementSystem.Web.Realtime.StorageUnitScopeSyncWorker[0]
+      StorageUnitScopeSyncWorker started with check interval 00:00:01.
+info: SelfStorageManagementSystem.Web.Realtime.StorageUnitScopeSyncWorker[0]
+      StorageUnitScopeSyncWorker started with check interval 00:00:01.
+info: SelfStorageManagementSystem.Web.Realtime.StorageUnitScopeSyncWorker[0]
+      StorageUnitScopeSyncWorker started with check interval 00:00:01.
+info: SelfStorageManagementSystem.Web.Realtime.StorageUnitScopeSyncWorker[0]
+      StorageUnitScopeSyncWorker started with check interval 00:00:01.
+info: SelfStorageManagementSystem.Web.Realtime.StorageUnitScopeSyncWorker[0]
+      StorageUnitScopeSyncWorker started with check interval 00:00:01.
+info: SelfStorageManagementSystem.Web.Realtime.StorageUnitScopeSyncWorker[0]
+      StorageUnitScopeSyncWorker started with check interval 00:00:01.
+info: SelfStorageManagementSystem.Web.Workers.ReservationHoldExpirationWorker[0]
+      Reservation hold expiration worker started in Web host. Cycle interval: 30s.
+info: SelfStorageManagementSystem.Web.Workers.ReservationHoldExpirationWorker[0]
+      Reservation hold expiration worker started in Web host. Cycle interval: 30s.
+info: SelfStorageManagementSystem.Web.Workers.ReservationHoldExpirationWorker[0]
+      Reservation hold expiration worker started in Web host. Cycle interval: 30s.
+info: SelfStorageManagementSystem.Web.Workers.ReservationHoldExpirationWorker[0]
+      Reservation hold expiration worker started in Web host. Cycle interval: 30s.
+info: SelfStorageManagementSystem.Web.Workers.ReservationHoldExpirationWorker[0]
+      Reservation hold expiration worker started in Web host. Cycle interval: 30s.
+info: SelfStorageManagementSystem.Web.Workers.ReservationHoldExpirationWorker[0]
+      Reservation hold expiration worker started in Web host. Cycle interval: 30s.
+  Passed SelfStorageManagementSystem.Tests.AccountIdentityServiceTests.GetCurrentUserAsync_EmploymentStatusLeaveOrTerminated_ReturnsNull(employmentStatus: "terminated") [1 ms]
+  Passed SelfStorageManagementSystem.Tests.AccountIdentityServiceTests.GetCurrentUserAsync_EmploymentStatusLeaveOrTerminated_ReturnsNull(employmentStatus: "leave") [< 1 ms]
+  Passed SelfStorageManagementSystem.Tests.AccountIdentityServiceTests.GetCurrentUserAsync_RevokedStaffOrManagerRole_ReturnsEmptyAssignments [2 ms]
+  Passed SelfStorageManagementSystem.Tests.DemoAccountBootstrapServiceTests.BootstrapDemoAccountsAsync_WhenAdminUserNotFound_ShouldThrowInvalidOperationException [1 s]
+  Passed SelfStorageManagementSystem.Tests.AdminAccountServiceTests.GetAccountsAsync_PaginationVerification_CalculatesCorrectPagesAndNavigationFlags(totalAccounts: 21, pageNumber: 3, expectedTotalPages: 3, expectedHasPrev: True, expectedHasNext: False) [1 s]
+  Passed SelfStorageManagementSystem.Tests.AdminAccountServiceTests.GetAccountsAsync_PaginationVerification_CalculatesCorrectPagesAndNavigationFlags(totalAccounts: 0, pageNumber: 1, expectedTotalPages: 0, expectedHasPrev: False, expectedHasNext: False) [28 ms]
+  Passed SelfStorageManagementSystem.Tests.AdminAccountServiceTests.GetAccountsAsync_PaginationVerification_CalculatesCorrectPagesAndNavigationFlags(totalAccounts: 21, pageNumber: 2, expectedTotalPages: 3, expectedHasPrev: True, expectedHasNext: True) [1 ms]
+  Passed SelfStorageManagementSystem.Tests.AdminAccountServiceTests.GetAccountsAsync_PaginationVerification_CalculatesCorrectPagesAndNavigationFlags(totalAccounts: 11, pageNumber: 1, expectedTotalPages: 2, expectedHasPrev: False, expectedHasNext: True) [2 ms]
+  Passed SelfStorageManagementSystem.Tests.AdminAccountServiceTests.GetAccountsAsync_PaginationVerification_CalculatesCorrectPagesAndNavigationFlags(totalAccounts: 10, pageNumber: 1, expectedTotalPages: 1, expectedHasPrev: False, expectedHasNext: False) [1 ms]
+  Passed SelfStorageManagementSystem.Tests.AdminAccountServiceTests.GetAccountsAsync_PaginationVerification_CalculatesCorrectPagesAndNavigationFlags(totalAccounts: 11, pageNumber: 2, expectedTotalPages: 2, expectedHasPrev: True, expectedHasNext: False) [1 ms]
+  Passed SelfStorageManagementSystem.Tests.AdminAccountServiceTests.GetAccountsAsync_PaginationVerification_CalculatesCorrectPagesAndNavigationFlags(totalAccounts: 21, pageNumber: 1, expectedTotalPages: 3, expectedHasPrev: False, expectedHasNext: True) [< 1 ms]
+  Passed SelfStorageManagementSystem.Tests.AdminAccountServiceTests.ManageUserRoles_ShouldPreventAssigningStaffRoleWithoutEmployeeProfile [3 ms]
+  Passed SelfStorageManagementSystem.Tests.AdminAccountServiceTests.ManageUserRoles_ShouldPreventRevokingSystemAdministratorFromLastAdmin [2 ms]
+  Passed SelfStorageManagementSystem.Tests.DemoAccountBootstrapServiceTests.BootstrapDemoAccountsAsync_WhenUserDoesNotHaveAdminRole_ShouldThrowInvalidOperationException [71 ms]
+  Passed SelfStorageManagementSystem.Tests.AdminAccountServiceTests.AssignFacility_WithOverlappingPeriod_ShouldThrowConflictException [33 ms]
+warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
+      Failed to determine the https port for redirect.
+warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
+      Failed to determine the https port for redirect.
+[xUnit.net 00:00:01.31]   Finished:    SelfStorageManagementSystem.BusinessLogicTests
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 5 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 5 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 5 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 5 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 5 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 5 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 5 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+  Passed SelfStorageManagementSystem.WebTests.LandingPageAndBootstrapTests.Security_NoHardcodedHmacSecretInAppSettings [1 s]
+  Passed SelfStorageManagementSystem.WebTests.LandingPageAndBootstrapTests.StaticAssets_AreServedLocally(assetUrl: "/lib/jquery/dist/jquery.min.js", expectedContentTypeSubString: "javascript") [62 ms]
+  Passed SelfStorageManagementSystem.Tests.DemoAccountBootstrapServiceTests.BootstrapDemoAccountsAsync_WhenPasswordNotConfigured_ShouldThrowInvalidOperationException [8 ms]
+  Passed SelfStorageManagementSystem.Tests.AdminAccountServiceTests.UpdateUserStatus_ShouldPreventLockingTheOnlyActiveSystemAdministrator [2 ms]
+  Passed SelfStorageManagementSystem.Tests.DemoAccountBootstrapServiceTests.BootstrapDemoAccountsAsync_WhenAdminAndDemoConfigured_ShouldVerifyRoleAndUpdateHashes [14 ms]
+  Passed SelfStorageManagementSystem.Tests.AccountIdentityServiceTests.SnapshotQuery_EnforcesRoleAndEmploymentStatusRules_DirectlyFromDb [1 s]
+  Passed SelfStorageManagementSystem.Tests.AccountIdentityServiceTests.SnapshotQuery_ReflectsFreshDbChanges_WithoutRelyingOnTrackedEntity [7 ms]
+  Passed SelfStorageManagementSystem.Tests.AccountIdentityServiceTests.AuthenticateAsync_WithValidCredentials_ShouldSucceed_UpdateLastLogin_RecordHistory_AndReturnIdentityWithoutToken [5 ms]
+  Passed SelfStorageManagementSystem.Tests.AccountIdentityServiceTests.AuthenticateAsync_WithLockedAccount_ShouldThrowUnauthorizedAndRecordLockedHistory [2 ms]
+
+Test Run Successful.
+Total tests: 37
+     Passed: 37
+ Total time: 1.6654 Seconds
+  Passed SelfStorageManagementSystem.WebTests.LandingPageAndBootstrapTests.StaticAssets_AreServedLocally(assetUrl: "/css/site.css", expectedContentTypeSubString: "text/css") [2 ms]
+  Passed SelfStorageManagementSystem.WebTests.LandingPageAndBootstrapTests.StaticAssets_AreServedLocally(assetUrl: "/lib/bootstrap/dist/js/bootstrap.bundle.min.js", expectedContentTypeSubString: "javascript") [2 ms]
+  Passed SelfStorageManagementSystem.WebTests.BlazorStorageUnitsTests.Anonymous_IsChallengedBeforeBlazorRendering [1 s]
+  Passed SelfStorageManagementSystem.WebTests.LandingPageAndBootstrapTests.StaticAssets_AreServedLocally(assetUrl: "/lib/microsoft/signalr/dist/browser/signalr.min.js", expectedContentTypeSubString: "javascript") [1 ms]
+  Passed SelfStorageManagementSystem.WebTests.LandingPageAndBootstrapTests.StaticAssets_AreServedLocally(assetUrl: "/js/site.js", expectedContentTypeSubString: "javascript") [1 ms]
+  Passed SelfStorageManagementSystem.WebTests.LandingPageAndBootstrapTests.StaticAssets_AreServedLocally(assetUrl: "/lib/bootstrap/dist/css/bootstrap.min.css", expectedContentTypeSubString: "text/css") [2 ms]
+  Passed SelfStorageManagementSystem.WebTests.LandingPageAndBootstrapTests.SignalRHub_NegotiationEndpoint_ReturnsOk [20 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminRepositoryTests.UnitCodeExistsInFacility_ShouldBeFacilitySpecific [1 s]
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
+      Failed to determine the https port for redirect.
+warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
+      Failed to determine the https port for redirect.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 4 entities to in-memory store.
+warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
+      Failed to determine the https port for redirect.
+fail: SelfStorageManagementSystem.Web.Controllers.HomeController[0]
+      Unhandled error handled for RequestId: 00-ea259e1cacf1c637634a79a6808999a2-3ef466e074d67120-00
+info: SelfStorageManagementSystem.Web.Workers.ReservationHoldExpirationWorker[0]
+      Reservation hold expiration worker stopped in Web host.
+info: SelfStorageManagementSystem.Web.Realtime.StorageUnitScopeSyncWorker[0]
+      StorageUnitScopeSyncWorker stopped.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminRepositoryTests.TwoResourceLockOrdering_CrossTypeTransfer_ExecutesDeterministicallyWithoutDeadlock [70 ms]
+  Passed SelfStorageManagementSystem.WebTests.LandingPageAndBootstrapTests.CentralizedErrorHandling_NotFound_PostMethod_Returns404StatusCodeViewNot405 [131 ms]
+  Passed SelfStorageManagementSystem.WebTests.LandingPageAndBootstrapTests.CentralizedErrorHandling_NotFound_GetMethod_Returns404StatusCodeView [8 ms]
+  Passed SelfStorageManagementSystem.WebTests.LandingPageAndBootstrapTests.MvcWebApp_DoesNotReferenceDataAccessOrApiOrWpf [3 ms]
+  Passed SelfStorageManagementSystem.WebTests.LandingPageAndBootstrapTests.LandingPage_ReturnsSuccessAndHtml [5 ms]
+  Passed SelfStorageManagementSystem.WebTests.LandingPageAndBootstrapTests.HostStartsWithoutJwtSecret [3 ms]
+  Passed SelfStorageManagementSystem.WebTests.LandingPageAndBootstrapTests.CentralizedErrorHandling_ErrorAction_HandlesPostRequestAndPreserves500 [7 ms]
+  Passed SelfStorageManagementSystem.WebTests.AccountIdentityAndZeroJwtTests.IdentitySnapshot_FiltersFacilityAssignments_ByEmploymentStatusAndRoles_OnWebHost [1 s]
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng user_facility_manager_b72fe91e40774416977f459695361e6b@example.test (ID: 1) da dang nh?p th�nh c�ng qua Cookie.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng role_facility_manager_b37fd9184bed47e4ab3bf0d57c529fe6@example.test (ID: 1) da dang nh?p th�nh c�ng qua Cookie.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng user_system_administrator_ee495ba26363429faa97481f8435d980@example.test (ID: 1) da dang nh?p th�nh c�ng qua Cookie.
+info: SelfStorageManagementSystem.Web.Workers.ReservationHoldExpirationWorker[0]
+      Reservation hold expiration worker stopped in Web host.
+info: SelfStorageManagementSystem.Web.Realtime.StorageUnitScopeSyncWorker[0]
+      StorageUnitScopeSyncWorker stopped.
+  Passed SelfStorageManagementSystem.WebTests.AccountIdentityAndZeroJwtTests.WebComposition_RegistersAccountIdentityService_AndCanBeResolved [< 1 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminRepositoryTests.GetCapacityImpact_ShouldDistinguishUnassignedHoldsAndConfirmed [121 ms]
+  Passed SelfStorageManagementSystem.WebTests.AccountIdentityAndZeroJwtTests.IdentitySnapshot_ReflectsFreshDbRoleChanges_Immediately [25 ms]
+  Passed SelfStorageManagementSystem.WebTests.AccountIdentityAndZeroJwtTests.WebComposition_DoesNotRegisterIAuthService_ResolvingFails [< 1 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminRepositoryTests.UpdateAndReload_AcrossContexts_DetectsStaleReadAndReloadsFreshEntity [36 ms]
+  Passed SelfStorageManagementSystem.WebTests.AccountIdentityAndZeroJwtTests.WebHost_OperatesAndAuthenticatesWithoutJwtSecret [35 ms]
+  Passed SelfStorageManagementSystem.WebTests.AccountIdentityAndZeroJwtTests.WebComposition_DoesNotRegisterJwtTokenGenerator_ResolvingFails [< 1 ms]
+  Passed SelfStorageManagementSystem.WebTests.AccountCookieAuthTests.Login_AllFiveRoles_Successful_SetsCookie_AndHasCorrectRoleClaim(roleCode: "facility_manager") [1 s]
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng role_facility_staff_c3359bfdc81e4e2ca0a1607f7fcf7584@example.test (ID: 2) da dang nh?p th�nh c�ng qua Cookie.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Realtime.StorageUnitRealtimePublisher[0]
+      Broadcasting Receiver_CreateStorageUnit for unit BLZ-1386-01 (ID: 1, Facility: 63177)
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng role_storage_customer_e2d8bea2ab234ca9805b913959313363@example.test (ID: 3) da dang nh?p th�nh c�ng qua Cookie.
+  Passed SelfStorageManagementSystem.WebTests.AccountCookieAuthTests.Login_AllFiveRoles_Successful_SetsCookie_AndHasCorrectRoleClaim(roleCode: "facility_staff") [36 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminRepositoryTests.GetStorageUnitReferenceSummary_ShouldCountAllForeignKeys [96 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.DeleteAsync_TransferRequestReference_RetainsRowAndUnlists [1 s]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.ActorCustomerRole_ThrowsForbiddenException_OnAllOperations [14 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Index_FilterByStatus_ReturnsOnlyMatchingUnits [1 s]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Index_AnonymousUser_RedirectsToLogin [2 ms]
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 5 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng user_facility_staff_0bb222786d614048b382b920e00bd7a0@example.test (ID: 2) da dang nh?p th�nh c�ng qua Cookie.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng role_system_administrator_75805f2d595b4e12948f24b794a46268@example.test (ID: 4) da dang nh?p th�nh c�ng qua Cookie.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminRepositoryTests.DeleteStorageUnitWithLock_ShouldRespectPolicyAndFkProtection [18 ms]
+  Passed SelfStorageManagementSystem.WebTests.AccountCookieAuthTests.Login_AllFiveRoles_Successful_SetsCookie_AndHasCorrectRoleClaim(roleCode: "storage_customer") [35 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitsMvcControllerTests.StorageUnits_Index_PaginationAndSearch_RenderProperly [1 s]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitsMvcControllerTests.StorageUnitsController_DoesNotInjectOrReferenceDbContext [1 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.DeleteAsync_CleanAvailableUnitNoCapacityConflict_Succeeds [8 ms]
+  Passed SelfStorageManagementSystem.WebTests.AccountCookieAuthTests.Login_AllFiveRoles_Successful_SetsCookie_AndHasCorrectRoleClaim(roleCode: "system_administrator") [35 ms]
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng user_storage_customer_bb36015f1e1a4f40b11805fa6195bfd4@example.test (ID: 2) da dang nh?p th�nh c�ng qua Cookie.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 5 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Workers.ReservationHoldExpirationWorker[0]
+      Reservation hold expiration worker stopped in Web host.
+info: SelfStorageManagementSystem.Web.Realtime.StorageUnitScopeSyncWorker[0]
+      StorageUnitScopeSyncWorker stopped.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 5 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng role_business_operations_manager_b125927838a2462ebadf80063b77d859@example.test (ID: 5) da dang nh?p th�nh c�ng qua Cookie.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng user_facility_manager_3da3f9b32124468699a110aceece09c5@example.test (ID: 3) da dang nh?p th�nh c�ng qua Cookie.
+warn: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Dang nh?p th?t b?i cho t�n t�i kho?n: inactive_emp_login_9985befb811b49f88004a19b24424fe5@example.test
+      SelfStorageManagementSystem.BusinessLogic.Exceptions.UnauthorizedException: Invalid email or password.
+         at SelfStorageManagementSystem.BusinessLogic.Services.Implementations.AccountIdentityService.AuthenticateAsync(String email, String password, String ipAddress, String userAgent, CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\PRN222_SE1905_TRANDOANTHANHHA_ASM03\src\SelfStorageManagementSystem.BusinessLogic\Services\Implementations\AccountIdentityService.cs:line 142
+         at SelfStorageManagementSystem.Web.Controllers.AccountController.Login(LoginRequest request, String returnUrl) in D:\FPT\PRN222\Project\Final_Project_Web\PRN222_SE1905_TRANDOANTHANHHA_ASM03\src\SelfStorageManagementSystem.Web\Controllers\AccountController.cs:line 85
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Realtime.StorageUnitRealtimePublisher[0]
+      Broadcasting Receiver_UpdateStorageUnit for unit BLZ-1386-01U (ID: 1, Facility: 63177)
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitsMvcControllerTests.CustomerRole_AccessStorageUnits_IsForbidden [40 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitsMvcControllerTests.StorageUnitsController_PostActions_HaveValidateAntiForgeryToken [< 1 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Index_StaffUser_RendersTable_WithStableRowId_AndMessageArea [54 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitsMvcControllerTests.AnonymousAccess_ToStorageUnits_RedirectsToLogin [5 ms]
+  Passed SelfStorageManagementSystem.WebTests.AccountCookieAuthTests.Login_AllFiveRoles_Successful_SetsCookie_AndHasCorrectRoleClaim(roleCode: "business_operations_manager") [33 ms]
+  Passed SelfStorageManagementSystem.WebTests.AccountCookieAuthTests.Login_EmployeeEmploymentInactive_IsRejected(employmentStatus: "terminated") [28 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.GetByIdAsync_PopulatesHasAnyReferences_Accurately [102 ms]
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Realtime.StorageUnitRealtimePublisher[0]
+      Broadcasting Receiver_DeleteStorageUnit for unit ID 1 at facility 63177
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+warn: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Dang nh?p th?t b?i cho t�n t�i kho?n: inactive_emp_login_fdfc10ab628740bf981279ed34b0dbc6@example.test
+      SelfStorageManagementSystem.BusinessLogic.Exceptions.UnauthorizedException: Invalid email or password.
+         at SelfStorageManagementSystem.BusinessLogic.Services.Implementations.AccountIdentityService.AuthenticateAsync(String email, String password, String ipAddress, String userAgent, CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\PRN222_SE1905_TRANDOANTHANHHA_ASM03\src\SelfStorageManagementSystem.BusinessLogic\Services\Implementations\AccountIdentityService.cs:line 142
+         at SelfStorageManagementSystem.Web.Controllers.AccountController.Login(LoginRequest request, String returnUrl) in D:\FPT\PRN222\Project\Final_Project_Web\PRN222_SE1905_TRANDOANTHANHHA_ASM03\src\SelfStorageManagementSystem.Web\Controllers\AccountController.cs:line 85
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+warn: SelfStorageManagementSystem.Web.Controllers.StorageUnitsController[0]
+      T? ch?i quy?n khi x�a � kho ID 626754: User does not have access to facility ID 62675.
+      SelfStorageManagementSystem.BusinessLogic.Exceptions.ForbiddenException: User does not have access to facility ID 62675.
+         at SelfStorageManagementSystem.BusinessLogic.Services.Implementations.StorageUnitAdminService.GetByIdAsync(Int64 unitId, Int64 actorUserId, CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\PRN222_SE1905_TRANDOANTHANHHA_ASM03\src\SelfStorageManagementSystem.BusinessLogic\Services\Implementations\StorageUnitAdminService.cs:line 117
+         at SelfStorageManagementSystem.Web.Controllers.StorageUnitsController.Delete(Int64 id, DateTimeOffset expectedUpdatedAt, CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\PRN222_SE1905_TRANDOANTHANHHA_ASM03\src\SelfStorageManagementSystem.Web\Controllers\StorageUnitsController.cs:line 496
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.UpdateAsync_DuplicateUnitCode_ThrowsConflictException [5 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.CreateAsync_MissingRequiredFields_ThrowsBadRequestException [4 ms]
+  Passed SelfStorageManagementSystem.WebTests.BlazorStorageUnitsTests.Component_AdminRole_FullCrudLifecycle_ExecutesSuccessfully [530 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminRepositoryTests.GetPagedStorageUnits_ShouldFilterAndPaginateCorrectly [134 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminRepositoryTests.MutationPlan_ComputesDeterministicLocks_CoveringSourceAndTarget [< 1 ms]
+  Passed SelfStorageManagementSystem.WebTests.AccountCookieAuthTests.Login_EmployeeEmploymentInactive_IsRejected(employmentStatus: "leave") [35 ms]
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng sys_admin_term_30d69f5a728b4fffb2e94687ebace6af@example.test (ID: 8) da dang nh?p th�nh c�ng qua Cookie.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng user_storage_customer_109a71cbc2ff45d79d3351987a929a09@example.test (ID: 4) da dang nh?p th�nh c�ng qua Cookie.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Realtime.StorageUnitRealtimePublisher[0]
+      Broadcasting Receiver_CreateStorageUnit for unit BLZ-04D0-REF (ID: 2, Facility: 75435)
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminRepositoryTests.UpdateStorageUnitWithLock_NonDeterministicCallback_UsesSingleStagedResult [3 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminRepositoryTests.CapacityLockKey_MatchesReservationConvention [< 1 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Delete_Post_ManagerOutsideFacilityScope_ReturnsForbiddenControlled_DoesNotReturn500_AndDoesNotDeleteData [84 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminRepositoryTests.UpdateStorageUnitWithLock_ApplyUpdatesRunsExactlyOnce [2 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.DeleteAsync_CapacityAfterDeleteMatchesDemandExactly_Succeeds [40 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.GetByIdAsync_Staff_InUnassignedFacility_ThrowsForbiddenException [7 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Index_CustomerRole_IsForbidden [30 ms]
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 5 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Realtime.StorageUnitRealtimePublisher[0]
+      Broadcasting Receiver_UpdateStorageUnit for unit BLZ-04D0-REF (ID: 2, Facility: 75435)
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.TerminatedOperationsManager_ListAsync_IsRejected [5 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.DeleteAsync_AssignedOrExpiredReservations_DoNotAffectCapacity_Succeeds [13 ms]
+  Passed SelfStorageManagementSystem.WebTests.AccountCookieAuthTests.ValidatePrincipal_TerminatedSystemAdministrator_LosesRoleAccess [50 ms]
+  Passed SelfStorageManagementSystem.WebTests.BlazorStorageUnitsTests.Component_Delete_WithReferences_RetainsRecordAndUnlists [54 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.ActiveOperationsManager_RemainsAuthorized [4 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.DeleteAsync_ActiveConfirmedReservation_SufficientRemainingCandidateCapacity_Succeeds [6 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.ListAsync_StaffWithNoAssignments_ReturnsEmptyPagedResult [3 ms]
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng user_facility_manager_c3a079a165404d39bd6c18ab729c01c2@example.test (ID: 5) da dang nh?p th�nh c�ng qua Cookie.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng logout_post_ffdeb6e273ef4356a7e2b4446da762a5@example.test (ID: 9) da dang nh?p th�nh c�ng qua Cookie.
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.GetLookupsAsync_GlobalLookup_KeepsMonthlyRateNull [4 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.UpdateAsync_StaffRole_ThrowsForbiddenException [3 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.ListAsync_OperationsManager_CanViewAllUnitsAcrossAllFacilities [3 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.GetByIdAsync_FacilityTimezoneAheadOfUtc_UsesLocalDate [8 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.DeleteAsync_UnitNotAvailable_ThrowsConflictException [9 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.GetByIdAsync_FutureRateOnly_ReturnsZero [4 ms]
+  Passed SelfStorageManagementSystem.WebTests.AccountCookieAuthTests.Logout_PostMethod_SignsOutAndClearsSession [46 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.GetByIdAsync_NonExistentUnit_ReturnsNull [3 ms]
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+warn: SelfStorageManagementSystem.Web.Controllers.StorageUnitsController[0]
+      Xung d?t khi t?o � kho: Storage unit with code 'UNIT_CR3' already exists in facility ID 20554.
+      SelfStorageManagementSystem.BusinessLogic.Exceptions.ConflictException: Storage unit with code 'UNIT_CR3' already exists in facility ID 20554.
+       ---> SelfStorageManagementSystem.DataAccess.Exceptions.StorageUnitUniqueConstraintException: Storage unit with code 'UNIT_CR3' already exists in facility ID 20554.
+         at SelfStorageManagementSystem.DataAccess.Repositories.Implementations.StorageUnitAdminRepository.CreateStorageUnitWithLockAsync(storage_unit newUnit, CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\PRN222_SE1905_TRANDOANTHANHHA_ASM03\src\SelfStorageManagementSystem.DataAccess\Repositories\Implementations\StorageUnitAdminRepository.cs:line 579
+         at SelfStorageManagementSystem.BusinessLogic.Services.Implementations.StorageUnitAdminService.CreateAsync(CreateStorageUnitRequest request, Int64 actorUserId, CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\PRN222_SE1905_TRANDOANTHANHHA_ASM03\src\SelfStorageManagementSystem.BusinessLogic\Services\Implementations\StorageUnitAdminService.cs:line 277
+         --- End of inner exception stack trace ---
+         at SelfStorageManagementSystem.BusinessLogic.Services.Implementations.StorageUnitAdminService.CreateAsync(CreateStorageUnitRequest request, Int64 actorUserId, CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\PRN222_SE1905_TRANDOANTHANHHA_ASM03\src\SelfStorageManagementSystem.BusinessLogic\Services\Implementations\StorageUnitAdminService.cs:line 283
+         at SelfStorageManagementSystem.Web.Controllers.StorageUnitsController.Create(StorageUnitCreateViewModel model, CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\PRN222_SE1905_TRANDOANTHANHHA_ASM03\src\SelfStorageManagementSystem.Web\Controllers\StorageUnitsController.cs:line 243
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Realtime.StorageUnitRealtimePublisher[0]
+      Broadcasting Receiver_CreateStorageUnit for unit BLZ-40D6-CROSS (ID: 3, Facility: 51580)
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.DeleteAsync_StaleExpectedUpdatedAt_ThrowsConflictException [4 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.CreateAsync_AreaBelongsToDifferentFacility_ThrowsBadRequestException [4 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminRepositoryTests.GetPagedStorageUnits_DeterministicSortingAndPaginationWithTies [114 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.GetLookupsAsync_DoesNotReturnRateFromDifferentFacility [9 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.GetLookupsAsync_RateWithValidToTomorrow_IsActive [4 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Create_Post_DuplicateUnitCode_ReturnsConflictError_AndPreservesInput [97 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.CreateAsync_ManagerAssignedAsManager_SucceedsAndEnforcesAvailableAndListed [9 ms]
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 5 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+warn: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Xung d?t t�i kho?n khi dang ky duplicate_6b1ce36c57e3433ea57aa5d0dff9c237@example.test: Email is already registered.
+      SelfStorageManagementSystem.BusinessLogic.Exceptions.ConflictException: Email is already registered.
+         at SelfStorageManagementSystem.BusinessLogic.Services.Implementations.AccountIdentityService.RegisterCustomerAsync(CustomerRegisterRequest request, CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\PRN222_SE1905_TRANDOANTHANHHA_ASM03\src\SelfStorageManagementSystem.BusinessLogic\Services\Implementations\AccountIdentityService.cs:line 181
+         at SelfStorageManagementSystem.Web.Controllers.AccountController.Register(RegisterViewModel model, String returnUrl) in D:\FPT\PRN222\Project\Final_Project_Web\PRN222_SE1905_TRANDOANTHANHHA_ASM03\src\SelfStorageManagementSystem.Web\Controllers\AccountController.cs:line 215
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.GetByIdAsync_RateWithValidToEqualLocalToday_ReturnsZero [3 ms]
+  Passed SelfStorageManagementSystem.WebTests.BlazorStorageUnitsTests.Component_CrossCircuitNotification_SyncsIndependentSessionWithoutHtmlFetch [87 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.GetLookupsAsync_RateWithValidToEqualToday_IsExpired [4 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.DeleteAsync_StaffRole_ThrowsForbiddenException [2 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.CreateAsync_Manager_UnassignedFacility_ThrowsForbiddenException [3 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.GetByIdAsync_MultipleEffectiveRates_SelectsLatestValidFrom [5 ms]
+  Passed SelfStorageManagementSystem.WebTests.BlazorStorageUnitsTests.Component_StaffRole_IsReadOnly_CannotManage [16 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.UpdateAsync_StaleExpectedUpdatedAt_ThrowsConflictException [3 ms]
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng user_facility_manager_9cd3508899164992a95dfbacd08ec898@example.test (ID: 6) da dang nh?p th�nh c�ng qua Cookie.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Realtime.StorageUnitRealtimePublisher[0]
+      Broadcasting Receiver_DeleteStorageUnit for unit ID 194564 at facility 19456
+  Passed SelfStorageManagementSystem.WebTests.AccountCookieAuthTests.Register_DuplicateEmail_FailsWithErrorMessage [59 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.GetLookupsAsync_Staff_UnassignedFacilitySpecified_ThrowsForbiddenException [4 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.ListAsync_Staff_WithoutFacilityFilter_OnlyReturnsUnitsInAssignedFacilities [3 ms]
+  Passed SelfStorageManagementSystem.WebTests.BlazorStorageUnitsTests.Component_Dispose_CleansUpSubscription_NoMoreUpdates [19 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.DeleteAsync_UnitHasHistoryOrReferences_RetainsRowAndSetsIsListedFalseAtomically [11 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Delete_Post_AvailableUnitWithoutReferences_DeletesSuccessfully [47 ms]
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 5 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng open_redirect_c32c4f3f7ff047ca8039db0a25013e37@example.test (ID: 11) da dang nh?p th�nh c�ng qua Cookie.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.CreateAsync_Manager_AssignedAsStaffOnlyAtTargetFacility_ThrowsForbiddenException [4 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.TerminatedOperationsManager_UpdateAsync_IsRejected [4 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminRepositoryTests.Cancellation_DuringMultiLockAcquisition_ReleasesPartiallyAcquiredSemaphoresWithoutLeak [70 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.GetLookupsAsync_WithFacility_ReturnsExactFacilityMonthlyRate [4 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminRepositoryTests.ValidateScopeReferences_ShouldDetectMismatches [2 ms]
+  Passed SelfStorageManagementSystem.WebTests.AccountCookieAuthTests.Login_ExternalReturnUrl_PreventsOpenRedirect_RedirectsToHome(externalUrl: "javascript:alert(1)") [34 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminRepositoryTests.UpdateStorageUnitWithLock_TargetIdMismatch_RejectedBeforeSaveChanges [4 ms]
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng user_facility_manager_6aaec49832124585b0637db20f4c6832@example.test (ID: 7) da dang nh?p th�nh c�ng qua Cookie.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng blazor_e416004e6bb3466582fb16ada2ed6ed1@example.test (ID: 7) da dang nh?p th�nh c�ng qua Cookie.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng open_redirect_050d88f5077c45cba8ee82c01df4e254@example.test (ID: 12) da dang nh?p th�nh c�ng qua Cookie.
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.UpdateAsync_ValidEdit_ModifiesAllowedFieldsOnly_KeepsStatusFacilityTypeListingUnchanged [7 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminRepositoryTests.UpdateStorageUnitWithLock_ShouldEnforceConcurrencyAndApplyToLoadedEntity [6 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.TerminatedOperationsManager_DeleteAsync_IsRejected [4 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminRepositoryTests.GetLookupUnitTypes_FacilityScoped_StrictRatesOnly [4 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.DeleteAsync_StatusHistoryReference_RetainsRowAndUnlists [12 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminRepositoryTests.CreateStorageUnitWithLock_ShouldSucceedAndEnforceUniqueness [10 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.GetLookupsAsync_Staff_ReturnsOnlyAssignedFacilities [4 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.ActorNotFound_ThrowsUnauthorizedException [3 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.DeleteAsync_ActiveHoldOnFacilityAndUnitType_ThrowsConflictException [7 ms]
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+warn: SelfStorageManagementSystem.Web.Controllers.StorageUnitsController[0]
+      Xung d?t d?ng th?i khi c?p nh?t � kho ID 427114: Concurrency conflict for storage unit ID 427114. Expected updated_at: 2026-11-02T06:28:58.7632698+00:00, actual in database: 2026-11-03T06:33:58.8304754+00:00.
+      SelfStorageManagementSystem.BusinessLogic.Exceptions.ConflictException: Concurrency conflict for storage unit ID 427114. Expected updated_at: 2026-11-02T06:28:58.7632698+00:00, actual in database: 2026-11-03T06:33:58.8304754+00:00.
+       ---> SelfStorageManagementSystem.DataAccess.Exceptions.StorageUnitConcurrencyException: Concurrency conflict for storage unit ID 427114. Expected updated_at: 2026-11-02T06:28:58.7632698+00:00, actual in database: 2026-11-03T06:33:58.8304754+00:00.
+         at SelfStorageManagementSystem.DataAccess.Repositories.Implementations.StorageUnitAdminRepository.UpdateStorageUnitWithLockAsync(Int64 unitId, DateTimeOffset expectedUpdatedAt, Action`1 applyUpdates, Nullable`1 targetFacilityId, Nullable`1 targetUnitTypeId, CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\PRN222_SE1905_TRANDOANTHANHHA_ASM03\src\SelfStorageManagementSystem.DataAccess\Repositories\Implementations\StorageUnitAdminRepository.cs:line 824
+         at SelfStorageManagementSystem.BusinessLogic.Services.Implementations.StorageUnitAdminService.UpdateAsync(Int64 unitId, UpdateStorageUnitRequest request, Int64 actorUserId, CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\PRN222_SE1905_TRANDOANTHANHHA_ASM03\src\SelfStorageManagementSystem.BusinessLogic\Services\Implementations\StorageUnitAdminService.cs:line 345
+         --- End of inner exception stack trace ---
+         at SelfStorageManagementSystem.BusinessLogic.Services.Implementations.StorageUnitAdminService.UpdateAsync(Int64 unitId, UpdateStorageUnitRequest request, Int64 actorUserId, CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\PRN222_SE1905_TRANDOANTHANHHA_ASM03\src\SelfStorageManagementSystem.BusinessLogic\Services\Implementations\StorageUnitAdminService.cs:line 366
+         at SelfStorageManagementSystem.Web.Controllers.StorageUnitsController.Edit(Int64 id, StorageUnitEditViewModel model, CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\PRN222_SE1905_TRANDOANTHANHHA_ASM03\src\SelfStorageManagementSystem.Web\Controllers\StorageUnitsController.cs:line 366
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng open_redirect_6f44bb28566b4e68981c6fdd95e519e6@example.test (ID: 13) da dang nh?p th�nh c�ng qua Cookie.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng blazor_92e34212f9454bfbb80eda22a04f9432@example.test (ID: 8) da dang nh?p th�nh c�ng qua Cookie.
+  Passed SelfStorageManagementSystem.WebTests.AccountCookieAuthTests.Login_ExternalReturnUrl_PreventsOpenRedirect_RedirectsToHome(externalUrl: "http://attacker.example.com") [36 ms]
+  Passed SelfStorageManagementSystem.WebTests.BlazorStorageUnitsTests.Host_EnforcesRoleAndRendersInteractiveComponent(role: "storage_customer", allowed: False) [57 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.UpdateAsync_Manager_UnassignedFacility_ThrowsForbiddenException [4 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.GetLookupsAsync_FacilityTimezoneAheadOfUtc_SelectsLocalCurrentRate [4 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.GetLookupsAsync_WithoutConfiguredRate_DoesNotFabricateZeroAsRealRate [4 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.DeleteAsync_ActiveHold_SufficientRemainingCandidateCapacity_Succeeds [8 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.ListAsync_Staff_WithAssignedFacility_Succeeds [12 ms]
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 5 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+  Passed SelfStorageManagementSystem.WebTests.AccountCookieAuthTests.Login_ExternalReturnUrl_PreventsOpenRedirect_RedirectsToHome(externalUrl: "https://evil.com/phish") [35 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.TerminatedOperationsManager_CreateAsync_IsRejected [3 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Edit_Post_StaleExpectedUpdatedAt_ReturnsConcurrencyConflictAlert_WithRefreshOption [90 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.DeleteAsync_Manager_UnassignedFacility_ThrowsForbiddenException [3 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.GetByIdAsync_Staff_InAssignedFacility_ReturnsDetailDto [3 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.ListAsync_Staff_WithUnassignedFacility_ThrowsForbiddenException [3 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.DeleteAsync_TargetUnitNotCandidate_NotBlockedByReservations [6 ms]
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng open_redirect_98a673acd044407bb28212a21ec893d6@example.test (ID: 14) da dang nh?p th�nh c�ng qua Cookie.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng user_facility_manager_9b8949578384453889919a48df571858@example.test (ID: 8) da dang nh?p th�nh c�ng qua Cookie.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.UpdateAsync_MissingExpectedUpdatedAt_ThrowsBadRequestException [3 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.CreateAsync_StaffRole_ThrowsForbiddenException [4 ms]
+  Passed SelfStorageManagementSystem.WebTests.AccountCookieAuthTests.Login_ExternalReturnUrl_PreventsOpenRedirect_RedirectsToHome(externalUrl: "//malicious-site.com/exploit") [32 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.ListAsync_Admin_CanViewAllUnitsAcrossAllFacilities [4 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.GetByIdAsync_Admin_CanViewAnyUnit [3 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.DeleteAsync_MissingExpectedUpdatedAt_ThrowsBadRequestException [3 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.GetLookupsAsync_Admin_ReturnsAllActiveFacilities [14 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.TerminatedSystemAdministrator_IsRejected [4 ms]
+warn: SelfStorageManagementSystem.Web.Controllers.StorageUnitsController[0]
+      Xung d?t khi x�a � kho ID 655204: Storage unit 'UNIT_DEL3' cannot be deleted because its status is 'occupied'. Only 'available' units can be deleted.
+      SelfStorageManagementSystem.BusinessLogic.Exceptions.ConflictException: Storage unit 'UNIT_DEL3' cannot be deleted because its status is 'occupied'. Only 'available' units can be deleted.
+         at SelfStorageManagementSystem.BusinessLogic.Services.Implementations.StorageUnitAdminService.DeleteAsync(Int64 unitId, DateTimeOffset expectedUpdatedAt, Int64 actorUserId, CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\PRN222_SE1905_TRANDOANTHANHHA_ASM03\src\SelfStorageManagementSystem.BusinessLogic\Services\Implementations\StorageUnitAdminService.cs:line 429
+         at SelfStorageManagementSystem.Web.Controllers.StorageUnitsController.Delete(Int64 id, DateTimeOffset expectedUpdatedAt, CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\PRN222_SE1905_TRANDOANTHANHHA_ASM03\src\SelfStorageManagementSystem.Web\Controllers\StorageUnitsController.cs:line 499
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng logout_get_cf580ae9086c4009b614d2c088052dd3@example.test (ID: 15) da dang nh?p th�nh c�ng qua Cookie.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 5 entities to in-memory store.
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.CreateAsync_DuplicateCodeInFacility_ThrowsConflictException [3 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.ActorInactive_ThrowsUnauthorizedException [2 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Delete_Post_UnitWithAllocationsOrOccupied_IsBlockedByPolicy [64 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.GetLookupsAsync_WithMultipleHistoricalRates_SelectsCurrentValidRate [4 ms]
+  Passed SelfStorageManagementSystem.WebTests.BlazorStorageUnitsTests.Host_EnforcesRoleAndRendersInteractiveComponent(role: "system_administrator", allowed: True) [103 ms]
+  Passed SelfStorageManagementSystem.WebTests.AccountCookieAuthTests.Logout_GetMethod_DoesNotSignOut_ReturnsConfirmationView [40 ms]
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng user_facility_manager_bd78c83b9f29437f91728a81f5a6dfe8@example.test (ID: 9) da dang nh?p th�nh c�ng qua Cookie.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng blazor_4c40f18070c848f3ad8d03e82b46936a@example.test (ID: 9) da dang nh?p th�nh c�ng qua Cookie.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng pure_customer_4eff5de21e3444858e6b28b16cad76bb@example.test (ID: 16) da dang nh?p th�nh c�ng qua Cookie.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 5 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Workers.ReservationHoldExpirationWorker[0]
+      Reservation hold expiration worker stopped in Web host.
+info: SelfStorageManagementSystem.Web.Realtime.StorageUnitScopeSyncWorker[0]
+      StorageUnitScopeSyncWorker stopped.
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.UpdateAsync_AreaFromDifferentFacility_ThrowsBadRequestException [5 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.UpdateAsync_UnitNotFound_ThrowsNotFoundException [3 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitAdminServiceTests.DeleteAsync_ActiveConfirmedReservationOnFacilityAndUnitType_ThrowsConflictException [6 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Create_Get_Manager_RendersFormWithLookups [43 ms]
+  Passed SelfStorageManagementSystem.WebTests.AccountCookieAuthTests.ValidatePrincipal_ActiveCustomerWithoutEmployeeProfile_RemainsAuthenticated [40 ms]
+  Passed SelfStorageManagementSystem.WebTests.BlazorStorageUnitsTests.Host_EnforcesRoleAndRendersInteractiveComponent(role: "facility_staff", allowed: True) [45 ms]
+  Passed SelfStorageManagementSystem.WebTests.AccountCookieAuthTests.SecuredEndpoint_AjaxRequestWithoutAuth_Returns401JsonNotRedirect [2 ms]
+  Passed SelfStorageManagementSystem.WebTests.AccountCookieAuthTests.Logout_PostWithoutAntiforgeryToken_ReturnsBadRequest400 [6 ms]
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+warn: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Dang nh?p th?t b?i cho t�n t�i kho?n: locked_251c4a8da0f34a278b40d0034fba0b99@example.test
+      SelfStorageManagementSystem.BusinessLogic.Exceptions.UnauthorizedException: Invalid email or password.
+         at SelfStorageManagementSystem.BusinessLogic.Services.Implementations.AccountIdentityService.AuthenticateAsync(String email, String password, String ipAddress, String userAgent, CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\PRN222_SE1905_TRANDOANTHANHHA_ASM03\src\SelfStorageManagementSystem.BusinessLogic\Services\Implementations\AccountIdentityService.cs:line 135
+         at SelfStorageManagementSystem.Web.Controllers.AccountController.Login(LoginRequest request, String returnUrl) in D:\FPT\PRN222\Project\Final_Project_Web\PRN222_SE1905_TRANDOANTHANHHA_ASM03\src\SelfStorageManagementSystem.Web\Controllers\AccountController.cs:line 85
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng user_facility_staff_e2d038c7562e435e95cf3462a1a09bb7@example.test (ID: 10) da dang nh?p th�nh c�ng qua Cookie.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 5 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 5 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+warn: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Dang nh?p th?t b?i cho t�n t�i kho?n: locked_3140e664026749d58d6229a8a8be0b63@example.test
+      SelfStorageManagementSystem.BusinessLogic.Exceptions.UnauthorizedException: Invalid email or password.
+         at SelfStorageManagementSystem.BusinessLogic.Services.Implementations.AccountIdentityService.AuthenticateAsync(String email, String password, String ipAddress, String userAgent, CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\PRN222_SE1905_TRANDOANTHANHHA_ASM03\src\SelfStorageManagementSystem.BusinessLogic\Services\Implementations\AccountIdentityService.cs:line 135
+         at SelfStorageManagementSystem.Web.Controllers.AccountController.Login(LoginRequest request, String returnUrl) in D:\FPT\PRN222\Project\Final_Project_Web\PRN222_SE1905_TRANDOANTHANHHA_ASM03\src\SelfStorageManagementSystem.Web\Controllers\AccountController.cs:line 85
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng user_facility_manager_e9b94b594cbe47bfa2d82239260db420@example.test (ID: 11) da dang nh?p th�nh c�ng qua Cookie.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng lock_after_login_2ee3d1a51386455d972a0fd86ecba085@example.test (ID: 19) da dang nh?p th�nh c�ng qua Cookie.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 5 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng local_redirect_0d5d75a47ddf49a4bc7c2ab7dcf030b3@example.test (ID: 20) da dang nh?p th�nh c�ng qua Cookie.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng user_facility_manager_1f2f644e44ff4e239329a4ce8fe292f8@example.test (ID: 12) da dang nh?p th�nh c�ng qua Cookie.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 5 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng emp_term_6eed4144018e4781b05d0cef32ffdebd@example.test (ID: 21) da dang nh?p th�nh c�ng qua Cookie.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+  Passed SelfStorageManagementSystem.WebTests.AccountCookieAuthTests.Login_LockedOrDisabledUser_FailsWith200AndErrorMessage_NoAuthCookie(inactiveStatus: "disabled") [19 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Create_Post_StaffUser_IsReadOnly_CannotCreateUnit [38 ms]
+  Passed SelfStorageManagementSystem.WebTests.AccountCookieAuthTests.Login_LockedOrDisabledUser_FailsWith200AndErrorMessage_NoAuthCookie(inactiveStatus: "locked") [18 ms]
+  Passed SelfStorageManagementSystem.WebTests.AccountCookieAuthTests.ValidatePrincipal_UserDisabledAfterLogin_RejectsPrincipalAndRedirectsToLogin [38 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Create_Get_FromIndex_WithFacilityId_PreservesFacility_RendersMatchingAreas_AndAjaxLookupsWork [63 ms]
+  Passed SelfStorageManagementSystem.WebTests.AccountCookieAuthTests.Login_ValidLocalReturnUrl_RedirectsToTargetLocalUrl [32 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Delete_Get_OnlyShowsConfirmation_DoesNotDeleteUnit [37 ms]
+  Passed SelfStorageManagementSystem.WebTests.AccountCookieAuthTests.ValidatePrincipal_EmploymentBecomesTerminated_RejectsPrincipalAndSignsOut [30 ms]
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng user_facility_staff_d2309b660d6e49ecbae24a3525414a36@example.test (ID: 13) da dang nh?p th�nh c�ng qua Cookie.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng customer_denied_ajax_64a7de53a83848aba4961580843abd02@example.test (ID: 22) da dang nh?p th�nh c�ng qua Cookie.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 5 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+warn: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Dang nh?p th?t b?i cho t�n t�i kho?n: invalid_pw_192d90a18fe44f5695c94e62338390d5@example.test
+      SelfStorageManagementSystem.BusinessLogic.Exceptions.UnauthorizedException: Invalid email or password.
+         at SelfStorageManagementSystem.BusinessLogic.Services.Implementations.AccountIdentityService.AuthenticateAsync(String email, String password, String ipAddress, String userAgent, CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\PRN222_SE1905_TRANDOANTHANHHA_ASM03\src\SelfStorageManagementSystem.BusinessLogic\Services\Implementations\AccountIdentityService.cs:line 149
+         at SelfStorageManagementSystem.Web.Controllers.AccountController.Login(LoginRequest request, String returnUrl) in D:\FPT\PRN222\Project\Final_Project_Web\PRN222_SE1905_TRANDOANTHANHHA_ASM03\src\SelfStorageManagementSystem.Web\Controllers\AccountController.cs:line 85
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng user_facility_manager_3239da2fd7494089a0fd375988a03ea4@example.test (ID: 14) da dang nh?p th�nh c�ng qua Cookie.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 5 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 5 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng user_facility_manager_cae6ed1736fd420f88c15fb61400c826@example.test (ID: 15) da dang nh?p th�nh c�ng qua Cookie.
+warn: SelfStorageManagementSystem.Web.Controllers.StorageUnitsController[0]
+      T? ch?i quy?n khi t?o � kho: Manager is not assigned as manager at facility ID 19060.
+      SelfStorageManagementSystem.BusinessLogic.Exceptions.ForbiddenException: Manager is not assigned as manager at facility ID 19060.
+         at SelfStorageManagementSystem.BusinessLogic.Services.Implementations.StorageUnitAdminService.CreateAsync(CreateStorageUnitRequest request, Int64 actorUserId, CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\PRN222_SE1905_TRANDOANTHANHHA_ASM03\src\SelfStorageManagementSystem.BusinessLogic\Services\Implementations\StorageUnitAdminService.cs:line 257
+         at SelfStorageManagementSystem.Web.Controllers.StorageUnitsController.Create(StorageUnitCreateViewModel model, CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\PRN222_SE1905_TRANDOANTHANHHA_ASM03\src\SelfStorageManagementSystem.Web\Controllers\StorageUnitsController.cs:line 243
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Details_Get_Staff_RendersComprehensiveUnitSpecsAndReferenceSummary [43 ms]
+  Passed SelfStorageManagementSystem.WebTests.AccountCookieAuthTests.AdminEndpoint_AjaxRequestWithWrongRole_Returns403JsonNotRedirect [32 ms]
+  Passed SelfStorageManagementSystem.WebTests.AccountCookieAuthTests.Login_InvalidPassword_FailsWith200AndErrorMessage_NoAuthCookie [30 ms]
+  Passed SelfStorageManagementSystem.WebTests.AccountCookieAuthTests.SecuredEndpoint_BrowserRequestWithoutAuth_Returns302RedirectToLogin [1 ms]
+  Passed SelfStorageManagementSystem.WebTests.AccountCookieAuthTests.IsAjaxOrApiOrSignalR_RecognizesAllRequiredRequestPatterns [< 1 ms]
+  Passed SelfStorageManagementSystem.WebTests.AccountCookieAuthTests.CookieConfiguration_Has5MinuteLifetime_SlidingExpiration_HttpOnly_SameSiteLax [4 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Edit_Get_Manager_RendersImmutableFields_AndRoundTripExpectedUpdatedAt [38 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Create_Post_ManagerOutsideFacilityScope_ReturnsForbiddenError [39 ms]
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 5 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Kh�ch h�ng m?i da dang ky th�nh c�ng: new_customer_0c6b3461433a4645b0c1e2851fd78f79@example.test (ID: 24)
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng user_facility_manager_100a560b3f6b43048128487a80293240@example.test (ID: 16) da dang nh?p th�nh c�ng qua Cookie.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Realtime.StorageUnitRealtimePublisher[0]
+      Broadcasting Receiver_CreateStorageUnit for unit HN_DB32148F0 (ID: 772675, Facility: 65248)
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 5 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng ops_mgr_term_4903167497cd478a9fb7690848946ae1@example.test (ID: 25) da dang nh?p th�nh c�ng qua Cookie.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng user_facility_manager_ac27e8fca0564ac7ae37b672473e817c@example.test (ID: 17) da dang nh?p th�nh c�ng qua Cookie.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Realtime.StorageUnitRealtimePublisher[0]
+      Broadcasting Receiver_UpdateStorageUnit for unit HN_9C2BEEF9C (ID: 489504, Facility: 48950)
+info: SelfStorageManagementSystem.Web.Workers.ReservationHoldExpirationWorker[0]
+      Reservation hold expiration worker stopped in Web host.
+info: SelfStorageManagementSystem.Web.Realtime.StorageUnitScopeSyncWorker[0]
+      StorageUnitScopeSyncWorker stopped.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng customer_denied_browser_627f9b66d69648bd9e04700a8517f873@example.test (ID: 26) da dang nh?p th�nh c�ng qua Cookie.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Controllers.AccountController[0]
+      Ngu?i d�ng role_change_9a717e03968647fd9677405ed34cb0ce@example.test (ID: 27) da dang nh?p th�nh c�ng qua Cookie.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 2 entities to in-memory store.
+info: SelfStorageManagementSystem.Web.Workers.ReservationHoldExpirationWorker[0]
+      Reservation hold expiration worker stopped in Web host.
+info: SelfStorageManagementSystem.Web.Realtime.StorageUnitScopeSyncWorker[0]
+      StorageUnitScopeSyncWorker stopped.
+[xUnit.net 00:00:02.67]   Finished:    SelfStorageManagementSystem.WebTests
+  Passed SelfStorageManagementSystem.WebTests.AccountCookieAuthTests.Register_ValidCustomer_CreatesUserAndRedirectsToLogin [67 ms]
+  Passed SelfStorageManagementSystem.WebTests.AccountCookieAuthTests.Login_PostWithoutAntiforgeryToken_ReturnsBadRequest400 [5 ms]
+  Passed SelfStorageManagementSystem.WebTests.AccountCookieAuthTests.CookieAuth_DoesNotResolveJwt_IndependentArchitecture [< 1 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Create_Post_Manager_ValidData_CreatesUnit_AndRedirectsWithSuccessMessage [46 ms]
+  Passed SelfStorageManagementSystem.WebTests.AccountCookieAuthTests.ValidatePrincipal_TerminatedOperationsManager_LosesRoleAccess [34 ms]
+  Passed SelfStorageManagementSystem.WebTests.StorageUnitsRazorPagesTests.Edit_Post_ValidData_UpdatesUnit_PreservesFacilityAndType_AndRedirects [47 ms]
+  Passed SelfStorageManagementSystem.WebTests.AccountCookieAuthTests.AdminEndpoint_BrowserRequestWithWrongRole_Returns302RedirectToForbidden [32 ms]
+  Passed SelfStorageManagementSystem.WebTests.AccountCookieAuthTests.ValidatePrincipal_RoleChangedInDb_DynamicallyUpdatesClaimsAndRenewsCookie [45 ms]
+
+Test Run Successful.
+Total tests: 170
+     Passed: 170
+ Total time: 3.0180 Seconds
+     1>Done Building Project "D:\FPT\PRN222\Project\Final_Project_Web\PRN222_SE1905_TRANDOANTHANHHA_ASM03\PRN222_SE1905_TRANDOANTHANHHA_ASM03.sln" (VSTest target(s)).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:03.81

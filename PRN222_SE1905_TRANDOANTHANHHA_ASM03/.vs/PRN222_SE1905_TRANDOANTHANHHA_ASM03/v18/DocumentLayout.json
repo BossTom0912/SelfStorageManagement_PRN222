@@ -1,0 +1,206 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\FPT\\PRN222\\Project\\Final_Project_Web\\PRN222_SE1905_TRANDOANTHANHHA_ASM03\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\FPT\\PRN222\\Project\\Final_Project_Web\\PRN222_SE1905_TRANDOANTHANHHA_ASM04\\src\\SelfStorageManagementSystem.Worker\\HeartbeatWorker.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{541A7D14-C020-4DC7-A22D-19A5181F11DC}|src\\SelfStorageManagementSystem.Web\\SelfStorageManagementSystem.Web.csproj|d:\\fpt\\prn222\\project\\final_project_web\\prn222_se1905_trandoanthanhha_asm03\\src\\selfstoragemanagementsystem.web\\views\\storageunits\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{541A7D14-C020-4DC7-A22D-19A5181F11DC}|src\\SelfStorageManagementSystem.Web\\SelfStorageManagementSystem.Web.csproj|solutionrelative:src\\selfstoragemanagementsystem.web\\views\\storageunits\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{541A7D14-C020-4DC7-A22D-19A5181F11DC}|src\\SelfStorageManagementSystem.Web\\SelfStorageManagementSystem.Web.csproj|d:\\fpt\\prn222\\project\\final_project_web\\prn222_se1905_trandoanthanhha_asm03\\src\\selfstoragemanagementsystem.web\\views\\storageunits\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{541A7D14-C020-4DC7-A22D-19A5181F11DC}|src\\SelfStorageManagementSystem.Web\\SelfStorageManagementSystem.Web.csproj|solutionrelative:src\\selfstoragemanagementsystem.web\\views\\storageunits\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{541A7D14-C020-4DC7-A22D-19A5181F11DC}|src\\SelfStorageManagementSystem.Web\\SelfStorageManagementSystem.Web.csproj|d:\\fpt\\prn222\\project\\final_project_web\\prn222_se1905_trandoanthanhha_asm03\\src\\selfstoragemanagementsystem.web\\views\\storageunits\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{541A7D14-C020-4DC7-A22D-19A5181F11DC}|src\\SelfStorageManagementSystem.Web\\SelfStorageManagementSystem.Web.csproj|solutionrelative:src\\selfstoragemanagementsystem.web\\views\\storageunits\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{541A7D14-C020-4DC7-A22D-19A5181F11DC}|src\\SelfStorageManagementSystem.Web\\SelfStorageManagementSystem.Web.csproj|d:\\fpt\\prn222\\project\\final_project_web\\prn222_se1905_trandoanthanhha_asm03\\src\\selfstoragemanagementsystem.web\\views\\storageunits\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{541A7D14-C020-4DC7-A22D-19A5181F11DC}|src\\SelfStorageManagementSystem.Web\\SelfStorageManagementSystem.Web.csproj|solutionrelative:src\\selfstoragemanagementsystem.web\\views\\storageunits\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{541A7D14-C020-4DC7-A22D-19A5181F11DC}|src\\SelfStorageManagementSystem.Web\\SelfStorageManagementSystem.Web.csproj|d:\\fpt\\prn222\\project\\final_project_web\\prn222_se1905_trandoanthanhha_asm03\\src\\selfstoragemanagementsystem.web\\pages\\_viewimports.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{541A7D14-C020-4DC7-A22D-19A5181F11DC}|src\\SelfStorageManagementSystem.Web\\SelfStorageManagementSystem.Web.csproj|solutionrelative:src\\selfstoragemanagementsystem.web\\pages\\_viewimports.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{541A7D14-C020-4DC7-A22D-19A5181F11DC}|src\\SelfStorageManagementSystem.Web\\SelfStorageManagementSystem.Web.csproj|d:\\fpt\\prn222\\project\\final_project_web\\prn222_se1905_trandoanthanhha_asm03\\src\\selfstoragemanagementsystem.web\\pages\\blazor\\storageunits.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{541A7D14-C020-4DC7-A22D-19A5181F11DC}|src\\SelfStorageManagementSystem.Web\\SelfStorageManagementSystem.Web.csproj|solutionrelative:src\\selfstoragemanagementsystem.web\\pages\\blazor\\storageunits.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{541A7D14-C020-4DC7-A22D-19A5181F11DC}|src\\SelfStorageManagementSystem.Web\\SelfStorageManagementSystem.Web.csproj|d:\\fpt\\prn222\\project\\final_project_web\\prn222_se1905_trandoanthanhha_asm03\\src\\selfstoragemanagementsystem.web\\components\\storageunitmanager.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{541A7D14-C020-4DC7-A22D-19A5181F11DC}|src\\SelfStorageManagementSystem.Web\\SelfStorageManagementSystem.Web.csproj|solutionrelative:src\\selfstoragemanagementsystem.web\\components\\storageunitmanager.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{541A7D14-C020-4DC7-A22D-19A5181F11DC}|src\\SelfStorageManagementSystem.Web\\SelfStorageManagementSystem.Web.csproj|d:\\fpt\\prn222\\project\\final_project_web\\prn222_se1905_trandoanthanhha_asm03\\src\\selfstoragemanagementsystem.web\\components\\_imports.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{541A7D14-C020-4DC7-A22D-19A5181F11DC}|src\\SelfStorageManagementSystem.Web\\SelfStorageManagementSystem.Web.csproj|solutionrelative:src\\selfstoragemanagementsystem.web\\components\\_imports.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{541A7D14-C020-4DC7-A22D-19A5181F11DC}|src\\SelfStorageManagementSystem.Web\\SelfStorageManagementSystem.Web.csproj|d:\\fpt\\prn222\\project\\final_project_web\\prn222_se1905_trandoanthanhha_asm03\\src\\selfstoragemanagementsystem.web\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{541A7D14-C020-4DC7-A22D-19A5181F11DC}|src\\SelfStorageManagementSystem.Web\\SelfStorageManagementSystem.Web.csproj|solutionrelative:src\\selfstoragemanagementsystem.web\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{698853F3-260B-45C5-A57E-BF48C9379D38}|src\\SelfStorageManagementSystem.BusinessObjects\\SelfStorageManagementSystem.BusinessObjects.csproj|d:\\fpt\\prn222\\project\\final_project_web\\prn222_se1905_trandoanthanhha_asm03\\src\\selfstoragemanagementsystem.businessobjects\\entities\\authorized_access_member.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{698853F3-260B-45C5-A57E-BF48C9379D38}|src\\SelfStorageManagementSystem.BusinessObjects\\SelfStorageManagementSystem.BusinessObjects.csproj|solutionrelative:src\\selfstoragemanagementsystem.businessobjects\\entities\\authorized_access_member.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "HeartbeatWorker.cs",
+              "DocumentMoniker": "D:\\FPT\\PRN222\\Project\\Final_Project_Web\\PRN222_SE1905_TRANDOANTHANHHA_ASM04\\src\\SelfStorageManagementSystem.Worker\\HeartbeatWorker.cs",
+              "RelativeDocumentMoniker": "..\\PRN222_SE1905_TRANDOANTHANHHA_ASM04\\src\\SelfStorageManagementSystem.Worker\\HeartbeatWorker.cs",
+              "ToolTip": "D:\\FPT\\PRN222\\Project\\Final_Project_Web\\PRN222_SE1905_TRANDOANTHANHHA_ASM04\\src\\SelfStorageManagementSystem.Worker\\HeartbeatWorker.cs",
+              "RelativeToolTip": "..\\PRN222_SE1905_TRANDOANTHANHHA_ASM04\\src\\SelfStorageManagementSystem.Worker\\HeartbeatWorker.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-11-03T09:49:44.531Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Details.cshtml",
+              "DocumentMoniker": "D:\\FPT\\PRN222\\Project\\Final_Project_Web\\PRN222_SE1905_TRANDOANTHANHHA_ASM03\\src\\SelfStorageManagementSystem.Web\\Views\\StorageUnits\\Details.cshtml",
+              "RelativeDocumentMoniker": "src\\SelfStorageManagementSystem.Web\\Views\\StorageUnits\\Details.cshtml",
+              "ToolTip": "D:\\FPT\\PRN222\\Project\\Final_Project_Web\\PRN222_SE1905_TRANDOANTHANHHA_ASM03\\src\\SelfStorageManagementSystem.Web\\Views\\StorageUnits\\Details.cshtml",
+              "RelativeToolTip": "src\\SelfStorageManagementSystem.Web\\Views\\StorageUnits\\Details.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-11-03T09:22:15.183Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Edit.cshtml",
+              "DocumentMoniker": "D:\\FPT\\PRN222\\Project\\Final_Project_Web\\PRN222_SE1905_TRANDOANTHANHHA_ASM03\\src\\SelfStorageManagementSystem.Web\\Views\\StorageUnits\\Edit.cshtml",
+              "RelativeDocumentMoniker": "src\\SelfStorageManagementSystem.Web\\Views\\StorageUnits\\Edit.cshtml",
+              "ToolTip": "D:\\FPT\\PRN222\\Project\\Final_Project_Web\\PRN222_SE1905_TRANDOANTHANHHA_ASM03\\src\\SelfStorageManagementSystem.Web\\Views\\StorageUnits\\Edit.cshtml",
+              "RelativeToolTip": "src\\SelfStorageManagementSystem.Web\\Views\\StorageUnits\\Edit.cshtml",
+              "ViewState": "AgIAAEYAAAAAAAAAAAAAAFAAAABEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-11-03T09:21:10.754Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Delete.cshtml",
+              "DocumentMoniker": "D:\\FPT\\PRN222\\Project\\Final_Project_Web\\PRN222_SE1905_TRANDOANTHANHHA_ASM03\\src\\SelfStorageManagementSystem.Web\\Views\\StorageUnits\\Delete.cshtml",
+              "RelativeDocumentMoniker": "src\\SelfStorageManagementSystem.Web\\Views\\StorageUnits\\Delete.cshtml",
+              "ToolTip": "D:\\FPT\\PRN222\\Project\\Final_Project_Web\\PRN222_SE1905_TRANDOANTHANHHA_ASM03\\src\\SelfStorageManagementSystem.Web\\Views\\StorageUnits\\Delete.cshtml",
+              "RelativeToolTip": "src\\SelfStorageManagementSystem.Web\\Views\\StorageUnits\\Delete.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-11-03T09:21:03.198Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "D:\\FPT\\PRN222\\Project\\Final_Project_Web\\PRN222_SE1905_TRANDOANTHANHHA_ASM03\\src\\SelfStorageManagementSystem.Web\\Views\\StorageUnits\\Create.cshtml",
+              "RelativeDocumentMoniker": "src\\SelfStorageManagementSystem.Web\\Views\\StorageUnits\\Create.cshtml",
+              "ToolTip": "D:\\FPT\\PRN222\\Project\\Final_Project_Web\\PRN222_SE1905_TRANDOANTHANHHA_ASM03\\src\\SelfStorageManagementSystem.Web\\Views\\StorageUnits\\Create.cshtml",
+              "RelativeToolTip": "src\\SelfStorageManagementSystem.Web\\Views\\StorageUnits\\Create.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-11-03T09:21:02.305Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "_ViewImports.cshtml",
+              "DocumentMoniker": "D:\\FPT\\PRN222\\Project\\Final_Project_Web\\PRN222_SE1905_TRANDOANTHANHHA_ASM03\\src\\SelfStorageManagementSystem.Web\\Pages\\_ViewImports.cshtml",
+              "RelativeDocumentMoniker": "src\\SelfStorageManagementSystem.Web\\Pages\\_ViewImports.cshtml",
+              "ToolTip": "D:\\FPT\\PRN222\\Project\\Final_Project_Web\\PRN222_SE1905_TRANDOANTHANHHA_ASM03\\src\\SelfStorageManagementSystem.Web\\Pages\\_ViewImports.cshtml",
+              "RelativeToolTip": "src\\SelfStorageManagementSystem.Web\\Pages\\_ViewImports.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-11-03T09:20:49.487Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "StorageUnits.cshtml",
+              "DocumentMoniker": "D:\\FPT\\PRN222\\Project\\Final_Project_Web\\PRN222_SE1905_TRANDOANTHANHHA_ASM03\\src\\SelfStorageManagementSystem.Web\\Pages\\Blazor\\StorageUnits.cshtml",
+              "RelativeDocumentMoniker": "src\\SelfStorageManagementSystem.Web\\Pages\\Blazor\\StorageUnits.cshtml",
+              "ToolTip": "D:\\FPT\\PRN222\\Project\\Final_Project_Web\\PRN222_SE1905_TRANDOANTHANHHA_ASM03\\src\\SelfStorageManagementSystem.Web\\Pages\\Blazor\\StorageUnits.cshtml",
+              "RelativeToolTip": "src\\SelfStorageManagementSystem.Web\\Pages\\Blazor\\StorageUnits.cshtml",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-11-03T09:20:11.428Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\FPT\\PRN222\\Project\\Final_Project_Web\\PRN222_SE1905_TRANDOANTHANHHA_ASM03\\src\\SelfStorageManagementSystem.Web\\Program.cs",
+              "RelativeDocumentMoniker": "src\\SelfStorageManagementSystem.Web\\Program.cs",
+              "ToolTip": "D:\\FPT\\PRN222\\Project\\Final_Project_Web\\PRN222_SE1905_TRANDOANTHANHHA_ASM03\\src\\SelfStorageManagementSystem.Web\\Program.cs",
+              "RelativeToolTip": "src\\SelfStorageManagementSystem.Web\\Program.cs",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAAABIAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-11-03T09:01:47.494Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "_Imports.razor",
+              "DocumentMoniker": "D:\\FPT\\PRN222\\Project\\Final_Project_Web\\PRN222_SE1905_TRANDOANTHANHHA_ASM03\\src\\SelfStorageManagementSystem.Web\\Components\\_Imports.razor",
+              "RelativeDocumentMoniker": "src\\SelfStorageManagementSystem.Web\\Components\\_Imports.razor",
+              "ToolTip": "D:\\FPT\\PRN222\\Project\\Final_Project_Web\\PRN222_SE1905_TRANDOANTHANHHA_ASM03\\src\\SelfStorageManagementSystem.Web\\Components\\_Imports.razor",
+              "RelativeToolTip": "src\\SelfStorageManagementSystem.Web\\Components\\_Imports.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-11-03T09:14:16.027Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "StorageUnitManager.razor",
+              "DocumentMoniker": "D:\\FPT\\PRN222\\Project\\Final_Project_Web\\PRN222_SE1905_TRANDOANTHANHHA_ASM03\\src\\SelfStorageManagementSystem.Web\\Components\\StorageUnitManager.razor",
+              "RelativeDocumentMoniker": "src\\SelfStorageManagementSystem.Web\\Components\\StorageUnitManager.razor",
+              "ToolTip": "D:\\FPT\\PRN222\\Project\\Final_Project_Web\\PRN222_SE1905_TRANDOANTHANHHA_ASM03\\src\\SelfStorageManagementSystem.Web\\Components\\StorageUnitManager.razor",
+              "RelativeToolTip": "src\\SelfStorageManagementSystem.Web\\Components\\StorageUnitManager.razor",
+              "ViewState": "AgIAABUAAAAAAAAAAAAWwG4AAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-11-03T09:14:15.145Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "authorized_access_member.cs",
+              "DocumentMoniker": "D:\\FPT\\PRN222\\Project\\Final_Project_Web\\PRN222_SE1905_TRANDOANTHANHHA_ASM03\\src\\SelfStorageManagementSystem.BusinessObjects\\Entities\\authorized_access_member.cs",
+              "RelativeDocumentMoniker": "src\\SelfStorageManagementSystem.BusinessObjects\\Entities\\authorized_access_member.cs",
+              "ToolTip": "D:\\FPT\\PRN222\\Project\\Final_Project_Web\\PRN222_SE1905_TRANDOANTHANHHA_ASM03\\src\\SelfStorageManagementSystem.BusinessObjects\\Entities\\authorized_access_member.cs",
+              "RelativeToolTip": "src\\SelfStorageManagementSystem.BusinessObjects\\Entities\\authorized_access_member.cs",
+              "ViewState": "AgIAACEAAAAAAAAAAAAAAAUAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-11-03T09:11:12.891Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

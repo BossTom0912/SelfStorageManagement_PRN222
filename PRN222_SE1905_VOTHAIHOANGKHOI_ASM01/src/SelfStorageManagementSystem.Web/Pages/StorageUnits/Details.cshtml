@@ -1,0 +1,363 @@
+@page
+@model SelfStorageManagementSystem.Web.Pages.StorageUnits.DetailsModel
+@{
+    ViewData["Title"] = Model.StorageUnit != null ? $"Chi tiết ô kho {Model.StorageUnit.UnitCode}" : "Chi tiết ô kho";
+}
+
+<div class="container py-3" style="max-width: 960px;">
+    <!-- Breadcrumb điều hướng -->
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a asp-page="./Index">Quản trị ô kho</a></li>
+            <li class="breadcrumb-item active" aria-current="page">
+                @(Model.StorageUnit != null ? Model.StorageUnit.UnitCode : "Chi tiết")
+            </li>
+        </ol>
+    </nav>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger shadow-sm mb-4" role="alert">
+            <div class="d-flex align-items-center">
+                <span class="me-2 fs-5 text-danger fw-bold">&#10008;</span>
+                <div>@Model.ErrorMessage</div>
+            </div>
+        </div>
+    }
+
+    @if (Model.StorageUnit != null)
+    {
+        var statusBadgeClass = Model.StorageUnit.PhysicalStatus switch
+        {
+            "available" => "bg-success text-white",
+            "occupied" => "bg-danger text-white",
+            "reserved" => "bg-warning text-dark",
+            "maintenance" => "bg-secondary text-white",
+            _ => "bg-light text-dark"
+        };
+
+        var statusText = Model.StorageUnit.PhysicalStatus switch
+        {
+            "available" => "Khả dụng",
+            "occupied" => "Đang thuê",
+            "reserved" => "Đã giữ chỗ",
+            "maintenance" => "Bảo trì",
+            _ => Model.StorageUnit.PhysicalStatus
+        };
+
+        <!-- Vùng thông báo realtime theo mẫu TeacherCode 3.txt (depositSliptID) -->
+        <div id="depositSliptID" class="mb-3"></div>
+
+        <!-- Header thẻ chi tiết -->
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+            <div>
+                <div class="d-flex align-items-center gap-2 mb-1">
+                    <h1 class="h3 mb-0 fw-bold text-dark font-monospace" id="Code">@Model.StorageUnit.UnitCode</h1>
+                    <span class="badge @statusBadgeClass px-3 py-1 fs-6" id="statusBadge">@statusText</span>
+                    @if (Model.StorageUnit.IsListed)
+                    {
+                        <span class="badge bg-info-subtle text-info border border-info-subtle">Niêm yết</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle">Tạm ẩn</span>
+                    }
+                </div>
+                <p class="text-muted mb-0 small">
+                    Cơ sở: <strong>@Model.StorageUnit.FacilityName</strong> (@Model.StorageUnit.FacilityCode) &bull; ID: #@Model.StorageUnit.Id
+                </p>
+            </div>
+            <div class="d-flex gap-2">
+                @if (Model.CanManage)
+                {
+                    <a asp-page="./Edit" asp-route-id="@Model.StorageUnit.Id" class="btn btn-primary btn-sm px-3">
+                        Sửa thông tin
+                    </a>
+                    <a asp-page="./Delete" asp-route-id="@Model.StorageUnit.Id" class="btn btn-outline-danger btn-sm px-3">
+                        Xóa ô kho
+                    </a>
+                }
+                <a asp-page="./Index" class="btn btn-outline-secondary btn-sm">
+                    &larr; Quay lại danh sách
+                </a>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Thẻ 1: Thông tin cơ bản & Vị trí -->
+            <div class="col-12 col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white py-3 border-bottom">
+                        <h6 class="card-title mb-0 fw-semibold text-primary">Thông Tin Vị Trí & Cơ Sở</h6>
+                    </div>
+                    <div class="card-body">
+                        <dl class="row mb-0 gy-2">
+                            <dt class="col-sm-5 text-secondary small fw-bold">Mã ô kho:</dt>
+                            <dd class="col-sm-7 fw-bold font-monospace text-dark">@Model.StorageUnit.UnitCode</dd>
+
+                            <dt class="col-sm-5 text-secondary small fw-bold">Cơ sở lưu trữ:</dt>
+                            <dd class="col-sm-7">
+                                <div>@Model.StorageUnit.FacilityName</div>
+                                <div class="small text-muted font-monospace">@Model.StorageUnit.FacilityCode</div>
+                            </dd>
+
+                            <dt class="col-sm-5 text-secondary small fw-bold">Khu vực / Tầng:</dt>
+                            <dd class="col-sm-7">
+                                @(string.IsNullOrWhiteSpace(Model.StorageUnit.AreaName) ? "Chưa gán khu vực" : Model.StorageUnit.AreaName)
+                                @if (!string.IsNullOrWhiteSpace(Model.StorageUnit.AreaCode))
+                                {
+                                    <span class="small text-muted font-monospace">(@Model.StorageUnit.AreaCode)</span>
+                                }
+                            </dd>
+
+                            <dt class="col-sm-5 text-secondary small fw-bold">Nhãn tầng:</dt>
+                            <dd class="col-sm-7">@(string.IsNullOrWhiteSpace(Model.StorageUnit.FloorLabel) ? "—" : Model.StorageUnit.FloorLabel)</dd>
+
+                            <dt class="col-sm-5 text-secondary small fw-bold">Nhãn dãy / Phân khu:</dt>
+                            <dd class="col-sm-7">@(string.IsNullOrWhiteSpace(Model.StorageUnit.ZoneLabel) ? "—" : Model.StorageUnit.ZoneLabel)</dd>
+
+                            <dt class="col-sm-5 text-secondary small fw-bold">Có tọa độ sơ đồ:</dt>
+                            <dd class="col-sm-7">
+                                @if (Model.StorageUnit.HasMapPosition)
+                                {
+                                    <span class="text-success fw-semibold">&#10004; Đã lên sơ đồ SVG</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Chưa có tọa độ</span>
+                                }
+                            </dd>
+
+                            <dt class="col-sm-5 text-secondary small fw-bold">Ghi chú:</dt>
+                            <dd class="col-sm-7 text-muted">@(string.IsNullOrWhiteSpace(Model.StorageUnit.Notes) ? "Không có ghi chú" : Model.StorageUnit.Notes)</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thẻ 2: Loại ô kho & Quy cách -->
+            <div class="col-12 col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white py-3 border-bottom">
+                        <h6 class="card-title mb-0 fw-semibold text-primary">Loại Ô Kho & Quy Cách Kỹ Thuật</h6>
+                    </div>
+                    <div class="card-body">
+                        <dl class="row mb-0 gy-2">
+                            <dt class="col-sm-5 text-secondary small fw-bold">Tên loại kho:</dt>
+                            <dd class="col-sm-7 fw-semibold">@Model.StorageUnit.UnitTypeName</dd>
+
+                            <dt class="col-sm-5 text-secondary small fw-bold">Mã loại kho:</dt>
+                            <dd class="col-sm-7 font-monospace">@Model.StorageUnit.UnitTypeCode</dd>
+
+                            <dt class="col-sm-5 text-secondary small fw-bold">Kích thước (R &times; D &times; C):</dt>
+                            <dd class="col-sm-7">
+                                @Model.StorageUnit.UnitTypeWidthMeters &times; @Model.StorageUnit.UnitTypeLengthMeters &times; @Model.StorageUnit.UnitTypeHeightMeters m
+                            </dd>
+
+                            <dt class="col-sm-5 text-secondary small fw-bold">Diện tích sàn:</dt>
+                            <dd class="col-sm-7">
+                                @(Model.StorageUnit.UnitTypeFloorAreaSqm?.ToString("N2") ?? (Model.StorageUnit.UnitTypeWidthMeters * Model.StorageUnit.UnitTypeLengthMeters).ToString("N2")) m<sup>2</sup>
+                            </dd>
+
+                            <dt class="col-sm-5 text-secondary small fw-bold">Thể tích chứa:</dt>
+                            <dd class="col-sm-7">
+                                @(Model.StorageUnit.UnitTypeVolumeCbm?.ToString("N2") ?? (Model.StorageUnit.UnitTypeWidthMeters * Model.StorageUnit.UnitTypeLengthMeters * Model.StorageUnit.UnitTypeHeightMeters).ToString("N2")) m<sup>3</sup>
+                            </dd>
+
+                            <dt class="col-sm-5 text-secondary small fw-bold">Giá niêm yết hiện hành:</dt>
+                            <dd class="col-sm-7 fw-bold text-success fs-6">
+                                @AppFormatters.FormatCurrency(Model.StorageUnit.MonthlyRate)/tháng
+                            </dd>
+
+                            <dt class="col-sm-5 text-secondary small fw-bold">Cập nhật lần cuối:</dt>
+                            <dd class="col-sm-7 small text-muted">@AppFormatters.FormatDateTime(Model.StorageUnit.UpdatedAt)</dd>
+
+                            <dt class="col-sm-5 text-secondary small fw-bold">Ngày tạo:</dt>
+                            <dd class="col-sm-7 small text-muted">@AppFormatters.FormatDateTime(Model.StorageUnit.CreatedAt)</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thẻ 3: Ràng buộc tham chiếu & Dữ liệu lịch sử -->
+            <div class="col-12 col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white py-3 border-bottom">
+                        <h6 class="card-title mb-0 fw-semibold text-primary">Thống Kê Tham Chiếu & Lịch Sử</h6>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <span class="small text-secondary">Số lần gán thuê (Allocations):</span>
+                                <span class="badge bg-light text-dark border">@Model.StorageUnit.AllocationsCount (Đang thuê: @Model.StorageUnit.ActiveAllocationsCount)</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <span class="small text-secondary">Lượt kiểm tra (Inspections):</span>
+                                <span class="badge bg-light text-dark border">@Model.StorageUnit.InspectionsCount</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <span class="small text-secondary">Lệnh bảo trì (Work Orders):</span>
+                                <span class="badge bg-light text-dark border">@Model.StorageUnit.MaintenanceOrdersCount (Đang xử lý: @Model.StorageUnit.ActiveMaintenanceOrdersCount)</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <span class="small text-secondary">Phiếu hỗ trợ (Support Tickets):</span>
+                                <span class="badge bg-light text-dark border">@Model.StorageUnit.SupportTicketsCount</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <span class="small text-secondary">Lịch sử thay đổi trạng thái:</span>
+                                <span class="badge bg-light text-dark border">@Model.StorageUnit.StatusHistoryCount</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thẻ 4: Hiện trạng thuê hiện tại -->
+            <div class="col-12 col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white py-3 border-bottom">
+                        <h6 class="card-title mb-0 fw-semibold text-primary">Hiện Trạng Sử Dụng</h6>
+                    </div>
+                    <div class="card-body">
+                        @if (Model.StorageUnit.PhysicalStatus == "occupied" && !string.IsNullOrEmpty(Model.StorageUnit.CurrentCustomerName))
+                        {
+                            <div class="p-3 bg-danger-subtle rounded border border-danger-subtle mb-3">
+                                <div class="fw-bold text-danger mb-1">&#128274; Đang Có Hợp Đồng Thuê Hoạt Động</div>
+                                <dl class="row mb-0 small">
+                                    <dt class="col-sm-5 text-secondary">Khách hàng:</dt>
+                                    <dd class="col-sm-7 fw-semibold">@Model.StorageUnit.CurrentCustomerName</dd>
+
+                                    <dt class="col-sm-5 text-secondary">Số hợp đồng:</dt>
+                                    <dd class="col-sm-7 font-monospace">@(Model.StorageUnit.CurrentAgreementNo ?? "—")</dd>
+
+                                    <dt class="col-sm-5 text-secondary">Thời điểm bắt đầu:</dt>
+                                    <dd class="col-sm-7">
+                                        @(Model.StorageUnit.CurrentOccupiedSince.HasValue ? AppFormatters.FormatDateTime(Model.StorageUnit.CurrentOccupiedSince.Value) : "—")
+                                    </dd>
+                                </dl>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="p-3 bg-light rounded text-center py-4">
+                                <div class="text-muted mb-1 fs-4">&#128712;</div>
+                                <div class="fw-semibold text-secondary">Ô kho hiện không có hợp đồng thuê hoạt động.</div>
+                                <div class="small text-muted">Trạng thái: <strong>@statusText</strong></div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="~/js/storage-units-realtime.js" asp-append-version="true"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            @if (Model.StorageUnit != null)
+            {
+                <text>
+                const currentUnitId = @Model.StorageUnit.Id;
+
+                // 1. Khởi tạo HubConnection theo mẫu TeacherCode 3.txt & 4.txt
+                const connection = new signalR.HubConnectionBuilder()
+                    .withUrl("/storageUnitHub")
+                    .withAutomaticReconnect()
+                    .build();
+
+                // 2. Đăng ký listeners trước connection.start()
+
+                // Listener: Receiver_UpdateStorageUnit (theo mẫu TeacherCode 4.txt line 10)
+                // document.getElementById("Code").innerHTML = depositSlip.code; color = blue, background = yellow
+                connection.on("Receiver_UpdateTransactionCashDepositSlip", function (depositSlip) {
+                    handleDetailsUpdate(depositSlip);
+                });
+
+                connection.on("Receiver_UpdateStorageUnit", function (item) {
+                    handleDetailsUpdate(item);
+                });
+
+                function handleDetailsUpdate(item) {
+                    if (Number(item.id) !== currentUnitId) return;
+
+                    const codeEl = document.getElementById("Code");
+                    if (codeEl && item.unitCode) {
+                        codeEl.textContent = item.unitCode;
+                        codeEl.style.color = "blue";
+                        codeEl.style.backgroundColor = "yellow";
+                        setTimeout(() => {
+                            codeEl.style.color = "";
+                            codeEl.style.backgroundColor = "";
+                        }, 3000);
+                    }
+
+                    const badgeEl = document.getElementById("statusBadge");
+                    if (badgeEl && item.status) {
+                        const badgeInfo = StorageUnitsRealtime.getStatusBadge(item.status);
+                        badgeEl.textContent = badgeInfo.text;
+                        badgeEl.className = 'badge ' + badgeInfo.css + ' px-3 py-1 fs-6';
+                    }
+
+                    StorageUnitsRealtime.showMessage(
+                        'depositSliptID',
+                        'info',
+                        `Thông tin ô kho vừa được cập nhật thời gian thực vào lúc ${StorageUnitsRealtime.formatDateTime(item.updatedAt)}.`,
+                        5000
+                    );
+                }
+
+                // Listener: Receiver_DeleteStorageUnit (theo mẫu TeacherCode 3.txt line 1)
+                // document.getElementById("depositSliptID").innerHTML = "This item was deleted";
+                connection.on("Receiver_DeleteTransactionCashDepositSlip", function (depositSlipId) {
+                    handleDetailsDelete(depositSlipId);
+                });
+
+                connection.on("Receiver_DeleteStorageUnit", function (id) {
+                    handleDetailsDelete(id);
+                });
+
+                function handleDetailsDelete(id) {
+                    if (String(id) === String(currentUnitId)) {
+                        console.warn("Current storage unit was deleted:", id);
+                        const alertContainer = document.getElementById("depositSliptID");
+                        if (alertContainer) {
+                            alertContainer.innerHTML = `
+                                <div class="alert alert-danger shadow-sm border-danger p-3 mb-4" role="alert">
+                                    <div class="d-flex align-items-center">
+                                        <span class="fs-4 me-2">&#9888;</span>
+                                        <div>
+                                            <h5 class="alert-heading fw-bold mb-1">This item was deleted</h5>
+                                            <p class="mb-0 small">Ô kho này vừa bị xóa khỏi hệ thống bởi một người dùng khác. Bạn không thể tiếp tục chỉnh sửa hoặc thao tác trên bản ghi này.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }
+
+                        // Vô hiệu hóa hoặc ẩn các nút chỉnh sửa/xóa
+                        document.querySelectorAll('a[asp-page="./Edit"], a[asp-page="./Delete"]').forEach(el => {
+                            el.classList.add('disabled');
+                            el.style.pointerEvents = 'none';
+                        });
+                    }
+                }
+
+                // Tự động tải lại sau khi reconnect phục hồi
+                connection.onreconnected(function (connectionId) {
+                    console.log("Details page SignalR reconnected:", connectionId);
+                    window.location.reload();
+                });
+
+                // 3. Khởi chạy kết nối
+                connection.start().then(function () {
+                    console.log("Connected to SignalR Hub on Details page.");
+                }).catch(function (err) {
+                    console.error("SignalR connection error on Details:", err.toString());
+                });
+                </text>
+            }
+        });
+    </script>
+}

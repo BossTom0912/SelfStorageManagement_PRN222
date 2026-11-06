@@ -1,0 +1,444 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="1745d942-cd6e-4a21-9d03-6a10a561035b" name="tommy@TOM 2026-10-16 15:04:41" runUser="TOM\tommy" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-16T15:04:41.1198786+07:00" queuing="2026-10-16T15:04:41.1198790+07:00" start="2026-10-16T15:04:39.4682474+07:00" finish="2026-10-16T15:04:41.3023229+07:00" />
+  <TestSettings name="default" id="b87d4112-37bc-4c9d-847e-163e5ce4e9d7">
+    <Deployment runDeploymentRoot="tommy_TOM_2026-10-16_15_04_41" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="385d1ff9-9035-48d6-9103-14319c8ad7af" testId="f1ef4e5b-fc66-361d-259c-e4710ee05f22" testName="SelfStorageManagementSystem.Tests.ReservationServiceTests.CreateReservationHold_ExpiredHoldDoesNotBlockCapacity" computerName="TOM" duration="00:00:00.0025404" startTime="2026-10-16T15:04:41.1322031+07:00" endTime="2026-10-16T15:04:41.1322032+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="385d1ff9-9035-48d6-9103-14319c8ad7af" />
+    <UnitTestResult executionId="1dc9243a-1c6f-4cec-b0a3-d7cf5b7cdc2e" testId="0512ea5d-ba76-33c7-1214-c9120fee2ebc" testName="SelfStorageManagementSystem.Tests.ReservationServiceTests.CancelReservation_ReturnsFreshCancelledState_EvenWhenEntityWasTrackedAsPending" computerName="TOM" duration="00:00:00.0027709" startTime="2026-10-16T15:04:41.2219730+07:00" endTime="2026-10-16T15:04:41.2219731+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1dc9243a-1c6f-4cec-b0a3-d7cf5b7cdc2e" />
+    <UnitTestResult executionId="869d123c-b3ce-43ca-9612-44dd856fe0e4" testId="3c81a3f1-717d-e3d1-b669-bfd806490868" testName="SelfStorageManagementSystem.Tests.ReservationIntegrationTests.CreateReservation_WithoutToken_ReturnsUnauthorized" computerName="TOM" duration="00:00:00.0029063" startTime="2026-10-16T15:04:41.2185432+07:00" endTime="2026-10-16T15:04:41.2185433+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="869d123c-b3ce-43ca-9612-44dd856fe0e4" />
+    <UnitTestResult executionId="d9b6a1af-5f62-4298-a76d-7d263f9de179" testId="10292749-ccae-723d-1a0b-6684568e8ac2" testName="SelfStorageManagementSystem.Tests.ReservationIntegrationTests.CreateReservation_WithNonCustomerRole_ReturnsForbidden" computerName="TOM" duration="00:00:00.0158750" startTime="2026-10-16T15:04:41.1299104+07:00" endTime="2026-10-16T15:04:41.1299105+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d9b6a1af-5f62-4298-a76d-7d263f9de179" />
+    <UnitTestResult executionId="bf00737c-923a-43e2-9e93-81029651e312" testId="cd556b4e-3f8d-0364-5375-74072fa0714b" testName="SelfStorageManagementSystem.Tests.ReservationServiceTests.CancelReservation_Owner_ShouldSucceedAndMarkCancelled" computerName="TOM" duration="00:00:00.0752056" startTime="2026-10-16T15:04:41.2093949+07:00" endTime="2026-10-16T15:04:41.2093953+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bf00737c-923a-43e2-9e93-81029651e312" />
+    <UnitTestResult executionId="fb3465ad-e4b4-4a0d-87c9-0677209f9c85" testId="3f641068-751f-2a99-620e-4643fdc2a531" testName="SelfStorageManagementSystem.Tests.ReservationServiceTests.CanCancelPolicy_DetailResponseAndListItemResponse_AreStrictlyConsistent(status: &quot;pending&quot;, holdInFuture: True, expectedCanCancel: True)" computerName="TOM" duration="00:00:00.0012354" startTime="2026-10-16T15:04:41.0351722+07:00" endTime="2026-10-16T15:04:41.0351723+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fb3465ad-e4b4-4a0d-87c9-0677209f9c85" />
+    <UnitTestResult executionId="1f9ffbc5-bbc0-4391-96ef-fb92b682bd69" testId="00800b18-9860-94e0-28d6-efad16630c4f" testName="SelfStorageManagementSystem.Tests.ReservationServiceTests.CreateReservationHold_ValidTwelveMonthsTerm_ShouldSucceed" computerName="TOM" duration="00:00:00.0030956" startTime="2026-10-16T15:04:41.0690561+07:00" endTime="2026-10-16T15:04:41.0690562+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1f9ffbc5-bbc0-4391-96ef-fb92b682bd69" />
+    <UnitTestResult executionId="41bee531-9ba2-47d9-93ff-5cfa161f7eaf" testId="190ae936-fee4-6b63-7226-9d5e4d105238" testName="SelfStorageManagementSystem.Tests.ReservationServiceTests.CreateReservationHold_LessThanOneMonth_ShouldThrowBadRequestException" computerName="TOM" duration="00:00:00.0105094" startTime="2026-10-16T15:04:41.0659864+07:00" endTime="2026-10-16T15:04:41.0659865+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="41bee531-9ba2-47d9-93ff-5cfa161f7eaf" />
+    <UnitTestResult executionId="d35e48b3-b310-4a91-a7fe-ae78eee526de" testId="014ff8ef-4a59-845c-311a-3e10a72f8a33" testName="SelfStorageManagementSystem.Tests.ReservationServiceTests.CancelReservation_WhenExpired_ThrowsConflictException" computerName="TOM" duration="00:00:00.0024238" startTime="2026-10-16T15:04:41.1268437+07:00" endTime="2026-10-16T15:04:41.1268439+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d35e48b3-b310-4a91-a7fe-ae78eee526de" />
+    <UnitTestResult executionId="00b3a714-977d-4fb4-89ae-6cac2554f55a" testId="95b4ca0c-fcd7-6660-0a61-28f950098855" testName="SelfStorageManagementSystem.Tests.ReservationIntegrationTests.CancelReservation_WhenConfirmed_ReturnsConflict" computerName="TOM" duration="00:00:00.0310220" startTime="2026-10-16T15:04:41.1612271+07:00" endTime="2026-10-16T15:04:41.1612272+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="00b3a714-977d-4fb4-89ae-6cac2554f55a" />
+    <UnitTestResult executionId="f75cb429-f248-445f-8580-2b920b40438e" testId="8c958e4c-46eb-2154-3e93-694d6a6a0f4c" testName="SelfStorageManagementSystem.Tests.ReservationServiceTests.CreateReservationHold_NoActiveFacilityRate_ShouldThrowBadRequestException" computerName="TOM" duration="00:00:00.0231368" startTime="2026-10-16T15:04:41.1008948+07:00" endTime="2026-10-16T15:04:41.1008949+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f75cb429-f248-445f-8580-2b920b40438e" />
+    <UnitTestResult executionId="1dd611be-adff-4ea8-b8bc-8df55dde99b0" testId="6b2c01d4-1d74-67d8-4b26-aef261a38869" testName="SelfStorageManagementSystem.Tests.ReservationIntegrationTests.CreateReservation_WithValidRequest_ReturnsCreatedWithHoldDetails" computerName="TOM" duration="00:00:01.2170412" startTime="2026-10-16T15:04:41.1131075+07:00" endTime="2026-10-16T15:04:41.1131076+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1dd611be-adff-4ea8-b8bc-8df55dde99b0" />
+    <UnitTestResult executionId="89c1e7c1-a9e1-4c9d-a1fc-606b173b0213" testId="3a332983-36eb-4787-eded-782f25a5aa05" testName="SelfStorageManagementSystem.Tests.ReservationServiceTests.CreateReservationHold_UserWithoutCustomerRole_ThrowsForbiddenException" computerName="TOM" duration="00:00:00.0021924" startTime="2026-10-16T15:04:41.2116551+07:00" endTime="2026-10-16T15:04:41.2116552+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="89c1e7c1-a9e1-4c9d-a1fc-606b173b0213" />
+    <UnitTestResult executionId="c902d257-e6a4-4cc3-a128-42765013caf0" testId="f722637b-5dc9-8424-7041-5691ae525a7c" testName="SelfStorageManagementSystem.Tests.ReservationServiceTests.CancelReservation_Idempotent_SecondCallShouldReturnCancelledState" computerName="TOM" duration="00:00:00.0026878" startTime="2026-10-16T15:04:41.1294634+07:00" endTime="2026-10-16T15:04:41.1294635+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c902d257-e6a4-4cc3-a128-42765013caf0" />
+    <UnitTestResult executionId="a7733c46-2c0b-4fa6-b884-c585e454c677" testId="40fc0232-e196-28b8-1e33-2695c6e378e1" testName="SelfStorageManagementSystem.Tests.ReservationIntegrationTests.GetReservationById_ForbiddenForOtherCustomer" computerName="TOM" duration="00:00:00.0119269" startTime="2026-10-16T15:04:41.2466174+07:00" endTime="2026-10-16T15:04:41.2466175+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a7733c46-2c0b-4fa6-b884-c585e454c677" />
+    <UnitTestResult executionId="aff6cfad-08d7-4025-b073-c6c08e0141d9" testId="869683bc-1cc9-4419-ba21-6b7340c564e8" testName="SelfStorageManagementSystem.Tests.ReservationServiceTests.CanCancelPolicy_DetailResponseAndListItemResponse_AreStrictlyConsistent(status: &quot;expired&quot;, holdInFuture: False, expectedCanCancel: False)" computerName="TOM" duration="00:00:00.1081351" startTime="2026-10-16T15:04:41.0319473+07:00" endTime="2026-10-16T15:04:41.0319474+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="aff6cfad-08d7-4025-b073-c6c08e0141d9" />
+    <UnitTestResult executionId="92cfc8b0-9e1b-4a79-b77d-d7a3e1877fc2" testId="90aac91c-361c-88d5-4e55-eebab3ea0617" testName="SelfStorageManagementSystem.Tests.ReservationServiceTests.CanCancelPolicy_DetailResponseAndListItemResponse_AreStrictlyConsistent(status: &quot;pending&quot;, holdInFuture: False, expectedCanCancel: False)" computerName="TOM" duration="00:00:00.0185649" startTime="2026-10-16T15:04:41.0537779+07:00" endTime="2026-10-16T15:04:41.0537781+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="92cfc8b0-9e1b-4a79-b77d-d7a3e1877fc2" />
+    <UnitTestResult executionId="cbc6aafc-be08-4c66-beb6-77bf7364a1a7" testId="27700491-f487-48b7-ce12-c21945f46210" testName="SelfStorageManagementSystem.Tests.ReservationServiceTests.GetReservationById_WhenConcurrentConfirmationOccurs_ReturnsFreshConfirmedStatus" computerName="TOM" duration="00:00:00.0019680" startTime="2026-10-16T15:04:41.1341623+07:00" endTime="2026-10-16T15:04:41.1341624+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cbc6aafc-be08-4c66-beb6-77bf7364a1a7" />
+    <UnitTestResult executionId="5724ac88-29d9-4e43-ae79-69f46a1de8f6" testId="3b2d2520-6650-e29a-0d12-fc07f419e4ea" testName="SelfStorageManagementSystem.Tests.ReservationIntegrationTests.CancelReservation_CancelsSuccessfullyAndIsIdempotent" computerName="TOM" duration="00:00:00.0505947" startTime="2026-10-16T15:04:41.2120634+07:00" endTime="2026-10-16T15:04:41.2120635+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5724ac88-29d9-4e43-ae79-69f46a1de8f6" />
+    <UnitTestResult executionId="33bd94f3-c1ef-4cfa-8305-8492c3074a98" testId="e6109f81-0566-cfd8-03b3-f38ef24f4861" testName="SelfStorageManagementSystem.Tests.ReservationServiceTests.ExpireOverdueHolds_WhenConcurrentConfirmationOccurs_DoesNotOverwriteConfirmed" computerName="TOM" duration="00:00:01.0259263" startTime="2026-10-16T15:04:40.9246086+07:00" endTime="2026-10-16T15:04:40.9246220+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="33bd94f3-c1ef-4cfa-8305-8492c3074a98" />
+    <UnitTestResult executionId="1be45537-5357-42e4-bb1a-4f6a8a4a9c4d" testId="2a63b1f5-62dc-4d1f-4f9b-2d7850475a3f" testName="SelfStorageManagementSystem.Tests.ReservationServiceTests.CreateReservationHold_ValidOneMonthTerm_ShouldSucceedAndHoldFor15Minutes" computerName="TOM" duration="00:00:00.0057317" startTime="2026-10-16T15:04:41.2191104+07:00" endTime="2026-10-16T15:04:41.2191105+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1be45537-5357-42e4-bb1a-4f6a8a4a9c4d" />
+    <UnitTestResult executionId="fb27b7fb-6f6a-46c1-b4c1-982f08aa5ce6" testId="ec969a38-b590-53bc-a92f-25b07e4e8f81" testName="SelfStorageManagementSystem.Tests.ReservationServiceTests.CancelReservation_UnauthorizedUser_ShouldThrowForbiddenException" computerName="TOM" duration="00:00:00.0031031" startTime="2026-10-16T15:04:41.1160535+07:00" endTime="2026-10-16T15:04:41.1160536+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fb27b7fb-6f6a-46c1-b4c1-982f08aa5ce6" />
+    <UnitTestResult executionId="bfb9ca60-52d9-4320-a494-ca8a7ef9c748" testId="9ebc919f-e47b-dcb1-12bf-ec204c2e4ae5" testName="SelfStorageManagementSystem.Tests.ReservationServiceTests.CreateReservationHold_CapacityExhausted_ShouldThrowConflictException" computerName="TOM" duration="00:00:00.0082478" startTime="2026-10-16T15:04:41.1242859+07:00" endTime="2026-10-16T15:04:41.1242860+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bfb9ca60-52d9-4320-a494-ca8a7ef9c748" />
+    <UnitTestResult executionId="590f8000-b5d6-40ef-95ed-cded32e305ba" testId="21873cb6-20d0-a691-3963-739bccd39894" testName="SelfStorageManagementSystem.Tests.ReservationServiceTests.CancelReservation_WhenConfirmed_ThrowsConflictException" computerName="TOM" duration="00:00:00.0016351" startTime="2026-10-16T15:04:41.2251570+07:00" endTime="2026-10-16T15:04:41.2251571+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="590f8000-b5d6-40ef-95ed-cded32e305ba" />
+    <UnitTestResult executionId="66801c83-743e-40b6-a9f5-a3e4f3b11f9e" testId="797c815a-d0f7-c15f-685b-20bf3000ccd4" testName="SelfStorageManagementSystem.Tests.ReservationIntegrationTests.GetMyReservations_ReturnsCustomerReservationList" computerName="TOM" duration="00:00:00.0154978" startTime="2026-10-16T15:04:41.2343228+07:00" endTime="2026-10-16T15:04:41.2343229+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="66801c83-743e-40b6-a9f5-a3e4f3b11f9e" />
+    <UnitTestResult executionId="e58020eb-45ee-400f-b06a-d724ce5511e3" testId="befd006c-94b1-72df-800b-d3f822b7db77" testName="SelfStorageManagementSystem.Tests.ReservationServiceTests.CanCancelPolicy_DetailResponseAndListItemResponse_AreStrictlyConsistent(status: &quot;confirmed&quot;, holdInFuture: True, expectedCanCancel: False)" computerName="TOM" duration="00:00:00.0014464" startTime="2026-10-16T15:04:41.0553031+07:00" endTime="2026-10-16T15:04:41.0553031+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e58020eb-45ee-400f-b06a-d724ce5511e3" />
+    <UnitTestResult executionId="9a7ed511-a219-4358-b248-3624cb8bf98f" testId="a111f0a8-dcd6-42a8-c932-e3fb6e598fd1" testName="SelfStorageManagementSystem.Tests.ReservationServiceTests.CanCancelPolicy_DetailResponseAndListItemResponse_AreStrictlyConsistent(status: &quot;cancelled&quot;, holdInFuture: True, expectedCanCancel: False)" computerName="TOM" duration="00:00:00.0019293" startTime="2026-10-16T15:04:41.0338977+07:00" endTime="2026-10-16T15:04:41.0338978+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9a7ed511-a219-4358-b248-3624cb8bf98f" />
+    <UnitTestResult executionId="585b3277-4252-4cae-8749-88c28ee3b66d" testId="aa68a5e8-9ba3-56b3-51d4-1c6f54ef26e5" testName="SelfStorageManagementSystem.Tests.ReservationServiceTests.CreateReservationHold_MoreThanTwelveMonths_ShouldThrowBadRequestException" computerName="TOM" duration="00:00:00.0016158" startTime="2026-10-16T15:04:41.2133376+07:00" endTime="2026-10-16T15:04:41.2133377+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="585b3277-4252-4cae-8749-88c28ee3b66d" />
+    <UnitTestResult executionId="a22d0f0e-eb48-4e0b-96d7-87423b35d514" testId="3c82c25a-9287-ef0a-27cf-772edbaaa700" testName="SelfStorageManagementSystem.Tests.ReservationServiceTests.CreateReservationHold_StartDateInPast_ShouldThrowBadRequestException" computerName="TOM" duration="00:00:00.0013958" startTime="2026-10-16T15:04:41.2234101+07:00" endTime="2026-10-16T15:04:41.2234101+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a22d0f0e-eb48-4e0b-96d7-87423b35d514" />
+    <UnitTestResult executionId="d088e9b6-e5db-42c8-9ea4-9739fa776001" testId="f1e099d8-db1a-46d5-e2ac-aa1f513c72f0" testName="SelfStorageManagementSystem.Tests.ReservationServiceTests.ExpireOverdueHolds_ShouldTransitionPastHoldsToExpired" computerName="TOM" duration="00:00:00.0204606" startTime="2026-10-16T15:04:41.1128546+07:00" endTime="2026-10-16T15:04:41.1128548+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d088e9b6-e5db-42c8-9ea4-9739fa776001" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="SelfStorageManagementSystem.Tests.ReservationServiceTests.GetReservationById_WhenConcurrentConfirmationOccurs_ReturnsFreshConfirmedStatus" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.tests\bin\debug\net8.0-windows\selfstoragemanagementsystem.tests.dll" id="27700491-f487-48b7-ce12-c21945f46210">
+      <Execution id="cbc6aafc-be08-4c66-beb6-77bf7364a1a7" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.Tests\bin\Debug\net8.0-windows\SelfStorageManagementSystem.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.Tests.ReservationServiceTests" name="GetReservationById_WhenConcurrentConfirmationOccurs_ReturnsFreshConfirmedStatus" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.Tests.ReservationServiceTests.CanCancelPolicy_DetailResponseAndListItemResponse_AreStrictlyConsistent(status: &quot;expired&quot;, holdInFuture: False, expectedCanCancel: False)" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.tests\bin\debug\net8.0-windows\selfstoragemanagementsystem.tests.dll" id="869683bc-1cc9-4419-ba21-6b7340c564e8">
+      <Execution id="aff6cfad-08d7-4025-b073-c6c08e0141d9" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.Tests\bin\Debug\net8.0-windows\SelfStorageManagementSystem.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.Tests.ReservationServiceTests" name="CanCancelPolicy_DetailResponseAndListItemResponse_AreStrictlyConsistent" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.Tests.ReservationIntegrationTests.GetReservationById_ForbiddenForOtherCustomer" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.tests\bin\debug\net8.0-windows\selfstoragemanagementsystem.tests.dll" id="40fc0232-e196-28b8-1e33-2695c6e378e1">
+      <Execution id="a7733c46-2c0b-4fa6-b884-c585e454c677" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.Tests\bin\Debug\net8.0-windows\SelfStorageManagementSystem.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.Tests.ReservationIntegrationTests" name="GetReservationById_ForbiddenForOtherCustomer" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.Tests.ReservationIntegrationTests.GetMyReservations_ReturnsCustomerReservationList" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.tests\bin\debug\net8.0-windows\selfstoragemanagementsystem.tests.dll" id="797c815a-d0f7-c15f-685b-20bf3000ccd4">
+      <Execution id="66801c83-743e-40b6-a9f5-a3e4f3b11f9e" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.Tests\bin\Debug\net8.0-windows\SelfStorageManagementSystem.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.Tests.ReservationIntegrationTests" name="GetMyReservations_ReturnsCustomerReservationList" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.Tests.ReservationIntegrationTests.CreateReservation_WithoutToken_ReturnsUnauthorized" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.tests\bin\debug\net8.0-windows\selfstoragemanagementsystem.tests.dll" id="3c81a3f1-717d-e3d1-b669-bfd806490868">
+      <Execution id="869d123c-b3ce-43ca-9612-44dd856fe0e4" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.Tests\bin\Debug\net8.0-windows\SelfStorageManagementSystem.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.Tests.ReservationIntegrationTests" name="CreateReservation_WithoutToken_ReturnsUnauthorized" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.Tests.ReservationIntegrationTests.CreateReservation_WithValidRequest_ReturnsCreatedWithHoldDetails" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.tests\bin\debug\net8.0-windows\selfstoragemanagementsystem.tests.dll" id="6b2c01d4-1d74-67d8-4b26-aef261a38869">
+      <Execution id="1dd611be-adff-4ea8-b8bc-8df55dde99b0" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.Tests\bin\Debug\net8.0-windows\SelfStorageManagementSystem.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.Tests.ReservationIntegrationTests" name="CreateReservation_WithValidRequest_ReturnsCreatedWithHoldDetails" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.Tests.ReservationServiceTests.CanCancelPolicy_DetailResponseAndListItemResponse_AreStrictlyConsistent(status: &quot;cancelled&quot;, holdInFuture: True, expectedCanCancel: False)" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.tests\bin\debug\net8.0-windows\selfstoragemanagementsystem.tests.dll" id="a111f0a8-dcd6-42a8-c932-e3fb6e598fd1">
+      <Execution id="9a7ed511-a219-4358-b248-3624cb8bf98f" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.Tests\bin\Debug\net8.0-windows\SelfStorageManagementSystem.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.Tests.ReservationServiceTests" name="CanCancelPolicy_DetailResponseAndListItemResponse_AreStrictlyConsistent" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.Tests.ReservationServiceTests.CanCancelPolicy_DetailResponseAndListItemResponse_AreStrictlyConsistent(status: &quot;pending&quot;, holdInFuture: False, expectedCanCancel: False)" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.tests\bin\debug\net8.0-windows\selfstoragemanagementsystem.tests.dll" id="90aac91c-361c-88d5-4e55-eebab3ea0617">
+      <Execution id="92cfc8b0-9e1b-4a79-b77d-d7a3e1877fc2" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.Tests\bin\Debug\net8.0-windows\SelfStorageManagementSystem.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.Tests.ReservationServiceTests" name="CanCancelPolicy_DetailResponseAndListItemResponse_AreStrictlyConsistent" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.Tests.ReservationServiceTests.CancelReservation_WhenConfirmed_ThrowsConflictException" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.tests\bin\debug\net8.0-windows\selfstoragemanagementsystem.tests.dll" id="21873cb6-20d0-a691-3963-739bccd39894">
+      <Execution id="590f8000-b5d6-40ef-95ed-cded32e305ba" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.Tests\bin\Debug\net8.0-windows\SelfStorageManagementSystem.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.Tests.ReservationServiceTests" name="CancelReservation_WhenConfirmed_ThrowsConflictException" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.Tests.ReservationServiceTests.CreateReservationHold_MoreThanTwelveMonths_ShouldThrowBadRequestException" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.tests\bin\debug\net8.0-windows\selfstoragemanagementsystem.tests.dll" id="aa68a5e8-9ba3-56b3-51d4-1c6f54ef26e5">
+      <Execution id="585b3277-4252-4cae-8749-88c28ee3b66d" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.Tests\bin\Debug\net8.0-windows\SelfStorageManagementSystem.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.Tests.ReservationServiceTests" name="CreateReservationHold_MoreThanTwelveMonths_ShouldThrowBadRequestException" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.Tests.ReservationServiceTests.CreateReservationHold_StartDateInPast_ShouldThrowBadRequestException" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.tests\bin\debug\net8.0-windows\selfstoragemanagementsystem.tests.dll" id="3c82c25a-9287-ef0a-27cf-772edbaaa700">
+      <Execution id="a22d0f0e-eb48-4e0b-96d7-87423b35d514" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.Tests\bin\Debug\net8.0-windows\SelfStorageManagementSystem.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.Tests.ReservationServiceTests" name="CreateReservationHold_StartDateInPast_ShouldThrowBadRequestException" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.Tests.ReservationServiceTests.CancelReservation_Idempotent_SecondCallShouldReturnCancelledState" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.tests\bin\debug\net8.0-windows\selfstoragemanagementsystem.tests.dll" id="f722637b-5dc9-8424-7041-5691ae525a7c">
+      <Execution id="c902d257-e6a4-4cc3-a128-42765013caf0" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.Tests\bin\Debug\net8.0-windows\SelfStorageManagementSystem.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.Tests.ReservationServiceTests" name="CancelReservation_Idempotent_SecondCallShouldReturnCancelledState" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.Tests.ReservationServiceTests.CancelReservation_WhenExpired_ThrowsConflictException" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.tests\bin\debug\net8.0-windows\selfstoragemanagementsystem.tests.dll" id="014ff8ef-4a59-845c-311a-3e10a72f8a33">
+      <Execution id="d35e48b3-b310-4a91-a7fe-ae78eee526de" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.Tests\bin\Debug\net8.0-windows\SelfStorageManagementSystem.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.Tests.ReservationServiceTests" name="CancelReservation_WhenExpired_ThrowsConflictException" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.Tests.ReservationServiceTests.ExpireOverdueHolds_ShouldTransitionPastHoldsToExpired" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.tests\bin\debug\net8.0-windows\selfstoragemanagementsystem.tests.dll" id="f1e099d8-db1a-46d5-e2ac-aa1f513c72f0">
+      <Execution id="d088e9b6-e5db-42c8-9ea4-9739fa776001" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.Tests\bin\Debug\net8.0-windows\SelfStorageManagementSystem.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.Tests.ReservationServiceTests" name="ExpireOverdueHolds_ShouldTransitionPastHoldsToExpired" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.Tests.ReservationIntegrationTests.CancelReservation_CancelsSuccessfullyAndIsIdempotent" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.tests\bin\debug\net8.0-windows\selfstoragemanagementsystem.tests.dll" id="3b2d2520-6650-e29a-0d12-fc07f419e4ea">
+      <Execution id="5724ac88-29d9-4e43-ae79-69f46a1de8f6" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.Tests\bin\Debug\net8.0-windows\SelfStorageManagementSystem.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.Tests.ReservationIntegrationTests" name="CancelReservation_CancelsSuccessfullyAndIsIdempotent" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.Tests.ReservationServiceTests.CancelReservation_Owner_ShouldSucceedAndMarkCancelled" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.tests\bin\debug\net8.0-windows\selfstoragemanagementsystem.tests.dll" id="cd556b4e-3f8d-0364-5375-74072fa0714b">
+      <Execution id="bf00737c-923a-43e2-9e93-81029651e312" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.Tests\bin\Debug\net8.0-windows\SelfStorageManagementSystem.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.Tests.ReservationServiceTests" name="CancelReservation_Owner_ShouldSucceedAndMarkCancelled" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.Tests.ReservationServiceTests.CreateReservationHold_LessThanOneMonth_ShouldThrowBadRequestException" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.tests\bin\debug\net8.0-windows\selfstoragemanagementsystem.tests.dll" id="190ae936-fee4-6b63-7226-9d5e4d105238">
+      <Execution id="41bee531-9ba2-47d9-93ff-5cfa161f7eaf" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.Tests\bin\Debug\net8.0-windows\SelfStorageManagementSystem.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.Tests.ReservationServiceTests" name="CreateReservationHold_LessThanOneMonth_ShouldThrowBadRequestException" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.Tests.ReservationServiceTests.CanCancelPolicy_DetailResponseAndListItemResponse_AreStrictlyConsistent(status: &quot;confirmed&quot;, holdInFuture: True, expectedCanCancel: False)" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.tests\bin\debug\net8.0-windows\selfstoragemanagementsystem.tests.dll" id="befd006c-94b1-72df-800b-d3f822b7db77">
+      <Execution id="e58020eb-45ee-400f-b06a-d724ce5511e3" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.Tests\bin\Debug\net8.0-windows\SelfStorageManagementSystem.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.Tests.ReservationServiceTests" name="CanCancelPolicy_DetailResponseAndListItemResponse_AreStrictlyConsistent" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.Tests.ReservationServiceTests.CreateReservationHold_ValidOneMonthTerm_ShouldSucceedAndHoldFor15Minutes" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.tests\bin\debug\net8.0-windows\selfstoragemanagementsystem.tests.dll" id="2a63b1f5-62dc-4d1f-4f9b-2d7850475a3f">
+      <Execution id="1be45537-5357-42e4-bb1a-4f6a8a4a9c4d" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.Tests\bin\Debug\net8.0-windows\SelfStorageManagementSystem.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.Tests.ReservationServiceTests" name="CreateReservationHold_ValidOneMonthTerm_ShouldSucceedAndHoldFor15Minutes" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.Tests.ReservationServiceTests.CreateReservationHold_ValidTwelveMonthsTerm_ShouldSucceed" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.tests\bin\debug\net8.0-windows\selfstoragemanagementsystem.tests.dll" id="00800b18-9860-94e0-28d6-efad16630c4f">
+      <Execution id="1f9ffbc5-bbc0-4391-96ef-fb92b682bd69" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.Tests\bin\Debug\net8.0-windows\SelfStorageManagementSystem.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.Tests.ReservationServiceTests" name="CreateReservationHold_ValidTwelveMonthsTerm_ShouldSucceed" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.Tests.ReservationServiceTests.CreateReservationHold_UserWithoutCustomerRole_ThrowsForbiddenException" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.tests\bin\debug\net8.0-windows\selfstoragemanagementsystem.tests.dll" id="3a332983-36eb-4787-eded-782f25a5aa05">
+      <Execution id="89c1e7c1-a9e1-4c9d-a1fc-606b173b0213" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.Tests\bin\Debug\net8.0-windows\SelfStorageManagementSystem.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.Tests.ReservationServiceTests" name="CreateReservationHold_UserWithoutCustomerRole_ThrowsForbiddenException" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.Tests.ReservationServiceTests.CreateReservationHold_CapacityExhausted_ShouldThrowConflictException" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.tests\bin\debug\net8.0-windows\selfstoragemanagementsystem.tests.dll" id="9ebc919f-e47b-dcb1-12bf-ec204c2e4ae5">
+      <Execution id="bfb9ca60-52d9-4320-a494-ca8a7ef9c748" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.Tests\bin\Debug\net8.0-windows\SelfStorageManagementSystem.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.Tests.ReservationServiceTests" name="CreateReservationHold_CapacityExhausted_ShouldThrowConflictException" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.Tests.ReservationServiceTests.CancelReservation_UnauthorizedUser_ShouldThrowForbiddenException" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.tests\bin\debug\net8.0-windows\selfstoragemanagementsystem.tests.dll" id="ec969a38-b590-53bc-a92f-25b07e4e8f81">
+      <Execution id="fb27b7fb-6f6a-46c1-b4c1-982f08aa5ce6" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.Tests\bin\Debug\net8.0-windows\SelfStorageManagementSystem.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.Tests.ReservationServiceTests" name="CancelReservation_UnauthorizedUser_ShouldThrowForbiddenException" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.Tests.ReservationServiceTests.CreateReservationHold_ExpiredHoldDoesNotBlockCapacity" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.tests\bin\debug\net8.0-windows\selfstoragemanagementsystem.tests.dll" id="f1ef4e5b-fc66-361d-259c-e4710ee05f22">
+      <Execution id="385d1ff9-9035-48d6-9103-14319c8ad7af" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.Tests\bin\Debug\net8.0-windows\SelfStorageManagementSystem.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.Tests.ReservationServiceTests" name="CreateReservationHold_ExpiredHoldDoesNotBlockCapacity" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.Tests.ReservationServiceTests.CreateReservationHold_NoActiveFacilityRate_ShouldThrowBadRequestException" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.tests\bin\debug\net8.0-windows\selfstoragemanagementsystem.tests.dll" id="8c958e4c-46eb-2154-3e93-694d6a6a0f4c">
+      <Execution id="f75cb429-f248-445f-8580-2b920b40438e" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.Tests\bin\Debug\net8.0-windows\SelfStorageManagementSystem.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.Tests.ReservationServiceTests" name="CreateReservationHold_NoActiveFacilityRate_ShouldThrowBadRequestException" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.Tests.ReservationServiceTests.CanCancelPolicy_DetailResponseAndListItemResponse_AreStrictlyConsistent(status: &quot;pending&quot;, holdInFuture: True, expectedCanCancel: True)" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.tests\bin\debug\net8.0-windows\selfstoragemanagementsystem.tests.dll" id="3f641068-751f-2a99-620e-4643fdc2a531">
+      <Execution id="fb3465ad-e4b4-4a0d-87c9-0677209f9c85" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.Tests\bin\Debug\net8.0-windows\SelfStorageManagementSystem.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.Tests.ReservationServiceTests" name="CanCancelPolicy_DetailResponseAndListItemResponse_AreStrictlyConsistent" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.Tests.ReservationIntegrationTests.CancelReservation_WhenConfirmed_ReturnsConflict" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.tests\bin\debug\net8.0-windows\selfstoragemanagementsystem.tests.dll" id="95b4ca0c-fcd7-6660-0a61-28f950098855">
+      <Execution id="00b3a714-977d-4fb4-89ae-6cac2554f55a" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.Tests\bin\Debug\net8.0-windows\SelfStorageManagementSystem.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.Tests.ReservationIntegrationTests" name="CancelReservation_WhenConfirmed_ReturnsConflict" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.Tests.ReservationIntegrationTests.CreateReservation_WithNonCustomerRole_ReturnsForbidden" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.tests\bin\debug\net8.0-windows\selfstoragemanagementsystem.tests.dll" id="10292749-ccae-723d-1a0b-6684568e8ac2">
+      <Execution id="d9b6a1af-5f62-4298-a76d-7d263f9de179" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.Tests\bin\Debug\net8.0-windows\SelfStorageManagementSystem.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.Tests.ReservationIntegrationTests" name="CreateReservation_WithNonCustomerRole_ReturnsForbidden" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.Tests.ReservationServiceTests.ExpireOverdueHolds_WhenConcurrentConfirmationOccurs_DoesNotOverwriteConfirmed" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.tests\bin\debug\net8.0-windows\selfstoragemanagementsystem.tests.dll" id="e6109f81-0566-cfd8-03b3-f38ef24f4861">
+      <Execution id="33bd94f3-c1ef-4cfa-8305-8492c3074a98" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.Tests\bin\Debug\net8.0-windows\SelfStorageManagementSystem.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.Tests.ReservationServiceTests" name="ExpireOverdueHolds_WhenConcurrentConfirmationOccurs_DoesNotOverwriteConfirmed" />
+    </UnitTest>
+    <UnitTest name="SelfStorageManagementSystem.Tests.ReservationServiceTests.CancelReservation_ReturnsFreshCancelledState_EvenWhenEntityWasTrackedAsPending" storage="d:\fpt\prn222\project\final_project_web\tests\selfstoragemanagementsystem.tests\bin\debug\net8.0-windows\selfstoragemanagementsystem.tests.dll" id="0512ea5d-ba76-33c7-1214-c9120fee2ebc">
+      <Execution id="1dc9243a-1c6f-4cec-b0a3-d7cf5b7cdc2e" />
+      <TestMethod codeBase="D:\FPT\PRN222\Project\Final_Project_Web\tests\SelfStorageManagementSystem.Tests\bin\Debug\net8.0-windows\SelfStorageManagementSystem.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SelfStorageManagementSystem.Tests.ReservationServiceTests" name="CancelReservation_ReturnsFreshCancelledState_EvenWhenEntityWasTrackedAsPending" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="f1ef4e5b-fc66-361d-259c-e4710ee05f22" executionId="385d1ff9-9035-48d6-9103-14319c8ad7af" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0512ea5d-ba76-33c7-1214-c9120fee2ebc" executionId="1dc9243a-1c6f-4cec-b0a3-d7cf5b7cdc2e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3c81a3f1-717d-e3d1-b669-bfd806490868" executionId="869d123c-b3ce-43ca-9612-44dd856fe0e4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="10292749-ccae-723d-1a0b-6684568e8ac2" executionId="d9b6a1af-5f62-4298-a76d-7d263f9de179" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cd556b4e-3f8d-0364-5375-74072fa0714b" executionId="bf00737c-923a-43e2-9e93-81029651e312" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3f641068-751f-2a99-620e-4643fdc2a531" executionId="fb3465ad-e4b4-4a0d-87c9-0677209f9c85" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="00800b18-9860-94e0-28d6-efad16630c4f" executionId="1f9ffbc5-bbc0-4391-96ef-fb92b682bd69" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="190ae936-fee4-6b63-7226-9d5e4d105238" executionId="41bee531-9ba2-47d9-93ff-5cfa161f7eaf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="014ff8ef-4a59-845c-311a-3e10a72f8a33" executionId="d35e48b3-b310-4a91-a7fe-ae78eee526de" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="95b4ca0c-fcd7-6660-0a61-28f950098855" executionId="00b3a714-977d-4fb4-89ae-6cac2554f55a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8c958e4c-46eb-2154-3e93-694d6a6a0f4c" executionId="f75cb429-f248-445f-8580-2b920b40438e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6b2c01d4-1d74-67d8-4b26-aef261a38869" executionId="1dd611be-adff-4ea8-b8bc-8df55dde99b0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3a332983-36eb-4787-eded-782f25a5aa05" executionId="89c1e7c1-a9e1-4c9d-a1fc-606b173b0213" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f722637b-5dc9-8424-7041-5691ae525a7c" executionId="c902d257-e6a4-4cc3-a128-42765013caf0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="40fc0232-e196-28b8-1e33-2695c6e378e1" executionId="a7733c46-2c0b-4fa6-b884-c585e454c677" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="869683bc-1cc9-4419-ba21-6b7340c564e8" executionId="aff6cfad-08d7-4025-b073-c6c08e0141d9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="90aac91c-361c-88d5-4e55-eebab3ea0617" executionId="92cfc8b0-9e1b-4a79-b77d-d7a3e1877fc2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="27700491-f487-48b7-ce12-c21945f46210" executionId="cbc6aafc-be08-4c66-beb6-77bf7364a1a7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3b2d2520-6650-e29a-0d12-fc07f419e4ea" executionId="5724ac88-29d9-4e43-ae79-69f46a1de8f6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e6109f81-0566-cfd8-03b3-f38ef24f4861" executionId="33bd94f3-c1ef-4cfa-8305-8492c3074a98" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2a63b1f5-62dc-4d1f-4f9b-2d7850475a3f" executionId="1be45537-5357-42e4-bb1a-4f6a8a4a9c4d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ec969a38-b590-53bc-a92f-25b07e4e8f81" executionId="fb27b7fb-6f6a-46c1-b4c1-982f08aa5ce6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9ebc919f-e47b-dcb1-12bf-ec204c2e4ae5" executionId="bfb9ca60-52d9-4320-a494-ca8a7ef9c748" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="21873cb6-20d0-a691-3963-739bccd39894" executionId="590f8000-b5d6-40ef-95ed-cded32e305ba" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="797c815a-d0f7-c15f-685b-20bf3000ccd4" executionId="66801c83-743e-40b6-a9f5-a3e4f3b11f9e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="befd006c-94b1-72df-800b-d3f822b7db77" executionId="e58020eb-45ee-400f-b06a-d724ce5511e3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a111f0a8-dcd6-42a8-c932-e3fb6e598fd1" executionId="9a7ed511-a219-4358-b248-3624cb8bf98f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="aa68a5e8-9ba3-56b3-51d4-1c6f54ef26e5" executionId="585b3277-4252-4cae-8749-88c28ee3b66d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3c82c25a-9287-ef0a-27cf-772edbaaa700" executionId="a22d0f0e-eb48-4e0b-96d7-87423b35d514" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f1e099d8-db1a-46d5-e2ac-aa1f513c72f0" executionId="d088e9b6-e5db-42c8-9ea4-9739fa776001" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="30" executed="30" passed="30" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)&#xD;
+[xUnit.net 00:00:00.06]   Discovering: SelfStorageManagementSystem.Tests&#xD;
+[xUnit.net 00:00:00.11]   Discovered:  SelfStorageManagementSystem.Tests&#xD;
+[xUnit.net 00:00:00.11]   Starting:    SelfStorageManagementSystem.Tests&#xD;
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[63]&#xD;
+      User profile is available. Using 'C:\Users\tommy\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.&#xD;
+info: SelfStorageManagementSystem.Presentation.Workers.ReservationHoldExpirationWorker[0]&#xD;
+      Reservation hold expiration worker started. Checking every 30 seconds.&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 21 entities to in-memory store.&#xD;
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]&#xD;
+      Request starting HTTP/1.1 POST http://localhost/api/reservations - application/json;+charset=utf-8 95&#xD;
+warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]&#xD;
+      Failed to determine the https port for redirect.&#xD;
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]&#xD;
+      Executing endpoint 'SelfStorageManagementSystem.Presentation.Controllers.ReservationsController.CreateReservation (SelfStorageManagementSystem.Presentation)'&#xD;
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker[102]&#xD;
+      Route matched with {action = "CreateReservation", controller = "Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CreateReservation(SelfStorageManagementSystem.BusinessLogic.DTOs.Requests.Reservations.CreateReservationRequest, System.Threading.CancellationToken) on controller SelfStorageManagementSystem.Presentation.Controllers.ReservationsController (SelfStorageManagementSystem.Presentation).&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.BusinessLogic.Services.Implementations.ReservationService[0]&#xD;
+      Created reservation hold RES-FAC-801-20261016-DFA294 (ID: 1) for customer 10 at facility 801, unit type 801. Hold until 10/16/2026 08:19:41 +00:00&#xD;
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor[1]&#xD;
+      Executing ObjectResult, writing value of type 'SelfStorageManagementSystem.BusinessLogic.Common.ApiResponse`1[[SelfStorageManagementSystem.BusinessLogic.DTOs.Responses.Reservations.ReservationDetailResponse, SelfStorageManagementSystem.BusinessLogic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.&#xD;
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker[105]&#xD;
+      Executed action SelfStorageManagementSystem.Presentation.Controllers.ReservationsController.CreateReservation (SelfStorageManagementSystem.Presentation) in 116.6102ms&#xD;
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]&#xD;
+      Executed endpoint 'SelfStorageManagementSystem.Presentation.Controllers.ReservationsController.CreateReservation (SelfStorageManagementSystem.Presentation)'&#xD;
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]&#xD;
+      Request finished HTTP/1.1 POST http://localhost/api/reservations - 201 - application/json;+charset=utf-8 197.9862ms&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 4 entities to in-memory store.&#xD;
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]&#xD;
+      Request starting HTTP/1.1 POST http://localhost/api/reservations - application/json;+charset=utf-8 95&#xD;
+info: Microsoft.AspNetCore.Authorization.DefaultAuthorizationService[2]&#xD;
+      Authorization failed. These requirements were not met:&#xD;
+      RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (storage_customer)&#xD;
+info: Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler[13]&#xD;
+      AuthenticationScheme: Bearer was forbidden.&#xD;
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]&#xD;
+      Request finished HTTP/1.1 POST http://localhost/api/reservations - 403 - - 4.3669ms&#xD;
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]&#xD;
+      Request starting HTTP/1.1 POST http://localhost/api/reservations - application/json;+charset=utf-8 95&#xD;
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]&#xD;
+      Executing endpoint 'SelfStorageManagementSystem.Presentation.Controllers.ReservationsController.CreateReservation (SelfStorageManagementSystem.Presentation)'&#xD;
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker[102]&#xD;
+      Route matched with {action = "CreateReservation", controller = "Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CreateReservation(SelfStorageManagementSystem.BusinessLogic.DTOs.Requests.Reservations.CreateReservationRequest, System.Threading.CancellationToken) on controller SelfStorageManagementSystem.Presentation.Controllers.ReservationsController (SelfStorageManagementSystem.Presentation).&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.BusinessLogic.Services.Implementations.ReservationService[0]&#xD;
+      Created reservation hold RES-FAC-801-20261016-FB8F2A (ID: 2) for customer 10 at facility 801, unit type 801. Hold until 10/16/2026 08:19:41 +00:00&#xD;
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor[1]&#xD;
+      Executing ObjectResult, writing value of type 'SelfStorageManagementSystem.BusinessLogic.Common.ApiResponse`1[[SelfStorageManagementSystem.BusinessLogic.DTOs.Responses.Reservations.ReservationDetailResponse, SelfStorageManagementSystem.BusinessLogic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.&#xD;
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker[105]&#xD;
+      Executed action SelfStorageManagementSystem.Presentation.Controllers.ReservationsController.CreateReservation (SelfStorageManagementSystem.Presentation) in 4.1688ms&#xD;
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]&#xD;
+      Executed endpoint 'SelfStorageManagementSystem.Presentation.Controllers.ReservationsController.CreateReservation (SelfStorageManagementSystem.Presentation)'&#xD;
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]&#xD;
+      Request finished HTTP/1.1 POST http://localhost/api/reservations - 201 - application/json;+charset=utf-8 6.3362ms&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]&#xD;
+      Request starting HTTP/1.1 POST http://localhost/api/reservations/2/cancel - application/json;+charset=utf-8 52&#xD;
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]&#xD;
+      Executing endpoint 'SelfStorageManagementSystem.Presentation.Controllers.ReservationsController.CancelReservation (SelfStorageManagementSystem.Presentation)'&#xD;
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker[102]&#xD;
+      Route matched with {action = "CancelReservation", controller = "Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CancelReservation(Int64, SelfStorageManagementSystem.BusinessLogic.DTOs.Requests.Reservations.CancelReservationRequest, System.Threading.CancellationToken) on controller SelfStorageManagementSystem.Presentation.Controllers.ReservationsController (SelfStorageManagementSystem.Presentation).&#xD;
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker[105]&#xD;
+      Executed action SelfStorageManagementSystem.Presentation.Controllers.ReservationsController.CancelReservation (SelfStorageManagementSystem.Presentation) in 2.8817ms&#xD;
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]&#xD;
+      Executed endpoint 'SelfStorageManagementSystem.Presentation.Controllers.ReservationsController.CancelReservation (SelfStorageManagementSystem.Presentation)'&#xD;
+fail: Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware[1]&#xD;
+      An unhandled exception has occurred while executing the request.&#xD;
+      SelfStorageManagementSystem.BusinessLogic.Exceptions.ConflictException: Don d?t ch? da du?c x�c nh?n thanh to�n (Confirmed). D? h?y don v� x? ly ho�n ti?n theo ch�nh s�ch, vui l�ng li�n h? nh�n vi�n ho?c qu?n ly co s?.&#xD;
+         at SelfStorageManagementSystem.BusinessLogic.Services.Implementations.ReservationService.CancelReservationAsync(Int64 currentUserId, IReadOnlyList`1 currentUserRoles, Int64 reservationId, CancelReservationRequest request, CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\src\SelfStorageManagementSystem.BusinessLogic\Services\Implementations\ReservationService.cs:line 263&#xD;
+         at SelfStorageManagementSystem.Presentation.Controllers.ReservationsController.CancelReservation(Int64 id, CancelReservationRequest request, CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\src\SelfStorageManagementSystem.Presentation\Controllers\ReservationsController.cs:line 127&#xD;
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)&#xD;
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.&lt;InvokeActionMethodAsync&gt;g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)&#xD;
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.&lt;InvokeNextActionFilterAsync&gt;g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)&#xD;
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)&#xD;
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State&amp; next, Scope&amp; scope, Object&amp; state, Boolean&amp; isCompleted)&#xD;
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()&#xD;
+      --- End of stack trace from previous location ---&#xD;
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.&lt;InvokeFilterPipelineAsync&gt;g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)&#xD;
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.&lt;InvokeAsync&gt;g__Logged|17_1(ResourceInvoker invoker)&#xD;
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.&lt;InvokeAsync&gt;g__Logged|17_1(ResourceInvoker invoker)&#xD;
+         at Microsoft.AspNetCore.Routing.EndpointMiddleware.&lt;Invoke&gt;g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)&#xD;
+         at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)&#xD;
+         at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)&#xD;
+         at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)&#xD;
+         at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)&#xD;
+         at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.&lt;Invoke&gt;g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)&#xD;
+warn: SelfStorageManagementSystem.Presentation.ExceptionHandling.GlobalExceptionHandler[0]&#xD;
+      Application exception (409) on POST /api/reservations/2/cancel: Don d?t ch? da du?c x�c nh?n thanh to�n (Confirmed). D? h?y don v� x? ly ho�n ti?n theo ch�nh s�ch, vui l�ng li�n h? nh�n vi�n ho?c qu?n ly co s?.&#xD;
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]&#xD;
+      Request finished HTTP/1.1 POST http://localhost/api/reservations/2/cancel - 409 - application/json;+charset=utf-8 15.5007ms&#xD;
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]&#xD;
+      Request starting HTTP/1.1 POST http://localhost/api/reservations - application/json;+charset=utf-8 95&#xD;
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]&#xD;
+      Executing endpoint 'SelfStorageManagementSystem.Presentation.Controllers.ReservationsController.CreateReservation (SelfStorageManagementSystem.Presentation)'&#xD;
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker[102]&#xD;
+      Route matched with {action = "CreateReservation", controller = "Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CreateReservation(SelfStorageManagementSystem.BusinessLogic.DTOs.Requests.Reservations.CreateReservationRequest, System.Threading.CancellationToken) on controller SelfStorageManagementSystem.Presentation.Controllers.ReservationsController (SelfStorageManagementSystem.Presentation).&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.BusinessLogic.Services.Implementations.ReservationService[0]&#xD;
+      Created reservation hold RES-FAC-801-20261016-AB4F57 (ID: 3) for customer 10 at facility 801, unit type 801. Hold until 10/16/2026 08:19:41 +00:00&#xD;
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor[1]&#xD;
+      Executing ObjectResult, writing value of type 'SelfStorageManagementSystem.BusinessLogic.Common.ApiResponse`1[[SelfStorageManagementSystem.BusinessLogic.DTOs.Responses.Reservations.ReservationDetailResponse, SelfStorageManagementSystem.BusinessLogic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.&#xD;
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker[105]&#xD;
+      Executed action SelfStorageManagementSystem.Presentation.Controllers.ReservationsController.CreateReservation (SelfStorageManagementSystem.Presentation) in 1.7732ms&#xD;
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]&#xD;
+      Executed endpoint 'SelfStorageManagementSystem.Presentation.Controllers.ReservationsController.CreateReservation (SelfStorageManagementSystem.Presentation)'&#xD;
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]&#xD;
+      Request finished HTTP/1.1 POST http://localhost/api/reservations - 201 - application/json;+charset=utf-8 2.4632ms&#xD;
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]&#xD;
+      Request starting HTTP/1.1 POST http://localhost/api/reservations/3/cancel - application/json;+charset=utf-8 29&#xD;
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]&#xD;
+      Executing endpoint 'SelfStorageManagementSystem.Presentation.Controllers.ReservationsController.CancelReservation (SelfStorageManagementSystem.Presentation)'&#xD;
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker[102]&#xD;
+      Route matched with {action = "CancelReservation", controller = "Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CancelReservation(Int64, SelfStorageManagementSystem.BusinessLogic.DTOs.Requests.Reservations.CancelReservationRequest, System.Threading.CancellationToken) on controller SelfStorageManagementSystem.Presentation.Controllers.ReservationsController (SelfStorageManagementSystem.Presentation).&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.BusinessLogic.Services.Implementations.ReservationService[0]&#xD;
+      Reservation RES-FAC-801-20261016-AB4F57 (ID: 3) cancelled by user 10. Reason: No longer needed&#xD;
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor[1]&#xD;
+      Executing OkObjectResult, writing value of type 'SelfStorageManagementSystem.BusinessLogic.Common.ApiResponse`1[[SelfStorageManagementSystem.BusinessLogic.DTOs.Responses.Reservations.ReservationDetailResponse, SelfStorageManagementSystem.BusinessLogic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.&#xD;
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker[105]&#xD;
+      Executed action SelfStorageManagementSystem.Presentation.Controllers.ReservationsController.CancelReservation (SelfStorageManagementSystem.Presentation) in 41.9974ms&#xD;
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]&#xD;
+      Executed endpoint 'SelfStorageManagementSystem.Presentation.Controllers.ReservationsController.CancelReservation (SelfStorageManagementSystem.Presentation)'&#xD;
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]&#xD;
+      Request finished HTTP/1.1 POST http://localhost/api/reservations/3/cancel - 200 - application/json;+charset=utf-8 43.4551ms&#xD;
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]&#xD;
+      Request starting HTTP/1.1 POST http://localhost/api/reservations/3/cancel - application/json;+charset=utf-8 31&#xD;
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]&#xD;
+      Executing endpoint 'SelfStorageManagementSystem.Presentation.Controllers.ReservationsController.CancelReservation (SelfStorageManagementSystem.Presentation)'&#xD;
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker[102]&#xD;
+      Route matched with {action = "CancelReservation", controller = "Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CancelReservation(Int64, SelfStorageManagementSystem.BusinessLogic.DTOs.Requests.Reservations.CancelReservationRequest, System.Threading.CancellationToken) on controller SelfStorageManagementSystem.Presentation.Controllers.ReservationsController (SelfStorageManagementSystem.Presentation).&#xD;
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor[1]&#xD;
+      Executing OkObjectResult, writing value of type 'SelfStorageManagementSystem.BusinessLogic.Common.ApiResponse`1[[SelfStorageManagementSystem.BusinessLogic.DTOs.Responses.Reservations.ReservationDetailResponse, SelfStorageManagementSystem.BusinessLogic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.&#xD;
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker[105]&#xD;
+      Executed action SelfStorageManagementSystem.Presentation.Controllers.ReservationsController.CancelReservation (SelfStorageManagementSystem.Presentation) in 0.4859ms&#xD;
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]&#xD;
+      Executed endpoint 'SelfStorageManagementSystem.Presentation.Controllers.ReservationsController.CancelReservation (SelfStorageManagementSystem.Presentation)'&#xD;
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]&#xD;
+      Request finished HTTP/1.1 POST http://localhost/api/reservations/3/cancel - 200 - application/json;+charset=utf-8 1.3628ms&#xD;
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]&#xD;
+      Request starting HTTP/1.1 POST http://localhost/api/reservations - application/json;+charset=utf-8 95&#xD;
+info: Microsoft.AspNetCore.Authorization.DefaultAuthorizationService[2]&#xD;
+      Authorization failed. These requirements were not met:&#xD;
+      DenyAnonymousAuthorizationRequirement: Requires an authenticated user.&#xD;
+      RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (storage_customer)&#xD;
+info: Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler[12]&#xD;
+      AuthenticationScheme: Bearer was challenged.&#xD;
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]&#xD;
+      Request finished HTTP/1.1 POST http://localhost/api/reservations - 401 - - 1.7827ms&#xD;
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]&#xD;
+      Request starting HTTP/1.1 GET http://localhost/api/reservations/mine?page=1&amp;pageSize=10 - - -&#xD;
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]&#xD;
+      Executing endpoint 'SelfStorageManagementSystem.Presentation.Controllers.ReservationsController.GetMyReservations (SelfStorageManagementSystem.Presentation)'&#xD;
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker[102]&#xD;
+      Route matched with {action = "GetMyReservations", controller = "Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetMyReservations(SelfStorageManagementSystem.BusinessLogic.DTOs.Requests.Reservations.GetMyReservationsRequest, System.Threading.CancellationToken) on controller SelfStorageManagementSystem.Presentation.Controllers.ReservationsController (SelfStorageManagementSystem.Presentation).&#xD;
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor[1]&#xD;
+      Executing OkObjectResult, writing value of type 'SelfStorageManagementSystem.BusinessLogic.Common.ApiResponse`1[[SelfStorageManagementSystem.BusinessLogic.Common.PagedResult`1[[SelfStorageManagementSystem.BusinessLogic.DTOs.Responses.Reservations.ReservationListItemResponse, SelfStorageManagementSystem.BusinessLogic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], SelfStorageManagementSystem.BusinessLogic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.&#xD;
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker[105]&#xD;
+      Executed action SelfStorageManagementSystem.Presentation.Controllers.ReservationsController.GetMyReservations (SelfStorageManagementSystem.Presentation) in 6.9306ms&#xD;
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]&#xD;
+      Executed endpoint 'SelfStorageManagementSystem.Presentation.Controllers.ReservationsController.GetMyReservations (SelfStorageManagementSystem.Presentation)'&#xD;
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]&#xD;
+      Request finished HTTP/1.1 GET http://localhost/api/reservations/mine?page=1&amp;pageSize=10 - 200 - application/json;+charset=utf-8 10.9719ms&#xD;
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]&#xD;
+      Request starting HTTP/1.1 POST http://localhost/api/reservations - application/json;+charset=utf-8 95&#xD;
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]&#xD;
+      Executing endpoint 'SelfStorageManagementSystem.Presentation.Controllers.ReservationsController.CreateReservation (SelfStorageManagementSystem.Presentation)'&#xD;
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker[102]&#xD;
+      Route matched with {action = "CreateReservation", controller = "Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CreateReservation(SelfStorageManagementSystem.BusinessLogic.DTOs.Requests.Reservations.CreateReservationRequest, System.Threading.CancellationToken) on controller SelfStorageManagementSystem.Presentation.Controllers.ReservationsController (SelfStorageManagementSystem.Presentation).&#xD;
+info: Microsoft.EntityFrameworkCore.Update[30100]&#xD;
+      Saved 1 entities to in-memory store.&#xD;
+info: SelfStorageManagementSystem.BusinessLogic.Services.Implementations.ReservationService[0]&#xD;
+      Created reservation hold RES-FAC-801-20261016-962239 (ID: 4) for customer 10 at facility 801, unit type 801. Hold until 10/16/2026 08:19:41 +00:00&#xD;
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor[1]&#xD;
+      Executing ObjectResult, writing value of type 'SelfStorageManagementSystem.BusinessLogic.Common.ApiResponse`1[[SelfStorageManagementSystem.BusinessLogic.DTOs.Responses.Reservations.ReservationDetailResponse, SelfStorageManagementSystem.BusinessLogic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.&#xD;
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker[105]&#xD;
+      Executed action SelfStorageManagementSystem.Presentation.Controllers.ReservationsController.CreateReservation (SelfStorageManagementSystem.Presentation) in 1.6771ms&#xD;
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]&#xD;
+      Executed endpoint 'SelfStorageManagementSystem.Presentation.Controllers.ReservationsController.CreateReservation (SelfStorageManagementSystem.Presentation)'&#xD;
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]&#xD;
+      Request finished HTTP/1.1 POST http://localhost/api/reservations - 201 - application/json;+charset=utf-8 2.3444ms&#xD;
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]&#xD;
+      Request starting HTTP/1.1 GET http://localhost/api/reservations/4 - - -&#xD;
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]&#xD;
+      Executing endpoint 'SelfStorageManagementSystem.Presentation.Controllers.ReservationsController.GetReservationById (SelfStorageManagementSystem.Presentation)'&#xD;
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker[102]&#xD;
+      Route matched with {action = "GetReservationById", controller = "Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReservationById(Int64, System.Threading.CancellationToken) on controller SelfStorageManagementSystem.Presentation.Controllers.ReservationsController (SelfStorageManagementSystem.Presentation).&#xD;
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker[105]&#xD;
+      Executed action SelfStorageManagementSystem.Presentation.Controllers.ReservationsController.GetReservationById (SelfStorageManagementSystem.Presentation) in 0.8888ms&#xD;
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]&#xD;
+      Executed endpoint 'SelfStorageManagementSystem.Presentation.Controllers.ReservationsController.GetReservationById (SelfStorageManagementSystem.Presentation)'&#xD;
+fail: Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware[1]&#xD;
+      An unhandled exception has occurred while executing the request.&#xD;
+      SelfStorageManagementSystem.BusinessLogic.Exceptions.ForbiddenException: B?n kh�ng c� quy?n truy c?p ho?c thao t�c tr�n don d?t ch? n�y.&#xD;
+         at SelfStorageManagementSystem.BusinessLogic.Services.Implementations.ReservationService.VerifyAccessPermissionAsync(Int64 currentUserId, IReadOnlyList`1 currentUserRoles, reservation r, CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\src\SelfStorageManagementSystem.BusinessLogic\Services\Implementations\ReservationService.cs:line 360&#xD;
+         at SelfStorageManagementSystem.BusinessLogic.Services.Implementations.ReservationService.GetReservationByIdAsync(Int64 currentUserId, IReadOnlyList`1 currentUserRoles, Int64 reservationId, CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\src\SelfStorageManagementSystem.BusinessLogic\Services\Implementations\ReservationService.cs:line 187&#xD;
+         at SelfStorageManagementSystem.Presentation.Controllers.ReservationsController.GetReservationById(Int64 id, CancellationToken cancellationToken) in D:\FPT\PRN222\Project\Final_Project_Web\src\SelfStorageManagementSystem.Presentation\Controllers\ReservationsController.cs:line 66&#xD;
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)&#xD;
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.&lt;InvokeActionMethodAsync&gt;g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)&#xD;
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.&lt;InvokeNextActionFilterAsync&gt;g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)&#xD;
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)&#xD;
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State&amp; next, Scope&amp; scope, Object&amp; state, Boolean&amp; isCompleted)&#xD;
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()&#xD;
+      --- End of stack trace from previous location ---&#xD;
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.&lt;InvokeFilterPipelineAsync&gt;g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)&#xD;
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.&lt;InvokeAsync&gt;g__Logged|17_1(ResourceInvoker invoker)&#xD;
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.&lt;InvokeAsync&gt;g__Logged|17_1(ResourceInvoker invoker)&#xD;
+         at Microsoft.AspNetCore.Routing.EndpointMiddleware.&lt;Invoke&gt;g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)&#xD;
+         at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)&#xD;
+         at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)&#xD;
+         at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)&#xD;
+         at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)&#xD;
+         at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.&lt;Invoke&gt;g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)&#xD;
+warn: SelfStorageManagementSystem.Presentation.ExceptionHandling.GlobalExceptionHandler[0]&#xD;
+      Application exception (403) on GET /api/reservations/4: B?n kh�ng c� quy?n truy c?p ho?c thao t�c tr�n don d?t ch? n�y.&#xD;
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]&#xD;
+      Request finished HTTP/1.1 GET http://localhost/api/reservations/4 - 403 - application/json;+charset=utf-8 5.6239ms&#xD;
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]&#xD;
+      Request starting HTTP/1.1 GET http://localhost/api/reservations/4 - - -&#xD;
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]&#xD;
+      Executing endpoint 'SelfStorageManagementSystem.Presentation.Controllers.ReservationsController.GetReservationById (SelfStorageManagementSystem.Presentation)'&#xD;
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker[102]&#xD;
+      Route matched with {action = "GetReservationById", controller = "Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReservationById(Int64, System.Threading.CancellationToken) on controller SelfStorageManagementSystem.Presentation.Controllers.ReservationsController (SelfStorageManagementSystem.Presentation).&#xD;
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor[1]&#xD;
+      Executing OkObjectResult, writing value of type 'SelfStorageManagementSystem.BusinessLogic.Common.ApiResponse`1[[SelfStorageManagementSystem.BusinessLogic.DTOs.Responses.Reservations.ReservationDetailResponse, SelfStorageManagementSystem.BusinessLogic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.&#xD;
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker[105]&#xD;
+      Executed action SelfStorageManagementSystem.Presentation.Controllers.ReservationsController.GetReservationById (SelfStorageManagementSystem.Presentation) in 0.4071ms&#xD;
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]&#xD;
+      Executed endpoint 'SelfStorageManagementSystem.Presentation.Controllers.ReservationsController.GetReservationById (SelfStorageManagementSystem.Presentation)'&#xD;
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]&#xD;
+      Request finished HTTP/1.1 GET http://localhost/api/reservations/4 - 200 - application/json;+charset=utf-8 1.0786ms&#xD;
+info: SelfStorageManagementSystem.Presentation.Workers.ReservationHoldExpirationWorker[0]&#xD;
+      Reservation hold expiration worker stopped.&#xD;
+[xUnit.net 00:00:01.50]   Finished:    SelfStorageManagementSystem.Tests&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

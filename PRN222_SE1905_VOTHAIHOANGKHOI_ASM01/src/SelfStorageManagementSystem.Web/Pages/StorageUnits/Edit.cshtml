@@ -1,0 +1,386 @@
+@page
+@model SelfStorageManagementSystem.Web.Pages.StorageUnits.EditModel
+@{
+    ViewData["Title"] = $"Chỉnh sửa ô kho {Model.Input.UnitCode}";
+}
+
+<div class="container py-3" style="max-width: 860px;">
+    <!-- Breadcrumb điều hướng -->
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a asp-page="./Index">Quản trị ô kho</a></li>
+            <li class="breadcrumb-item"><a asp-page="./Details" asp-route-id="@Model.Id">@Model.Input.UnitCode</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Chỉnh sửa</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h1 class="h3 mb-1 fw-bold text-dark">Chỉnh Sửa Ô Kho: <span class="text-primary font-monospace">@Model.Input.UnitCode</span></h1>
+            <p class="text-muted mb-0 small">
+                Cập nhật thông tin phân khu, tầng, mã số và ghi chú vận hành cho ô kho.
+            </p>
+        </div>
+        <div class="d-flex gap-2">
+            <a asp-page="./Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">
+                Xem chi tiết
+            </a>
+            <a asp-page="./Index" class="btn btn-outline-secondary btn-sm">
+                &larr; Danh sách
+            </a>
+        </div>
+    </div>
+
+    @if (!Model.CanManage)
+    {
+        <div class="alert alert-warning shadow-sm mb-4" role="alert">
+            <div class="d-flex align-items-center">
+                <span class="me-2 fs-5 text-warning fw-bold">&#9888;</span>
+                <div>
+                    <strong>Chế độ xem:</strong> Vai trò nhân viên cơ sở (Facility Staff) chỉ có quyền xem danh mục; không có thẩm quyền sửa đổi ô kho.
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Cảnh báo xung đột đồng thời (Concurrency Conflict / Stale Data) -->
+    @if (Model.IsConcurrencyConflict)
+    {
+        <div class="alert alert-warning shadow-sm mb-4 border-warning" role="alert">
+            <div class="d-flex align-items-start">
+                <span class="me-3 fs-4 text-warning">&#9888;</span>
+                <div>
+                    <h6 class="alert-heading fw-bold mb-1">Phát hiện xung đột đồng thời (Dữ liệu đã thay đổi)</h6>
+                    <p class="mb-2 small">
+                        Bản ghi ô kho này đã được một người dùng hoặc tiến trình khác cập nhật trong khi bạn đang mở trang chỉnh sửa.
+                    </p>
+                    <div class="small text-muted mb-3">
+                        <div>&bull; Mốc thời gian biểu mẫu của bạn: <code>@Model.Input.ExpectedUpdatedAt.ToString("yyyy-MM-dd HH:mm:ss.fff zzz")</code></div>
+                        @if (Model.LatestDbUpdatedAt.HasValue)
+                        {
+                            <div>&bull; Mốc thời gian mới nhất trong CSDL: <code>@Model.LatestDbUpdatedAt.Value.ToString("yyyy-MM-dd HH:mm:ss.fff zzz")</code></div>
+                        }
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a asp-page="./Edit" asp-route-id="@Model.Id" class="btn btn-warning btn-sm fw-semibold">
+                            <span>&#8635;</span> Tải Lại Dữ Liệu Mới Nhất
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- T13-F02: Cảnh báo realtime bản đang xem đã lỗi thời (chặn lưu đè dữ liệu) -->
+    <div id="realtimeStaleWarning" class="alert alert-warning shadow-sm mb-4 border-warning d-none" role="alert">
+        <div class="d-flex align-items-start">
+            <span class="me-3 fs-4 text-warning">&#9888;</span>
+            <div class="flex-grow-1">
+                <h6 class="alert-heading fw-bold mb-1">Cảnh báo: Dữ liệu ô kho vừa được cập nhật bởi một người dùng khác</h6>
+                <p class="mb-2 small">
+                    Ô kho này vừa được cập nhật trên hệ thống (Cập nhật lúc: <code id="staleRemoteUpdatedAt"></code>).
+                    Biểu mẫu hiện tại chứa thông tin cũ và đã bị <strong>khóa nút lưu</strong> để tránh ghi đè làm mất các thay đổi của người khác.
+                </p>
+                <div class="d-flex gap-2 mt-2">
+                    <button type="button" class="btn btn-warning btn-sm fw-semibold" onclick="window.location.reload();">
+                        <span>&#8635;</span> Tải Lại Dữ Liệu Mới Nhất
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage) && !Model.IsConcurrencyConflict)
+    {
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm mb-4" role="alert">
+            <div class="d-flex align-items-center">
+                <span class="me-2 fs-5 text-danger fw-bold">&#10008;</span>
+                <div>
+                    <strong>Lỗi cập nhật:</strong> @Model.ErrorMessage
+                </div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
+        </div>
+    }
+
+    <!-- Khối hiển thị thông tin bất biến (Immutable attributes) -->
+    <div class="card border-0 shadow-sm mb-4 bg-light">
+        <div class="card-body p-3 p-md-4">
+            <h6 class="fw-bold text-secondary mb-3 small text-uppercase">Thuộc tính cố định (Không được phép thay đổi)</h6>
+            <div class="row g-3">
+                <div class="col-12 col-md-4">
+                    <div class="small text-muted">Cơ sở lưu trữ</div>
+                    <div class="fw-semibold text-dark">@Model.FacilityName</div>
+                    <div class="font-monospace small text-muted">Mã: @Model.FacilityCode (ID: @Model.FacilityId)</div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="small text-muted">Loại ô kho</div>
+                    <div class="fw-semibold text-dark">@Model.UnitTypeName</div>
+                    <div class="font-monospace small text-muted">Mã: @Model.UnitTypeCode (ID: @Model.UnitTypeId)</div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="small text-muted">Trạng thái vật lý hiện tại</div>
+                    <div>
+                        <span class="badge bg-secondary px-2 py-1">@Model.PhysicalStatus</span>
+                        @if (Model.IsListed)
+                        {
+                            <span class="badge bg-info-subtle text-info border border-info-subtle ms-1">Niêm yết</span>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="small text-muted mt-2 border-top pt-2">
+                <span class="text-primary">&#8505;</span> Theo quy chuẩn kiến trúc PRN222: Cơ sở, Loại kho và Trạng thái vật lý được giữ bất biến khi Edit để đảm bảo toàn vẹn dữ liệu đặt chỗ và biểu giá.
+            </div>
+        </div>
+    </div>
+
+    <!-- Biểu mẫu chỉnh sửa các trường được phép thay đổi -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3 border-bottom">
+            <h5 class="card-title mb-0 fw-semibold text-primary">Thông Tin Chỉnh Sửa</h5>
+        </div>
+        <div class="card-body p-4">
+            <form method="post" id="editStorageUnitForm">
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger shadow-sm mb-4" role="alert"></div>
+
+                <input type="hidden" asp-for="Id" />
+                <!-- Truyền ExpectedUpdatedAt dạng round-trip phục vụ kiểm soát xung đột đồng thời -->
+                <input type="hidden" asp-for="Input.ExpectedUpdatedAt" value="@Model.Input.ExpectedUpdatedAt.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffffffZ")" />
+
+                <div class="row g-3">
+                    <!-- Mã ô kho -->
+                    <div class="col-12 col-md-6">
+                        <label asp-for="Input.UnitCode" class="form-label fw-semibold text-secondary">
+                            Mã ô kho <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="Input.UnitCode" class="form-control font-monospace" placeholder="Ví dụ: HN1-A101" maxlength="50" required />
+                        <div class="form-text small text-muted">Mã định danh duy nhất của ô trong cơ sở (tối đa 50 ký tự).</div>
+                        <span asp-validation-for="Input.UnitCode" class="text-danger small mt-1 d-block"></span>
+                    </div>
+
+                    <!-- Khu vực / Tầng -->
+                    <div class="col-12 col-md-6">
+                        <label asp-for="Input.AreaId" class="form-label fw-semibold text-secondary">
+                            Khu vực / Tầng
+                        </label>
+                        <select asp-for="Input.AreaId" class="form-select">
+                            <option value="">-- Không phân khu / Chưa xác định --</option>
+                            @foreach (var a in Model.Lookups.Areas)
+                            {
+                                <option value="@a.Id">@a.Name (@a.Code)</option>
+                            }
+                        </select>
+                        <span asp-validation-for="Input.AreaId" class="text-danger small mt-1 d-block"></span>
+                    </div>
+
+                    <!-- Nhãn tầng -->
+                    <div class="col-12 col-md-6">
+                        <label asp-for="Input.FloorLabel" class="form-label fw-semibold text-secondary">
+                            Nhãn tầng (Floor Label)
+                        </label>
+                        <input asp-for="Input.FloorLabel" class="form-control" placeholder="Tầng 1, Tầng 2..." maxlength="50" />
+                        <span asp-validation-for="Input.FloorLabel" class="text-danger small mt-1 d-block"></span>
+                    </div>
+
+                    <!-- Nhãn dãy / khu vực -->
+                    <div class="col-12 col-md-6">
+                        <label asp-for="Input.ZoneLabel" class="form-label fw-semibold text-secondary">
+                            Nhãn dãy / Phân khu (Zone Label)
+                        </label>
+                        <input asp-for="Input.ZoneLabel" class="form-control" placeholder="Dãy A, Cánh Đông..." maxlength="50" />
+                        <span asp-validation-for="Input.ZoneLabel" class="text-danger small mt-1 d-block"></span>
+                    </div>
+
+                    <!-- Ghi chú -->
+                    <div class="col-12">
+                        <label asp-for="Input.Notes" class="form-label fw-semibold text-secondary">
+                            Ghi chú kỹ thuật / Vận hành
+                        </label>
+                        <textarea asp-for="Input.Notes" class="form-control" rows="3" placeholder="Nhập ghi chú chi tiết nếu có..." maxlength="500"></textarea>
+                        <span asp-validation-for="Input.Notes" class="text-danger small mt-1 d-block"></span>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-end gap-2 mt-4 pt-3 border-top">
+                    <a asp-page="./Index" class="btn btn-outline-secondary px-3">
+                        Hủy Bỏ
+                    </a>
+                    <button type="button" id="btnUpdateBySignalR" class="btn btn-outline-success px-4 fw-semibold" @(!Model.CanManage ? "disabled" : "")>
+                        <span id="btnSignalRSpinner" class="spinner-border spinner-border-sm me-1 d-none" role="status" aria-hidden="true"></span>
+                        Lưu bằng SignalR
+                    </button>
+                    <button type="submit" id="btnSubmitEdit" class="btn btn-primary px-4 fw-semibold" @(!Model.CanManage ? "disabled" : "")>
+                        <span id="btnSubmitSpinner" class="spinner-border spinner-border-sm me-1 d-none" role="status" aria-hidden="true"></span>
+                        <span id="btnSubmitText">Lưu Thay Đổi</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('editStorageUnitForm');
+            const submitBtn = document.getElementById('btnSubmitEdit');
+            const spinner = document.getElementById('btnSubmitSpinner');
+            const submitText = document.getElementById('btnSubmitText');
+            const canManage = @(Model.CanManage ? "true" : "false");
+            const currentUnitId = @Model.Id;
+
+            let isFormStale = false;
+
+            if (form && submitBtn) {
+                form.addEventListener('submit', function (e) {
+                    if (isFormStale) {
+                        e.preventDefault();
+                        alert("Dữ liệu ô kho đã bị thay đổi trên máy chủ bởi người dùng khác. Vui lòng tải lại trang để nạp thông tin mới nhất trước khi chỉnh sửa.");
+                        return false;
+                    }
+                    if ($(form).valid()) {
+                        submitBtn.disabled = true;
+                        spinner.classList.remove('d-none');
+                        submitText.textContent = 'Đang lưu...';
+                    }
+                });
+            }
+
+            // =========================================================================
+            // SignalR Update Integration (Theo mẫu TeacherCode 4.txt line 9 & 10)
+            // =========================================================================
+            const btnUpdateBySignalR = document.getElementById("btnUpdateBySignalR");
+            if (btnUpdateBySignalR && canManage) {
+                // 1. Khởi tạo HubConnection
+                const connection = new signalR.HubConnectionBuilder()
+                    .withUrl("/storageUnitHub")
+                    .withAutomaticReconnect()
+                    .build();
+
+                // 2. Đăng ký listeners trước start()
+                // Receiver_UpdateStorageUnit: Cập nhật thông tin và làm nổi bật theo mẫu TeacherCode
+                connection.on("Receiver_UpdateTransactionCashDepositSlip", function (depositSlip) {
+                    // Tương thích tên listener của TeacherCode nếu phát song song
+                    handleRealtimeUpdate(depositSlip);
+                });
+
+                connection.on("Receiver_UpdateStorageUnit", function (item) {
+                    handleRealtimeUpdate(item);
+                });
+
+                function handleRealtimeUpdate(item) {
+                    if (Number(item.id) !== currentUnitId) return;
+
+                    // T13-F02: Không tự động nhận ETag mới cho dữ liệu form cũ!
+                    // Giữ nguyên ExpectedUpdatedAt cũ để nếu cố ý submit thì BLL vẫn phát hiện xung đột đồng thời 409 Conflict.
+                    isFormStale = true;
+
+                    // Hiển thị cảnh báo bản đang xem đã lỗi thời
+                    const staleWarning = document.getElementById("realtimeStaleWarning");
+                    if (staleWarning) {
+                        const timeSpan = document.getElementById("staleRemoteUpdatedAt");
+                        if (timeSpan && item.updatedAt) {
+                            timeSpan.textContent = item.updatedAt;
+                        }
+                        staleWarning.classList.remove("d-none");
+                    }
+
+                    // Khóa các nút lưu để chặn người dùng ghi đè dữ liệu cũ
+                    if (submitBtn) {
+                        submitBtn.disabled = true;
+                        submitBtn.setAttribute("title", "Dữ liệu ô kho đã bị thay đổi bởi người khác. Vui lòng tải lại trang.");
+                    }
+                    if (btnUpdateBySignalR) {
+                        btnUpdateBySignalR.disabled = true;
+                        btnUpdateBySignalR.setAttribute("title", "Dữ liệu ô kho đã bị thay đổi bởi người khác. Vui lòng tải lại trang.");
+                    }
+
+                    // Theo mẫu TeacherCode: document.getElementById("Code").innerHTML = depositSlip.code; color = blue, background = yellow
+                    // Đổi màu nổi bật theo mẫu TeacherCode để báo hiệu mã ô vừa được cập nhật ở máy chủ
+                    const codeElement = document.querySelector('input[name="Input.UnitCode"]');
+                    if (codeElement && item.unitCode) {
+                        codeElement.style.color = "blue";
+                        codeElement.style.backgroundColor = "yellow";
+                    }
+
+                    console.warn("T13-F02: Realtime update received for unit being edited. Form locked to prevent lost updates:", item);
+                }
+
+                // Nếu ô kho bị xóa trong lúc đang mở trang Edit
+                connection.on("Receiver_DeleteStorageUnit", function (id) {
+                    if (String(id) === String(currentUnitId)) {
+                        alert("Cảnh báo: Ô kho này vừa bị xóa khỏi hệ thống bởi một người dùng khác.");
+                        btnUpdateBySignalR.disabled = true;
+                        if (submitBtn) submitBtn.disabled = true;
+                        window.location.href = "/StorageUnits";
+                    }
+                });
+
+                // Khởi chạy SignalR
+                connection.start().then(function () {
+                    console.log("Connected to the SignalR Hub on Edit page");
+                }).catch(function (err) {
+                    return console.error("SignalR start error:", err.toString());
+                });
+
+                // 3. Sự kiện click: JSON.stringify payload, gọi invoke("HubUpdate_StorageUnit", dataObj), chặn form submit lần 2
+                btnUpdateBySignalR.addEventListener("click", function (event) {
+                    event.preventDefault();
+
+                    if (isFormStale) {
+                        alert("Dữ liệu ô kho đã bị thay đổi trên máy chủ bởi người dùng khác. Vui lòng tải lại trang để nạp thông tin mới nhất trước khi chỉnh sửa.");
+                        return;
+                    }
+
+                    const unitCodeInput = document.querySelector('input[name="Input.UnitCode"]');
+                    if (!unitCodeInput || !unitCodeInput.value.trim()) {
+                        alert("Vui lòng nhập mã ô kho.");
+                        if (unitCodeInput) unitCodeInput.focus();
+                        return;
+                    }
+
+                    const areaSelect = document.querySelector('select[name="Input.AreaId"]');
+                    const floorInput = document.querySelector('input[name="Input.FloorLabel"]');
+                    const zoneInput = document.querySelector('input[name="Input.ZoneLabel"]');
+                    const notesInput = document.querySelector('textarea[name="Input.Notes"]');
+                    const expInput = document.querySelector('input[name="Input.ExpectedUpdatedAt"]');
+                    const spinnerSignalR = document.getElementById("btnSignalRSpinner");
+
+                    // Chống bấm đúp (double-write prevention)
+                    btnUpdateBySignalR.disabled = true;
+                    if (submitBtn) submitBtn.disabled = true;
+                    if (spinnerSignalR) spinnerSignalR.classList.remove('d-none');
+
+                    var dataObj = JSON.stringify({
+                        Id: currentUnitId,
+                        UnitCode: unitCodeInput.value.trim(),
+                        AreaId: areaSelect && areaSelect.value ? parseInt(areaSelect.value, 10) : null,
+                        FloorLabel: floorInput ? floorInput.value.trim() : null,
+                        ZoneLabel: zoneInput ? zoneInput.value.trim() : null,
+                        Notes: notesInput ? notesInput.value.trim() : null,
+                        ExpectedUpdatedAt: expInput ? expInput.value : null
+                    });
+
+                    console.log("Invoking HubUpdate_StorageUnit with dataObj:", dataObj);
+
+                    connection.invoke("HubUpdate_StorageUnit", dataObj)
+                        .then(function (result) {
+                            console.log("HubUpdate_StorageUnit success:", result);
+                            window.location.href = "/StorageUnits";
+                        })
+                        .catch(function (err) {
+                            console.error("HubUpdate_StorageUnit failed:", err.toString());
+                            btnUpdateBySignalR.disabled = false;
+                            if (submitBtn) submitBtn.disabled = !canManage;
+                            if (spinnerSignalR) spinnerSignalR.classList.add('d-none');
+                            alert("Lỗi cập nhật ô kho qua SignalR: " + err.toString());
+                        });
+                });
+            }
+        });
+    </script>
+}

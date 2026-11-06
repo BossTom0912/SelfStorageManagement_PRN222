@@ -1,0 +1,15 @@
+D:\FPT\PRN222\Project\Final_Project_Web\scratch\bin\Debug\net8.0\gen_hash.exe
+D:\FPT\PRN222\Project\Final_Project_Web\scratch\bin\Debug\net8.0\gen_hash.deps.json
+D:\FPT\PRN222\Project\Final_Project_Web\scratch\bin\Debug\net8.0\gen_hash.runtimeconfig.json
+D:\FPT\PRN222\Project\Final_Project_Web\scratch\bin\Debug\net8.0\gen_hash.dll
+D:\FPT\PRN222\Project\Final_Project_Web\scratch\bin\Debug\net8.0\gen_hash.pdb
+D:\FPT\PRN222\Project\Final_Project_Web\scratch\obj\Debug\net8.0\gen_hash.GeneratedMSBuildEditorConfig.editorconfig
+D:\FPT\PRN222\Project\Final_Project_Web\scratch\obj\Debug\net8.0\gen_hash.AssemblyInfoInputs.cache
+D:\FPT\PRN222\Project\Final_Project_Web\scratch\obj\Debug\net8.0\gen_hash.AssemblyInfo.cs
+D:\FPT\PRN222\Project\Final_Project_Web\scratch\obj\Debug\net8.0\gen_hash.csproj.CoreCompileInputs.cache
+D:\FPT\PRN222\Project\Final_Project_Web\scratch\obj\Debug\net8.0\gen_hash.sourcelink.json
+D:\FPT\PRN222\Project\Final_Project_Web\scratch\obj\Debug\net8.0\gen_hash.dll
+D:\FPT\PRN222\Project\Final_Project_Web\scratch\obj\Debug\net8.0\refint\gen_hash.dll
+D:\FPT\PRN222\Project\Final_Project_Web\scratch\obj\Debug\net8.0\gen_hash.pdb
+D:\FPT\PRN222\Project\Final_Project_Web\scratch\obj\Debug\net8.0\gen_hash.genruntimeconfig.cache
+D:\FPT\PRN222\Project\Final_Project_Web\scratch\obj\Debug\net8.0\ref\gen_hash.dll
