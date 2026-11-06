@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SelfStorageManagementSystem
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SelfStorageManagementSystem.Worker", "src\SelfStorageManagementSystem.Worker\SelfStorageManagementSystem.Worker.csproj", "{A1232F88-24AD-4E1D-A24E-81ED913F18E4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SelfStorageManagementSystem.WorkerTests", "tests\SelfStorageManagementSystem.WorkerTests\SelfStorageManagementSystem.WorkerTests.csproj", "{441BD00C-FA0B-4175-8751-D339C2B1AED0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -115,6 +117,18 @@ Global
 		{A1232F88-24AD-4E1D-A24E-81ED913F18E4}.Release|x64.Build.0 = Release|Any CPU
 		{A1232F88-24AD-4E1D-A24E-81ED913F18E4}.Release|x86.ActiveCfg = Release|Any CPU
 		{A1232F88-24AD-4E1D-A24E-81ED913F18E4}.Release|x86.Build.0 = Release|Any CPU
+		{441BD00C-FA0B-4175-8751-D339C2B1AED0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{441BD00C-FA0B-4175-8751-D339C2B1AED0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{441BD00C-FA0B-4175-8751-D339C2B1AED0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{441BD00C-FA0B-4175-8751-D339C2B1AED0}.Debug|x64.Build.0 = Debug|Any CPU
+		{441BD00C-FA0B-4175-8751-D339C2B1AED0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{441BD00C-FA0B-4175-8751-D339C2B1AED0}.Debug|x86.Build.0 = Debug|Any CPU
+		{441BD00C-FA0B-4175-8751-D339C2B1AED0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{441BD00C-FA0B-4175-8751-D339C2B1AED0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{441BD00C-FA0B-4175-8751-D339C2B1AED0}.Release|x64.ActiveCfg = Release|Any CPU
+		{441BD00C-FA0B-4175-8751-D339C2B1AED0}.Release|x64.Build.0 = Release|Any CPU
+		{441BD00C-FA0B-4175-8751-D339C2B1AED0}.Release|x86.ActiveCfg = Release|Any CPU
+		{441BD00C-FA0B-4175-8751-D339C2B1AED0}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -127,5 +141,6 @@ Global
 		{322037EF-367A-4E6F-AD81-2133BB9B3405} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 		{9DB80783-2ACD-4B50-9C40-E06BD949E957} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{A1232F88-24AD-4E1D-A24E-81ED913F18E4} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{441BD00C-FA0B-4175-8751-D339C2B1AED0} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 	EndGlobalSection
 EndGlobal

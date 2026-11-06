@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SelfStorageManagementSystem
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SelfStorageManagementSystem.Worker", "src\SelfStorageManagementSystem.Worker\SelfStorageManagementSystem.Worker.csproj", "{7D8AC37F-8CBC-4B19-AD26-3247B066C7CE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SelfStorageManagementSystem.WorkerTests", "tests\SelfStorageManagementSystem.WorkerTests\SelfStorageManagementSystem.WorkerTests.csproj", "{766D7437-484E-4F14-AFE0-F46DBE244291}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,18 @@ Global
 		{7D8AC37F-8CBC-4B19-AD26-3247B066C7CE}.Release|x64.Build.0 = Release|Any CPU
 		{7D8AC37F-8CBC-4B19-AD26-3247B066C7CE}.Release|x86.ActiveCfg = Release|Any CPU
 		{7D8AC37F-8CBC-4B19-AD26-3247B066C7CE}.Release|x86.Build.0 = Release|Any CPU
+		{766D7437-484E-4F14-AFE0-F46DBE244291}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{766D7437-484E-4F14-AFE0-F46DBE244291}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{766D7437-484E-4F14-AFE0-F46DBE244291}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{766D7437-484E-4F14-AFE0-F46DBE244291}.Debug|x64.Build.0 = Debug|Any CPU
+		{766D7437-484E-4F14-AFE0-F46DBE244291}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{766D7437-484E-4F14-AFE0-F46DBE244291}.Debug|x86.Build.0 = Debug|Any CPU
+		{766D7437-484E-4F14-AFE0-F46DBE244291}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{766D7437-484E-4F14-AFE0-F46DBE244291}.Release|Any CPU.Build.0 = Release|Any CPU
+		{766D7437-484E-4F14-AFE0-F46DBE244291}.Release|x64.ActiveCfg = Release|Any CPU
+		{766D7437-484E-4F14-AFE0-F46DBE244291}.Release|x64.Build.0 = Release|Any CPU
+		{766D7437-484E-4F14-AFE0-F46DBE244291}.Release|x86.ActiveCfg = Release|Any CPU
+		{766D7437-484E-4F14-AFE0-F46DBE244291}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -97,5 +111,6 @@ Global
 		{DB3DE540-0B75-4BD6-A464-C8C19E56AF62} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{BC363BDC-25C3-4DCE-B3E1-F5B9EF15E060} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 		{7D8AC37F-8CBC-4B19-AD26-3247B066C7CE} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{766D7437-484E-4F14-AFE0-F46DBE244291} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 	EndGlobalSection
 EndGlobal

@@ -4,13 +4,13 @@ namespace SelfStorageManagementSystem.Worker;
 
 public sealed class HeartbeatWorker(
     ILogger<HeartbeatWorker> logger,
+    HeartbeatFileWriter fileWriter,
     IOptions<WorkerOptions> options,
     IHostApplicationLifetime lifetime) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         var settings = options.Value;
-        var logFilePath = Path.Combine(AppContext.BaseDirectory, $"{WorkerOptions.ServiceName}.txt");
         using var timer = new PeriodicTimer(TimeSpan.FromSeconds(settings.IntervalSeconds));
         var cycle = 0;
         try
@@ -19,14 +19,18 @@ public sealed class HeartbeatWorker(
             {
                 cycle++;
                 var message = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - Heartbeat {cycle} from {WorkerOptions.ServiceName}";
-                logger.LogInformation("ASM04 TRANDOANTHANHHA heartbeat {Cycle}; interval {IntervalSeconds}s", cycle, settings.IntervalSeconds);
+                logger.LogInformation("ASM04 {ServiceName} heartbeat {Cycle}; interval {IntervalSeconds}s", WorkerOptions.ServiceName, cycle, settings.IntervalSeconds);
                 try
                 {
-                    await File.AppendAllTextAsync(logFilePath, message + Environment.NewLine, stoppingToken);
+                    await fileWriter.WriteAsync(message, stoppingToken);
+                }
+                catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
+                {
+                    break;
                 }
                 catch (Exception ex)
                 {
-                    logger.LogWarning("Could not write to {FilePath}: {Error}", logFilePath, ex.Message);
+                    logger.LogError(ex, "Could not persist heartbeat to {PrimaryPath} or {FallbackPath}.", fileWriter.PrimaryPath, fileWriter.FallbackPath);
                 }
 
                 if (settings.MaxCycles > 0 && cycle >= settings.MaxCycles)

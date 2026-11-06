@@ -14,11 +14,9 @@ builder.Logging.AddSimpleConsole(options =>
     options.SingleLine = true;
     options.TimestampFormat = "yyyy-MM-dd HH:mm:ss.fff ";
 });
-builder.Services.Configure<EventLogSettings>(options =>
-{
-    options.SourceName = WorkerOptions.ServiceName;
-    options.Filter = (_, level) => level >= LogLevel.Information;
-});
+WorkerLogging.ConfigureEventLog(builder.Logging);
+builder.Services.AddSingleton(sp => new HeartbeatFileWriter(AppContext.BaseDirectory,
+    sp.GetRequiredService<ILogger<HeartbeatFileWriter>>()));
 builder.Services.AddOptions<WorkerOptions>()
     .Bind(builder.Configuration.GetSection("Worker"))
     .Validate(options => options.IntervalSeconds is >= 1 and <= 3600 && options.MaxCycles >= 0,

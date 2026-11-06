@@ -22,7 +22,11 @@ dotnet test tests\SelfStorageManagementSystem.Tests
 dotnet test tests\SelfStorageManagementSystem.WebTests
 ```
 
-Service name: `PRN222_TRANDOANTHANHHA_ASM04`, display name `PRN222 Thanh Ha ASM04 Worker`, startup Manual. Console dùng timestamp với mili giây; Windows Service ghi Information trở lên vào Application Event Log, source cùng tên service. Cấu hình đọc từ thư mục executable nên không phụ thuộc working directory của Service Control Manager.
+Service name: `Vu632`, startup Manual. Script đọc tên từ `WorkerOptions.cs`. Console dùng timestamp với mili giây; Windows Service ghi Information trở lên vào Application Event Log, source cùng tên service. Cấu hình đọc từ thư mục executable nên không phụ thuộc working directory của Service Control Manager.
+
+Heartbeat được ghi vào `Vu632.txt` cạnh executable. Nếu file bị ứng dụng khác khóa, heartbeat được ghi sang `Vu632.fallback.log` và warning nêu rõ đích ghi dự phòng. Đóng ứng dụng giữ khóa để vòng tiếp theo tự ghi lại file chính. File dự phòng được giữ riêng để tra cứu, không tự nhập vào file chính. Dùng Notepad hoặc `Get-Content -Wait` để xem log thay vì mở bằng Word.
+
+Service đã có: dừng service rồi chạy `./install-service.ps1 -UpdateExisting -Start` từ PowerShell Administrator để publish Release và cập nhật đường dẫn. Script không tự dừng service đang chạy. Chạy regression riêng bằng `dotnet test tests/SelfStorageManagementSystem.WorkerTests`. Xem [báo cáo sửa Vu632](ASM04_Vu632_FIX_REPORT.md) để biết bằng chứng và giới hạn kiểm chứng hiện tại.
 
 Mặc định worker chỉ heartbeat, không ghi database. Muốn chạy thêm tác vụ hết hạn giữ chỗ thì cấu hình `ReservationWorker__Enabled=true` và `ConnectionStrings__DefaultConnection` cho tiến trình/service; tác vụ gọi `IReservationService` qua scope riêng, heartbeat chạy độc lập. Không sửa schema.
 
